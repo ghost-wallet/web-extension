@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--color-bg-dark);
+}
+
+main {
+  min-width: 365px;
+  max-width: 410px;
+  height: 592px;
+}
+
+@layer base {
+  :root {
+    /* Text Colors */
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #000000;
+    --color-text-muted: #b0b0b0; /* Lighter muted text */
+
+    /* Background Colors */
+    --color-bg-darker: #1c1819;
+    --color-bg-dark: #231f20;
+    --color-bg-light: #f5f5f5;
+
+    /* Action/State Colors */
+    --color-primary: #49eacb;
+    --color-secondary: #628983;
+    --color-hover-primary: #8cffe0;
+
+    /* Additional Colors */
+    --color-error: #ff4d4d;
+    --color-success: #4caf50;
+    --color-warning: #ffd166;
+    --color-muted: #6e6e6e; /* Darker muted color */
+    --color-muted-dark: #2a2627; /* Very muted, between bg-dark and bg-darker */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
+.font-rubik {
+  font-family: 'Rubik', sans-serif;
+}
+
+.font-lato {
+  font-family: 'Lato', sans-serif;
+}
