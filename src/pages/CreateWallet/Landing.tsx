@@ -11,7 +11,7 @@ export default function Landing({ forward }: {
       <h1 className="text-primarytext text-4xl rubik font-bold text-center">
         GHOST
       </h1>
-      <p className="text-primarytext text-base font-lato text-center mt-2">
+      <p className="text-mutedtext text-base font-lato text-center mt-2">
         Secure Kaspa wallet for KRC20 tokens.
       </p>
       <div className="flex justify-center mt-7">
@@ -42,7 +42,7 @@ export default function Landing({ forward }: {
         <div className="flex flex-col items-center gap-5 mt-8">
           <button
             onClick={() => {
-              forward(Tabs.Create)
+              forward(Tabs.Password)
             }}
             className={`w-[283px] h-[52px] text-base font-lato font-semibold text-primarytext rounded-[25px] ${
               enable
@@ -54,7 +54,7 @@ export default function Landing({ forward }: {
           </button>
           <button
             onClick={() => {
-              forward(Tabs.Import)
+              forward(Tabs.Password)
             }}
             className={`w-[283px] h-[52px] text-base font-lato font-semibold border-primary border rounded-[25px] ${
               enable
