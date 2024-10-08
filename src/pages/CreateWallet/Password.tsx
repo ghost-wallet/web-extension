@@ -14,7 +14,7 @@ export default function Password({
 
   useEffect(() => {
     if (password.length > 0 && password.length < 8) {
-      setError('Password must be at least 8 characters long')
+      setError('Must be at least 8 characters')
       setIsValid(false)
     } else if (
       password.length >= 8 &&
@@ -39,7 +39,7 @@ export default function Password({
       </h1>
       <form className="flex flex-col items-center">
         <PasswordInput
-          label="Password (minimum 8 characters)"
+          label="Password"
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}

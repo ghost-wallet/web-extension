@@ -1,10 +1,8 @@
-import React, { useState } from 'react'
-import { Tabs } from '../CreateWallet'
+import React, { useState } from 'react';
+import { Tabs } from '../CreateWallet';
 
-export default function Landing({ forward }: {
-  forward: (tab: Tabs) => void
-}) {
-  const [enable, setEnable] = useState<boolean>(false)
+export default function Landing({ forward }: { forward: (tab: Tabs, flowType: 'create' | 'import') => void }) {
+  const [enable, setEnable] = useState<boolean>(false);
 
   return (
     <main className="py-6">
@@ -17,7 +15,6 @@ export default function Landing({ forward }: {
       <div className="flex justify-center mt-7">
         <img className="w-[123px] h-[123px]" src="favicon.png" alt="logo" />
       </div>
-
       <div className="mt-32">
         <div className="flex gap-3 justify-center items-center">
           <input
@@ -35,14 +32,13 @@ export default function Landing({ forward }: {
               >
                 Terms of Service
               </a>
-            </span>
-            .
+            </span>.
           </p>
         </div>
         <div className="flex flex-col items-center gap-5 mt-8">
           <button
             onClick={() => {
-              forward(Tabs.Password)
+              forward(Tabs.Password, 'create');
             }}
             className={`w-[283px] h-[52px] text-base font-lato font-semibold text-primarytext rounded-[25px] ${
               enable
@@ -54,7 +50,7 @@ export default function Landing({ forward }: {
           </button>
           <button
             onClick={() => {
-              forward(Tabs.Password)
+              forward(Tabs.Password, 'import');
             }}
             className={`w-[283px] h-[52px] text-base font-lato font-semibold border-primary border rounded-[25px] ${
               enable
@@ -67,5 +63,5 @@ export default function Landing({ forward }: {
         </div>
       </div>
     </main>
-  )
+  );
 }

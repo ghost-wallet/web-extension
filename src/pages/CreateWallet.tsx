@@ -1,67 +1,68 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Landing from '@/pages/CreateWallet/Landing'
-import Intro from '@/pages/CreateWallet/Intro'
-import Create from '@/pages/CreateWallet/Create'
-import Password from '@/pages/CreateWallet/Password'
-import Import from '@/pages/CreateWallet/Import'
-import useKaspa from '@/hooks/useKaspa'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Landing from '@/pages/CreateWallet/Landing';
+import Create from '@/pages/CreateWallet/Create';
+import Password from '@/pages/CreateWallet/Password';
+import Import from '@/pages/CreateWallet/Import';
+import useKaspa from '@/hooks/useKaspa';
 
 export enum Tabs {
   Landing,
+  Password,
   Create,
   Import,
-  Password,
 }
 
 export default function CreateWallet() {
-  const navigate = useNavigate()
-  const { request } = useKaspa()
+  const navigate = useNavigate();
+  const { request } = useKaspa();
 
-  const [tab, setTab] = useState(Tabs.Landing)
-  const [sensitive, setSensitive] = useState('')
-  const [isImport, setIsImport] = useState(false)
+  const [tab, setTab] = useState(Tabs.Landing);
+  const [sensitive, setSensitive] = useState('');
+  const [flowType, setFlowType] = useState<'create' | 'import'>('create');
+
+  const handleForward = (tab: Tabs, flowType?: 'create' | 'import') => {
+    if (flowType) setFlowType(flowType);
+    setTab(tab);
+  };
+
+  const handlePasswordSet = async (password: string) => {
+    setSensitive(password);
+    if (flowType === 'create') {
+      const mnemonic = await request('wallet:create', [password]);
+      setSensitive(mnemonic);
+      setTab(Tabs.Create);
+    } else {
+      setTab(Tabs.Import);
+    }
+  };
+
+  const handleMnemonicSubmit = async (mnemonic: string) => {
+    await request('wallet:import', [mnemonic, sensitive]);
+    navigate('/wallet');
+  };
 
   return {
     [Tabs.Landing]: (
       <Landing
-        forward={(tab) => {
-          if (tab === Tabs.Password) setIsImport(true)
-          setTab(tab)
-        }}
+        forward={handleForward}
       />
     ),
     [Tabs.Password]: (
       <Password
-        onPasswordSet={async (password) => {
-          if (isImport) {
-            setSensitive(password)
-            setTab(Tabs.Import)
-          } else {
-            const mnemonic = await request('wallet:create', [password])
-
-            setSensitive(mnemonic)
-            setTab(Tabs.Create)
-          }
-        }}
+        onPasswordSet={handlePasswordSet}
       />
     ),
     [Tabs.Import]: (
       <Import
-        onMnemonicsSubmit={async (mnemonic) => {
-          await request('wallet:import', [mnemonic, sensitive])
-
-          navigate('/wallet')
-        }}
+        onMnemonicsSubmit={handleMnemonicSubmit}
       />
     ),
     [Tabs.Create]: (
       <Create
         mnemonic={sensitive}
-        onSaved={() => {
-          navigate('/wallet')
-        }}
+        onSaved={() => navigate('/wallet')}
       />
     ),
-  }[tab]
+  }[tab];
 }
