@@ -39,8 +39,8 @@ export default class Wallet extends EventEmitter {
   }
 
   async create(password: string) {
-    const mnemonic = Mnemonic.random(24)
-    await this.import(mnemonic.phrase, password)
+    const mnemonic = Mnemonic.random(12)
+    // await this.setWallet(mnemonic.phrase, password)
 
     return mnemonic.phrase
   }

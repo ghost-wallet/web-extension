@@ -33,7 +33,7 @@ export default function Password({
   }, [password, confirmPassword])
 
   return (
-    <main className="p-6">
+    <main className="pt-10 px-6">
       <h1 className="text-primarytext text-3xl font-rubik text-center mb-32">
         Create Password
       </h1>
@@ -52,7 +52,7 @@ export default function Password({
         />
         <ErrorMessage message={error} />
       </form>
-      <div className="fixed bottom-0 left-0 w-full p-6">
+      <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
         <button
           type="button"
           disabled={!isValid}
