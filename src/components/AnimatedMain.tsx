@@ -1,9 +1,9 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from 'react'
+import { motion } from 'framer-motion'
 
 interface AnimatedMainProps {
-  children: React.ReactNode;
-  className?: string;
+  children: React.ReactNode
+  className?: string
 }
 
 const AnimatedMain: React.FC<AnimatedMainProps> = ({ children, className }) => {
@@ -17,7 +17,7 @@ const AnimatedMain: React.FC<AnimatedMainProps> = ({ children, className }) => {
     >
       {children}
     </motion.main>
-  );
-};
+  )
+}
 
-export default AnimatedMain;
+export default AnimatedMain

@@ -1,21 +1,24 @@
-import React from 'react';
-import RecoveryPhraseInput from './RecoveryPhraseInput';
+import React from 'react'
+import RecoveryPhraseInput from './RecoveryPhraseInput'
 
 interface RecoveryPhraseGridProps {
-  values: string[];
-  seedPhrase?: string[];
-  onInputChange: (index: number, value: string) => void;
-  onPaste: (index: number, event: React.ClipboardEvent<HTMLInputElement>) => void;
-  editableIndices?: number[];
+  values: string[]
+  seedPhrase?: string[]
+  onInputChange: (index: number, value: string) => void
+  onPaste: (
+    index: number,
+    event: React.ClipboardEvent<HTMLInputElement>,
+  ) => void
+  editableIndices?: number[]
 }
 
 const RecoveryPhraseGrid: React.FC<RecoveryPhraseGridProps> = ({
-                                                                 values,
-                                                                 seedPhrase,
-                                                                 onInputChange,
-                                                                 onPaste,
-                                                                 editableIndices = [],
-                                                               }) => (
+  values,
+  seedPhrase,
+  onInputChange,
+  onPaste,
+  editableIndices = [],
+}) => (
   <div className="grid grid-cols-2 gap-8">
     {/* Left column: 1-6 */}
     <div>
@@ -63,6 +66,6 @@ const RecoveryPhraseGrid: React.FC<RecoveryPhraseGridProps> = ({
       ))}
     </div>
   </div>
-);
+)
 
-export default RecoveryPhraseGrid;
+export default RecoveryPhraseGrid

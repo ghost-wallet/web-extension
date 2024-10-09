@@ -57,7 +57,7 @@ export default function Password({
           type="button"
           disabled={!isValid}
           onClick={() => {
-            onPasswordSet(password);
+            onPasswordSet(password)
           }}
           className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] ${
             isValid

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import RecoveryPhraseGrid from '@/components/RecoveryPhraseGrid';
+import React, { useState, useEffect } from 'react'
+import RecoveryPhraseGrid from '@/components/RecoveryPhraseGrid'
 import * as bip39 from 'bip39'
 import { Buffer } from 'buffer'
 
@@ -8,44 +8,53 @@ if (typeof globalThis.Buffer === 'undefined') {
 }
 
 export default function Import({
-                                 onMnemonicsSubmit,
-                               }: {
-  onMnemonicsSubmit: (mnemonics: string) => void;
+  onMnemonicsSubmit,
+}: {
+  onMnemonicsSubmit: (mnemonics: string) => void
 }) {
-  const [userInputs, setUserInputs] = useState<string[]>(Array(12).fill(''));
-  const [isValid, setIsValid] = useState<boolean>(false);
+  const [userInputs, setUserInputs] = useState<string[]>(Array(12).fill(''))
+  const [isValid, setIsValid] = useState<boolean>(false)
 
   useEffect(() => {
     const validateSeedPhrase = () => {
-      const areAllFilled = userInputs.every((word) => word.trim() !== '');
+      const areAllFilled = userInputs.every((word) => word.trim() !== '')
       if (areAllFilled) {
-        const phrase = userInputs.map((word) => word.trim().toLowerCase()).join(' ');
+        const phrase = userInputs
+          .map((word) => word.trim().toLowerCase())
+          .join(' ')
         const isValidBip39 = bip39.validateMnemonic(phrase)
-        setIsValid(isValidBip39);
+        setIsValid(isValidBip39)
       } else {
-        setIsValid(false);
+        setIsValid(false)
       }
-    };
-    validateSeedPhrase();
-  }, [userInputs]);
+    }
+    validateSeedPhrase()
+  }, [userInputs])
 
-  const handlePaste = (index: number, event: React.ClipboardEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    const pasteData = event.clipboardData.getData('text');
-    const words = pasteData.split(/\s+/).filter((word) => word.trim() !== '');
+  const handlePaste = (
+    index: number,
+    event: React.ClipboardEvent<HTMLInputElement>,
+  ) => {
+    event.preventDefault()
+    const pasteData = event.clipboardData.getData('text')
+    const words = pasteData.split(/\s+/).filter((word) => word.trim() !== '')
 
     if (words.length > 0) {
-      const updatedInputs = [...userInputs];
-      let wordIndex = 0;
+      const updatedInputs = [...userInputs]
+      let wordIndex = 0
 
-      for (let i = index; i < updatedInputs.length && wordIndex < words.length; i++) {
-        updatedInputs[i] = words[wordIndex].toLowerCase().trim();
-        wordIndex++;
+      for (
+        let i = index;
+        i < updatedInputs.length && wordIndex < words.length;
+        i++
+      ) {
+        updatedInputs[i] = words[wordIndex].toLowerCase().trim()
+        wordIndex++
       }
 
-      setUserInputs(updatedInputs);
+      setUserInputs(updatedInputs)
     }
-  };
+  }
 
   return (
     <main className="pt-10 px-6">
@@ -60,9 +69,9 @@ export default function Import({
           values={userInputs}
           onInputChange={(i, value) =>
             setUserInputs((inputs) => {
-              const updated = [...inputs];
-              updated[i] = value.trim().toLowerCase();
-              return updated;
+              const updated = [...inputs]
+              updated[i] = value.trim().toLowerCase()
+              return updated
             })
           }
           onPaste={handlePaste}
@@ -84,5 +93,5 @@ export default function Import({
         </div>
       </div>
     </main>
-  );
+  )
 }

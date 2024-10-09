@@ -1,38 +1,41 @@
-import { useEffect, useRef, useState } from 'react';
-import useKaspa from '@/hooks/useKaspa';
+import { useEffect, useRef, useState } from 'react'
+import useKaspa from '@/hooks/useKaspa'
 
 export default function UTXOs() {
-  const { kaspa } = useKaspa();
-  const [index, setIndex] = useState(18);
-  const utxosRef = useRef<HTMLDivElement>(null);
+  const { kaspa } = useKaspa()
+  const [index, setIndex] = useState(18)
+  const utxosRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = utxosRef.current!;
+      const { scrollTop, scrollHeight, clientHeight } = utxosRef.current!
 
       if (
         scrollTop + clientHeight >= scrollHeight - 20 &&
         index < kaspa.utxos.length
       ) {
-        setIndex(index + 9);
+        setIndex(index + 9)
       }
-    };
+    }
 
-    const utxosCurrent = utxosRef.current;
+    const utxosCurrent = utxosRef.current
 
     if (utxosCurrent) {
-      utxosCurrent.addEventListener('scroll', handleScroll);
+      utxosCurrent.addEventListener('scroll', handleScroll)
     }
 
     return () => {
       if (utxosCurrent) {
-        utxosCurrent.removeEventListener('scroll', handleScroll);
+        utxosCurrent.removeEventListener('scroll', handleScroll)
       }
-    };
-  }, [index, kaspa.utxos.length]);
+    }
+  }, [index, kaspa.utxos.length])
 
   return (
-    <div ref={utxosRef} className="h-full overflow-y-scroll no-scrollbar w-full">
+    <div
+      ref={utxosRef}
+      className="h-full overflow-y-scroll no-scrollbar w-full"
+    >
       <div className="grid grid-cols-3 gap-2 p-4">
         {kaspa.utxos.slice(0, index).map((utxo, id) => (
           <div
@@ -45,7 +48,9 @@ export default function UTXOs() {
             <button
               className="text-white font-extrabold underline"
               onClick={() =>
-                window.open(`https://explorer.kaspa.org/txs/${utxo.transaction}`)
+                window.open(
+                  `https://explorer.kaspa.org/txs/${utxo.transaction}`,
+                )
               }
             >
               {utxo.transaction.substring(0, 8)}...
@@ -54,5 +59,5 @@ export default function UTXOs() {
         ))}
       </div>
     </div>
-  );
+  )
 }

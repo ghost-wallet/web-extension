@@ -42,7 +42,7 @@ export default function Landing({
       <div className="fixed bottom-0 left-0 w-full px-6 pb-10 flex flex-col gap-3">
         <button
           onClick={() => {
-            forward(Tabs.Password, 'create');
+            forward(Tabs.Password, 'create')
           }}
           className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] transition-colors duration-300 ${
             enable
@@ -54,7 +54,7 @@ export default function Landing({
         </button>
         <button
           onClick={() => {
-            forward(Tabs.Password, 'import');
+            forward(Tabs.Password, 'import')
           }}
           className={`w-full h-[52px] text-base font-lato font-semibold border-primary border rounded-[25px] ${
             enable
@@ -65,7 +65,6 @@ export default function Landing({
           Import Wallet
         </button>
       </div>
-
     </main>
   )
 }

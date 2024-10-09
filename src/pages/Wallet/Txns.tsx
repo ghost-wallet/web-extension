@@ -20,7 +20,6 @@ export default function Txns() {
         >
           View on Kaspa Explorer
         </a>
-
       </AnimatedMain>
       <BottomNav />
     </>

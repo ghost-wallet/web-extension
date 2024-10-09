@@ -1,5 +1,10 @@
 import React, { useState } from 'react'
-import { EyeIcon, EyeSlashIcon, DocumentDuplicateIcon, DocumentCheckIcon } from '@heroicons/react/24/outline';
+import {
+  EyeIcon,
+  EyeSlashIcon,
+  DocumentDuplicateIcon,
+  DocumentCheckIcon,
+} from '@heroicons/react/24/outline'
 
 export default function Create({
   mnemonic,
@@ -74,9 +79,12 @@ export default function Create({
         onClick={handleCopyToClipboard}
         className="flex items-center text-mutedtext text-base font-lato mb-8 cursor-pointer"
       >
-        <span className="mr-2">{isCopied ?
-          <DocumentCheckIcon className="h-7 w-7 text-success" /> :
-          <DocumentDuplicateIcon className="h-7 w-7 text-mutedtext" />}
+        <span className="mr-2">
+          {isCopied ? (
+            <DocumentCheckIcon className="h-7 w-7 text-success" />
+          ) : (
+            <DocumentDuplicateIcon className="h-7 w-7 text-mutedtext" />
+          )}
         </span>
         {isCopied ? 'Copied' : 'Copy to clipboard'}
       </button>

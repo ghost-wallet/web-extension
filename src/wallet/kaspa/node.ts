@@ -1,11 +1,21 @@
-import { EventEmitter } from "events"
-import { RpcClient, ConnectStrategy, Transaction, Resolver, NetworkId, IFeerateBucket } from "@/wasm"
+import { EventEmitter } from 'events'
+import {
+  RpcClient,
+  ConnectStrategy,
+  Transaction,
+  Resolver,
+  NetworkId,
+  IFeerateBucket,
+} from '@/wasm'
 
-export type PriorityBuckets = Record<'slow' | 'standard' | 'fast', { feeRate: number; seconds: number }>
+export type PriorityBuckets = Record<
+  'slow' | 'standard' | 'fast',
+  { feeRate: number; seconds: number }
+>
 
 export default class Node extends EventEmitter {
   kaspa: RpcClient
-  networkId: string = "MAINNET"
+  networkId: string = 'MAINNET'
 
   constructor() {
     super()
@@ -38,7 +48,7 @@ export default class Node extends EventEmitter {
     return {
       slow: getBucketEstimate(estimate.lowBuckets[0]),
       standard: getBucketEstimate(estimate.normalBuckets[0]),
-      fast: getBucketEstimate(estimate.priorityBucket)
+      fast: getBucketEstimate(estimate.priorityBucket),
     }
   }
 
@@ -47,7 +57,7 @@ export default class Node extends EventEmitter {
 
     for (const transaction of transactions) {
       const { transactionId } = await this.kaspa.submitTransaction({
-        transaction: Transaction.deserializeFromSafeJSON(transaction)
+        transaction: Transaction.deserializeFromSafeJSON(transaction),
       })
 
       submittedIds.push(transactionId)
@@ -77,7 +87,8 @@ export default class Node extends EventEmitter {
       throw new Error('Failed to establish WebSocket connection.')
     }
 
-    const { isSynced, hasUtxoIndex, networkId } = await this.kaspa.getServerInfo()
+    const { isSynced, hasUtxoIndex, networkId } =
+      await this.kaspa.getServerInfo()
 
     if (!isSynced || !hasUtxoIndex) {
       await this.disconnect()
@@ -101,7 +112,9 @@ export default class Node extends EventEmitter {
 
       setTimeout(() => {
         if (!this.kaspa.isConnected) {
-          this.reconnect(this.networkId).catch((err) => console.error('Reconnect error:', err))
+          this.reconnect(this.networkId).catch((err) =>
+            console.error('Reconnect error:', err),
+          )
         }
       }, 5000)
     })
