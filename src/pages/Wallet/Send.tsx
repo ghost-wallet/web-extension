@@ -57,16 +57,18 @@ export default function Send() {
   return (
     <>
       <AnimatedMain>
-        <div className="relative mb-4">
+        <div className="flex items-center justify-between mb-4">
           <button
             onClick={() => navigate(-1)}
-            className="absolute left-0 flex items-center text-primarytext hover:text-mutedtext transition"
+            className="flex items-center text-primarytext hover:text-mutedtext transition"
           >
             <ArrowLeftIcon className="h-6 w-6" />
           </button>
-          <h1 className="text-primarytext text-3xl font-rubik text-center">
+          <h1 className="text-primarytext text-3xl font-rubik text-center flex-grow">
             Send
           </h1>
+          <div className="w-6" />
+          {/* This div is for spacing to balance the button */}
         </div>
         <div>
           <div className="flex flex-col p-4 pb-0 items-center gap-3">

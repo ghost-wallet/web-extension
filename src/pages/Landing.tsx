@@ -20,13 +20,17 @@ export default function Landing() {
 
   useEffect(() => {
     if (loadedSettings && loadedKaspa) {
-      if (kaspa.status === Status.Uninitialized) {
-        console.log('go to create page')
-        navigate('/create')
-      } else if (kaspa.status === Status.Locked) {
-        navigate('/unlock')
-      } else if (kaspa.status === Status.Unlocked) {
-        navigate('/wallet')
+      switch (kaspa.status) {
+        case Status.Uninitialized:
+          navigate('/create')
+          break
+        case Status.Locked:
+          navigate('/unlock')
+          break
+        case Status.Unlocked:
+          navigate('/wallet')
+          break
+        default:
       }
     }
   }, [loadedSettings, loadedKaspa])

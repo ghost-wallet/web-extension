@@ -3,7 +3,7 @@ import {
   UtxoContext,
   UtxoProcessor,
   PublicKeyGenerator,
-  type UtxoEntryReference,
+  UtxoEntryReference,
 } from '@/wasm'
 import type Node from '../node'
 import Addresses from './addresses'
@@ -114,19 +114,20 @@ export default class Account extends EventEmitter {
     })
 
     this.processor.addEventListener('pending', async (event) => {
-      // @ts-ignore
-      const utxos = event.data.data.utxoEntries
-      // @ts-ignore
+      console.log('Pending event data:', event.data) // Log to check the structure
+
+      // Adjust based on the actual structure of event.data TODO
+      const utxos = event.data?.utxoEntries ?? [] // Modify this based on the log output
+
       if (
         utxos.some(
-          (utxo) =>
+          (utxo: UtxoEntryReference) =>
             utxo.address?.toString() ===
             this.addresses.receiveAddresses[
               this.addresses.receiveAddresses.length - 1
             ],
         )
       ) {
-        // TBD: switch to hasAddress
         await this.addresses.increment(1, 0)
       }
     })
