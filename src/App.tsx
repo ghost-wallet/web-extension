@@ -7,6 +7,7 @@ import Wallet from '@/pages/Wallet'
 import UnlockWallet from '@/pages/Unlock'
 import Settings from '@/pages/Wallet/Settings'
 import Txns from '@/pages/Wallet/Txns'
+import Send from '@/pages/Wallet/Send'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/wallet" element={<Wallet />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/transactions" element={<Txns />} />
+            <Route path="/send" element={<Send />} />
           </Routes>
         </MemoryRouter>
       </KaspaProvider>

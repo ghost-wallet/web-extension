@@ -1,27 +1,22 @@
-import { useCallback, useState } from 'react'
-import { i18n } from 'webextension-polyfill'
-import { SendToBack, PlusIcon, MinusIcon, TargetIcon } from 'lucide-react'
-import Sign from './Send/Sign'
-import Submit from './Send/Submit'
-import { Button } from '@/components/ui/button'
+import React, { useCallback, useState } from 'react'
+import { ArrowLeftIcon, MinusIcon } from '@heroicons/react/24/outline'
+import { useNavigate } from 'react-router-dom'
+import BottomNav from '@/components/BottomNav'
+import useKaspa from '@/hooks/useKaspa'
+import AnimatedMain from '@/components/AnimatedMain'
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet'
-import { Input } from '@/components/ui/input'
-import { Dialog } from '@/components/ui/dialog'
 import useURLParams from '@/hooks/useURLParams'
-import useKaspa from '@/hooks/useKaspa'
 import { Input as KaspaInput } from '@/provider/protocol'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { PlusIcon, SendToBack, TargetIcon } from 'lucide-react'
+import { Dialog } from '@/components/ui/dialog'
+import Sign from '@/pages/Wallet/Send/Sign'
+import Submit from '@/pages/Wallet/Send/Submit'
 
 export enum Tabs {
   Creation,
@@ -29,7 +24,9 @@ export enum Tabs {
   Submit,
 }
 
-export default function SendDrawer() {
+export default function Send() {
+  const navigate = useNavigate()
+
   const { kaspa, request } = useKaspa()
   const [hash, params] = useURLParams()
 
@@ -58,38 +55,24 @@ export default function SendDrawer() {
   }, [outputs])
 
   return (
-    <Sheet
-      defaultOpen={hash === 'transact'}
-      onOpenChange={(open) => {
-        if (open) return
-
-        setOutputs([['', '']])
-
-        if (hash === 'transact') {
-          window.close()
-        }
-      }}
-    >
-      <SheetTrigger asChild>
-        <Button className={'gap-2'}>
-          <SendToBack />
-          {i18n.getMessage('send')}
-        </Button>
-      </SheetTrigger>
-      <SheetContent side={'bottom'} className={'h-[60%]'}>
-        <div className="mx-auto">
-          <SheetHeader>
-            <SheetTitle>{i18n.getMessage('sendTitle')}</SheetTitle>
-            <SheetDescription>
-              {i18n.getMessage('sendDescription')}
-            </SheetDescription>
-          </SheetHeader>
+    <>
+      <AnimatedMain>
+        <div className="relative mb-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute left-0 flex items-center text-primarytext hover:text-mutedtext transition"
+          >
+            <ArrowLeftIcon className="h-6 w-6" />
+          </button>
+          <h1 className="text-primarytext text-3xl font-rubik text-center">
+            Send
+          </h1>
+        </div>
+        <div>
           <div className="flex flex-col p-4 pb-0 items-center gap-3">
             <div className={'text-center'}>
               <p className={'text-base font-bold'}>{kaspa.balance} KAS</p>
-              <p className={'font-light text-xs'}>
-                {i18n.getMessage('available')}
-              </p>
+              <p className={'font-light text-xs'}>Available</p>
             </div>
             <div className="flex flex-row items-center">
               <div className="flex flex-col">
@@ -107,7 +90,7 @@ export default function SendDrawer() {
                         >
                           <Input
                             type={'text'}
-                            placeholder={i18n.getMessage('address')}
+                            placeholder={'address'}
                             value={output[0]}
                             disabled={!!params.get('outputs')}
                             onChange={(e) => {
@@ -125,7 +108,7 @@ export default function SendDrawer() {
                           />
                           <Input
                             type={'number'}
-                            placeholder={i18n.getMessage('amount')}
+                            placeholder={'amount'}
                             value={output[1]}
                             min={0}
                             disabled={!!params.get('outputs')}
@@ -218,7 +201,7 @@ export default function SendDrawer() {
               autoFocus
             >
               <SendToBack />
-              {i18n.getMessage('send')}
+              {'send'}
             </Button>
             <Dialog
               open={!!transactions}
@@ -252,7 +235,8 @@ export default function SendDrawer() {
             </Dialog>
           </div>
         </div>
-      </SheetContent>
-    </Sheet>
+      </AnimatedMain>
+      <BottomNav />
+    </>
   )
 }
