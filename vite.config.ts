@@ -6,7 +6,7 @@ import * as path from "path"
 
 const manifest: ManifestV3Export = {
   manifest_version: 3,
-  name: "Kaspian",
+  name: "Ghost",
   version: "0.0.0.4",
   icons: {
     512: "public/favicon.png"
