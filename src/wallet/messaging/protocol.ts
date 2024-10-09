@@ -12,6 +12,7 @@ export interface RequestMappings {
   'wallet:lock': []
   'wallet:reset': []
   'node:connect': [string]
+  'node:disconnect': []
   'node:connection': []
   'node:priorityBuckets': []
   'node:submit': [string[]]
@@ -45,6 +46,7 @@ export interface ResponseMappings {
   'wallet:lock': void
   'wallet:reset': void
   'node:connect': void
+  'node:disconnect': void
   'node:connection': boolean
   'node:priorityBuckets': PriorityBuckets
   'node:submit': string[]

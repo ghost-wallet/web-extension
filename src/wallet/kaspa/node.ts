@@ -7,18 +7,27 @@ export default class Node extends EventEmitter {
   kaspa: RpcClient
   networkId: string = "MAINNET"
 
-  constructor () {
+  constructor() {
     super()
 
     this.kaspa = new RpcClient()
     this.registerEvents()
   }
 
-  get connected () {
+  get connected() {
     return this.kaspa.isConnected
   }
 
-  async getPriorityBuckets () {
+  async disconnect() {
+    if (this.kaspa.isConnected) {
+      await this.kaspa.disconnect()
+      console.log('Disconnected from node successfully.')
+    } else {
+      console.warn('Node is already disconnected.')
+    }
+  }
+
+  async getPriorityBuckets() {
     const { estimate } = await this.kaspa.getFeeEstimate({})
 
     const getBucketEstimate = (bucket: IFeerateBucket) => ({
@@ -33,7 +42,7 @@ export default class Node extends EventEmitter {
     }
   }
 
-  async submit (transactions: string[]) {
+  async submit(transactions: string[]) {
     const submittedIds: string[] = []
 
     for (const transaction of transactions) {
@@ -47,11 +56,8 @@ export default class Node extends EventEmitter {
     return submittedIds
   }
 
-  async reconnect (nodeAddress: string) {
-    // Disconnect safely if connected
-    if (this.kaspa.isConnected) {
-      await this.kaspa.disconnect()
-    }
+  async reconnect(nodeAddress: string) {
+    await this.disconnect() // Disconnect if connected before reconnecting
 
     if (!nodeAddress.startsWith('ws')) {
       if (!this.kaspa.resolver) this.kaspa.setResolver(new Resolver())
@@ -63,7 +69,7 @@ export default class Node extends EventEmitter {
         blockAsyncConnect: true,
         url: nodeAddress.startsWith('ws') ? nodeAddress : undefined,
         strategy: ConnectStrategy.Retry,
-        timeoutDuration: 5000, // Increase timeout to avoid premature closure
+        timeoutDuration: 5000,
         retryInterval: 2000,
       })
     } catch (error) {
@@ -74,7 +80,7 @@ export default class Node extends EventEmitter {
     const { isSynced, hasUtxoIndex, networkId } = await this.kaspa.getServerInfo()
 
     if (!isSynced || !hasUtxoIndex) {
-      await this.kaspa.disconnect()
+      await this.disconnect()
       throw Error('Node is not synchronized or lacks UTXO index.')
     }
 
@@ -84,7 +90,7 @@ export default class Node extends EventEmitter {
     }
   }
 
-  private registerEvents () {
+  private registerEvents() {
     this.kaspa.addEventListener('connect', () => {
       this.emit('connection', true)
     })
@@ -93,13 +99,11 @@ export default class Node extends EventEmitter {
       console.warn('Disconnected from WebSocket, retrying...')
       this.emit('connection', false)
 
-      // Retry connection when disconnected
       setTimeout(() => {
         if (!this.kaspa.isConnected) {
-          // You might want to use a default node address or the current networkId
           this.reconnect(this.networkId).catch((err) => console.error('Reconnect error:', err))
         }
-      }, 5000) // Retry after 5 seconds
+      }, 5000)
     })
   }
 }
