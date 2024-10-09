@@ -1,4 +1,8 @@
-import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline'
+import {
+  ArrowUpIcon,
+  ArrowDownIcon,
+  ArrowsRightLeftIcon,
+} from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
 
 export default function ActionButtons() {
@@ -26,6 +30,17 @@ export default function ActionButtons() {
         </div>
         <span className="text-primarytext text-base font-lato transition group-hover:text-mutedtext">
           Receive
+        </span>
+      </button>
+      <button
+        className="flex flex-col items-center justify-center group"
+        onClick={() => navigate('/swap')}
+      >
+        <div className="flex items-center justify-center w-12 h-12 bg-primary rounded-full mb-1 transition group-hover:bg-secondary">
+          <ArrowsRightLeftIcon className="h-6 w-6 text-secondarytext" />
+        </div>
+        <span className="text-primarytext text-base font-lato transition group-hover:text-mutedtext">
+          Swap
         </span>
       </button>
     </div>

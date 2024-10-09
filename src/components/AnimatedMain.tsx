@@ -9,7 +9,7 @@ interface AnimatedMainProps {
 const AnimatedMain: React.FC<AnimatedMainProps> = ({ children, className }) => {
   return (
     <motion.main
-      className={`pt-10 px-6 ${className}`}
+      className={`${className}`}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}

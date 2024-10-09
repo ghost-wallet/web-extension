@@ -1,10 +1,8 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { i18n } from 'webextension-polyfill'
-import { UnlockKeyhole } from 'lucide-react'
-import Heading from '@/components/Heading'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import PasswordInput from '@/components/PasswordInput'
+import ErrorMessage from '@/components/ErrorMessage'
 import useKaspa from '@/hooks/useKaspa'
 
 export default function UnlockWallet() {
@@ -13,6 +11,17 @@ export default function UnlockWallet() {
 
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [isValid, setIsValid] = useState(false)
+
+  useEffect(() => {
+    if (password.length >= 8) {
+      setError('')
+      setIsValid(true)
+    } else if (password.length > 0 && password.length < 8) {
+      setError('Must be at least 8 characters')
+      setIsValid(false)
+    }
+  }, [password])
 
   const unlockWallet = useCallback(() => {
     request('wallet:unlock', [password])
@@ -20,40 +29,47 @@ export default function UnlockWallet() {
         navigate('/')
       })
       .catch((err) => {
-        setError(err)
+        setError(err.message || 'An error occurred while unlocking')
       })
-  }, [password])
+  }, [password, request, navigate])
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && isValid) {
+      e.preventDefault() // Prevent form submission if there is a default behavior
+      unlockWallet()
+    }
+  }
 
   return (
-    <main className={'flex flex-col justify-between min-h-screen py-6'}>
-      <Heading title={'Kaspian'} subtitle={i18n.getMessage('unlockIntro')} />
-      <div className={'mx-auto'}>
-        <Input
-          type={'password'}
-          placeholder={i18n.getMessage('password')}
-          className={'w-72'}
+    <main className="pt-10 px-6">
+      <h1 className="text-primarytext text-3xl font-rubik text-center mb-8 mt-36">
+        Enter your password
+      </h1>
+      <form className="flex flex-col items-center" onKeyDown={handleKeyDown}>
+        <PasswordInput
+          label={i18n.getMessage('password')}
+          id="password"
           value={password}
-          error={error}
           onChange={(e) => {
             if (error) setError('')
             setPassword(e.target.value)
           }}
-          onKeyUp={(e) => {
-            if (e.key !== 'Enter' || password === '') return
-            unlockWallet()
-          }}
-          autoFocus
         />
-      </div>
-      <div className={'mx-auto'}>
-        <Button
-          className={'gap-2'}
-          disabled={password === ''}
+        <ErrorMessage message={error} />
+      </form>
+      <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
+        <button
+          type="button"
+          disabled={!isValid}
           onClick={unlockWallet}
+          className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] ${
+            isValid
+              ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
+              : 'bg-secondary text-secondarytext cursor-default'
+          }`}
         >
-          <UnlockKeyhole />
           {i18n.getMessage('unlock')}
-        </Button>
+        </button>
       </div>
     </main>
   )

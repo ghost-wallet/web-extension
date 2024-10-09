@@ -9,6 +9,7 @@ import Settings from '@/pages/Wallet/Settings'
 import Txns from '@/pages/Wallet/Txns'
 import Send from '@/pages/Wallet/Send'
 import Receive from '@/pages/Wallet/Receive'
+import Swap from '@/pages/Wallet/Swap'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/transactions" element={<Txns />} />
             <Route path="/send" element={<Send />} />
             <Route path="/receive" element={<Receive />} />
+            <Route path="/swap" element={<Swap />} />
           </Routes>
         </MemoryRouter>
       </KaspaProvider>

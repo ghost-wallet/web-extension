@@ -35,10 +35,12 @@ export default function Wallet() {
     <>
       <AnimatedMain>
         <div className="flex flex-col items-center">
-          <div className="sticky top-0 bg-[var(--color-bg-dark)] w-full flex flex-col items-center p-4 border-b border-muted">
-            <KaspaBalance />
-            <ActionButtons />
-            <h2 className="text-2xl text-primarytext font-lato text-left w-full">
+          <div className="sticky top-0 bg-bgdark w-full flex flex-col border-b border-muted">
+            <div className="items-center flex flex-col pb-4 pt-6">
+              <KaspaBalance />
+              <ActionButtons />
+            </div>
+            <h2 className="text-2xl text-primarytext font-lato text-left w-full px-4 pb-4">
               KRC20 Tokens
             </h2>
           </div>

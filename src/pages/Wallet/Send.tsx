@@ -57,7 +57,7 @@ export default function Send() {
   return (
     <>
       <AnimatedMain>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 p-6">
           <button
             onClick={() => navigate(-1)}
             className="flex items-center text-primarytext hover:text-mutedtext transition"
