@@ -30,8 +30,8 @@ jobs:
           bun-version: 1.0.31
       - name: Install Dependencies
         run: bun install
-      - name: Build
-        run: bun run build
+#      - name: Build
+#        run: bun run build
       - name: Upload Dist as Artifact
         uses: actions/upload-artifact@v4
         with:
