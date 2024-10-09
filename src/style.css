@@ -5,7 +5,9 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   background-color: var(--color-bg-dark);
   margin: 0;
