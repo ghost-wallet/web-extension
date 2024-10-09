@@ -1,10 +1,10 @@
-name: Tests
+name: CI
 
-on: [ push, pull_request ]
+on: [push, pull_request]
 
 jobs:
-  Test:
-    name: Test
+  test:
+    name: Run Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -13,11 +13,12 @@ jobs:
         with:
           bun-version: 1.0.31
       - name: Install Dependencies
-        run: bun install --production
+        run: bun install
       - name: Run tests
         run: bun run test
+
   build:
-    name: Build
+    name: Build and Artifact Upload
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,19 +26,16 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: 1.0.31
-      - name: Install WASM binaries from aspectron.org
-        run: wget -O wasm.zip https://wasm.aspectron.org/nightly/downloads/wasm-wasm32-sdk-2024-09-13.zip
-      - name: Extract WASM binaries
+      - name: Install Dependencies
+        run: bun install
+      - name: Build and Extract WASM
         run: |
           7z x wasm.zip
           mkdir ./wasm
           mv ./kaspa-wasm32-sdk/web/kaspa/* ./wasm
-      - name: Install Dependencies
-        run: bun install
-      - name: Build Ghost
-        run: bun run build
-      - name: Upload Dist as Artifact 
+          bun run build
+      - name: Upload Dist as Artifact
         uses: actions/upload-artifact@v4
-        with: 
+        with:
           name: unpacked-extension
           path: dist/
