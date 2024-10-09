@@ -40,7 +40,6 @@ export default class Router {
       'wallet:reset': () => wallet.reset(),
       'node:connection': () => node.connected,
       'node:connect': (address) => node.reconnect(address),
-      'node:disconnect': () => node.disconnect(),
       'node:priorityBuckets': () => node.getPriorityBuckets(),
       'node:submit': (transactions) => node.submit(transactions),
       'account:addresses': () => [

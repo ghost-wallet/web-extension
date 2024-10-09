@@ -88,8 +88,11 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
 
       return new Promise<ResponseMappings[M]>((resolve, reject) => {
         messagesRef.current.set(message.id, { resolve, reject, message })
-
-        getConnection().postMessage(message)
+        try {
+          getConnection().postMessage(message)
+        } catch (error) {
+          reject(error)
+        }
       })
     },
     [],
@@ -102,8 +105,12 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
 
     connection.onMessage.addListener(async (message: Response | Event) => {
       if (!isEvent(message)) {
-        const { resolve, reject } = messagesRef.current.get(message.id)!
+        const messageEntry = messagesRef.current.get(message.id)
+        if (!messageEntry) {
+          return
+        }
 
+        const { resolve, reject } = messageEntry
         if (!message.error) {
           resolve(message.result)
         } else {
@@ -114,39 +121,47 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       } else {
         switch (message.event) {
           case 'node:connection':
-            dispatch({
-              type: 'addresses',
-              payload: await request('account:addresses', []),
-            })
-            dispatch({ type: 'connected', payload: message.data })
-            break
           case 'node:network':
-            dispatch({
-              type: 'addresses',
-              payload: await request('account:addresses', []),
-            })
+            try {
+              const addresses = await request('account:addresses', [])
+              if (addresses && addresses.length) {
+                dispatch({ type: 'addresses', payload: addresses })
+              }
+              dispatch({ type: 'connected', payload: message.data })
+            } catch (error) {
+              console.error('Error fetching addresses:', error)
+            }
             break
           case 'wallet:status':
             dispatch({ type: 'status', payload: message.data })
             break
           case 'account:balance':
             dispatch({ type: 'balance', payload: message.data })
-            dispatch({
-              type: 'utxos',
-              payload: await request('account:utxos', []),
-            })
+            try {
+              const utxos = await request('account:utxos', [])
+              dispatch({ type: 'utxos', payload: utxos })
+            } catch (error) {
+              console.error('Error fetching UTXOs:', error)
+            }
             break
           case 'account:addresses':
             dispatch({
               type: 'addresses',
-              payload: ({ addresses }) => [
-                addresses[0].concat(message.data[0]),
-                addresses[1].concat(message.data[1]),
-              ],
+              payload: ({ addresses }) => {
+                if (message.data && message.data.length) {
+                  return [
+                    addresses[0].concat(message.data[0] || []),
+                    addresses[1].concat(message.data[1] || []),
+                  ]
+                }
+                return addresses // Return the previous state if no valid data
+              },
             })
             break
           case 'provider:connection':
             dispatch({ type: 'provider', payload: message.data })
+            break
+          default:
             break
         }
       }
@@ -156,37 +171,48 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       if (
         runtime.lastError?.message !==
         'Could not establish connection. Receiving end does not exist.'
-      )
+      ) {
         return
+      }
 
       connectionRef.current = null
 
       for (const entry of messagesRef.current.values()) {
         getConnection().postMessage(entry.message)
       }
+
+      // Reload state after reconnecting
+      load()
     })
 
     connectionRef.current = connection
-
     return connection
   }, [kaspa.addresses])
 
   const load = useCallback(async () => {
-    dispatch({ type: 'status', payload: await request('wallet:status', []) })
-    dispatch({
-      type: 'connected',
-      payload: await request('node:connection', []),
-    })
-    dispatch({ type: 'balance', payload: await request('account:balance', []) })
-    dispatch({ type: 'utxos', payload: await request('account:utxos', []) })
-    dispatch({
-      type: 'addresses',
-      payload: await request('account:addresses', []),
-    })
-    dispatch({
-      type: 'provider',
-      payload: await request('provider:connection', []),
-    })
+    try {
+      const status = await request('wallet:status', [])
+      dispatch({ type: 'status', payload: status })
+
+      const connected = await request('node:connection', [])
+      dispatch({ type: 'connected', payload: connected })
+
+      const balance = await request('account:balance', [])
+      dispatch({ type: 'balance', payload: balance })
+
+      const utxos = await request('account:utxos', [])
+      dispatch({ type: 'utxos', payload: utxos })
+
+      const addresses = await request('account:addresses', [])
+      if (addresses && addresses.length) {
+        dispatch({ type: 'addresses', payload: addresses })
+      }
+
+      const provider = await request('provider:connection', [])
+      dispatch({ type: 'provider', payload: provider })
+    } catch (error) {
+      console.error('Error during load:', error)
+    }
   }, [])
 
   return (

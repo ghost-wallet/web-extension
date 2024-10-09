@@ -8,17 +8,17 @@ function announceProvider() {
   }
 
   window.dispatchEvent(
-    new CustomEvent('wasm:provider', {
+    new CustomEvent('kaspa:provider', {
       detail: Object.freeze(info),
     }),
   )
 }
 
-window.addEventListener('wasm:requestProviders', () => {
+window.addEventListener('kaspa:requestProviders', () => {
   announceProvider()
 })
 
-window.addEventListener('wasm:connect', (event) => {
+window.addEventListener('kaspa:connect', (event) => {
   const extensionId = (event as CustomEvent<string>).detail
   if (browser.runtime.id !== extensionId) return
 
@@ -28,7 +28,7 @@ window.addEventListener('wasm:connect', (event) => {
 
   port.onMessage.addListener((message) => {
     window.dispatchEvent(
-      new CustomEvent('wasm:event', {
+      new CustomEvent('kaspa:event', {
         detail: Object.freeze(message),
       }),
     )
@@ -41,14 +41,14 @@ window.addEventListener('wasm:connect', (event) => {
     port.postMessage(request)
   }
 
-  window.addEventListener('wasm:invoke', invokeListener)
-  window.addEventListener('wasm:disconnect', () => port.disconnect(), {
+  window.addEventListener('kaspa:invoke', invokeListener)
+  window.addEventListener('kaspa:disconnect', () => port.disconnect(), {
     once: true,
   })
 
   port.onDisconnect.addListener(() => {
-    window.removeEventListener('wasm:invoke', invokeListener)
-    window.dispatchEvent(new CustomEvent('wasm:disconnect'))
+    window.removeEventListener('kaspa:invoke', invokeListener)
+    window.dispatchEvent(new CustomEvent('kaspa:disconnect'))
   })
 })
 

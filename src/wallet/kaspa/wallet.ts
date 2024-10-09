@@ -28,10 +28,15 @@ export default class Wallet extends EventEmitter {
     const wallet = await LocalStorage.get('wallet', undefined)
 
     if (!wallet) {
+      console.log('Setting status to Uninitialized...')
       this.status = Status.Uninitialized
     } else {
       const session = await SessionStorage.get('session', undefined)
 
+      console.log(
+        'Setting status to Unlocked if session is there, otherwise Locked. Session:',
+        session,
+      )
       this.status = session ? Status.Unlocked : Status.Locked
     }
 
@@ -39,8 +44,8 @@ export default class Wallet extends EventEmitter {
   }
 
   async create(password: string) {
-    const mnemonic = Mnemonic.random(12)
-    // await this.setWallet(mnemonic.phrase, password)
+    const mnemonic = Mnemonic.random(24)
+    await this.import(mnemonic.phrase, password)
 
     return mnemonic.phrase
   }
@@ -66,12 +71,13 @@ export default class Wallet extends EventEmitter {
   async unlock(id: number, password: string) {
     const mnemonic = new Mnemonic(await this.export(password))
     const extendedKey = new XPrv(mnemonic.toSeed())
+    console.log('wallet.ts unlock...')
     const publicKey = await PublicKeyGenerator.fromMasterXPrv(
       extendedKey,
       false,
       BigInt(id),
     )
-
+    console.log('wallet.ts publicKey:', publicKey)
     await SessionStorage.set('session', {
       activeAccount: id,
       publicKey: publicKey.toString(),

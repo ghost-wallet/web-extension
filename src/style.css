@@ -5,17 +5,24 @@
 @tailwind components;
 @tailwind utilities;
 
-#root {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+html, body, #root {
+  height: 100%;
   background-color: var(--color-bg-dark);
+  margin: 0;
+  padding: 0;
 }
 
 main {
   min-width: 365px;
   max-width: 410px;
-  height: 592px;
+  background-color: var(--color-bg-dark);
+  height: 100%; /* Ensure it fills the height */
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  background-color: var(--color-bg-dark); /* Apply the same background color */
 }
 
 @layer base {
@@ -41,15 +48,6 @@ main {
     --color-warning: #ffd166;
     --color-muted: #6e6e6e; /* Darker muted color */
     --color-muted-dark: #2a2627; /* Very muted, between bg-dark and bg-darker */
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
   }
 }
 
