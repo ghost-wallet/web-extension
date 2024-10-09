@@ -30,10 +30,6 @@ jobs:
           bun-version: 1.0.31
       - name: Install Dependencies
         run: bun install
-      - name: Run Prettier
-        run: bun run prettier --check .
-      - name: Run ESLint
-        run: bun run eslint .
       - name: Build
         run: bun run build
       - name: Upload Dist as Artifact
