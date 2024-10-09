@@ -19,10 +19,14 @@ export default function BottomNav() {
           className="flex flex-col items-center"
         >
           <BanknotesIcon
-            className={`h-6 w-6 ${isActive('/wallet') ? 'text-primary' : 'text-primarytext'}`}
+            className={`h-6 w-6 ${
+              isActive('/wallet') ? 'text-primary' : 'text-primarytext'
+            }`}
           />
           <span
-            className={`text-xs ${isActive('/wallet') ? 'text-primary' : 'text-primarytext'}`}
+            className={`text-xs ${
+              isActive('/wallet') ? 'text-primary' : 'text-primarytext'
+            }`}
           >
             Assets
           </span>
@@ -32,10 +36,14 @@ export default function BottomNav() {
           className="flex flex-col items-center"
         >
           <DocumentTextIcon
-            className={`h-6 w-6 ${isActive('/transactions') ? 'text-primary' : 'text-primarytext'}`}
+            className={`h-6 w-6 ${
+              isActive('/transactions') ? 'text-primary' : 'text-primarytext'
+            }`}
           />
           <span
-            className={`text-xs ${isActive('/transactions') ? 'text-primary' : 'text-primarytext'}`}
+            className={`text-xs ${
+              isActive('/transactions') ? 'text-primary' : 'text-primarytext'
+            }`}
           >
             Transactions
           </span>
@@ -45,10 +53,14 @@ export default function BottomNav() {
           className="flex flex-col items-center"
         >
           <Cog6ToothIcon
-            className={`h-6 w-6 ${isActive('/settings') ? 'text-primary' : 'text-primarytext'}`}
+            className={`h-6 w-6 ${
+              isActive('/settings') ? 'text-primary' : 'text-primarytext'
+            }`}
           />
           <span
-            className={`text-xs ${isActive('/settings') ? 'text-primary' : 'text-primarytext'}`}
+            className={`text-xs ${
+              isActive('/settings') ? 'text-primary' : 'text-primarytext'
+            }`}
           >
             Settings
           </span>
