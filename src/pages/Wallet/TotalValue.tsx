@@ -1,13 +1,11 @@
 import React from 'react'
-import useKaspa from '@/hooks/useKaspa'
 import useSettings from '@/hooks/useSettings'
 
 interface KaspaBalanceProps {
   totalValue: number
 }
 
-const KaspaBalance: React.FC<KaspaBalanceProps> = ({ totalValue }) => {
-  const { kaspa } = useKaspa()
+const TotalValue: React.FC<KaspaBalanceProps> = ({ totalValue }) => {
   const { settings } = useSettings()
 
   return (
@@ -24,4 +22,4 @@ const KaspaBalance: React.FC<KaspaBalanceProps> = ({ totalValue }) => {
   )
 }
 
-export default KaspaBalance
+export default TotalValue

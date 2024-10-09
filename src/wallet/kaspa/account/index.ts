@@ -117,7 +117,8 @@ export default class Account extends EventEmitter {
       console.log('Pending event data:', event.data) // Log to check the structure
 
       // Adjust based on the actual structure of event.data TODO
-      const utxos = event.data?.utxoEntries ?? [] // Modify this based on the log output
+      // @ts-ignore
+      const utxos = event.data?.utxoEntries ?? []
 
       if (
         utxos.some(

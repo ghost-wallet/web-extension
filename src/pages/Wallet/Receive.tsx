@@ -37,7 +37,6 @@ export default function Receive() {
             Receive
           </h1>
           <div className="w-6" />
-          {/* This div is for spacing to balance the button */}
         </div>
 
         <div className="flex flex-col items-center relative">

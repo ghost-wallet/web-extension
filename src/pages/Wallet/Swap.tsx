@@ -22,7 +22,7 @@ export default function Swap() {
           </h1>
           <div className="w-6" />
         </div>
-        <p className="text-primarytext text-base">Coming soon...</p>
+        <p className="text-primarytext text-base p-6">Coming soon...</p>
       </AnimatedMain>
       <BottomNav />
     </>

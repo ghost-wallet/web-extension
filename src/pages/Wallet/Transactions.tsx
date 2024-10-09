@@ -3,7 +3,7 @@ import BottomNav from '@/components/BottomNav'
 import useKaspa from '@/hooks/useKaspa'
 import AnimatedMain from '@/components/AnimatedMain'
 
-export default function Txns() {
+export default function Transactions() {
   const { kaspa } = useKaspa()
 
   return (

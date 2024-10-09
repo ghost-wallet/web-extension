@@ -6,7 +6,7 @@ import CreateWallet from '@/pages/CreateWallet'
 import Wallet from '@/pages/Wallet'
 import UnlockWallet from '@/pages/Unlock'
 import Settings from '@/pages/Wallet/Settings'
-import Txns from '@/pages/Wallet/Txns'
+import Transactions from '@/pages/Wallet/Transactions'
 import Send from '@/pages/Wallet/Send'
 import Receive from '@/pages/Wallet/Receive'
 import Swap from '@/pages/Wallet/Swap'
@@ -22,7 +22,7 @@ function App() {
             <Route path="/unlock" element={<UnlockWallet />} />
             <Route path="/wallet" element={<Wallet />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/transactions" element={<Txns />} />
+            <Route path="/transactions" element={<Transactions />} />
             <Route path="/send" element={<Send />} />
             <Route path="/receive" element={<Receive />} />
             <Route path="/swap" element={<Swap />} />
