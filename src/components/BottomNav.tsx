@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import {
   Cog6ToothIcon,
-  BanknotesIcon,
+  CircleStackIcon,
   DocumentTextIcon,
 } from '@heroicons/react/24/outline'
 
@@ -18,7 +18,7 @@ export default function BottomNav() {
           onClick={() => navigate('/wallet')}
           className="flex flex-col items-center"
         >
-          <BanknotesIcon
+          <CircleStackIcon
             className={`h-6 w-6 ${
               isActive('/wallet') ? 'text-primary' : 'text-primarytext'
             }`}
@@ -28,7 +28,7 @@ export default function BottomNav() {
               isActive('/wallet') ? 'text-primary' : 'text-primarytext'
             }`}
           >
-            Assets
+            Cryptos
           </span>
         </button>
         <button

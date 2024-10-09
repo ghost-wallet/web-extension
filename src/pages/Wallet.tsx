@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Status } from '@/wallet/kaspa/wallet'
 import useKaspa from '@/hooks/useKaspa'
@@ -13,6 +13,9 @@ export default function Wallet() {
   const { kaspa, request } = useKaspa()
   const { settings } = useSettings()
   const navigate = useNavigate()
+
+  // State to hold the total value
+  const [totalValue, setTotalValue] = useState(0)
 
   useEffect(() => {
     if (!kaspa.connected) {
@@ -36,15 +39,15 @@ export default function Wallet() {
       <AnimatedMain>
         <div className="flex flex-col items-center">
           <div className="sticky top-0 bg-bgdark w-full flex flex-col border-b border-muted">
-            <div className="items-center flex flex-col pb-4 pt-6">
-              <KaspaBalance />
+            <div className="items-center flex flex-col pt-6">
+              <KaspaBalance totalValue={totalValue} />
               <ActionButtons />
             </div>
             <h2 className="text-2xl text-primarytext font-lato text-left w-full px-4 pb-4">
-              KRC20 Tokens
+              Cryptos
             </h2>
           </div>
-          <KRC20Tokens />
+          <KRC20Tokens onTotalValueChange={setTotalValue} />
         </div>
       </AnimatedMain>
       <BottomNav />

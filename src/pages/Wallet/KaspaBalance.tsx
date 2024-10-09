@@ -1,28 +1,25 @@
 import React from 'react'
 import useKaspa from '@/hooks/useKaspa'
 import useSettings from '@/hooks/useSettings'
-import useCoingecko from '@/hooks/useCoingecko'
 
-const KaspaBalance: React.FC = () => {
+interface KaspaBalanceProps {
+  totalValue: number
+}
+
+const KaspaBalance: React.FC<KaspaBalanceProps> = ({ totalValue }) => {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
-  const price = useCoingecko(settings.currency)
 
   return (
     <>
-      <p className="text-3xl font-rubik text-primarytext">
-        {kaspa.balance !== null && kaspa.balance !== undefined
-          ? `${kaspa.balance.toFixed(2)} KAS`
-          : 'Loading...'}
-      </p>
-      <p className="text-xl font-rubik text-primarytext">
+      <h1 className="text-primarytext text-4xl font-rubik text-center flex-grow">
         {settings.currency === 'USD'
           ? '$'
           : settings.currency === 'EUR'
             ? '€'
             : settings.currency}{' '}
-        {(kaspa.balance * price).toFixed(2)}
-      </p>
+        {totalValue.toFixed(2)}
+      </h1>
     </>
   )
 }

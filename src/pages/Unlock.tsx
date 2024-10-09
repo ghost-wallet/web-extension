@@ -1,6 +1,5 @@
 import { useCallback, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { i18n } from 'webextension-polyfill'
 import PasswordInput from '@/components/PasswordInput'
 import ErrorMessage from '@/components/ErrorMessage'
 import useKaspa from '@/hooks/useKaspa'
@@ -47,7 +46,7 @@ export default function UnlockWallet() {
       </h1>
       <form className="flex flex-col items-center" onKeyDown={handleKeyDown}>
         <PasswordInput
-          label={i18n.getMessage('password')}
+          label="Password"
           id="password"
           value={password}
           onChange={(e) => {
@@ -68,7 +67,7 @@ export default function UnlockWallet() {
               : 'bg-secondary text-secondarytext cursor-default'
           }`}
         >
-          {i18n.getMessage('unlock')}
+          Unlock
         </button>
       </div>
     </main>

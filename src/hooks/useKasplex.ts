@@ -29,7 +29,6 @@ const useKasplex = () => {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
   const price = useCoingecko(settings.currency)
-  console.log('gecko price', price)
 
   useEffect(() => {
     if (price === 0) {
@@ -57,15 +56,9 @@ const useKasplex = () => {
               )
 
               const tokenData = tokenInfoResponse.data as TokenInfoResponse
-              console.log(
-                'tokendata.price.floorPrice',
-                tokenData.price?.floorPrice,
-              )
-
               const floorPrice = (
                 (tokenData?.price?.floorPrice || 0) * price
               ).toFixed(8)
-              console.log('formatted floor price for token,', floorPrice, token)
 
               return { ...token, floorPrice: parseFloat(floorPrice) }
             } catch (err) {
@@ -79,7 +72,9 @@ const useKasplex = () => {
         setLoading(false)
       } catch (err) {
         console.error('Error fetching tokens:', err)
-        setError('Failed to fetch KRC20 tokens')
+        setError(
+          'Error loading KRC20 tokens. Log out and log back in from the Settings page.',
+        )
         setLoading(false)
       }
     }
