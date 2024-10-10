@@ -23,7 +23,7 @@ const TokenListItem: React.FC<TokenListItemProps> = ({
   kaspaImageSrc,
 }) => {
   return (
-    <li className="flex items-center justify-between m-1.5 w-full pr-3">
+    <li className="flex items-center justify-between m-2 w-full pr-3">
       <div className="flex items-center">
         <img
           src={

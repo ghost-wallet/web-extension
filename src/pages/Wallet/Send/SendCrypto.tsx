@@ -4,6 +4,8 @@ import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import BackButton from '@/components/BackButton'
 import { formatBalance } from '@/utils/formatting'
+import TokenDetails from '@/components/TokenDetails'
+import MaxInputField from '@/components/MaxInputField'
 
 const SendCrypto: React.FC = () => {
   const location = useLocation()
@@ -13,14 +15,6 @@ const SendCrypto: React.FC = () => {
   const [amount, setAmount] = useState('')
   const [recipientError, setRecipientError] = useState('')
   const [amountError, setAmountError] = useState('')
-
-  if (!token) {
-    return (
-      <div>
-        <p>Error: Token information is missing!</p>
-      </div>
-    )
-  }
 
   const maxAmount =
     token.tick === 'KASPA'
@@ -33,7 +27,7 @@ const SendCrypto: React.FC = () => {
     setRecipient(value)
 
     if (!value.startsWith('kaspa:')) {
-      setRecipientError('Address must start with kaspa:')
+      setRecipientError('Invalid Kaspa address')
     } else {
       setRecipientError('')
     }
@@ -56,9 +50,9 @@ const SendCrypto: React.FC = () => {
 
     setAmount(value)
 
-    if (parseFloat(value) > parseFloat(maxAmount)) {
+    if (parseFloat(value) <= 0 || parseFloat(value) > parseFloat(maxAmount)) {
       setAmountError(
-        `Amount cannot exceed your available balance of ${maxAmount} ${token.tick}`,
+        `Amount must be greater than 0 and not exceed ${maxAmount} ${token.tick}`,
       )
     } else {
       setAmountError('')
@@ -90,6 +84,14 @@ const SendCrypto: React.FC = () => {
     setAmountError('')
   }
 
+  // Check if the form is valid
+  const isValid =
+    recipient.startsWith('kaspa:') &&
+    parseFloat(amount) > 0 &&
+    parseFloat(amount) <= parseFloat(maxAmount) &&
+    !recipientError &&
+    !amountError
+
   return (
     <>
       <AnimatedMain>
@@ -100,23 +102,9 @@ const SendCrypto: React.FC = () => {
           </h1>
           <div className="w-6" />
         </div>
-        <div className="flex flex-col items-center mt-2">
-          <img
-            src={
-              token.tick === 'KASPA'
-                ? '/kaspa-kas-logo.png'
-                : `https://krc20-assets.kas.fyi/icons/${token.tick}.jpg`
-            }
-            alt={`${token.tick} logo`}
-            className="w-20 h-20 rounded-full mb-2"
-          />
-          <p className="text-primarytext text-base font-lato">
-            {token.tick === 'KASPA'
-              ? `${token.balance} ${token.tick}`
-              : `${formatBalance(token.balance, token.dec)} ${token.tick}`}{' '}
-            Available
-          </p>
-        </div>
+
+        <TokenDetails token={token} />
+
         <div className="flex flex-col items-center space-y-4 p-4">
           {/* Recipient Address Input */}
           <input
@@ -128,29 +116,36 @@ const SendCrypto: React.FC = () => {
           />
 
           {/* Amount Input with MAX button */}
-          <div className="relative w-full">
-            <input
-              type="text"
-              value={amount}
-              onChange={handleAmountChange}
-              onKeyDown={handleKeyDown}
-              placeholder="Amount"
-              className="w-full p-2 pr-16 border border-muted bg-transparent text-base text-primarytext placeholder-mutedtext rounded"
-            />
-            <button
-              onClick={handleMaxClick}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-muted text-primarytext text-sm px-3 py-1 rounded hover:bg-muted-dark transition"
-            >
-              MAX
-            </button>
-          </div>
+          <MaxInputField
+            value={amount}
+            onChange={handleAmountChange}
+            onKeyDown={handleKeyDown}
+            onMaxClick={handleMaxClick}
+            placeholder="Amount"
+          />
 
           {/* Error Messages */}
-          {(recipientError || amountError) && (
-            <div className="text-sm text-error mt-1">
-              {recipientError || amountError}
-            </div>
-          )}
+          <div className="min-h-[24px] mt-1">
+            {(recipientError || amountError) && (
+              <div className="text-sm text-error">
+                {recipientError || amountError}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="px-6 pt-4">
+          <button
+            type="button"
+            disabled={!isValid}
+            className={`w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] ${
+              isValid
+                ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
+                : 'bg-secondary text-secondarytext cursor-default'
+            }`}
+          >
+            Send
+          </button>
         </div>
       </AnimatedMain>
       <BottomNav />

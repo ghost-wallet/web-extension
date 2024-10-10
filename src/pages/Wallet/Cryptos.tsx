@@ -45,7 +45,7 @@ const Cryptos: React.FC<CryptoProps> = ({
         <Spinner />
       </div>
     )
-  if (error) return <p className="text-error text-base">{error}</p>
+  if (error) return <p className="p-6 text-error text-base">{error}</p>
 
   const kaspaToken: Token = {
     tick: 'KASPA',

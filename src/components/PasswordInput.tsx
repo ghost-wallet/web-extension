@@ -1,36 +1,28 @@
-import React from 'react'
+// PasswordInput.tsx
+import React, { ChangeEvent } from 'react'
 
 interface PasswordInputProps {
-  label: string
   id: string
   value: string
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void
+  placeholder?: string
 }
 
 const PasswordInput: React.FC<PasswordInputProps> = ({
-  label,
   id,
   value,
   onChange,
+  placeholder = '',
 }) => {
   return (
-    <div className="w-full mb-6">
-      <label
-        className="block text-mutedtext text-base font-lato mb-2"
-        htmlFor={id}
-      >
-        {label}
-      </label>
-      <input
-        type="password"
-        id={id}
-        value={value}
-        onChange={onChange}
-        className="w-full px-4 py-2 text-2xl bg-bgdarker text-mutedtext border border-muted rounded-lg focus:outline-none focus:border-secondary"
-        minLength={8}
-        required
-      />
-    </div>
+    <input
+      type="password"
+      id={id}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      className="w-full p-2 border border-muted bg-transparent text-base text-primarytext placeholder-mutedtext rounded"
+    />
   )
 }
 
