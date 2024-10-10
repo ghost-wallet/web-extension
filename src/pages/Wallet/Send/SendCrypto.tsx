@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useLocation } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
@@ -6,85 +6,39 @@ import BackButton from '@/components/BackButton'
 import { formatBalance } from '@/utils/formatting'
 import TokenDetails from '@/components/TokenDetails'
 import MaxInputField from '@/components/MaxInputField'
+import InputField from '@/components/InputField'
+import { useInputValidation } from '@/hooks/useInputValidation'
 
 const SendCrypto: React.FC = () => {
   const location = useLocation()
   const { token } = location.state || {}
 
-  const [recipient, setRecipient] = useState('')
-  const [amount, setAmount] = useState('')
-  const [recipientError, setRecipientError] = useState('')
-  const [amountError, setAmountError] = useState('')
+  if (!token || !token.tick || !token.balance || !token.dec) {
+    return <div>Token information is missing or incomplete.</div>
+  }
 
   const maxAmount =
     token.tick === 'KASPA'
       ? token.balance
       : formatBalance(token.balance, token.dec)
 
-  // Validate the recipient address
-  const handleRecipientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setRecipient(value)
+  const {
+    recipient,
+    amount,
+    recipientError,
+    amountError,
+    handleRecipientChange,
+    handleAmountChange,
+    handleKeyDown,
+  } = useInputValidation(parseFloat(maxAmount), token.dec)
 
-    if (!value.startsWith('kaspa:')) {
-      setRecipientError('Invalid Kaspa address')
-    } else {
-      setRecipientError('')
-    }
-  }
-
-  // Validate the amount
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value
-    value = value.replace(/[^0-9.]/g, '')
-
-    const parts = value.split('.')
-    if (parts.length > 2) {
-      setAmountError(`Invalid amount format`)
-      return
-    }
-
-    if (parts[1]?.length > token.dec) {
-      value = `${parts[0]}.${parts[1].slice(0, token.dec)}`
-    }
-
-    setAmount(value)
-
-    if (parseFloat(value) <= 0 || parseFloat(value) > parseFloat(maxAmount)) {
-      setAmountError(
-        `Amount must be greater than 0 and not exceed ${maxAmount} ${token.tick}`,
-      )
-    } else {
-      setAmountError('')
-    }
-  }
-
-  // Only allow numbers, a single decimal point, and control keys in the amount input
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const allowedKeys = [
-      'Backspace',
-      'Delete',
-      'ArrowLeft',
-      'ArrowRight',
-      'Tab',
-    ]
-
-    if (!/[\d.]/.test(e.key) && !allowedKeys.includes(e.key)) {
-      e.preventDefault()
-    }
-
-    if (e.key === '.' && amount.includes('.')) {
-      e.preventDefault()
-    }
-  }
-
-  // Set the amount to max value when MAX is clicked
+  // Function to handle setting the max amount
   const handleMaxClick = () => {
-    setAmount(maxAmount)
-    setAmountError('')
+    handleAmountChange({
+      target: { value: maxAmount.toString() }, // Convert maxAmount to a string
+    } as React.ChangeEvent<HTMLInputElement>)
   }
 
-  // Check if the form is valid
   const isValid =
     recipient.startsWith('kaspa:') &&
     parseFloat(amount) > 0 &&
@@ -106,26 +60,23 @@ const SendCrypto: React.FC = () => {
         <TokenDetails token={token} />
 
         <div className="flex flex-col items-center space-y-4 p-4">
-          {/* Recipient Address Input */}
-          <input
-            type="text"
+          <InputField
             value={recipient}
             onChange={handleRecipientChange}
             placeholder="Recipient's Kaspa Address"
-            className="w-full p-2 border border-muted bg-transparent text-base text-primarytext placeholder-mutedtext rounded"
           />
 
-          {/* Amount Input with MAX button */}
           <MaxInputField
             value={amount}
             onChange={handleAmountChange}
             onKeyDown={handleKeyDown}
             onMaxClick={handleMaxClick}
             placeholder="Amount"
+            maxValue={parseFloat(maxAmount)} // Pass the correct max value as a number
           />
 
-          {/* Error Messages */}
-          <div className="min-h-[24px] mt-1">
+          {/* Fixed height for the error container */}
+          <div className="min-h-[24px] mt-1 flex items-center justify-center">
             {(recipientError || amountError) && (
               <div className="text-sm text-error">
                 {recipientError || amountError}
@@ -134,7 +85,7 @@ const SendCrypto: React.FC = () => {
           </div>
         </div>
 
-        <div className="px-6 pt-4">
+        <div className="px-6 pt-6">
           <button
             type="button"
             disabled={!isValid}

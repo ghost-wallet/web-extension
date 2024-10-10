@@ -8,15 +8,14 @@ import AnimatedMain from '@/components/AnimatedMain'
 import ActionButtons from '@/components/ActionButtons'
 import Cryptos from '@/pages/Wallet/Cryptos'
 import TotalValue from '@/pages/Wallet/TotalValue'
-import Spinner from '@/components/Spinner'
 
 export default function Wallet() {
   const { kaspa, request } = useKaspa()
   const { settings } = useSettings()
   const navigate = useNavigate()
 
-  // State to hold the total value, initially set to null
-  const [totalValue, setTotalValue] = useState<number | null>(null)
+  // State to hold the total value, initially set to 0
+  const [totalValue, setTotalValue] = useState<number>(0)
 
   useEffect(() => {
     if (!kaspa.connected) {
@@ -41,11 +40,7 @@ export default function Wallet() {
         <div className="flex flex-col items-center">
           <div className="sticky top-0 bg-bgdark w-full flex flex-col border-b border-muted">
             <div className="items-center flex flex-col pt-6">
-              {totalValue === null ? (
-                <Spinner />
-              ) : (
-                <TotalValue totalValue={totalValue} />
-              )}
+              <TotalValue totalValue={totalValue} />
               <ActionButtons />
             </div>
             <h2 className="text-2xl text-primarytext font-lato text-left w-full px-4 pb-4">

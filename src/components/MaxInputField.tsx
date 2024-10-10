@@ -2,10 +2,11 @@ import React, { ChangeEvent, KeyboardEvent } from 'react'
 
 interface MaxInputFieldProps {
   value: string
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void
-  onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
   onMaxClick: () => void
   placeholder: string
+  maxValue: number // Define the maxValue prop
 }
 
 const MaxInputField: React.FC<MaxInputFieldProps> = ({
