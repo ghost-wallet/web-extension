@@ -7,7 +7,7 @@
     "test": "bun run tests/*.*",
     "dev": "bunx --bun vite --host",
     "build": "bunx --bun vite build --minify false",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,html,json,md}\""
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,html,json,md}\" --ignore-path .prettierignore"
   },
   "type": "module",
   "author": "Ghost devs",
