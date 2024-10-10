@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
@@ -13,7 +13,7 @@ const SendCrypto: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { token } = location.state || {}
-  const { kaspa, request } = useKaspa()
+  const { request } = useKaspa()
   const [hash, params] = useURLParams()
 
   if (!token || !token.tick || !token.balance || !token.dec) {
@@ -23,10 +23,22 @@ const SendCrypto: React.FC = () => {
   const maxAmount = token.tick === 'KASPA' ? token.balance : formatBalance(token.balance, token.dec)
   const [inputs] = useState<KaspaInput[]>(JSON.parse(params.get('inputs')!) || [])
   const [outputs, setOutputs] = useState<[string, string][]>([['', '']])
-  const [error, setError] = useState('')
+  const [error, setError] = useState<string | null>(null)
   const [transactions, setTransactions] = useState<string[]>([])
-  const [feeRate, setFeeRate] = useState(1)
+  const [feeRate, setFeerate] = useState(1)
   const [fee] = useState(params.get('fee') ?? '0')
+
+  useEffect(() => {
+    // Fetch the standard fee rate when the component loads
+    request('node:priorityBuckets', [])
+      .then((buckets) => {
+        setFeerate(buckets.standard.feeRate)
+      })
+      .catch((err) => {
+        console.error('Error fetching standard fee rate:', err)
+        setError('Failed to retrieve the fee rate.')
+      })
+  }, [request])
 
   const handleRecipientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -59,14 +71,19 @@ const SendCrypto: React.FC = () => {
   }
 
   const initiateSend = useCallback(() => {
+    if (!feeRate) return
     request('account:create', [outputs, feeRate, fee, inputs])
       .then((transactions) => {
+        console.log('fee and feeRate', fee, feeRate)
+        console.log('transactions', transactions)
+        console.log('outputs, inputs', outputs, inputs)
         setTransactions(transactions)
         navigate('/send/crypto/confirm', {
           state: {
             token,
             recipient: outputs[0][0],
             amount: outputs[0][1],
+            transactions,
           },
         })
       })
@@ -75,6 +92,8 @@ const SendCrypto: React.FC = () => {
         setError(err)
       })
   }, [outputs, token, navigate, request, feeRate, fee, inputs])
+
+  const isButtonEnabled = outputs[0][0].length > 0 && outputs[0][1].length > 0 && !error
 
   return (
     <>
@@ -124,7 +143,12 @@ const SendCrypto: React.FC = () => {
           <button
             type="button"
             onClick={initiateSend}
-            className="w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] bg-primary text-secondarytext cursor-pointer hover:bg-hover"
+            disabled={!isButtonEnabled}
+            className={`w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] ${
+              isButtonEnabled
+                ? 'bg-primary cursor-pointer hover:bg-hover'
+                : 'bg-secondary cursor-not-allowed'
+            } text-secondarytext`}
           >
             Continue
           </button>
