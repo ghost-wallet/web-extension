@@ -1,11 +1,5 @@
 import LocalStorage from '@/storage/LocalStorage'
-import {
-  createContext,
-  useState,
-  type ReactNode,
-  useEffect,
-  useCallback,
-} from 'react'
+import { createContext, useState, type ReactNode, useEffect, useCallback } from 'react'
 
 export interface ISettings {
   version: number
@@ -52,10 +46,7 @@ export const SettingsContext = createContext<
   | {
       load: () => Promise<void>
       settings: ISettings
-      updateSetting: <K extends keyof ISettings>(
-        key: K,
-        value: ISettings[K],
-      ) => void
+      updateSetting: <K extends keyof ISettings>(key: K, value: ISettings[K]) => void
     }
   | undefined
 >(undefined)
@@ -73,8 +64,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     root.classList.remove('light', 'dark')
 
     if (settings['theme'] === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
-        .matches
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'dark'
         : 'light'
 
@@ -92,15 +82,12 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setSettings(storedSettings)
   }, [])
 
-  const updateSetting = useCallback(
-    <K extends keyof ISettings>(key: K, value: ISettings[K]) => {
-      setSettings((prevSettings) => ({
-        ...prevSettings,
-        [key]: value,
-      }))
-    },
-    [],
-  )
+  const updateSetting = useCallback(<K extends keyof ISettings>(key: K, value: ISettings[K]) => {
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      [key]: value,
+    }))
+  }, [])
 
   return (
     <SettingsContext.Provider value={{ load, settings, updateSetting }}>

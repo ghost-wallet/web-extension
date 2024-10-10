@@ -38,11 +38,7 @@ const useKasplex = () => {
     const fetchTokens = async () => {
       try {
         const apiBase =
-          settings.selectedNode === 0
-            ? 'api'
-            : settings.selectedNode === 1
-              ? 'tn10api'
-              : 'tn11api'
+          settings.selectedNode === 0 ? 'api' : settings.selectedNode === 1 ? 'tn10api' : 'tn11api'
 
         const response = await axios.get<ApiResponse>(
           `https://${apiBase}.kasplex.org/v1/krc20/address/${kaspa.addresses[0][kaspa.addresses[0].length - 1]}/tokenlist`,
@@ -56,9 +52,7 @@ const useKasplex = () => {
               )
 
               const tokenData = tokenInfoResponse.data as TokenInfoResponse
-              const floorPrice = (
-                (tokenData?.price?.floorPrice || 0) * price
-              ).toFixed(8)
+              const floorPrice = ((tokenData?.price?.floorPrice || 0) * price).toFixed(8)
 
               return { ...token, floorPrice: parseFloat(floorPrice) }
             } catch (err) {
@@ -72,9 +66,7 @@ const useKasplex = () => {
         setLoading(false)
       } catch (err) {
         console.error('Error fetching tokens:', err)
-        setError(
-          'Error loading KRC20 tokens. Log out and log back in from the Settings page.',
-        )
+        setError('Error loading KRC20 tokens. Log out and log back in from the Settings page.')
         setLoading(false)
       }
     }

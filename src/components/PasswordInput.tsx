@@ -8,12 +8,7 @@ interface PasswordInputProps {
   placeholder?: string
 }
 
-const PasswordInput: React.FC<PasswordInputProps> = ({
-  id,
-  value,
-  onChange,
-  placeholder = '',
-}) => {
+const PasswordInput: React.FC<PasswordInputProps> = ({ id, value, onChange, placeholder = '' }) => {
   return (
     <input
       type="password"

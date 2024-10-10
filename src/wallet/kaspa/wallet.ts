@@ -72,11 +72,7 @@ export default class Wallet extends EventEmitter {
     const mnemonic = new Mnemonic(await this.export(password))
     const extendedKey = new XPrv(mnemonic.toSeed())
     console.log('wallet.ts unlock...')
-    const publicKey = await PublicKeyGenerator.fromMasterXPrv(
-      extendedKey,
-      false,
-      BigInt(id),
-    )
+    const publicKey = await PublicKeyGenerator.fromMasterXPrv(extendedKey, false, BigInt(id))
     console.log('wallet.ts publicKey:', publicKey)
     await SessionStorage.set('session', {
       activeAccount: id,

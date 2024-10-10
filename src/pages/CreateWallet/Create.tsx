@@ -6,13 +6,7 @@ import {
   DocumentCheckIcon,
 } from '@heroicons/react/24/outline'
 
-export default function Create({
-  mnemonic,
-  onSaved,
-}: {
-  mnemonic: string
-  onSaved: () => void
-}) {
+export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSaved: () => void }) {
   const [isSeedVisible, setIsSeedVisible] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
   const [isConfirmed, setIsConfirmed] = useState(false)
@@ -40,10 +34,9 @@ export default function Create({
         Secret Recovery Phrase
       </h1>
       <p className="text-warning text-base font-lato text-center mb-4">
-        This phrase is the only way to recover your wallet. Do not share it with
-        anyone. Do not enter it into any app, site, or wallet other than
-        official wallets from ghostapp.org. Beware of scammers pretending to be
-        Ghost support.
+        This phrase is the only way to recover your wallet. Do not share it with anyone. Do not
+        enter it into any app, site, or wallet other than official wallets from ghostapp.org. Beware
+        of scammers pretending to be Ghost support.
       </p>
 
       <div
@@ -97,10 +90,7 @@ export default function Create({
           checked={isConfirmed}
           onChange={handleCheckboxChange}
         />
-        <label
-          htmlFor="confirmation"
-          className="text-mutedtext text-base font-lato"
-        >
+        <label htmlFor="confirmation" className="text-mutedtext text-base font-lato">
           I saved my secret recovery phrase.
         </label>
       </div>

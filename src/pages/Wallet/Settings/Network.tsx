@@ -6,9 +6,7 @@ const Network: React.FC = () => {
   const { settings, updateSetting } = useSettings()
   const { kaspa, request } = useKaspa()
 
-  const handleNodeChange = async (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
+  const handleNodeChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const id = parseInt(event.target.value)
     try {
       updateSetting('selectedNode', id)
@@ -20,9 +18,9 @@ const Network: React.FC = () => {
 
   useEffect(() => {
     if (!kaspa.connected) {
-      request('node:connect', [
-        settings.nodes[settings.selectedNode].address,
-      ]).catch((error) => console.error('WebSocket connection error:', error))
+      request('node:connect', [settings.nodes[settings.selectedNode].address]).catch((error) =>
+        console.error('WebSocket connection error:', error),
+      )
     }
   }, [kaspa.connected, request, settings.nodes, settings.selectedNode])
 

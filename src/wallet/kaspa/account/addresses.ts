@@ -25,9 +25,7 @@ export default class Addresses extends EventEmitter {
     console.log('public key from async import', publicKey)
     this.accountId = accountId
 
-    const account = (await LocalStorage.get('wallet', undefined))!.accounts[
-      accountId
-    ]
+    const account = (await LocalStorage.get('wallet', undefined))!.accounts[accountId]
 
     await this.increment(account.receiveCount, account.changeCount, false)
   }
@@ -63,11 +61,7 @@ export default class Addresses extends EventEmitter {
           this.receiveAddresses.length,
           this.receiveAddresses.length + receiveCount,
         ),
-        this.derive(
-          false,
-          this.changeAddresses.length,
-          this.changeAddresses.length + changeCount,
-        ),
+        this.derive(false, this.changeAddresses.length, this.changeAddresses.length + changeCount),
       ])
       console.log('addresses.ts increment:', addresses)
 
@@ -102,16 +96,8 @@ export default class Addresses extends EventEmitter {
 
   async changeNetwork(networkId: string) {
     this.networkId = networkId
-    this.receiveAddresses = await this.derive(
-      true,
-      0,
-      this.receiveAddresses.length,
-    )
-    this.changeAddresses = await this.derive(
-      false,
-      0,
-      this.changeAddresses.length,
-    )
+    this.receiveAddresses = await this.derive(true, 0, this.receiveAddresses.length)
+    this.changeAddresses = await this.derive(false, 0, this.changeAddresses.length)
   }
 
   reset() {

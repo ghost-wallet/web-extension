@@ -27,9 +27,7 @@ export interface RequestMappings {
   'provider:disconnect': []
 }
 
-export interface Request<
-  M extends keyof ResponseMappings = keyof ResponseMappings,
-> {
+export interface Request<M extends keyof ResponseMappings = keyof ResponseMappings> {
   id: number
   method: M
   params: RequestMappings[M]
@@ -60,9 +58,7 @@ export interface ResponseMappings {
   'provider:disconnect': void
 }
 
-export interface Response<
-  M extends keyof RequestMappings = keyof RequestMappings,
-> {
+export interface Response<M extends keyof RequestMappings = keyof RequestMappings> {
   id: number
   result: ResponseMappings[M] | undefined
   error?: string
@@ -77,9 +73,7 @@ export interface EventMappings {
   'provider:connection': string
 }
 
-export interface EventMessage<
-  M extends keyof EventMappings = keyof EventMappings,
-> {
+export interface EventMessage<M extends keyof EventMappings = keyof EventMappings> {
   event: M
   data: EventMappings[M]
 }
@@ -89,9 +83,5 @@ export type Event<M extends keyof EventMappings = keyof EventMappings> = {
 }[M]
 
 export function isEvent(message: any): message is Event {
-  return (
-    message &&
-    typeof message.event === 'string' &&
-    typeof message.data !== 'undefined'
-  )
+  return message && typeof message.event === 'string' && typeof message.data !== 'undefined'
 }

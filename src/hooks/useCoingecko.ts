@@ -9,18 +9,12 @@ export default function useCoingecko(currency: string) {
     const cachedTimestamp = localStorage.getItem(`timestamp_${currency}`)
     const currentTime = Date.now()
 
-    if (
-      cachedPrice &&
-      cachedTimestamp &&
-      currentTime - parseInt(cachedTimestamp) < 60000
-    ) {
+    if (cachedPrice && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 60000) {
       // Use the cached price if it's still valid
       setPrice(parseFloat(cachedPrice))
     } else {
       // Fetch from the API if the cache is expired or not available
-      fetch(
-        `https://api.coingecko.com/api/v3/simple/price?ids=kaspa&vs_currencies=${currency}`,
-      )
+      fetch(`https://api.coingecko.com/api/v3/simple/price?ids=kaspa&vs_currencies=${currency}`)
         .then(async (res) => {
           if (res.ok) {
             const response = await res.json()
@@ -29,10 +23,7 @@ export default function useCoingecko(currency: string) {
 
             // Cache the new price and timestamp
             localStorage.setItem(`price_${currency}`, newPrice.toString())
-            localStorage.setItem(
-              `timestamp_${currency}`,
-              currentTime.toString(),
-            )
+            localStorage.setItem(`timestamp_${currency}`, currentTime.toString())
           } else if (res.status === 429) {
             console.error('Rate limit exceeded. Please try again later.')
           }

@@ -1,18 +1,11 @@
 import type Wallet from '../../kaspa/wallet'
 import type Node from '../../kaspa/node'
 import type Account from '../../kaspa/account'
-import type {
-  Request,
-  Response,
-  RequestMappings,
-  ResponseMappings,
-} from '../protocol'
+import type { Request, Response, RequestMappings, ResponseMappings } from '../protocol'
 import type Provider from './provider'
 
 type MappingsRecord<M extends keyof RequestMappings = keyof RequestMappings> = {
-  [K in M]: (
-    ...params: RequestMappings[K]
-  ) => Promise<ResponseMappings[K]> | ResponseMappings[K]
+  [K in M]: (...params: RequestMappings[K]) => Promise<ResponseMappings[K]> | ResponseMappings[K]
 }
 
 export default class Router {
@@ -32,8 +25,7 @@ export default class Router {
     this.mappings = {
       'wallet:status': () => wallet.status,
       'wallet:create': (password) => wallet.create(password),
-      'wallet:import': (mnemonic, password) =>
-        wallet.import(mnemonic, password),
+      'wallet:import': (mnemonic, password) => wallet.import(mnemonic, password),
       'wallet:unlock': (password) => wallet.unlock(0, password),
       'wallet:export': (password) => wallet.export(password),
       'wallet:lock': () => wallet.lock(),

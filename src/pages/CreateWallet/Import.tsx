@@ -19,9 +19,7 @@ export default function Import({
     const validateSeedPhrase = () => {
       const areAllFilled = userInputs.every((word) => word.trim() !== '')
       if (areAllFilled) {
-        const phrase = userInputs
-          .map((word) => word.trim().toLowerCase())
-          .join(' ')
+        const phrase = userInputs.map((word) => word.trim().toLowerCase()).join(' ')
         const isValidBip39 = bip39.validateMnemonic(phrase)
         setIsValid(isValidBip39)
       } else {
@@ -31,10 +29,7 @@ export default function Import({
     validateSeedPhrase()
   }, [userInputs])
 
-  const handlePaste = (
-    index: number,
-    event: React.ClipboardEvent<HTMLInputElement>,
-  ) => {
+  const handlePaste = (index: number, event: React.ClipboardEvent<HTMLInputElement>) => {
     event.preventDefault()
     const pasteData = event.clipboardData.getData('text')
     const words = pasteData.split(/\s+/).filter((word) => word.trim() !== '')
@@ -43,11 +38,7 @@ export default function Import({
       const updatedInputs = [...userInputs]
       let wordIndex = 0
 
-      for (
-        let i = index;
-        i < updatedInputs.length && wordIndex < words.length;
-        i++
-      ) {
+      for (let i = index; i < updatedInputs.length && wordIndex < words.length; i++) {
         updatedInputs[i] = words[wordIndex].toLowerCase().trim()
         wordIndex++
       }

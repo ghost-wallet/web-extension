@@ -2,11 +2,7 @@ import { useState, useEffect } from 'react'
 import PasswordInput from '@/components/PasswordInput'
 import ErrorMessage from '@/components/ErrorMessage'
 
-export default function Password({
-  onPasswordSet,
-}: {
-  onPasswordSet: (password: string) => void
-}) {
+export default function Password({ onPasswordSet }: { onPasswordSet: (password: string) => void }) {
   const [password, setPassword] = useState<string>('')
   const [confirmPassword, setConfirmPassword] = useState<string>('')
   const [error, setError] = useState<string>('')
@@ -16,11 +12,7 @@ export default function Password({
     if (password.length > 0 && password.length < 8) {
       setError('Must be at least 8 characters')
       setIsValid(false)
-    } else if (
-      password.length >= 8 &&
-      password !== confirmPassword &&
-      confirmPassword.length > 0
-    ) {
+    } else if (password.length >= 8 && password !== confirmPassword && confirmPassword.length > 0) {
       setError('Passwords do not match')
       setIsValid(false)
     } else if (password.length >= 8 && password === confirmPassword) {
@@ -34,9 +26,7 @@ export default function Password({
 
   return (
     <main className="pt-10 px-6">
-      <h1 className="text-primarytext text-3xl font-rubik text-center mb-32">
-        Create Password
-      </h1>
+      <h1 className="text-primarytext text-3xl font-rubik text-center mb-32">Create Password</h1>
       <form className="flex flex-col items-center">
         <PasswordInput
           label="Password"

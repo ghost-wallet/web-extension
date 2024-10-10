@@ -8,9 +8,7 @@ const LogOut: React.FC = () => {
   const navigate = useNavigate()
 
   const handleLogOut = () => {
-    request('wallet:lock', []).catch((error) =>
-      console.error('Error locking wallet:', error),
-    )
+    request('wallet:lock', []).catch((error) => console.error('Error locking wallet:', error))
   }
 
   useEffect(() => {

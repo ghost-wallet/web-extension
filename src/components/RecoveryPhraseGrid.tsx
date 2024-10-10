@@ -5,10 +5,7 @@ interface RecoveryPhraseGridProps {
   values: string[]
   seedPhrase?: string[]
   onInputChange: (index: number, value: string) => void
-  onPaste: (
-    index: number,
-    event: React.ClipboardEvent<HTMLInputElement>,
-  ) => void
+  onPaste: (index: number, event: React.ClipboardEvent<HTMLInputElement>) => void
   editableIndices?: number[]
 }
 
@@ -24,9 +21,7 @@ const RecoveryPhraseGrid: React.FC<RecoveryPhraseGridProps> = ({
     <div>
       {Array.from({ length: 6 }, (_, i) => (
         <div key={i} className="flex items-center space-x-1 mb-2">
-          <span className="text-mutedtext text-base font-lato w-6 text-right">
-            {i + 1}.
-          </span>
+          <span className="text-mutedtext text-base font-lato w-6 text-right">{i + 1}.</span>
           {editableIndices.includes(i) ? (
             <RecoveryPhraseInput
               value={values[i]}
@@ -47,9 +42,7 @@ const RecoveryPhraseGrid: React.FC<RecoveryPhraseGridProps> = ({
     <div>
       {Array.from({ length: 6 }, (_, i) => (
         <div key={i + 6} className="flex items-center space-x-1 mb-2">
-          <span className="text-mutedtext text-base font-lato w-6 text-right">
-            {i + 7}.
-          </span>
+          <span className="text-mutedtext text-base font-lato w-6 text-right">{i + 7}.</span>
           {editableIndices.includes(i + 6) ? (
             <RecoveryPhraseInput
               value={values[i + 6]}

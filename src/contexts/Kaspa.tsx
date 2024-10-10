@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useReducer,
-  ReactNode,
-  useCallback,
-  useRef,
-} from 'react'
+import { createContext, useReducer, ReactNode, useCallback, useRef } from 'react'
 import { runtime, type Runtime } from 'webextension-polyfill'
 import { Status } from '@/wallet/kaspa/wallet'
 import {
@@ -76,10 +70,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
   const nonceRef = useRef(0)
 
   const request = useCallback(
-    <M extends keyof RequestMappings>(
-      method: M,
-      params: RequestMappings[M],
-    ) => {
+    <M extends keyof RequestMappings>(method: M, params: RequestMappings[M]) => {
       const message: Request<M> = {
         id: ++nonceRef.current,
         method,
@@ -215,9 +206,5 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  return (
-    <KaspaContext.Provider value={{ load, kaspa, request }}>
-      {children}
-    </KaspaContext.Provider>
-  )
+  return <KaspaContext.Provider value={{ load, kaspa, request }}>{children}</KaspaContext.Provider>
 }

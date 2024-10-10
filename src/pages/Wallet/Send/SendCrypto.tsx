@@ -17,10 +17,7 @@ const SendCrypto: React.FC = () => {
     return <div>Token information is missing or incomplete.</div>
   }
 
-  const maxAmount =
-    token.tick === 'KASPA'
-      ? token.balance
-      : formatBalance(token.balance, token.dec)
+  const maxAmount = token.tick === 'KASPA' ? token.balance : formatBalance(token.balance, token.dec)
 
   const {
     recipient,
@@ -78,9 +75,7 @@ const SendCrypto: React.FC = () => {
           {/* Fixed height for the error container */}
           <div className="min-h-[24px] mt-1 flex items-center justify-center">
             {(recipientError || amountError) && (
-              <div className="text-sm text-error">
-                {recipientError || amountError}
-              </div>
+              <div className="text-sm text-error">{recipientError || amountError}</div>
             )}
           </div>
         </div>

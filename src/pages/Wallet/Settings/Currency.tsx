@@ -5,17 +5,13 @@ import useSettings from '@/hooks/useSettings'
 const Currency: React.FC = () => {
   const { settings, updateSetting } = useSettings()
 
-  const handleCurrencyChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
+  const handleCurrencyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     updateSetting('currency', event.target.value as never)
   }
 
   return (
     <div>
-      <h2 className="text-primarytext text-base font-lato mb-2 mt-6">
-        Currency
-      </h2>
+      <h2 className="text-primarytext text-base font-lato mb-2 mt-6">Currency</h2>
       <div className="flex gap-1 mx-1 mb-4">
         <select
           value={settings.currency}

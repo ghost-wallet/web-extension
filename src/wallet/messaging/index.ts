@@ -14,15 +14,7 @@ export default class RPC {
 
   private ports: Set<browser.Runtime.Port> = new Set()
 
-  constructor({
-    wallet,
-    node,
-    account,
-  }: {
-    wallet: Wallet
-    node: Node
-    account: Account
-  }) {
+  constructor({ wallet, node, account }: { wallet: Wallet; node: Node; account: Account }) {
     this.provider = new Provider(account)
     this.notifier = new Notifier({
       wallet,

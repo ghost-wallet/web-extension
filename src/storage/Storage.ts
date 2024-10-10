@@ -1,8 +1,6 @@
 import browser from 'webextension-polyfill'
 
-export default abstract class Storage<
-  IStorage extends Record<string, any> = Record<string, any>,
-> {
+export default abstract class Storage<IStorage extends Record<string, any> = Record<string, any>> {
   abstract storage: browser.Storage.StorageArea
 
   async get<key extends keyof IStorage>(
@@ -18,10 +16,7 @@ export default abstract class Storage<
     }
   }
 
-  async set<key extends keyof IStorage>(
-    key: key,
-    value: IStorage[key],
-  ): Promise<void> {
+  async set<key extends keyof IStorage>(key: key, value: IStorage[key]): Promise<void> {
     await this.storage.set({ [key]: JSON.stringify(value) })
   }
 

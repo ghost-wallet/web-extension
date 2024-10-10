@@ -73,8 +73,7 @@ export default class Node extends EventEmitter {
       retryInterval: 1000,
     })
 
-    const { isSynced, hasUtxoIndex, networkId } =
-      await this.kaspa.getServerInfo()
+    const { isSynced, hasUtxoIndex, networkId } = await this.kaspa.getServerInfo()
 
     if (!isSynced || !hasUtxoIndex) {
       await this.kaspa.disconnect()

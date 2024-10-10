@@ -2,8 +2,7 @@ import * as React from 'react'
 
 import { cn } from '@/components/lib/utils'
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string
 }
 
@@ -20,9 +19,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           {...props}
         />
-        {typeof error === 'string' && (
-          <p className="text-red-500 h-2">{error}</p>
-        )}
+        {typeof error === 'string' && <p className="text-red-500 h-2">{error}</p>}
       </div>
     )
   },

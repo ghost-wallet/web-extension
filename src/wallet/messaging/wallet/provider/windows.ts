@@ -11,17 +11,10 @@ export default class Windows {
     return this.windows.has(id)
   }
 
-  async open(
-    hash: string,
-    params: { [key: string]: string | undefined },
-    callback?: () => void,
-  ) {
+  async open(hash: string, params: { [key: string]: string | undefined }, callback?: () => void) {
     const queryParams = Object.entries(params)
       .filter(([, value]) => value !== undefined)
-      .map(
-        ([key, value]) =>
-          `${encodeURIComponent(key)}=${encodeURIComponent(value!)}`,
-      )
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value!)}`)
       .join('&')
 
     const location = await this.calculateLocation()
@@ -43,10 +36,7 @@ export default class Windows {
   private async calculateLocation() {
     const currentWindow = await browser.windows.getCurrent()
 
-    return [
-      currentWindow.top! + 80,
-      currentWindow.left! + currentWindow.width! - 390,
-    ]
+    return [currentWindow.top! + 80, currentWindow.left! + currentWindow.width! - 390]
   }
 
   private registerListener() {

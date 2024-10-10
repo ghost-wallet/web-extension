@@ -1,10 +1,5 @@
 import { EventEmitter } from 'events'
-import {
-  UtxoContext,
-  UtxoProcessor,
-  PublicKeyGenerator,
-  UtxoEntryReference,
-} from '@/wasm'
+import { UtxoContext, UtxoProcessor, PublicKeyGenerator, UtxoEntryReference } from '@/wasm'
 import type Node from '../node'
 import Addresses from './addresses'
 import SessionStorage from '@/storage/SessionStorage'
@@ -31,11 +26,7 @@ export default class Account extends EventEmitter {
     })
     this.context = new UtxoContext({ processor: this.processor })
     this.addresses = new Addresses(this.context, node.networkId)
-    this.transactions = new Transactions(
-      node.kaspa,
-      this.context,
-      this.addresses,
-    )
+    this.transactions = new Transactions(node.kaspa, this.context, this.addresses)
 
     node.on('network', async (networkId: string) => {
       await this.addresses.changeNetwork(networkId)
@@ -64,9 +55,7 @@ export default class Account extends EventEmitter {
       mature,
     })
 
-    const pendingUTXOs = this.context
-      .getPending()
-      .map((utxo) => mapUTXO(utxo, false))
+    const pendingUTXOs = this.context.getPending().map((utxo) => mapUTXO(utxo, false))
     const matureUTXOs = this.context
       .getMatureRange(0, this.context.matureLength)
       .map((utxo) => mapUTXO(utxo, true))
@@ -79,15 +68,10 @@ export default class Account extends EventEmitter {
       let foundIndex = 0
 
       for (let index = 0; index < steps; index++) {
-        const addresses = await this.addresses.derive(
-          isReceive,
-          startIndex,
-          startIndex + count,
-        )
+        const addresses = await this.addresses.derive(isReceive, startIndex, startIndex + count)
         startIndex += count
 
-        const { entries } =
-          await this.processor.rpc.getUtxosByAddresses(addresses)
+        const { entries } = await this.processor.rpc.getUtxosByAddresses(addresses)
         const entryIndex = addresses.findIndex((address) =>
           entries.some((entry) => entry.address?.toString() === address),
         )
@@ -97,10 +81,7 @@ export default class Account extends EventEmitter {
         }
       }
 
-      await this.addresses.increment(
-        isReceive ? foundIndex : 0,
-        isReceive ? 0 : foundIndex,
-      )
+      await this.addresses.increment(isReceive ? foundIndex : 0, isReceive ? 0 : foundIndex)
     }
 
     await scanAddresses(true, this.addresses.receiveAddresses.length)
@@ -124,9 +105,7 @@ export default class Account extends EventEmitter {
         utxos.some(
           (utxo: UtxoEntryReference) =>
             utxo.address?.toString() ===
-            this.addresses.receiveAddresses[
-              this.addresses.receiveAddresses.length - 1
-            ],
+            this.addresses.receiveAddresses[this.addresses.receiveAddresses.length - 1],
         )
       ) {
         await this.addresses.increment(1, 0)
@@ -147,10 +126,7 @@ export default class Account extends EventEmitter {
           PublicKeyGenerator.fromXPub(newValue.publicKey),
           newValue.activeAccount,
         )
-        await this.transactions.import(
-          newValue.encryptedKey,
-          newValue.activeAccount,
-        )
+        await this.transactions.import(newValue.encryptedKey, newValue.activeAccount)
         await this.processor.start()
       } else {
         this.addresses.reset()

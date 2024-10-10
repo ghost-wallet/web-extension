@@ -14,15 +14,12 @@ export default function Confirm({
   useEffect(() => {
     const initialWords = mnemonic
       .split(' ')
-      .map((word, index) =>
-        index === 2 || index === 4 || index === 7 ? '' : word,
-      )
+      .map((word, index) => (index === 2 || index === 4 || index === 7 ? '' : word))
     setUserInputs(initialWords)
   }, [mnemonic])
 
   useEffect(() => {
-    const areAllFilled =
-      userInputs[2] !== '' && userInputs[4] !== '' && userInputs[7] !== ''
+    const areAllFilled = userInputs[2] !== '' && userInputs[4] !== '' && userInputs[7] !== ''
     const areCorrect =
       userInputs[2] === mnemonic.split(' ')[2] &&
       userInputs[4] === mnemonic.split(' ')[4] &&
@@ -35,9 +32,7 @@ export default function Confirm({
       <h1 className="text-primarytext text-3xl font-rubik text-center mb-2">
         Confirm Secret Recovery Phrase
       </h1>
-      <p className="text-mutedtext text-lg font-lato text-center mb-14">
-        Enter the missing words.
-      </p>
+      <p className="text-mutedtext text-lg font-lato text-center mb-14">Enter the missing words.</p>
       <RecoveryPhraseGrid
         values={userInputs}
         seedPhrase={mnemonic.split(' ')}

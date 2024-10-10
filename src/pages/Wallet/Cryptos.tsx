@@ -28,10 +28,7 @@ interface Token {
   floorPrice?: number
 }
 
-const Cryptos: React.FC<CryptoProps> = ({
-  onTotalValueChange,
-  renderTokenItem,
-}) => {
+const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem }) => {
   const { tokens, loading, error } = useKasplex()
   const { kaspa } = useKaspa()
   const { settings } = useSettings()

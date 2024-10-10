@@ -109,12 +109,7 @@ export default class Provider extends EventEmitter {
           if (transaction) {
             this.submitEvent(request.id, 'transact', transaction)
           } else {
-            this.submitEvent(
-              request.id,
-              'transact',
-              false,
-              'User rejected the request.',
-            )
+            this.submitEvent(request.id, 'transact', false, 'User rejected the request.')
           }
 
           this.account.transactions.off('transaction', appendTransaction)

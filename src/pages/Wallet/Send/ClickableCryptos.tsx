@@ -15,9 +15,7 @@ interface ClickableCryptosProps {
   onTotalValueChange: (value: number) => void
 }
 
-const ClickableCryptos: React.FC<ClickableCryptosProps> = ({
-  onTotalValueChange,
-}) => {
+const ClickableCryptos: React.FC<ClickableCryptosProps> = ({ onTotalValueChange }) => {
   const navigate = useNavigate()
 
   const handleTokenClick = (token: Token) => {

@@ -10,9 +10,7 @@ export default function Transactions() {
     <>
       <AnimatedMain>
         <div className="p-6">
-          <h1 className="text-primarytext text-3xl font-rubik text-center mb-4">
-            Transactions
-          </h1>
+          <h1 className="text-primarytext text-3xl font-rubik text-center mb-4">Transactions</h1>
           <a
             href={`https://explorer.kaspa.org/addresses/${kaspa.addresses[0]}`}
             target="_blank"

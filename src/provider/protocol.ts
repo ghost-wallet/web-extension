@@ -22,9 +22,7 @@ export interface RequestMappings {
   transact: [[string, string][], string?, Input[]?]
 }
 
-export interface Request<
-  M extends keyof RequestMappings = keyof RequestMappings,
-> {
+export interface Request<M extends keyof RequestMappings = keyof RequestMappings> {
   id: number
   method: M
   params: RequestMappings[M]
@@ -49,8 +47,7 @@ export function isRequest(object: any): object is Request {
       if (object.params.length < 1) return false
 
       for (const output of object.params[0]) {
-        if (typeof output[0] !== 'string' || typeof output[1] !== 'string')
-          return false
+        if (typeof output[0] !== 'string' || typeof output[1] !== 'string') return false
       }
 
       if (object.params[1] && typeof object.params[1] !== 'string') return false
@@ -83,9 +80,7 @@ export interface EventMappings {
   transact: string
 }
 
-export interface EventMessage<
-  M extends keyof EventMappings = keyof EventMappings,
-> {
+export interface EventMessage<M extends keyof EventMappings = keyof EventMappings> {
   id: number
   event: M
   data: EventMappings[M] | false

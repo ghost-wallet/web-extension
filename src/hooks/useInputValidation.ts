@@ -34,9 +34,7 @@ export const useInputValidation = (maxAmount: number, decimals: number) => {
     setAmount(value)
 
     if (parseFloat(value) <= 0 || parseFloat(value) > maxAmount) {
-      setAmountError(
-        `Amount must be greater than 0 and not exceed ${maxAmount}`,
-      )
+      setAmountError(`Amount must be greater than 0 and not exceed ${maxAmount}`)
     } else {
       setAmountError('')
     }
@@ -44,13 +42,7 @@ export const useInputValidation = (maxAmount: number, decimals: number) => {
 
   // Handle the key down event for input validation
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const allowedKeys = [
-      'Backspace',
-      'Delete',
-      'ArrowLeft',
-      'ArrowRight',
-      'Tab',
-    ]
+    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab']
 
     if (!/[\d.]/.test(e.key) && !allowedKeys.includes(e.key)) {
       e.preventDefault()
