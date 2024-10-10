@@ -71,6 +71,8 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
     floorPrice: price,
   }
 
+  console.log('kaspaToken balance', kaspa.balance)
+
   const kaspaImageSrc = '/kaspa-kas-logo.png'
   const sortedTokens = sortTokensByValue(tokens)
   const combinedTokens = [kaspaToken, ...sortedTokens]

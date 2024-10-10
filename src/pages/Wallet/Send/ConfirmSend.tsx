@@ -4,10 +4,13 @@ import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import useKaspa from '@/hooks/useKaspa'
 import BackButton from '@/components/BackButton'
+import TokenDetails from '@/components/TokenDetails'
+import { formatBalance } from '@/utils/formatting'
 
 const ConfirmSend: React.FC = () => {
   const location = useLocation()
   const { token, recipient, amount, transactions } = location.state || {}
+  console.log('amount in confirm send', amount)
 
   if (!token || !recipient || !amount || !transactions) {
     return <div>Transaction information is missing or incomplete.</div>
@@ -44,19 +47,17 @@ const ConfirmSend: React.FC = () => {
       <AnimatedMain>
         <div className="flex items-center justify-between mb-4 p-6">
           <BackButton />
-          <h1 className="text-primarytext text-3xl font-rubik text-center flex-grow">
-            Confirm Send
-          </h1>
+          <h1 className="text-primarytext text-3xl font-rubik text-center flex-grow">Confirm</h1>
+          <div className="w-6" />
+        </div>
+
+        <TokenDetails token={token} />
+        <div className="text-primarytext text-center p-2">
+          <p className="text-lg font-lato">Send</p>
+          <p className="text-xl font-lato">{amount}</p>
         </div>
 
         <div className="flex flex-col items-center space-y-4">
-          <div className="text-center">
-            <h3 className="text-lg font-semibold">Amount</h3>
-            <div className="bg-gray-200 dark:bg-gray-800 rounded-md p-2 font-mono font-bold">
-              {amount} {token.tick}
-            </div>
-          </div>
-
           <div className="text-center">
             <h3 className="text-lg font-semibold">Recipient</h3>
             <div className="bg-gray-200 dark:bg-gray-800 rounded-md p-2 font-mono font-bold">

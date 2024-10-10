@@ -20,12 +20,6 @@ const TokenDetails: React.FC<TokenDetailsProps> = ({ token }) => (
       alt={`${token.tick} logo`}
       className="w-20 h-20 rounded-full mb-2"
     />
-    <p className="text-primarytext text-base font-lato">
-      {token.tick === 'KASPA'
-        ? `${token.balance} ${token.tick}`
-        : `${formatBalance(token.balance, token.dec)} ${token.tick}`}{' '}
-      Available
-    </p>
   </div>
 )
 

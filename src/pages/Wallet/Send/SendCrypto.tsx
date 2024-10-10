@@ -20,6 +20,8 @@ const SendCrypto: React.FC = () => {
     return <div>Token information is missing or incomplete.</div>
   }
 
+  console.log('token', token)
+
   const maxAmount = token.tick === 'KASPA' ? token.balance : formatBalance(token.balance, token.dec)
   const [inputs] = useState<KaspaInput[]>(JSON.parse(params.get('inputs')!) || [])
   const [outputs, setOutputs] = useState<[string, string][]>([['', '']])
@@ -107,6 +109,12 @@ const SendCrypto: React.FC = () => {
         </div>
 
         <TokenDetails token={token} />
+        <div className="text-primarytext text-center p-2">
+          <p className="text-lg font-lato">Balance</p>
+          <p className="text-xl font-lato">
+            {token.tick === 'KASPA' ? token.balance : formatBalance(token.balance, token.dec)}
+          </p>
+        </div>
 
         <div className="flex flex-col items-center space-y-4 p-4">
           <input
