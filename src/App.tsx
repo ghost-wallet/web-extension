@@ -10,6 +10,7 @@ import Transactions from '@/pages/Wallet/Transactions'
 import Send from '@/pages/Wallet/Send'
 import Receive from '@/pages/Wallet/Receive'
 import Swap from '@/pages/Wallet/Swap'
+import SendCrypto from '@/pages/Wallet/Send/SendCrypto'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/send" element={<Send />} />
+            <Route path="/send/crypto" element={<SendCrypto />} />
             <Route path="/receive" element={<Receive />} />
             <Route path="/swap" element={<Swap />} />
           </Routes>

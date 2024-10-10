@@ -6,7 +6,7 @@ import useSettings from '@/hooks/useSettings'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import ActionButtons from '@/components/ActionButtons'
-import Cryptos from '@/components/Cryptos'
+import Cryptos from '@/pages/Wallet/Cryptos'
 import TotalValue from '@/pages/Wallet/TotalValue'
 import Spinner from '@/components/Spinner'
 

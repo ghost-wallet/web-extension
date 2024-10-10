@@ -11,9 +11,27 @@ import { getCurrencySymbol } from '@/utils/currencies'
 
 interface CryptoProps {
   onTotalValueChange: (value: number) => void
+  renderTokenItem?: (
+    token: Token,
+    isKaspa: boolean,
+    currencySymbol: string,
+    kaspaBalance: number,
+    kaspaImageSrc: string,
+  ) => React.ReactElement
 }
 
-const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange }) => {
+interface Token {
+  tick: string
+  balance: string
+  dec: string
+  opScoreMod: string
+  floorPrice?: number
+}
+
+const Cryptos: React.FC<CryptoProps> = ({
+  onTotalValueChange,
+  renderTokenItem,
+}) => {
   const { tokens, loading, error } = useKasplex()
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
@@ -29,7 +47,7 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange }) => {
     )
   if (error) return <p className="text-error text-base">{error}</p>
 
-  const kaspaToken = {
+  const kaspaToken: Token = {
     tick: 'KASPA',
     balance: kaspa.balance.toString(),
     dec: '8',
@@ -48,16 +66,26 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange }) => {
         <p className="text-base text-mutedtext font-lato">None</p>
       ) : (
         <ul>
-          {combinedTokens.map((token) => (
-            <TokenListItem
-              key={token.opScoreMod}
-              token={token}
-              isKaspa={token.tick === 'KASPA'}
-              currencySymbol={currencySymbol}
-              kaspaBalance={kaspa.balance}
-              kaspaImageSrc={kaspaImageSrc}
-            />
-          ))}
+          {combinedTokens.map((token) =>
+            renderTokenItem ? (
+              renderTokenItem(
+                token,
+                token.tick === 'KASPA',
+                currencySymbol,
+                kaspa.balance,
+                kaspaImageSrc,
+              )
+            ) : (
+              <TokenListItem
+                key={token.opScoreMod}
+                token={token}
+                isKaspa={token.tick === 'KASPA'}
+                currencySymbol={currencySymbol}
+                kaspaBalance={kaspa.balance}
+                kaspaImageSrc={kaspaImageSrc}
+              />
+            ),
+          )}
         </ul>
       )}
     </div>

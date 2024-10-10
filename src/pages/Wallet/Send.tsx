@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import BackButton from '@/components/BackButton'
+import ClickableCryptos from '@/pages/Wallet/Send/ClickableCryptos'
 
 export default function Send() {
+  const [totalValue, setTotalValue] = useState(0)
+
   return (
     <>
       <AnimatedMain>
@@ -13,8 +16,9 @@ export default function Send() {
             Send
           </h1>
           <div className="w-6" />
-          {/* This div is for spacing to balance the button */}
         </div>
+        {/* Render ClickableCryptos instead of Cryptos */}
+        <ClickableCryptos onTotalValueChange={setTotalValue} />
       </AnimatedMain>
       <BottomNav />
     </>

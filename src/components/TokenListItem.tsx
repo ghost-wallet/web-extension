@@ -23,7 +23,7 @@ const TokenListItem: React.FC<TokenListItemProps> = ({
   kaspaImageSrc,
 }) => {
   return (
-    <li className="flex items-center justify-between mb-3 w-full">
+    <li className="flex items-center justify-between m-1.5 w-full pr-3">
       <div className="flex items-center">
         <img
           src={
@@ -38,7 +38,7 @@ const TokenListItem: React.FC<TokenListItemProps> = ({
           {token.tick}
         </span>
       </div>
-      <div className="flex flex-col items-end">
+      <div className="flex flex-col items-end mr-1">
         <span className="text-sm text-primarytext font-lato">
           {isKaspa
             ? `${kaspaBalance.toFixed(2)}`
