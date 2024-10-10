@@ -1,24 +1,19 @@
 import React from 'react'
 import useSettings from '@/hooks/useSettings'
+import { getCurrencySymbol } from '@/utils/currencies' // Import the utility function
 
-interface KaspaBalanceProps {
+interface TotalValueProps {
   totalValue: number
 }
 
-const TotalValue: React.FC<KaspaBalanceProps> = ({ totalValue }) => {
+const TotalValue: React.FC<TotalValueProps> = ({ totalValue }) => {
   const { settings } = useSettings()
 
   return (
-    <>
-      <h1 className="text-primarytext text-4xl font-rubik text-center flex-grow">
-        {settings.currency === 'USD'
-          ? '$'
-          : settings.currency === 'EUR'
-            ? '€'
-            : settings.currency}{' '}
-        {totalValue.toFixed(2)}
-      </h1>
-    </>
+    <h1 className="text-primarytext text-4xl font-rubik text-center flex-grow">
+      {getCurrencySymbol(settings.currency)}
+      {totalValue.toFixed(2)}
+    </h1>
   )
 }
 

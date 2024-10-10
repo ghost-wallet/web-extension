@@ -6,7 +6,7 @@ import useSettings from '@/hooks/useSettings'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import ActionButtons from '@/components/ActionButtons'
-import KRC20Tokens from '@/components/KRC20Tokens'
+import Cryptos from '@/components/Cryptos'
 import TotalValue from '@/pages/Wallet/TotalValue'
 import Spinner from '@/components/Spinner'
 
@@ -52,7 +52,7 @@ export default function Wallet() {
               Cryptos
             </h2>
           </div>
-          <KRC20Tokens onTotalValueChange={setTotalValue} />
+          <Cryptos onTotalValueChange={setTotalValue} />
         </div>
       </AnimatedMain>
       <BottomNav />

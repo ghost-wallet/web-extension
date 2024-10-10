@@ -1,17 +1,12 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
-import {
-  ArrowLeftIcon,
-  DocumentDuplicateIcon,
-  CheckIcon,
-} from '@heroicons/react/24/outline'
+import { DocumentDuplicateIcon, CheckIcon } from '@heroicons/react/24/outline'
 import useKaspa from '@/hooks/useKaspa'
 import QRCode from 'react-qr-code'
+import BackButton from '@/components/BackButton'
 
 export default function Receive() {
-  const navigate = useNavigate()
   const { kaspa } = useKaspa()
   const [copied, setCopied] = useState(false)
 
@@ -19,7 +14,7 @@ export default function Receive() {
     const address = kaspa.addresses[0][kaspa.addresses[0].length - 1]
     navigator.clipboard.writeText(address).then(() => {
       setCopied(true)
-      setTimeout(() => setCopied(false), 1000) // Reset after 2 seconds
+      setTimeout(() => setCopied(false), 1000) // Reset after 1 second
     })
   }
 
@@ -27,12 +22,7 @@ export default function Receive() {
     <>
       <AnimatedMain>
         <div className="flex items-center justify-between mb-4 p-6">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center text-primarytext hover:text-mutedtext transition"
-          >
-            <ArrowLeftIcon className="h-6 w-6" />
-          </button>
+          <BackButton />
           <h1 className="text-primarytext text-3xl font-rubik text-center flex-grow">
             Receive
           </h1>
