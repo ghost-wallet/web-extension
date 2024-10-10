@@ -1,50 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import PasswordInput from '@/components/PasswordInput';
-import ErrorMessage from '@/components/ErrorMessage';
+import React, { useState, useEffect } from 'react'
+import PasswordInput from '@/components/PasswordInput'
+import ErrorMessage from '@/components/ErrorMessage'
 
 interface PasswordProps {
-  onPasswordSet: (password: string) => void;
+  onPasswordSet: (password: string) => void
 }
 
 export default function Password({ onPasswordSet }: PasswordProps) {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isValid, setIsValid] = useState(false);
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [error, setError] = useState('')
+  const [isValid, setIsValid] = useState(false)
 
   useEffect(() => {
-    validatePasswords(password, confirmPassword);
-  }, [password, confirmPassword]);
+    validatePasswords(password, confirmPassword)
+  }, [password, confirmPassword])
 
   const validatePasswords = (password: string, confirmPassword: string) => {
     if (password.length > 0 && password.length < 8) {
-      setError('Must be at least 8 characters');
-      setIsValid(false);
+      setError('Must be at least 8 characters')
+      setIsValid(false)
     } else if (password.length >= 8 && password !== confirmPassword && confirmPassword.length > 0) {
-      setError('Passwords do not match');
-      setIsValid(false);
+      setError('Passwords do not match')
+      setIsValid(false)
     } else if (password.length >= 8 && password === confirmPassword) {
-      setError('');
-      setIsValid(true);
+      setError('')
+      setIsValid(true)
     } else {
-      setError('');
-      setIsValid(false);
+      setError('')
+      setIsValid(false)
     }
-  };
+  }
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
+    setPassword(e.target.value)
+  }
 
   const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setConfirmPassword(e.target.value);
-  };
+    setConfirmPassword(e.target.value)
+  }
 
   const handleContinueClick = () => {
     if (isValid) {
-      onPasswordSet(password);
+      onPasswordSet(password)
     }
-  };
+  }
 
   return (
     <main className="pt-10 px-6">
@@ -81,5 +81,5 @@ export default function Password({ onPasswordSet }: PasswordProps) {
         </button>
       </div>
     </main>
-  );
+  )
 }

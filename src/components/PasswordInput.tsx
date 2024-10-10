@@ -1,10 +1,10 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent } from 'react'
 
 interface PasswordInputProps {
-  id: string;
-  value: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  placeholder?: string;
+  id: string
+  value: string
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void
+  placeholder?: string
 }
 
 const PasswordInput: React.FC<PasswordInputProps> = ({ id, value, onChange, placeholder = '' }) => {
@@ -19,7 +19,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({ id, value, onChange, plac
         className="w-full p-2 border border-muted bg-transparent text-base text-primarytext placeholder-mutedtext rounded"
       />
     </div>
-  );
-};
+  )
+}
 
-export default PasswordInput;
+export default PasswordInput

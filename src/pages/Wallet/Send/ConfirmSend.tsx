@@ -54,7 +54,6 @@ const ConfirmSend: React.FC = () => {
             Confirm
           </button>
         </div>
-
       </AnimatedMain>
       <BottomNav />
     </>
