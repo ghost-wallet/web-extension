@@ -1,4 +1,4 @@
-import { createContext, useReducer, ReactNode, useCallback, useRef } from 'react'
+import { createContext, useReducer, ReactNode, useCallback, useRef, useState } from 'react'
 import { runtime, type Runtime } from 'webextension-polyfill'
 import { Status } from '@/wallet/kaspa/wallet'
 import {
@@ -43,6 +43,8 @@ export const KaspaContext = createContext<
         method: M,
         params: RequestMappings[M],
       ) => Promise<ResponseMappings[M]>
+      networkLoading: boolean
+      setNetworkLoading: (loading: boolean) => void
     }
   | undefined
 >(undefined)
@@ -54,6 +56,7 @@ type Action<K extends keyof IKaspa> = {
 
 function kaspaReducer(state: IKaspa, action: Action<keyof IKaspa>): IKaspa {
   const { type, payload } = action
+  console.log(`[KaspaProvider] Dispatching action of type "${type}", payload:`, payload)
 
   if (typeof payload === 'function') {
     return { ...state, [type]: payload(state) }
@@ -64,6 +67,7 @@ function kaspaReducer(state: IKaspa, action: Action<keyof IKaspa>): IKaspa {
 
 export function KaspaProvider({ children }: { children: ReactNode }) {
   const [kaspa, dispatch] = useReducer(kaspaReducer, defaultState)
+  const [networkLoading, setNetworkLoading] = useState(false)
 
   const connectionRef = useRef<Runtime.Port | null>(null)
   const messagesRef = useRef(new Map<number, MessageEntry<any>>())
@@ -71,20 +75,42 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
 
   const request = useCallback(
     <M extends keyof RequestMappings>(method: M, params: RequestMappings[M]) => {
+      setNetworkLoading(true)
+      console.log(
+        `[KaspaProvider] Sending request - Method: ${method}, Params: ${JSON.stringify(params)}`,
+      )
       const message: Request<M> = {
         id: ++nonceRef.current,
         method,
         params,
       }
 
+      const start = performance.now()
+
       return new Promise<ResponseMappings[M]>((resolve, reject) => {
         messagesRef.current.set(message.id, { resolve, reject, message })
         try {
+          console.log('[KaspaProvider] Posting message to connection.')
           getConnection().postMessage(message)
         } catch (error) {
+          console.error('[KaspaProvider] Error posting message:', error)
+          setNetworkLoading(false)
           reject(error)
         }
       })
+        .then((result) => {
+          console.log(
+            `[KaspaProvider] Request successful in ${performance.now() - start}ms:`,
+            result,
+          )
+          setNetworkLoading(false)
+          return result
+        })
+        .catch((error) => {
+          console.error(`[KaspaProvider] Request failed in ${performance.now() - start}ms:`, error)
+          setNetworkLoading(false)
+          throw error
+        })
     },
     [],
   )
@@ -92,12 +118,15 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
   const getConnection = useCallback(() => {
     if (connectionRef.current) return connectionRef.current
 
+    console.warn('[KaspaProvider] Establishing new connection.')
     const connection = runtime.connect({ name: '@kaspian/client' })
 
     connection.onMessage.addListener(async (message: Response | Event) => {
+      console.log('[KaspaProvider] Message received:', message)
       if (!isEvent(message)) {
         const messageEntry = messagesRef.current.get(message.id)
         if (!messageEntry) {
+          console.warn('[KaspaProvider] No matching message entry found for ID:', message.id)
           return
         }
 
@@ -105,37 +134,50 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
         if (!message.error) {
           resolve(message.result)
         } else {
+          console.error('[KaspaProvider] Message returned an error:', message.error)
           reject(message.error)
         }
 
         messagesRef.current.delete(message.id)
       } else {
+        console.log(`[KaspaProvider] Processing event - ${message.event}`)
         switch (message.event) {
           case 'node:connection':
-          case 'node:network':
+          case 'node:network': {
+            const start = performance.now()
             try {
+              console.log('[KaspaProvider] Fetching addresses after network event.')
               const addresses = await request('account:addresses', [])
               if (addresses && addresses.length) {
                 dispatch({ type: 'addresses', payload: addresses })
+                console.log('[KaspaProvider] Addresses updated successfully.')
               }
               dispatch({ type: 'connected', payload: message.data })
+              console.log(
+                `[KaspaProvider] "connected" action dispatched in ${performance.now() - start}ms`,
+              )
             } catch (error) {
-              console.error('Error fetching addresses:', error)
+              console.error('[KaspaProvider] Error fetching addresses:', error)
             }
             break
+          }
           case 'wallet:status':
+            console.log('[KaspaProvider] Updating wallet status.')
             dispatch({ type: 'status', payload: message.data })
             break
           case 'account:balance':
+            console.log('[KaspaProvider] Updating balance.')
             dispatch({ type: 'balance', payload: message.data })
             try {
               const utxos = await request('account:utxos', [])
               dispatch({ type: 'utxos', payload: utxos })
+              console.log('[KaspaProvider] UTXOs updated successfully.')
             } catch (error) {
-              console.error('Error fetching UTXOs:', error)
+              console.error('[KaspaProvider] Error fetching UTXOs:', error)
             }
             break
           case 'account:addresses':
+            console.log('[KaspaProvider] Updating addresses.')
             dispatch({
               type: 'addresses',
               payload: ({ addresses }) => {
@@ -145,20 +187,23 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
                     addresses[1].concat(message.data[1] || []),
                   ]
                 }
-                return addresses // Return the previous state if no valid data
+                return addresses
               },
             })
             break
           case 'provider:connection':
+            console.log('[KaspaProvider] Updating provider connection.')
             dispatch({ type: 'provider', payload: message.data })
             break
           default:
+            console.warn(`[KaspaProvider] Unhandled event type - ${message}`)
             break
         }
       }
     })
 
     connection.onDisconnect.addListener(() => {
+      console.warn('[KaspaProvider] Connection disconnected. Attempting to reconnect...')
       if (
         runtime.lastError?.message !==
         'Could not establish connection. Receiving end does not exist.'
@@ -167,12 +212,12 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       }
 
       connectionRef.current = null
+      console.log('[KaspaProvider] Re-establishing connection...')
 
       for (const entry of messagesRef.current.values()) {
         getConnection().postMessage(entry.message)
       }
 
-      // Reload state after reconnecting
       load()
     })
 
@@ -182,6 +227,8 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
 
   const load = useCallback(async () => {
     try {
+      console.log('[KaspaProvider] Loading state...')
+      setNetworkLoading(true)
       const status = await request('wallet:status', [])
       dispatch({ type: 'status', payload: status })
 
@@ -201,10 +248,17 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
 
       const provider = await request('provider:connection', [])
       dispatch({ type: 'provider', payload: provider })
+      console.log('[KaspaProvider] State loaded successfully.')
     } catch (error) {
-      console.error('Error during load:', error)
+      console.error('[KaspaProvider] Error during load:', error)
+    } finally {
+      setNetworkLoading(false)
     }
-  }, [])
+  }, [request])
 
-  return <KaspaContext.Provider value={{ load, kaspa, request }}>{children}</KaspaContext.Provider>
+  return (
+    <KaspaContext.Provider value={{ load, kaspa, request, networkLoading, setNetworkLoading }}>
+      {children}
+    </KaspaContext.Provider>
+  )
 }

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import useSettings from '@/hooks/useSettings'
 import useKaspa from '@/hooks/useKaspa'
+import { Status } from '@/wallet/kaspa/wallet' // Import the Status enum
 
 const Network: React.FC = () => {
   const { settings, updateSetting } = useSettings()
@@ -17,12 +18,14 @@ const Network: React.FC = () => {
   }
 
   useEffect(() => {
-    if (!kaspa.connected) {
-      request('node:connect', [settings.nodes[settings.selectedNode].address]).catch((error) =>
-        console.error('WebSocket connection error:', error),
-      )
+    // Check if kaspa is neither connected nor currently connecting
+    if (!kaspa.connected && kaspa.status !== Status.Unlocked) {
+      console.info('Kaspa is not connected or locked. Attempting to connect...')
+      request('node:connect', [settings.nodes[settings.selectedNode].address])
+        .then(() => console.log('Successfully connected to the node.'))
+        .catch((error) => console.error('WebSocket connection error:', error))
     }
-  }, [kaspa.connected, request, settings.nodes, settings.selectedNode])
+  }, [kaspa.connected, kaspa.status, request, settings.nodes, settings.selectedNode])
 
   return (
     <>

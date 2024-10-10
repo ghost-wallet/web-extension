@@ -1,5 +1,4 @@
-import React from 'react'
-import useKasplex from '@/hooks/useKasplex'
+import React, { useEffect, useState, useContext } from 'react'
 import { sortTokensByValue } from '@/utils/sorting'
 import useSettings from '@/hooks/useSettings'
 import Spinner from '@/components/Spinner'
@@ -8,6 +7,7 @@ import useCoingecko from '@/hooks/useCoingecko'
 import TokenListItem from '@/components/TokenListItem'
 import useTotalValueCalculation from '@/hooks/useTotalValueCalculation'
 import { getCurrencySymbol } from '@/utils/currencies'
+import useKasplex from '@/hooks/useKasplex'
 
 interface CryptoProps {
   onTotalValueChange: (value: number) => void
@@ -29,20 +29,39 @@ interface Token {
 }
 
 const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem }) => {
-  const { tokens, loading, error } = useKasplex()
-  const { kaspa } = useKaspa()
+  const { kaspa, request, networkLoading } = useKaspa()
   const { settings } = useSettings()
   const price = useCoingecko(settings.currency)
 
+  const [tokens, setTokens] = useState<Token[]>([]) // Tokens state
+  const [tokensError, setTokensError] = useState<string | null>(null) // Error state
+
+  // Fetch tokens using useKasplex only when the network is fully connected
+  const { tokens: fetchedTokens, loading: tokensLoading, error: tokensErrorState } = useKasplex()
+
+  useEffect(() => {
+    if (!networkLoading && !tokensLoading && !tokensErrorState) {
+      setTokens(fetchedTokens)
+      setTokensError(null)
+    } else if (tokensErrorState) {
+      setTokensError(tokensErrorState)
+    }
+  }, [networkLoading, tokensLoading, fetchedTokens, tokensErrorState])
+
   useTotalValueCalculation(tokens, price, onTotalValueChange)
 
-  if (loading)
+  // Show the loading spinner if either the network or the tokens are loading
+  if (networkLoading || tokensLoading) {
     return (
       <div className="mt-6">
         <Spinner />
       </div>
     )
-  if (error) return <p className="p-6 text-error text-base">{error}</p>
+  }
+
+  if (tokensError) {
+    return <p className="p-6 text-error text-base">{tokensError}</p>
+  }
 
   const kaspaToken: Token = {
     tick: 'KASPA',
