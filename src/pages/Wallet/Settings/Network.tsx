@@ -27,7 +27,7 @@ const Network: React.FC = () => {
   return (
     <>
       <div className="flex items-center gap-2 mb-2">
-        <h2 className="text-primarytext text-base font-lato">Network</h2>
+        <h1 className="text-primarytext text-base font-lato">Network</h1>
         <span
           className={`px-2 py-1 ${
             kaspa.connected
@@ -40,19 +40,22 @@ const Network: React.FC = () => {
       </div>
 
       <div className="flex flex-col gap-2">
-        <div className="flex gap-1 mx-1">
-          <select
-            value={settings.selectedNode.toString()}
-            onChange={handleNodeChange}
-            className="w-full py-2 px-2 border rounded border-muted bg-bgdarker text-base text-primarytext cursor-pointer"
-          >
-            {settings.nodes.map((node, id) => (
-              <option key={id} value={id.toString()}>
-                {node.address}
-              </option>
-            ))}
-          </select>
-        </div>
+        <p className="text-mutedtext text-sm font-lato">
+          You are on mainnet. Support for testnets are in development.
+        </p>
+        {/*<div className="flex gap-1 mx-1">*/}
+        {/*  <select*/}
+        {/*    value={settings.selectedNode.toString()}*/}
+        {/*    onChange={handleNodeChange}*/}
+        {/*    className="w-full py-2 px-2 border rounded border-muted bg-bgdarker text-base text-primarytext cursor-pointer"*/}
+        {/*  >*/}
+        {/*    {settings.nodes.map((node, id) => (*/}
+        {/*      <option key={id} value={id.toString()}>*/}
+        {/*        {node.address}*/}
+        {/*      </option>*/}
+        {/*    ))}*/}
+        {/*  </select>*/}
+        {/*</div>*/}
       </div>
     </>
   )

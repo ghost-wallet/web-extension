@@ -6,7 +6,6 @@ import type Wallet from '../kaspa/wallet'
 import type Node from '../kaspa/node'
 import type Account from '../kaspa/account'
 import Provider from './wallet/provider'
-console.log('Initializing RPC, which uses Node')
 
 export default class RPC {
   provider: Provider
@@ -16,7 +15,7 @@ export default class RPC {
   private ports: Set<browser.Runtime.Port> = new Set()
 
   constructor({ wallet, node, account }: { wallet: Wallet; node: Node; account: Account }) {
-    console.log('[RPC] Initializing RPC class, which constructors a Node...')
+    console.log('[RPC] Initializing RPC class...')
 
     this.provider = new Provider(account)
     this.notifier = new Notifier({

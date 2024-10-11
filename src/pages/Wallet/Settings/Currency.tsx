@@ -11,7 +11,7 @@ const Currency: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-primarytext text-base font-lato mb-2 mt-6">Currency</h2>
+      <h1 className="text-primarytext text-base font-lato mb-2 mt-6">Currency</h1>
       <div className="flex gap-1 mx-1 mb-4">
         <select
           value={settings.currency}

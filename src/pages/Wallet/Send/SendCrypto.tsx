@@ -16,11 +16,15 @@ const SendCrypto: React.FC = () => {
   const { request } = useKaspa()
   const [hash, params] = useURLParams()
 
+  // Check for missing or incomplete token information
   if (!token || !token.tick || !token.balance || !token.dec) {
     return <div>Token information is missing or incomplete.</div>
   }
 
+  // Calculate max amount based on token type
   const maxAmount = token.tick === 'KASPA' ? token.balance : formatBalance(token.balance, token.dec)
+
+  // State management
   const [inputs] = useState<KaspaInput[]>(JSON.parse(params.get('inputs')!) || [])
   const [outputs, setOutputs] = useState<[string, string][]>([['', '']])
   const [error, setError] = useState<string | null>(null)
@@ -31,9 +35,7 @@ const SendCrypto: React.FC = () => {
   useEffect(() => {
     // Fetch the standard fee rate when the component loads
     request('node:priorityBuckets', [])
-      .then((buckets) => {
-        setFeerate(buckets.standard.feeRate)
-      })
+      .then((buckets) => setFeerate(buckets.standard.feeRate))
       .catch((err) => {
         console.error('Error fetching standard fee rate:', err)
         setError('Failed to retrieve the fee rate.')
@@ -43,11 +45,7 @@ const SendCrypto: React.FC = () => {
   const validateRecipient = async (address: string) => {
     try {
       const isValid = await request('wallet:validate', [address])
-      if (!isValid) {
-        setError('Invalid Kaspa address')
-      } else {
-        setError(null)
-      }
+      setError(isValid ? null : 'Invalid Kaspa address')
     } catch (err) {
       console.error('Error validating address:', err)
       setError('Error validating address.')
@@ -61,17 +59,34 @@ const SendCrypto: React.FC = () => {
       newOutputs[0][0] = value
       return newOutputs
     })
-    validateRecipient(value) // Validate the recipient address
+
+    if (token.tick !== 'KASPA') {
+      validateRecipient(value)
+    } else {
+      setError(null) // Clear error if it's KASPA as validation isn't needed
+    }
   }
 
-  const handleAmountChangeNative = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setOutputs((prevOutputs) => {
       const newOutputs = [...prevOutputs]
       newOutputs[0][1] = value
       return newOutputs
     })
-    setError('') // Clear error when user changes amount
+
+    if (token.tick !== 'KASPA') {
+      const numericValue = parseFloat(value)
+      const formattedBalance = parseFloat(formatBalance(token.balance, token.dec))
+
+      if (isNaN(numericValue) || numericValue <= 0 || numericValue > formattedBalance) {
+        setError('Amount must be greater than 0 and within available balance.')
+      } else {
+        setError(null)
+      }
+    } else {
+      setError(null) // No validation for KASPA amount, reset any errors
+    }
   }
 
   const handleMaxClick = () => {
@@ -81,30 +96,40 @@ const SendCrypto: React.FC = () => {
       newOutputs[0][1] = maxAmountStr
       return newOutputs
     })
-    setError('') // Clear error when max is clicked
+    setError(null)
   }
 
   const initiateSend = useCallback(() => {
-    if (!feeRate) return
-    request('account:create', [outputs, feeRate, fee, inputs])
-      .then((transactions) => {
-        console.log('fee and feeRate', fee, feeRate)
-        console.log('transactions', transactions)
-        console.log('outputs, inputs', outputs, inputs)
-        setTransactions(transactions)
-        navigate('/send/crypto/confirm', {
-          state: {
-            token,
-            recipient: outputs[0][0],
-            amount: outputs[0][1],
-            transactions,
-          },
+    if (token.tick === 'KASPA') {
+      // Only make the account:create request for KASPA tokens
+      if (!feeRate) return
+
+      request('account:create', [outputs, feeRate, fee, inputs])
+        .then((transactions) => {
+          setTransactions(transactions)
+          navigate('/send/crypto/confirm', {
+            state: {
+              token,
+              recipient: outputs[0][0],
+              amount: outputs[0][1],
+              transactions,
+            },
+          })
         })
+        .catch((err) => {
+          console.error(`Error occurred: ${err}`)
+          setError(`Error occurred: ${err.message}`)
+        })
+    } else {
+      // Navigate directly for non-KASPA tokens
+      navigate('/send/crypto/confirm', {
+        state: {
+          token,
+          recipient: outputs[0][0],
+          amount: outputs[0][1],
+        },
       })
-      .catch((err) => {
-        console.error(`Error occurred: ${err}`)
-        setError(err)
-      })
+    }
   }, [outputs, token, navigate, request, feeRate, fee, inputs])
 
   const isButtonEnabled = outputs[0][0].length > 0 && outputs[0][1].length > 0 && !error
@@ -123,9 +148,7 @@ const SendCrypto: React.FC = () => {
         <TokenDetails token={token} />
         <div className="text-primarytext text-center p-2">
           <p className="text-lg font-lato">Balance</p>
-          <p className="text-xl font-lato">
-            {token.tick === 'KASPA' ? token.balance : formatBalance(token.balance, token.dec)}
-          </p>
+          <p className="text-xl font-lato">{maxAmount}</p>
         </div>
 
         <div className="flex flex-col items-center space-y-4 p-4">
@@ -141,7 +164,7 @@ const SendCrypto: React.FC = () => {
             <input
               type="number"
               value={outputs[0][1]}
-              onChange={handleAmountChangeNative}
+              onChange={handleAmountChange}
               placeholder="Amount"
               className="w-full p-2 pr-20 border border-muted bg-transparent text-base text-primarytext placeholder-mutedtext rounded"
             />

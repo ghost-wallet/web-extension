@@ -22,6 +22,8 @@ interface TokenInfoResponse {
   }
 }
 
+const CACHE_DURATION = 30000 // 30 seconds in milliseconds
+
 const useKasplex = () => {
   const [tokens, setTokens] = useState<Token[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -31,48 +33,78 @@ const useKasplex = () => {
   const price = useCoingecko(settings.currency)
 
   useEffect(() => {
-    if (price === 0) {
-      return
-    }
+    const cachedTokens = localStorage.getItem(`tokens_${kaspa.addresses?.[0]?.[0]}`)
+    const cachedTimestamp = localStorage.getItem(`timestamp_${kaspa.addresses?.[0]?.[0]}`)
+    const currentTime = Date.now()
 
-    const fetchTokens = async () => {
-      try {
-        const apiBase =
-          settings.selectedNode === 0 ? 'api' : settings.selectedNode === 1 ? 'tn10api' : 'tn11api'
+    if (
+      cachedTokens &&
+      cachedTimestamp &&
+      currentTime - parseInt(cachedTimestamp) < CACHE_DURATION
+    ) {
+      // Use the cached tokens if still valid
+      setTokens(JSON.parse(cachedTokens))
+      setLoading(false)
+    } else {
+      // Fetch tokens if the cache is expired or not available
+      const fetchTokens = async () => {
+        try {
+          setLoading(true)
+          setError(null)
 
-        const response = await axios.get<ApiResponse>(
-          `https://${apiBase}.kasplex.org/v1/krc20/address/${kaspa.addresses[0][kaspa.addresses[0].length - 1]}/tokenlist`,
-        )
+          const apiBase =
+            settings.selectedNode === 0
+              ? 'api'
+              : settings.selectedNode === 1
+                ? 'tn10api'
+                : 'tn11api'
 
-        const tokensWithPrices = await Promise.all(
-          response.data.result.map(async (token: Token) => {
-            try {
-              const tokenInfoResponse = await axios.get<TokenInfoResponse>(
-                `https://api-v2-do.kas.fyi/token/krc20/${token.tick}/info`,
-              )
+          const response = await axios.get<ApiResponse>(
+            `https://${apiBase}.kasplex.org/v1/krc20/address/${kaspa.addresses[0][kaspa.addresses[0].length - 1]}/tokenlist`,
+          )
 
-              const tokenData = tokenInfoResponse.data as TokenInfoResponse
-              const floorPrice = ((tokenData?.price?.floorPrice || 0) * price).toFixed(8)
+          if (response.data && response.data.result) {
+            const tokensWithPrices = await Promise.all(
+              response.data.result.map(async (token: Token) => {
+                try {
+                  const tokenInfoResponse = await axios.get<TokenInfoResponse>(
+                    `https://api-v2-do.kas.fyi/token/krc20/${token.tick}/info`,
+                  )
 
-              return { ...token, floorPrice: parseFloat(floorPrice) }
-            } catch (err) {
-              console.error(`Error fetching info for ${token.tick}:`, err)
-              return { ...token, floorPrice: 0 }
-            }
-          }),
-        )
+                  const tokenData = tokenInfoResponse.data as TokenInfoResponse
+                  const floorPrice = ((tokenData?.price?.floorPrice || 0) * price).toFixed(8)
 
-        setTokens(tokensWithPrices)
-        setLoading(false)
-      } catch (err) {
-        console.error('Error fetching tokens:', err)
-        setError('Error loading KRC20 tokens. Log out and log back in from the Settings page.')
-        setLoading(false)
+                  return { ...token, floorPrice: parseFloat(floorPrice) }
+                } catch (err) {
+                  console.error(`Error fetching info for ${token.tick}:`, err)
+                  return { ...token, floorPrice: 0 }
+                }
+              }),
+            )
+
+            // Update state and cache if the component is still mounted
+            setTokens(tokensWithPrices)
+            setLoading(false)
+
+            // Cache the tokens and timestamp
+            localStorage.setItem(
+              `tokens_${kaspa.addresses[0][0]}`,
+              JSON.stringify(tokensWithPrices),
+            )
+            localStorage.setItem(`timestamp_${kaspa.addresses[0][0]}`, currentTime.toString())
+          } else {
+            throw new Error('Invalid API response structure')
+          }
+        } catch (err) {
+          console.error('Error fetching tokens:', err)
+          setError('Error fetching tokens')
+          setLoading(false)
+        }
       }
-    }
 
-    fetchTokens()
-  }, [kaspa.addresses, settings.selectedNode, price])
+      fetchTokens()
+    }
+  }, [kaspa.connected, kaspa.addresses, settings.selectedNode, price])
 
   return { tokens, loading, error }
 }
