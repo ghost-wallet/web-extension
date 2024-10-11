@@ -91,6 +91,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
         messagesRef.current.set(message.id, { resolve, reject, message })
         try {
           console.log('[KaspaProvider] Posting message to connection.')
+          console.log('[KaspaProvider] message:', message)
           getConnection().postMessage(message)
         } catch (error) {
           console.error('[KaspaProvider] Error posting message:', error)
@@ -120,18 +121,25 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
 
     console.warn('[KaspaProvider] Establishing new connection.')
     const connection = runtime.connect({ name: '@kaspian/client' })
+    console.log('[KaspaProvider] Connection established:', connection)
 
     connection.onMessage.addListener(async (message: Response | Event) => {
       console.log('[KaspaProvider] Message received:', message)
+
       if (!isEvent(message)) {
+        console.log('[KaspaProvider] Non-event message received:', message)
+
         const messageEntry = messagesRef.current.get(message.id)
         if (!messageEntry) {
           console.warn('[KaspaProvider] No matching message entry found for ID:', message.id)
           return
         }
 
+        console.log('[KaspaProvider] Found message entry:', messageEntry)
+
         const { resolve, reject } = messageEntry
         if (!message.error) {
+          console.log('[KaspaProvider] Resolving message with result:', message.result)
           resolve(message.result)
         } else {
           console.error('[KaspaProvider] Message returned an error:', message.error)
@@ -215,6 +223,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       console.log('[KaspaProvider] Re-establishing connection...')
 
       for (const entry of messagesRef.current.values()) {
+        console.log('[KaspaProvider] Resending message:', entry.message)
         getConnection().postMessage(entry.message)
       }
 

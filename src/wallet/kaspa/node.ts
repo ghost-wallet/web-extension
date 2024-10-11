@@ -19,7 +19,7 @@ export default class Node extends EventEmitter {
 
   constructor() {
     super()
-    console.info('node.ts: Node class initialized.')
+    console.info('[Node] node.ts class initialized.')
 
     this.kaspa = new RpcClient()
     this.registerEvents()
