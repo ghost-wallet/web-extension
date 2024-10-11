@@ -20,8 +20,6 @@ const SendCrypto: React.FC = () => {
     return <div>Token information is missing or incomplete.</div>
   }
 
-  console.log('token', token)
-
   const maxAmount = token.tick === 'KASPA' ? token.balance : formatBalance(token.balance, token.dec)
   const [inputs] = useState<KaspaInput[]>(JSON.parse(params.get('inputs')!) || [])
   const [outputs, setOutputs] = useState<[string, string][]>([['', '']])
@@ -42,6 +40,20 @@ const SendCrypto: React.FC = () => {
       })
   }, [request])
 
+  const validateRecipient = async (address: string) => {
+    try {
+      const isValid = await request('wallet:validate', [address])
+      if (!isValid) {
+        setError('Invalid Kaspa address')
+      } else {
+        setError(null)
+      }
+    } catch (err) {
+      console.error('Error validating address:', err)
+      setError('Error validating address.')
+    }
+  }
+
   const handleRecipientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setOutputs((prevOutputs) => {
@@ -49,7 +61,7 @@ const SendCrypto: React.FC = () => {
       newOutputs[0][0] = value
       return newOutputs
     })
-    setError('') // Clear error when user changes recipient
+    validateRecipient(value) // Validate the recipient address
   }
 
   const handleAmountChangeNative = (e: React.ChangeEvent<HTMLInputElement>) => {

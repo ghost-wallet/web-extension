@@ -15,6 +15,8 @@ export default class RPC {
   private ports: Set<browser.Runtime.Port> = new Set()
 
   constructor({ wallet, node, account }: { wallet: Wallet; node: Node; account: Account }) {
+    console.log('[RPC] Initializing RPC class...')
+
     this.provider = new Provider(account)
     this.notifier = new Notifier({
       wallet,
@@ -24,42 +26,74 @@ export default class RPC {
     })
     this.router = new Router({ wallet, node, account, provider: this.provider })
 
+    console.log('[RPC] Router, Provider, and Notifier initialized.')
+
     this.listen()
   }
 
   private listen() {
+    console.log('[RPC] Setting up browser runtime connection listener.')
+
     browser.runtime.onConnect.addListener((port) => {
-      if (port.sender?.id !== browser.runtime.id) return port.disconnect()
+      console.log(`[RPC] Port connected with name: ${port.name} and ID: ${port.sender?.id}`)
+
+      if (port.sender?.id !== browser.runtime.id) {
+        console.warn('[RPC] Port sender ID does not match. Disconnecting port...')
+        return port.disconnect()
+      }
 
       if (port.name === '@kaspian/client') {
+        console.log('[RPC] Permitting port for client connection.')
         this.permitPort(port)
       } else if (port.name === '@kaspian/provider') {
+        console.log('[RPC] Permitting port for provider connection.')
         this.provider.askAccess(port)
-      } else port.disconnect()
+      } else {
+        console.warn(`[RPC] Unrecognized port name: ${port.name}. Disconnecting port...`)
+        port.disconnect()
+      }
     })
 
     this.notifier.registerCallback((event) => {
+      console.log('[RPC] Notifier callback received an event:', event)
+
       for (const port of this.ports) {
+        console.log('[RPC] Posting event to port:', port)
         port.postMessage(event)
       }
     })
   }
 
   private permitPort(port: browser.Runtime.Port) {
+    console.log('[RPC] Permitting port and adding to port set.')
     this.ports.add(port)
 
     const onMessageListener = async (request: Request) => {
-      const response = await this.router.route(request)
+      console.log('[RPC] Message received on port:', request)
 
-      port.postMessage(response)
+      try {
+        const response = await this.router.route(request)
+        console.log('[RPC] Router response:', response)
+
+        port.postMessage(response)
+      } catch (error) {
+        console.error('[RPC] Error processing request through router:', error)
+        port.postMessage({
+          id: request.id,
+          error: error instanceof Error ? error.message : String(error),
+        })
+      }
     }
 
     port.onMessage.addListener(onMessageListener)
 
     port.onDisconnect.addListener(() => {
+      console.log('[RPC] Port disconnected.')
+
       port.onMessage.removeListener(onMessageListener)
 
       this.ports.delete(port)
+      console.log('[RPC] Port removed from port set.')
     })
   }
 }

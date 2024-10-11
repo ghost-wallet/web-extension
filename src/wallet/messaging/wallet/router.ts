@@ -30,6 +30,7 @@ export default class Router {
       'wallet:export': (password) => wallet.export(password),
       'wallet:lock': () => wallet.lock(),
       'wallet:reset': () => wallet.reset(),
+      'wallet:validate': (address) => wallet.validate(address),
       'node:connection': () => node.connected,
       'node:connect': (address) => node.reconnect(address),
       'node:priorityBuckets': () => node.getPriorityBuckets(),
@@ -39,7 +40,7 @@ export default class Router {
         account.addresses.changeAddresses,
       ],
       'account:balance': () => account.balance,
-      'account:utxos': () => account.UTXOs, // rename to funds?
+      'account:utxos': () => account.UTXOs,
       'account:create': (outputs, feeRate, fee, inputs) =>
         account.transactions.create(outputs, feeRate, fee, inputs),
       'account:sign': (transactions, password, customSignatures) =>
@@ -61,9 +62,16 @@ export default class Router {
 
     const requestedMethod = this.mappings[request.method]
 
+    if (!requestedMethod) {
+      console.error(`[Router] Method "${request.method}" not found in mappings.`)
+      response.error = `Method "${request.method}" not found.`
+      return response
+    }
+
     try {
       response.result = await requestedMethod(...request.params)
     } catch (err) {
+      console.error(`[Router] Error executing method "${request.method}":`, err)
       if (err instanceof Error) {
         response.error = err.message
       } else if (typeof err === 'string') {

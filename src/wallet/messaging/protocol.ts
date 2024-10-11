@@ -11,6 +11,7 @@ export interface RequestMappings {
   'wallet:export': [string] // Password
   'wallet:lock': []
   'wallet:reset': []
+  'wallet:validate': [string] // Address
   'node:connect': [string]
   'node:connection': []
   'node:priorityBuckets': []
@@ -34,7 +35,6 @@ export interface Request<M extends keyof ResponseMappings = keyof ResponseMappin
 }
 
 export interface ResponseMappings {
-  // boolean => void tbh
   'wallet:status': Status
   'wallet:create': string
   'wallet:import': void
@@ -42,6 +42,7 @@ export interface ResponseMappings {
   'wallet:export': string
   'wallet:lock': void
   'wallet:reset': void
+  'wallet:validate': boolean // Added wallet:validate response
   'node:connect': void
   'node:connection': boolean
   'node:priorityBuckets': PriorityBuckets
@@ -83,5 +84,9 @@ export type Event<M extends keyof EventMappings = keyof EventMappings> = {
 }[M]
 
 export function isEvent(message: any): message is Event {
-  return message && typeof message.event === 'string' && typeof message.data !== 'undefined'
+  console.log('[isEvent] Checking if the message is an event:', message)
+  const isEventResult =
+    message && typeof message.event === 'string' && typeof message.data !== 'undefined'
+  console.log(`[isEvent] Result for message ${message.event}:`, isEventResult)
+  return isEventResult
 }
