@@ -11,6 +11,8 @@ export interface UTXO {
   mature: boolean
 }
 
+console.log('Initializing Account, which uses Node')
+
 export default class Account extends EventEmitter {
   processor: UtxoProcessor
   addresses: Addresses
@@ -19,14 +21,14 @@ export default class Account extends EventEmitter {
 
   constructor(node: Node) {
     super()
-
+    console.log('constructor Account, which uses Node')
     this.processor = new UtxoProcessor({
-      rpc: node.kaspa,
+      rpc: node.rpcClient,
       networkId: node.networkId,
     })
     this.context = new UtxoContext({ processor: this.processor })
     this.addresses = new Addresses(this.context, node.networkId)
-    this.transactions = new Transactions(node.kaspa, this.context, this.addresses)
+    this.transactions = new Transactions(node.rpcClient, this.context, this.addresses)
 
     node.on('network', async (networkId: string) => {
       await this.addresses.changeNetwork(networkId)

@@ -4,6 +4,7 @@ import type Account from '../../kaspa/account'
 import type { Request, Response, RequestMappings, ResponseMappings } from '../protocol'
 import type Provider from './provider'
 
+console.log('MappingsRecord, which uses Node')
 type MappingsRecord<M extends keyof RequestMappings = keyof RequestMappings> = {
   [K in M]: (...params: RequestMappings[K]) => Promise<ResponseMappings[K]> | ResponseMappings[K]
 }

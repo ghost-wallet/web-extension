@@ -1,12 +1,5 @@
 import { EventEmitter } from 'events'
-import {
-  RpcClient,
-  ConnectStrategy,
-  Transaction,
-  Resolver,
-  NetworkId,
-  IFeerateBucket,
-} from '@/wasm'
+import { RpcClient, Transaction, Resolver, NetworkId, IFeerateBucket } from '@/wasm'
 
 export type PriorityBuckets = Record<
   'slow' | 'standard' | 'fast',
@@ -14,85 +7,123 @@ export type PriorityBuckets = Record<
 >
 
 export default class Node extends EventEmitter {
-  kaspa: RpcClient
+  rpcClient: RpcClient
   networkId: string = 'MAINNET'
 
   constructor() {
     super()
-
-    this.kaspa = new RpcClient()
+    this.rpcClient = new RpcClient()
     this.registerEvents()
+    console.log('[Node] Initialized Node instance')
   }
 
   get connected() {
-    return this.kaspa.isConnected
+    return this.rpcClient.isConnected
   }
 
   async getPriorityBuckets() {
-    const { estimate } = await this.kaspa.getFeeEstimate({})
+    console.log('[Node] Fetching priority fee rate buckets')
+    const { estimate } = await this.rpcClient.getFeeEstimate({})
+    console.log('[Node] Fee estimate retrieved:', estimate)
 
     const getBucketEstimate = (bucket: IFeerateBucket) => ({
       feeRate: bucket.feerate,
       seconds: bucket.estimatedSeconds,
     })
 
-    return {
+    const priorityBuckets = {
       slow: getBucketEstimate(estimate.lowBuckets[0]),
       standard: getBucketEstimate(estimate.normalBuckets[0]),
       fast: getBucketEstimate(estimate.priorityBucket),
     }
+
+    console.log('[Node] Priority buckets:', priorityBuckets)
+    return priorityBuckets
   }
 
   async submit(transactions: string[]) {
+    console.log('[Node] Submitting transactions:', transactions)
     const submittedIds: string[] = []
 
     for (const transaction of transactions) {
-      const { transactionId } = await this.kaspa.submitTransaction({
+      const { transactionId } = await this.rpcClient.submitTransaction({
         transaction: Transaction.deserializeFromSafeJSON(transaction),
       })
 
+      console.log(`[Node] Transaction submitted. ID: ${transactionId}`)
       submittedIds.push(transactionId)
     }
 
+    console.log('[Node] All transaction IDs:', submittedIds)
     return submittedIds
   }
 
   async reconnect(nodeAddress: string) {
-    await this.kaspa.disconnect()
+    console.log(`[Node] Reconnecting to node at address: ${nodeAddress}`)
 
-    if (!nodeAddress.startsWith('ws')) {
-      if (!this.kaspa.resolver) this.kaspa.setResolver(new Resolver())
-      this.kaspa.setNetworkId(new NetworkId(nodeAddress))
-    }
+    try {
+      await this.rpcClient.disconnect()
+      console.log('[Node] Disconnected from current node')
 
-    await this.kaspa.connect({
-      blockAsyncConnect: true,
-      url: nodeAddress.startsWith('ws') ? nodeAddress : undefined,
-      strategy: ConnectStrategy.Retry,
-      timeoutDuration: 2000,
-      retryInterval: 1000,
-    })
+      if (!this.rpcClient.resolver) {
+        console.log('[Node] Setting up resolver for the node address')
+        this.rpcClient.setResolver(new Resolver())
+      }
+      console.log('[Node] Setting network ID based on node address', nodeAddress)
+      this.rpcClient.setNetworkId(new NetworkId(nodeAddress))
 
-    const { isSynced, hasUtxoIndex, networkId } = await this.kaspa.getServerInfo()
+      console.log('[Node] Attempting to connect...')
 
-    if (!isSynced || !hasUtxoIndex) {
-      await this.kaspa.disconnect()
+      // Run connect in a long-running, independent process
+      this.rpcClient
+        .connect()
+        .then(() => {
+          console.log('[Node] Connected to node, fetching server info...')
+          this.rpcClient
+            .getServerInfo()
+            .then(({ isSynced, hasUtxoIndex, networkId }) => {
+              console.log('[Node] Server info:', { isSynced, hasUtxoIndex, networkId })
 
-      throw Error('Node is not synchronized or lacks UTXO index.')
-    }
+              if (!isSynced || !hasUtxoIndex) {
+                console.error(
+                  '[Node] Node is not synchronized or lacks UTXO index. Disconnecting...',
+                )
+                this.rpcClient.disconnect().catch((disconnectError) => {
+                  console.error('[Node] Error during disconnect:', disconnectError)
+                })
+                throw Error('Node is not synchronized or lacks UTXO index.')
+              }
 
-    if (this.networkId !== networkId) {
-      this.emit('network', networkId)
-      this.networkId = networkId
+              if (this.networkId !== networkId) {
+                console.log(`[Node] Network ID changed from ${this.networkId} to ${networkId}`)
+                this.emit('network', networkId)
+                this.networkId = networkId
+              } else {
+                console.log('[Node] Network ID remains unchanged:', this.networkId)
+              }
+            })
+            .catch((error) => {
+              console.error('[Node] Error fetching server info:', error)
+            })
+        })
+        .catch((connectError) => {
+          console.error('[Node] Connection attempt failed:', connectError)
+          // Optionally, you could implement retry logic here if needed
+        })
+    } catch (error) {
+      console.error('[Node] Reconnection process encountered an error:', error)
+      throw error
     }
   }
 
   private registerEvents() {
-    this.kaspa.addEventListener('connect', () => {
+    this.rpcClient.addEventListener('connect', () => {
+      console.log('[Node] Connected to the node')
       this.emit('connection', true)
     })
 
-    this.kaspa.addEventListener('disconnect', () => {
+    this.rpcClient.addEventListener('disconnect', () => {
+      console.log('[Node] Disconnected from the node')
       this.emit('connection', false)
     })
   }

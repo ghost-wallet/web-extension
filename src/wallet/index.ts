@@ -13,6 +13,7 @@ load()
 
     const wallet = new Wallet(async () => {
       try {
+        console.log('load() new node Node')
         const node = new Node()
         const account = new Account(node)
         const messaging = new RPC({ wallet, node, account })
