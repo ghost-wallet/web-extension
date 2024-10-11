@@ -3,6 +3,7 @@ import type Node from '../../kaspa/node'
 import type Account from '../../kaspa/account'
 import type { EventMessage, EventMappings } from '../protocol'
 import Provider from './provider'
+console.log('Initializing Notifications, which uses Node')
 
 export default class Notifications {
   private callback: ((event: EventMessage) => void) | undefined
@@ -18,6 +19,7 @@ export default class Notifications {
     account: Account
     provider: Provider
   }) {
+    console.log('Notifications, which uses Node')
     wallet.on('status', (status) => this.handleEvent('wallet:status', status))
     node.on('connection', (status) => this.handleEvent('node:connection', status))
     node.on('network', (networkId) => this.handleEvent('node:network', networkId))

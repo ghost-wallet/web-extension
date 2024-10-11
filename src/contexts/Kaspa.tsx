@@ -1,4 +1,12 @@
-import { createContext, useReducer, ReactNode, useCallback, useRef } from 'react'
+import {
+  createContext,
+  useReducer,
+  ReactNode,
+  useCallback,
+  useRef,
+  useState,
+  useEffect,
+} from 'react'
 import { runtime, type Runtime } from 'webextension-polyfill'
 import { Status } from '@/wallet/kaspa/wallet'
 import {
@@ -37,13 +45,13 @@ export const defaultState: IKaspa = {
 
 export const KaspaContext = createContext<
   | {
-  load: () => Promise<void>
-  kaspa: IKaspa
-  request: <M extends keyof RequestMappings>(
-    method: M,
-    params: RequestMappings[M],
-  ) => Promise<ResponseMappings[M]>
-}
+      load: () => Promise<void>
+      kaspa: IKaspa
+      request: <M extends keyof RequestMappings>(
+        method: M,
+        params: RequestMappings[M],
+      ) => Promise<ResponseMappings[M]>
+    }
   | undefined
 >(undefined)
 
@@ -204,7 +212,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('Error during load:', error)
     }
-  }, [])
+  }, [request])
 
   return <KaspaContext.Provider value={{ load, kaspa, request }}>{children}</KaspaContext.Provider>
 }
