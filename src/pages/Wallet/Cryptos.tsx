@@ -30,6 +30,7 @@ interface Token {
 
 const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem }) => {
   const { kaspa } = useKaspa()
+  console.log('[Cryptos.tsx] kaspa', kaspa)
   const { settings } = useSettings()
   const price = useCoingecko(settings.currency)
 

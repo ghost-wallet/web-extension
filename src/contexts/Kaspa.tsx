@@ -123,7 +123,9 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
           case 'node:network':
             try {
               const addresses = await request('account:addresses', [])
+              console.log('[Kaspa] Fetched addresses:', addresses)
               if (addresses && addresses.length) {
+                console.log('[Kaspa] Dispatching addresses:', addresses)
                 dispatch({ type: 'addresses', payload: addresses })
               }
               dispatch({ type: 'connected', payload: message.data })
@@ -144,14 +146,15 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
             }
             break
           case 'account:addresses':
+            console.log('[Kaspa] Received addresses event:', message.data)
             dispatch({
               type: 'addresses',
               payload: ({ addresses }) => {
                 if (message.data && message.data.length) {
                   return [
-                    addresses[0].concat(message.data[0] || []),
-                    addresses[1].concat(message.data[1] || []),
-                  ]
+                    [...addresses[0], ...message.data[0]], // Spread the existing and new addresses
+                    [...addresses[1], ...message.data[1]],
+                  ] as [string[], string[]] // Explicitly type as [string[], string[]]
                 }
                 return addresses // Return the previous state if no valid data
               },
@@ -203,7 +206,9 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       dispatch({ type: 'utxos', payload: utxos })
 
       const addresses = await request('account:addresses', [])
+      console.log('[Kaspa] Loading addresses:', addresses)
       if (addresses && addresses.length) {
+        console.log('[Kaspa] Dispatching addresses during load:', addresses)
         dispatch({ type: 'addresses', payload: addresses })
       }
 

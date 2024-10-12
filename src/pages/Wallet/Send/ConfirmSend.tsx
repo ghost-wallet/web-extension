@@ -66,15 +66,21 @@ const ConfirmSend: React.FC = () => {
       await request('account:submitContextful', [signedTransactions])
       console.log('Transaction submitted successfully')
 
-      // Navigate to the confirmation or success page
-      navigate('/wallet')
+      // Navigate to the Sent page and pass the props
+      navigate('/send/crypto/confirm/sent', {
+        state: {
+          token,
+          amount,
+          recipient,
+        },
+      })
     } catch (err) {
       console.error('Error during transaction confirmation:', err)
       setError('Failed to confirm and submit transaction.')
     } finally {
       setLoading(false)
     }
-  }, [request, transactions, navigate])
+  }, [request, transactions, navigate, token, amount, recipient])
 
   const handleCancelClick = () => {
     navigate('/wallet')

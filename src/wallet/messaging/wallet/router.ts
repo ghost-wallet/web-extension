@@ -23,8 +23,6 @@ export default class Router {
     account: Account
     provider: Provider
   }) {
-    console.log('[Router] Initializing router with mappings...')
-
     this.mappings = {
       'wallet:status': () => wallet.status,
       'wallet:create': (password) => wallet.create(password),
@@ -33,10 +31,7 @@ export default class Router {
       'wallet:export': (password) => wallet.export(password),
       'wallet:lock': () => wallet.lock(),
       'wallet:reset': () => wallet.reset(),
-      'wallet:validate': (address) => {
-        console.log('[Router] Registering wallet:validate method with address:', address)
-        return wallet.validate(address)
-      },
+      'wallet:validate': (address) => wallet.validate(address),
       'node:connection': () => node.connected,
       'node:connect': (address) => node.reconnect(address),
       'node:priorityBuckets': () => node.getPriorityBuckets(),
@@ -58,41 +53,25 @@ export default class Router {
       'provider:connection': () => provider.connectedURL,
       'provider:disconnect': () => provider.disconnect(),
     }
-
-    console.log('[Router] Mappings initialized:', this.mappings)
   }
 
   async route<M extends keyof RequestMappings>(request: Request<M>) {
-    console.log('[Router] Received request:', request)
-    console.log(`[Router] Routing request - Method: "${request.method}", Params:`, request.params)
-    console.log('[Router] Current mappings:', Object.keys(this.mappings))
-
     let response: Response<M> = {
       id: request.id,
       result: undefined,
     }
 
     const requestedMethod = this.mappings[request.method]
-    console.log('[Router] Available methods on initialization:', Object.keys(this.mappings))
-    console.log(`[Router] Looking for method "${request.method}" in mappings.`)
-    console.log(`[Router] Method found:`, requestedMethod)
 
     if (!requestedMethod) {
-      console.error(`[Router] Method "${request.method}" not found in mappings.`)
       response.error = `Method "${request.method}" not found.`
       return response
     }
 
     try {
-      console.log(`[Router] Executing method "${request.method}" with params:`, request.params)
       const result = await requestedMethod(...request.params)
       response.result = result as ResponseMappings[M] // Type assertion here
-      console.log(
-        `[Router] Method "${request.method}" executed successfully. Result:`,
-        response.result,
-      )
     } catch (err) {
-      console.error(`[Router] Error executing method "${request.method}":`, err)
       if (err instanceof Error) {
         response.error = err.message
       } else if (typeof err === 'string') {
@@ -102,7 +81,6 @@ export default class Router {
       }
     }
 
-    console.log('[Router] Returning response:', response)
     return response
   }
 }

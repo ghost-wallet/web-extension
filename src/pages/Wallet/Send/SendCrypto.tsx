@@ -28,7 +28,6 @@ const SendCrypto: React.FC = () => {
   const [inputs] = useState<KaspaInput[]>(
     params.get('inputs') ? JSON.parse(params.get('inputs')!) : [],
   )
-  console.log('Inputs in SendCrypto.tsx:', inputs)
   const [outputs, setOutputs] = useState<[string, string][]>([['', '']])
   const [error, setError] = useState<string | null>(null)
   const [transactions, setTransactions] = useState<string[]>([])
@@ -66,6 +65,7 @@ const SendCrypto: React.FC = () => {
     if (token.tick !== 'KASPA') {
       validateRecipient(value)
     } else {
+      console.log('handleRecipientChange setError to null')
       setError(null) // Clear error if it's KASPA as validation isn't needed
     }
   }
@@ -78,7 +78,14 @@ const SendCrypto: React.FC = () => {
       return newOutputs
     })
 
-    if (token.tick !== 'KASPA') {
+    if (token.tick === 'KASPA') {
+      // If the token is KASPA, no need to validate the amount; clear any errors
+      if (value.length === 0 || parseFloat(value) <= 0) {
+        setError('Amount must be greater than 0.')
+      } else {
+        setError(null)
+      }
+    } else {
       const numericValue = parseFloat(value)
       const formattedBalance = parseFloat(formatBalance(token.balance, token.dec))
 
@@ -87,8 +94,6 @@ const SendCrypto: React.FC = () => {
       } else {
         setError(null)
       }
-    } else {
-      setError(null) // No validation for KASPA amount, reset any errors
     }
   }
 
@@ -99,6 +104,7 @@ const SendCrypto: React.FC = () => {
       newOutputs[0][1] = maxAmountStr
       return newOutputs
     })
+    console.log('handleMaxClick setError to null')
     setError(null)
   }
 
@@ -106,6 +112,7 @@ const SendCrypto: React.FC = () => {
     if (token.tick === 'KASPA') {
       // Only make the account:create request for KASPA tokens
       if (!feeRate) return
+      console.log('initiateSend outputs feerate fee inputs', outputs, feeRate, fee, inputs)
 
       request('account:create', [outputs, feeRate, fee, inputs])
         .then((transactions) => {
@@ -122,7 +129,7 @@ const SendCrypto: React.FC = () => {
         })
         .catch((err) => {
           console.error(`Error occurred: ${err}`)
-          setError(`Error occurred: ${err.message}`)
+          setError(`Error occurred: ${err}`)
         })
     } else {
       // Navigate directly for non-KASPA tokens
