@@ -1,9 +1,8 @@
 import type Wallet from '../../kaspa/wallet'
 import type Node from '../../kaspa/node'
 import type Account from '../../kaspa/account'
-import type { Request, Response, RequestMappings, ResponseMappings } from '../protocol'
+import type { Request, Response, RequestMappings, ResponseMappings } from '../messageMappings'
 import type Provider from './provider'
-import { CustomSignature } from '../../kaspa/account/transactions' // Import CustomSignature type
 
 type MappingsRecord<M extends keyof RequestMappings = keyof RequestMappings> = {
   [K in M]: (...params: RequestMappings[K]) => Promise<ResponseMappings[M]> | ResponseMappings[K]

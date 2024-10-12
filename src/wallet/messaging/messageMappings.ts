@@ -1,6 +1,6 @@
 import { Status } from '../kaspa/wallet'
 import { UTXO } from '../kaspa/account'
-import { CustomInput, CustomSignature } from '../kaspa/account/transactions'
+import { CustomInput } from '../kaspa/account/transactions'
 import { PriorityBuckets } from '../kaspa/node'
 
 export interface RequestMappings {

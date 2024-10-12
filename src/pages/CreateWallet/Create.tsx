@@ -30,10 +30,10 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
 
   return (
     <main className="p-6">
-      <h1 className="text-primarytext text-3xl font-rubik text-center mb-2">
+      <h1 className="text-primarytext text-3xl font-rubik text-center mb-6">
         Secret Recovery Phrase
       </h1>
-      <p className="text-warning text-base font-lato text-center mb-4">
+      <p className="text-warning text-base font-lato text-center mb-6">
         This phrase is the only way to recover your wallet. Do not share it with anyone. Do not
         enter it into any app, site, or wallet other than official wallets from ghostapp.org. Beware
         of scammers pretending to be Ghost support.
@@ -70,7 +70,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
 
       <button
         onClick={handleCopyToClipboard}
-        className="flex items-center text-mutedtext text-base font-lato mb-8 cursor-pointer"
+        className="flex items-center text-mutedtext text-base font-lato mb-4 cursor-pointer"
       >
         <span className="mr-2">
           {isCopied ? (
@@ -82,7 +82,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
         {isCopied ? 'Copied' : 'Copy to clipboard'}
       </button>
 
-      <div className="flex gap-3 justify-center items-center mt-16">
+      <div className="flex gap-3 justify-center items-center mt-8 mb-8">
         <input
           type="checkbox"
           id="confirmation"

@@ -1,7 +1,7 @@
 import type Wallet from '../../kaspa/wallet'
 import type Node from '../../kaspa/node'
 import type Account from '../../kaspa/account'
-import type { EventMessage, EventMappings } from '../protocol'
+import type { EventMessage, EventMappings } from '../messageMappings'
 import Provider from './provider'
 console.log('Initializing Notifications, which uses Node')
 

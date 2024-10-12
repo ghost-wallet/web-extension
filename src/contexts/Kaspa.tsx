@@ -16,7 +16,7 @@ import {
   RequestMappings,
   ResponseMappings,
   isEvent,
-} from '@/wallet/messaging/protocol'
+} from '@/wallet/messaging/messageMappings'
 import { UTXO } from '@/wallet/kaspa/account'
 
 export interface IKaspa {

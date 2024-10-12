@@ -15,7 +15,7 @@ const manifest: ManifestV3Export = {
     default_popup: 'index.html',
   },
   background: {
-    service_worker: 'src/wallet/index.ts',
+    service_worker: 'src/wallet/initializeWallet.ts',
     type: 'module',
   },
   content_scripts: [
