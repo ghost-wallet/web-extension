@@ -47,8 +47,6 @@ export default class Account extends EventEmitter {
   }
 
   get balance() {
-    console.log('Account.tsx this.context.balance', this.context.balance)
-    console.log('Account.tsx this.context.balance.mature ?', this.context.balance?.mature)
     return Number(this.context.balance?.mature ?? 0) / 1e8
   }
 

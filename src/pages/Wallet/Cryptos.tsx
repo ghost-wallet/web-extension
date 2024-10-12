@@ -30,7 +30,6 @@ interface Token {
 
 const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem }) => {
   const { kaspa } = useKaspa()
-  console.log('[Cryptos.tsx] kaspa', kaspa)
   const { settings } = useSettings()
   const price = useCoingecko(settings.currency)
 
@@ -70,8 +69,6 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
     opScoreMod: 'kaspa-unique',
     floorPrice: price,
   }
-
-  console.log('kaspaToken balance', kaspa.balance)
 
   const kaspaImageSrc = '/kaspa-kas-logo.png'
   const sortedTokens = sortTokensByValue(tokens)

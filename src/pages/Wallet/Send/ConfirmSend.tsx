@@ -9,8 +9,7 @@ import useKaspa from '@/hooks/useKaspa'
 const ConfirmSend: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { token, recipient, amount, transactions, inputs } = location.state || {}
-  console.log('Inputs received in ConfirmSend:', inputs)
+  const { token, recipient, amount, transactions = [], inputs } = location.state || {}
   const { request } = useKaspa()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -27,7 +26,7 @@ const ConfirmSend: React.FC = () => {
 
   // Calculate fee only if the token is KASPA
   const fee = useMemo(() => {
-    if (token.tick !== 'KASPA' || !transactions) return 0
+    if (token.tick !== 'KASPA' || !transactions.length) return 0
 
     try {
       const transaction = JSON.parse(transactions[transactions.length - 1])
@@ -51,28 +50,62 @@ const ConfirmSend: React.FC = () => {
       setLoading(true)
       setError('')
 
-      if (!Array.isArray(transactions)) {
-        throw new Error('Transactions data is invalid')
+      if (!transactions || transactions.length === 0) {
+        throw new Error('No transactions found')
       }
 
-      // Step 1: Sign the transaction (without a password)
-      console.log('Attempting to account:sign with transactions', transactions)
-      const signedTransactions = await request('account:sign', [transactions])
+      let updatedTransactions = transactions ? [...transactions] : []
+
+      console.log('[ConfirmSend] transactions array:', transactions)
+      const parsedTransactions = JSON.parse(transactions[0])
+      if (!parsedTransactions?.inputs?.length) {
+        throw new Error('No inputs found in transaction')
+      }
+      console.log('[ConfirmSend] parsed transaction:', parsedTransactions)
+
+      if (token.tick !== 'KASPA') {
+        const krc20Transfer = {
+          p: 'krc-20',
+          op: 'transfer',
+          tick: token.tick,
+          amt: amount.toString(),
+          to: recipient,
+        }
+
+        console.log('[ConfirmSend] krc20Transfer object:', krc20Transfer)
+
+        // TODO add signature script and utxo fields
+        // Combine the KRC-20 data with the first input object
+        parsedTransactions.inputs[0] = {
+          ...parsedTransactions.inputs[0],
+          ...krc20Transfer,
+        }
+
+        console.log('[ConfirmSend] parsedTransactions', parsedTransactions)
+
+        updatedTransactions = updatedTransactions.map((tx) => {
+          const parsedTx = JSON.parse(tx)
+          parsedTx.inputs[0] = {
+            ...parsedTx.inputs[0],
+            ...krc20Transfer,
+          }
+          return JSON.stringify(parsedTx)
+        })
+      }
+
+      console.log(
+        '[ConfirmSend] Attempting to account:sign with transactions:',
+        updatedTransactions,
+      )
+      const signedTransactions = await request('account:sign', [updatedTransactions])
       console.log('Transaction signed:', signedTransactions)
 
-      console.log('Signed transaction', signedTransactions)
-
-      // Step 2: Submit the transaction
+      // Submit the transaction
       await request('account:submitContextful', [signedTransactions])
       console.log('Transaction submitted successfully')
 
-      // Navigate to the Sent page and pass the props
       navigate('/send/crypto/confirm/sent', {
-        state: {
-          token,
-          amount,
-          recipient,
-        },
+        state: { token, amount, recipient },
       })
     } catch (err) {
       console.error('Error during transaction confirmation:', err)

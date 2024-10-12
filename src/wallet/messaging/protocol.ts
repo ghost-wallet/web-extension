@@ -84,9 +84,9 @@ export type Event<M extends keyof EventMappings = keyof EventMappings> = {
 }[M]
 
 export function isEvent(message: any): message is Event {
-  console.log('[isEvent] Checking if the message is an event:', message)
+  console.log('[Protocol isEvent] Checking if the message is an event:', message)
   const isEventResult =
     message && typeof message.event === 'string' && typeof message.data !== 'undefined'
-  console.log(`[isEvent] Result for message ${message.event}:`, isEventResult)
+  console.log(`[Protocol isEvent] Result for message ${message.event}:`, isEventResult)
   return isEventResult
 }

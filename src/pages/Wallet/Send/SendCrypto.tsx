@@ -109,38 +109,26 @@ const SendCrypto: React.FC = () => {
   }
 
   const initiateSend = useCallback(() => {
-    if (token.tick === 'KASPA') {
-      // Only make the account:create request for KASPA tokens
-      if (!feeRate) return
-      console.log('initiateSend outputs feerate fee inputs', outputs, feeRate, fee, inputs)
+    if (!feeRate) return
+    console.log('initiateSend outputs feerate fee inputs', outputs, feeRate, fee, inputs)
 
-      request('account:create', [outputs, feeRate, fee, inputs])
-        .then((transactions) => {
-          setTransactions(transactions)
-          navigate('/send/crypto/confirm', {
-            state: {
-              token,
-              recipient: outputs[0][0],
-              amount: outputs[0][1],
-              transactions,
-              inputs, // Pass the inputs state
-            },
-          })
+    request('account:create', [outputs, feeRate, fee, inputs])
+      .then((transactions) => {
+        setTransactions(transactions)
+        navigate('/send/crypto/confirm', {
+          state: {
+            token,
+            recipient: outputs[0][0],
+            amount: outputs[0][1],
+            transactions,
+            inputs, // Pass the inputs state
+          },
         })
-        .catch((err) => {
-          console.error(`Error occurred: ${err}`)
-          setError(`Error occurred: ${err}`)
-        })
-    } else {
-      // Navigate directly for non-KASPA tokens
-      navigate('/send/crypto/confirm', {
-        state: {
-          token,
-          recipient: outputs[0][0],
-          amount: outputs[0][1],
-        },
       })
-    }
+      .catch((err) => {
+        console.error(`Error occurred: ${err}`)
+        setError(`Error occurred: ${err}`)
+      })
   }, [outputs, token, navigate, request, feeRate, fee, inputs])
 
   const isButtonEnabled = outputs[0][0].length > 0 && outputs[0][1].length > 0 && !error
