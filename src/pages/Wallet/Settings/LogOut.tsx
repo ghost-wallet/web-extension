@@ -21,7 +21,7 @@ const LogOut: React.FC = () => {
     <div className="flex items-center gap-2 mb-2">
       <button
         onClick={handleLogOut}
-        className="bg-primary hover:bg-secondary text-secondarytext text-lg font-bold font-lato mb-2 mt-6 px-8 py-3 rounded-[25px]"
+        className="bg-primary hover:bg-secondary text-secondarytext text-lg font-bold font-lato w-full px-8 py-3 rounded-[25px]"
       >
         Log out
       </button>

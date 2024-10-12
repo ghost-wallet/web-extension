@@ -24,10 +24,7 @@ const ConfirmSend: React.FC = () => {
     return `${address.slice(0, 10)}...${address.slice(-4)}`
   }
 
-  // Calculate fee only if the token is KASPA
   const fee = useMemo(() => {
-    if (token.tick !== 'KASPA' || !transactions.length) return 0
-
     try {
       const transaction = JSON.parse(transactions[transactions.length - 1])
       const inputValue = transaction.inputs.reduce((acc: bigint, input: any) => {
