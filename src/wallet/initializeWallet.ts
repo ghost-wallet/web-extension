@@ -6,22 +6,13 @@ import RPC from './messaging/rpc'
 import load, { initConsolePanicHook } from '@/wasm'
 
 console.log('[Main] Starting WASM load...')
-load()
-  .then(() => {
-    console.log('[Main] WASM loaded successfully.')
-    initConsolePanicHook()
+load().then(() => {
+  initConsolePanicHook()
 
-    const wallet = new Wallet(async () => {
-      try {
-        console.log('load() new node Node')
-        const node = new Node()
-        const account = new Account(node)
-        const messaging = new RPC({ wallet, node, account })
-      } catch (error) {
-        console.error('[Main] Error initializing components:', error)
-      }
-    })
+  const wallet = new Wallet(() => {
+    const node = new Node()
+    const account = new Account(node)
+
+    const messaging = new RPC({ wallet, node, account })
   })
-  .catch((error) => {
-    console.error('[Main] Error loading WASM:', error)
-  })
+})

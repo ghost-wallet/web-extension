@@ -55,10 +55,11 @@ export default class Wallet extends EventEmitter {
   }
 
   async create(password: string) {
+    //TODO remove password
     console.log('wallet.ts: Creating new wallet...')
     const mnemonic = Mnemonic.random(12)
 
-    console.log('wallet.ts: Wallet created with mnemonic phrase.')
+    console.log('wallet.ts: Wallet created with mnemonic phrase.', mnemonic.phrase)
     return mnemonic.phrase
   }
 

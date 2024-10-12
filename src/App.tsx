@@ -1,6 +1,6 @@
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { SettingsProvider } from './contexts/Settings'
-import { KaspaProvider } from './contexts/Kaspa'
+import { KaspaProvider } from './contexts/KaspaContextProvider'
 import Landing from './pages/Landing'
 import CreateWallet from '@/pages/CreateWallet'
 import Wallet from '@/pages/Wallet'

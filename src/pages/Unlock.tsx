@@ -34,7 +34,7 @@ export default function UnlockWallet() {
         }
       })
       .catch((err) => {
-        setError(err.message || 'An error occurred while unlocking')
+        setError(err.message || 'Incorrect password')
       })
   }, [password, request, navigate])
 

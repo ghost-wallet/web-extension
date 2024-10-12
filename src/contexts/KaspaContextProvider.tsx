@@ -62,16 +62,22 @@ type Action<K extends keyof IKaspa> = {
 
 function kaspaReducer(state: IKaspa, action: Action<keyof IKaspa>): IKaspa {
   const { type, payload } = action
+  console.log(`[KaspaContextProvider] Action received - type: ${type}, payload:`, payload)
 
   if (typeof payload === 'function') {
-    return { ...state, [type]: payload(state) }
+    const newState = { ...state, [type]: payload(state) }
+    console.log('[KaspaContextProvider] New state after function payload:', newState)
+    return newState
   } else {
-    return { ...state, [type]: payload }
+    const newState = { ...state, [type]: payload }
+    console.log('[KaspaContextProvider] New state after direct payload:', newState)
+    return newState
   }
 }
 
 export function KaspaProvider({ children }: { children: ReactNode }) {
   const [kaspa, dispatch] = useReducer(kaspaReducer, defaultState)
+  console.log('[KaspaContextProvider] Initialized state:', kaspa)
 
   const connectionRef = useRef<Runtime.Port | null>(null)
   const messagesRef = useRef(new Map<number, MessageEntry<any>>())
@@ -85,11 +91,20 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
         params,
       }
 
+      console.log(
+        `[KaspaContextProvider] Sending request - method: ${method}, params:`,
+        params,
+        'message:',
+        message,
+      )
+
       return new Promise<ResponseMappings[M]>((resolve, reject) => {
         messagesRef.current.set(message.id, { resolve, reject, message })
         try {
           getConnection().postMessage(message)
+          console.log('[KaspaContextProvider] Message posted:', message)
         } catch (error) {
+          console.error('[KaspaContextProvider] Error posting message:', error)
           reject(error)
         }
       })
@@ -98,78 +113,95 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
   )
 
   const getConnection = useCallback(() => {
-    if (connectionRef.current) return connectionRef.current
+    if (connectionRef.current) {
+      console.log('[KaspaContextProvider] Using existing connection.')
+      return connectionRef.current
+    }
 
     const connection = runtime.connect({ name: '@kaspian/client' })
+    console.log('[KaspaContextProvider] New connection created.')
 
     connection.onMessage.addListener(async (message: Response | Event) => {
+      console.log('[KaspaContextProvider] Message received:', message)
+
       if (!isEvent(message)) {
         const messageEntry = messagesRef.current.get(message.id)
         if (!messageEntry) {
+          console.warn('[KaspaContextProvider] No message entry found for id:', message.id)
           return
         }
 
         const { resolve, reject } = messageEntry
         if (!message.error) {
+          console.log('[KaspaContextProvider] Resolving message with result:', message.result)
           resolve(message.result)
         } else {
+          console.error('[KaspaContextProvider] Rejecting message with error:', message.error)
           reject(message.error)
         }
 
         messagesRef.current.delete(message.id)
       } else {
+        console.log('[KaspaContextProvider] Processing event:', message.event)
         switch (message.event) {
           case 'node:connection':
           case 'node:network':
             try {
               const addresses = await request('account:addresses', [])
-              console.log('[Kaspa] Fetched addresses:', addresses)
+              console.log('[KaspaContextProvider] Fetched addresses:', addresses)
               if (addresses && addresses.length) {
-                console.log('[Kaspa] Dispatching addresses:', addresses)
+                console.log('[KaspaContextProvider] Dispatching addresses:', addresses)
                 dispatch({ type: 'addresses', payload: addresses })
               }
               dispatch({ type: 'connected', payload: message.data })
             } catch (error) {
-              console.error('Error fetching addresses:', error)
+              console.error('[KaspaContextProvider] Error fetching addresses:', error)
             }
             break
           case 'wallet:status':
+            console.log('[KaspaContextProvider] Dispatching wallet status:', message.data)
             dispatch({ type: 'status', payload: message.data })
             break
           case 'account:balance':
+            console.log('[KaspaContextProvider] Dispatching account balance:', message.data)
             dispatch({ type: 'balance', payload: message.data })
             try {
               const utxos = await request('account:utxos', [])
+              console.log('[KaspaContextProvider] Fetched UTXOs:', utxos)
               dispatch({ type: 'utxos', payload: utxos })
             } catch (error) {
-              console.error('Error fetching UTXOs:', error)
+              console.error('[KaspaContextProvider] Error fetching UTXOs:', error)
             }
             break
           case 'account:addresses':
-            console.log('[Kaspa] Received addresses event:', message.data)
+            console.log('[KaspaContextProvider] Received addresses event:', message.data)
             dispatch({
               type: 'addresses',
               payload: ({ addresses }) => {
                 if (message.data && message.data.length) {
                   return [
-                    [...addresses[0], ...message.data[0]], // Spread the existing and new addresses
+                    [...addresses[0], ...message.data[0]], // Merge the existing and new addresses
                     [...addresses[1], ...message.data[1]],
-                  ] as [string[], string[]] // Explicitly type as [string[], string[]]
+                  ] as [string[], string[]]
                 }
-                return addresses // Return the previous state if no valid data
+                return addresses
               },
             })
             break
           case 'provider:connection':
+            console.log('[KaspaContextProvider] Dispatching provider connection:', message.data)
             dispatch({ type: 'provider', payload: message.data })
             break
           default:
+            console.log('[KaspaContextProvider] Unknown event:', message)
             break
         }
       }
     })
 
     connection.onDisconnect.addListener(() => {
+      console.warn('[KaspaContextProvider] Connection disconnected.')
+
       if (
         runtime.lastError?.message !==
         'Could not establish connection. Receiving end does not exist.'
@@ -180,6 +212,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       connectionRef.current = null
 
       for (const entry of messagesRef.current.values()) {
+        console.log('[KaspaContextProvider] Re-sending message after reconnect:', entry.message)
         getConnection().postMessage(entry.message)
       }
 
@@ -194,28 +227,32 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
   const load = useCallback(async () => {
     try {
       const status = await request('wallet:status', [])
+      console.log('[KaspaContextProvider] Loaded wallet status:', status)
       dispatch({ type: 'status', payload: status })
 
       const connected = await request('node:connection', [])
+      console.log('[KaspaContextProvider] Loaded connection status:', connected)
       dispatch({ type: 'connected', payload: connected })
 
       const balance = await request('account:balance', [])
+      console.log('[KaspaContextProvider] Loaded account balance:', balance)
       dispatch({ type: 'balance', payload: balance })
 
       const utxos = await request('account:utxos', [])
+      console.log('[KaspaContextProvider] Loaded UTXOs:', utxos)
       dispatch({ type: 'utxos', payload: utxos })
 
       const addresses = await request('account:addresses', [])
-      console.log('[Kaspa] Loading addresses:', addresses)
+      console.log('[KaspaContextProvider] Loaded addresses:', addresses)
       if (addresses && addresses.length) {
-        console.log('[Kaspa] Dispatching addresses during load:', addresses)
         dispatch({ type: 'addresses', payload: addresses })
       }
 
       const provider = await request('provider:connection', [])
+      console.log('[KaspaContextProvider] Loaded provider connection:', provider)
       dispatch({ type: 'provider', payload: provider })
     } catch (error) {
-      console.error('Error during load:', error)
+      console.error('[KaspaContextProvider] Error during load:', error)
     }
   }, [request])
 
