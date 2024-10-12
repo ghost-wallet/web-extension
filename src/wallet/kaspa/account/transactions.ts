@@ -1,20 +1,19 @@
 import {
-  Address,
+  XPrv,
+  Mnemonic,
   createTransactions,
-  decryptXChaCha20Poly1305,
   IUtxoEntry,
   kaspaToSompi,
   PendingTransaction,
   PrivateKeyGenerator,
   RpcClient,
-  ScriptBuilder,
   signTransaction,
-  createInputSignature,
   Transaction,
   UtxoContext,
 } from '@/wasm'
 import Addresses from './addresses'
 import EventEmitter from 'events'
+import KeyManager from '@/wallet/kaspa/KeyManager'
 
 export interface CustomInput {
   address: string
@@ -91,57 +90,38 @@ export default class Transactions extends EventEmitter {
     return transactions.map((transaction) => transaction.serializeToSafeJSON())
   }
 
-  async sign(transactions: string[], password: string, customs: CustomSignature[] = []) {
-    if (!this.encryptedKey) throw Error('No imported account')
+  async sign(transactions: string[]) {
+    if (!this.encryptedKey) {
+      console.error('[Transactions] No imported account available for signing.')
+      throw Error('No imported account')
+    }
 
-    const keyGenerator = new PrivateKeyGenerator(
-      decryptXChaCha20Poly1305(this.encryptedKey, password),
-      false,
-      BigInt(this.accountId!),
-    )
+    const decryptedKey = KeyManager.getKey()
+    if (!decryptedKey) {
+      console.error('[Transactions] No decrypted key available in KeyManager.')
+      throw Error('No decrypted key available in KeyManager.')
+    }
+
+    const mnemonic = new Mnemonic(decryptedKey)
+    const seed = mnemonic.toSeed() // This should be a 64-byte buffer
+    const xprv = new XPrv(seed)
+    const keyGenerator = new PrivateKeyGenerator(xprv, false, BigInt(this.accountId!))
     const signedTransactions: Transaction[] = []
 
     for (const transaction of transactions) {
       const parsedTransaction = Transaction.deserializeFromSafeJSON(transaction)
       const privateKeys = []
-
       for (let address of parsedTransaction.addresses(this.addresses.networkId)) {
-        if (address.version === 'ScriptHash') continue
-
+        if (address.version === 'ScriptHash') {
+          continue
+        }
         const [isReceive, index] = this.addresses.findIndexes(address.toString())
         privateKeys.push(isReceive ? keyGenerator.receiveKey(index) : keyGenerator.changeKey(index))
       }
 
       const signedTransaction = signTransaction(parsedTransaction, privateKeys, false)
-
-      for (const custom of customs) {
-        const inputIndex = signedTransaction.inputs.findIndex(
-          ({ previousOutpoint }) =>
-            previousOutpoint.transactionId === custom.outpoint &&
-            previousOutpoint.index === custom.index,
-        )
-
-        if (Address.validate(custom.signer)) {
-          if (!custom.script) throw Error('Script is required when signer address is supplied')
-
-          const [isReceive, index] = this.addresses.findIndexes(custom.signer)
-          const privateKey = isReceive
-            ? keyGenerator.receiveKey(index)
-            : keyGenerator.changeKey(index)
-
-          signedTransaction.inputs[inputIndex].signatureScript = ScriptBuilder.fromScript(
-            custom.script,
-          ).encodePayToScriptHashSignatureScript(
-            createInputSignature(signedTransaction, inputIndex, privateKey),
-          )
-        } else {
-          signedTransaction.inputs[inputIndex].signatureScript = custom.signer
-        }
-      }
-
       signedTransactions.push(signedTransaction)
     }
-
     return signedTransactions.map((transaction) => transaction.serializeToSafeJSON())
   }
 

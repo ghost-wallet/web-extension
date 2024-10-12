@@ -41,7 +41,7 @@ const Network: React.FC = () => {
 
       <div className="flex flex-col gap-2">
         <p className="text-mutedtext text-sm font-lato">
-          You are on mainnet. Support for testnets are in development.
+          Connected to mainnet. Testnet is not yet supported on Ghost wallet.
         </p>
         {/*<div className="flex gap-1 mx-1">*/}
         {/*  <select*/}

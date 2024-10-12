@@ -1,15 +1,19 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useCallback, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import BackButton from '@/components/BackButton'
 import TokenDetails from '@/components/TokenDetails'
+import useKaspa from '@/hooks/useKaspa'
 
 const ConfirmSend: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { token, recipient, amount, transactions } = location.state || {}
-  console.log('amount in confirm send', amount)
+  const { token, recipient, amount, transactions, inputs } = location.state || {}
+  console.log('Inputs received in ConfirmSend:', inputs)
+  const { request } = useKaspa()
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   // Check for missing or incomplete information based on token type
   if (!token || !recipient || !amount || (token.tick === 'KASPA' && !transactions)) {
@@ -42,10 +46,35 @@ const ConfirmSend: React.FC = () => {
     }
   }, [transactions, token.tick])
 
-  const handleConfirmClick = () => {
-    // Logic to confirm the transaction
-    console.log('Transaction confirmed:', { token, recipient, amount })
-  }
+  const handleConfirmClick = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError('')
+
+      if (!Array.isArray(transactions)) {
+        throw new Error('Transactions data is invalid')
+      }
+
+      // Step 1: Sign the transaction (without a password)
+      console.log('Attempting to account:sign with transactions', transactions)
+      const signedTransactions = await request('account:sign', [transactions])
+      console.log('Transaction signed:', signedTransactions)
+
+      console.log('Signed transaction', signedTransactions)
+
+      // Step 2: Submit the transaction
+      await request('account:submitContextful', [signedTransactions])
+      console.log('Transaction submitted successfully')
+
+      // Navigate to the confirmation or success page
+      navigate('/wallet')
+    } catch (err) {
+      console.error('Error during transaction confirmation:', err)
+      setError('Failed to confirm and submit transaction.')
+    } finally {
+      setLoading(false)
+    }
+  }, [request, transactions, navigate])
 
   const handleCancelClick = () => {
     navigate('/wallet')
@@ -95,6 +124,8 @@ const ConfirmSend: React.FC = () => {
             </div>
           </div>
 
+          {error && <div className="text-error mt-2">{error}</div>}
+
           <div className="flex gap-[6px] mt-6">
             <button
               onClick={handleCancelClick}
@@ -104,9 +135,10 @@ const ConfirmSend: React.FC = () => {
             </button>
             <button
               onClick={handleConfirmClick}
+              disabled={loading}
               className="flex-1 bg-primary text-secondarytext text-lg font-lato font-semibold rounded-[10px] cursor-pointer py-2 px-6"
             >
-              Send
+              {loading ? 'Processing...' : 'Send'}
             </button>
           </div>
         </div>

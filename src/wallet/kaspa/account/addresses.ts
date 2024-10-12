@@ -22,7 +22,6 @@ export default class Addresses extends EventEmitter {
 
   async import(publicKey: PublicKeyGenerator, accountId: number) {
     this.publicKey = publicKey
-    console.log('public key from async import', publicKey)
     this.accountId = accountId
 
     const account = (await LocalStorage.get('wallet', undefined))!.accounts[accountId]
@@ -31,23 +30,13 @@ export default class Addresses extends EventEmitter {
   }
 
   async derive(isReceive: boolean, start: number, end: number) {
-    console.log('this.publicKey from isReceive', this.publicKey)
-    console.log('running derive function....')
     if (!this.publicKey) {
       throw Error('No active account')
     }
 
     if (isReceive) {
-      console.log(
-        'addresses.ts isReceive true, this.publicKey.receiveAddressAsStrings(this.networkId, start, end):',
-        this.publicKey.receiveAddressAsStrings(this.networkId, start, end),
-      )
       return this.publicKey.receiveAddressAsStrings(this.networkId, start, end)
     } else {
-      console.log(
-        'addresses.ts isReceive false, this.publicKey.receiveAddressAsStrings(this.networkId, start, end):',
-        this.publicKey.receiveAddressAsStrings(this.networkId, start, end),
-      )
       return this.publicKey.changeAddressAsStrings(this.networkId, start, end)
     }
   }
@@ -63,7 +52,6 @@ export default class Addresses extends EventEmitter {
         ),
         this.derive(false, this.changeAddresses.length, this.changeAddresses.length + changeCount),
       ])
-      console.log('addresses.ts increment:', addresses)
 
       this.receiveAddresses.push(...addresses[0])
       this.changeAddresses.push(...addresses[1])
@@ -101,7 +89,6 @@ export default class Addresses extends EventEmitter {
   }
 
   reset() {
-    console.log('reset() will now delete this.publicKey')
     delete this.publicKey
     delete this.accountId
 

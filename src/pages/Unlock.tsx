@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import PasswordInput from '@/components/PasswordInput'
 import ErrorMessage from '@/components/ErrorMessage'
 import useKaspa from '@/hooks/useKaspa'
+import KeyManager from '@/wallet/kaspa/KeyManager'
 
 export default function UnlockWallet() {
   const navigate = useNavigate()
@@ -24,8 +25,13 @@ export default function UnlockWallet() {
 
   const unlockWallet = useCallback(() => {
     request('wallet:unlock', [password])
-      .then(() => {
-        navigate('/')
+      .then((decryptedKey: string) => {
+        if (decryptedKey) {
+          KeyManager.setKey(decryptedKey)
+          navigate('/')
+        } else {
+          setError('Failed to retrieve decrypted key')
+        }
       })
       .catch((err) => {
         setError(err.message || 'An error occurred while unlocking')

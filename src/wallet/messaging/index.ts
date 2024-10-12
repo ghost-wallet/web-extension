@@ -26,8 +26,6 @@ export default class RPC {
     })
     this.router = new Router({ wallet, node, account, provider: this.provider })
 
-    console.log('[RPC] Router, Provider, and Notifier initialized.')
-
     this.listen()
   }
 
@@ -43,10 +41,8 @@ export default class RPC {
       }
 
       if (port.name === '@kaspian/client') {
-        console.log('[RPC] Permitting port for client connection.')
         this.permitPort(port)
       } else if (port.name === '@kaspian/provider') {
-        console.log('[RPC] Permitting port for provider connection.')
         this.provider.askAccess(port)
       } else {
         console.warn(`[RPC] Unrecognized port name: ${port.name}. Disconnecting port...`)
@@ -65,7 +61,6 @@ export default class RPC {
   }
 
   private permitPort(port: browser.Runtime.Port) {
-    console.log('[RPC] Permitting port and adding to port set.')
     this.ports.add(port)
 
     const onMessageListener = async (request: Request) => {
@@ -88,12 +83,9 @@ export default class RPC {
     port.onMessage.addListener(onMessageListener)
 
     port.onDisconnect.addListener(() => {
-      console.log('[RPC] Port disconnected.')
-
       port.onMessage.removeListener(onMessageListener)
 
       this.ports.delete(port)
-      console.log('[RPC] Port removed from port set.')
     })
   }
 }

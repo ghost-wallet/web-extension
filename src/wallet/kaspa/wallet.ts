@@ -9,6 +9,7 @@ import {
 } from '@/wasm'
 import LocalStorage from '@/storage/LocalStorage'
 import SessionStorage from '@/storage/SessionStorage'
+import KeyManager from '@/wallet/kaspa/KeyManager'
 
 export enum Status {
   Uninitialized,
@@ -18,6 +19,7 @@ export enum Status {
 
 export default class Wallet extends EventEmitter {
   status: Status = Status.Uninitialized
+  encryptedKey?: string // Define encryptedKey as a property
 
   constructor(readyCallback: () => void) {
     super()
@@ -41,6 +43,7 @@ export default class Wallet extends EventEmitter {
       console.log('wallet.ts: No wallet found, setting status to Uninitialized.')
       this.status = Status.Uninitialized
     } else {
+      this.encryptedKey = wallet.encryptedKey // Set the encryptedKey from the stored wallet
       const session = await SessionStorage.get('session', undefined)
 
       console.log('wallet.ts: Session data retrieved:', session)
@@ -67,8 +70,11 @@ export default class Wallet extends EventEmitter {
       throw Error('Invalid mnemonic')
     }
 
+    const encryptedKey = encryptXChaCha20Poly1305(mnemonics, password)
+    this.encryptedKey = encryptedKey // Set the encryptedKey
+
     await LocalStorage.set('wallet', {
-      encryptedKey: encryptXChaCha20Poly1305(mnemonics, password),
+      encryptedKey: encryptedKey,
       accounts: [
         {
           name: 'Wallet',
@@ -83,8 +89,14 @@ export default class Wallet extends EventEmitter {
     await this.sync()
   }
 
-  async unlock(id: number, password: string) {
+  async unlock(id: number, password: string): Promise<string> {
     console.log(`wallet.ts: Unlocking wallet for account ID ${id}...`)
+
+    if (!this.encryptedKey) {
+      console.error('wallet.ts: No encrypted key available.')
+      throw new Error('No encrypted key available.')
+    }
+
     const mnemonic = new Mnemonic(await this.export(password))
     const extendedKey = new XPrv(mnemonic.toSeed())
 
@@ -92,14 +104,31 @@ export default class Wallet extends EventEmitter {
     const publicKey = await PublicKeyGenerator.fromMasterXPrv(extendedKey, false, BigInt(id))
     console.log('wallet.ts: Public key generated:', publicKey.toString())
 
+    // Decrypt the key using the password
+    console.log(
+      'wallet.ts will decrypt key using encryptedKey and password',
+      this.encryptedKey,
+      password,
+    )
+    const decryptedKey = decryptXChaCha20Poly1305(this.encryptedKey, password)
+
+    console.log('wallet.ts unlock  decryptedkey', decryptedKey)
+    // Store the session data, including the encryptedKey
+
+    KeyManager.setKey(decryptedKey)
+
+    console.log("SessionStorage.set('session', {")
     await SessionStorage.set('session', {
       activeAccount: id,
       publicKey: publicKey.toString(),
-      encryptedKey: encryptXChaCha20Poly1305(extendedKey.toString(), password),
+      encryptedKey: this.encryptedKey, // Include the encrypted key here
     })
 
-    console.log('wallet.ts: Wallet unlocked and session stored.')
+    console.log('SessionStorage.set Complete')
+
     await this.sync()
+
+    return decryptedKey // Return the decrypted key for use in the component
   }
 
   async export(password: string) {
@@ -117,6 +146,7 @@ export default class Wallet extends EventEmitter {
   async lock() {
     console.log('wallet.ts: Locking wallet...')
     await SessionStorage.remove('session')
+    KeyManager.clearKey() // Clear the decrypted key from memory
     await this.sync()
     console.log('wallet.ts: Wallet locked.')
   }

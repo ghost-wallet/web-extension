@@ -3,9 +3,10 @@ import type Node from '../../kaspa/node'
 import type Account from '../../kaspa/account'
 import type { Request, Response, RequestMappings, ResponseMappings } from '../protocol'
 import type Provider from './provider'
+import { CustomSignature } from '../../kaspa/account/transactions' // Import CustomSignature type
 
 type MappingsRecord<M extends keyof RequestMappings = keyof RequestMappings> = {
-  [K in M]: (...params: RequestMappings[K]) => Promise<ResponseMappings[K]> | ResponseMappings[K]
+  [K in M]: (...params: RequestMappings[K]) => Promise<ResponseMappings[M]> | ResponseMappings[K]
 }
 
 export default class Router {
@@ -28,7 +29,7 @@ export default class Router {
       'wallet:status': () => wallet.status,
       'wallet:create': (password) => wallet.create(password),
       'wallet:import': (mnemonic, password) => wallet.import(mnemonic, password),
-      'wallet:unlock': (password) => wallet.unlock(0, password),
+      'wallet:unlock': (password) => wallet.unlock(0, password), // Returns Promise<string>
       'wallet:export': (password) => wallet.export(password),
       'wallet:lock': () => wallet.lock(),
       'wallet:reset': () => wallet.reset(),
@@ -48,8 +49,8 @@ export default class Router {
       'account:utxos': () => account.UTXOs,
       'account:create': (outputs, feeRate, fee, inputs) =>
         account.transactions.create(outputs, feeRate, fee, inputs),
-      'account:sign': (transactions, password, customSignatures) =>
-        account.transactions.sign(transactions, password, customSignatures),
+      // Update the `account:sign` mapping to not require password
+      'account:sign': (transactions) => account.transactions.sign(transactions),
       'account:submitContextful': (transactions) =>
         account.transactions.submitContextful(transactions),
       'account:scan': () => account.scan(),
@@ -84,7 +85,8 @@ export default class Router {
 
     try {
       console.log(`[Router] Executing method "${request.method}" with params:`, request.params)
-      response.result = await requestedMethod(...request.params)
+      const result = await requestedMethod(...request.params)
+      response.result = result as ResponseMappings[M] // Type assertion here
       console.log(
         `[Router] Method "${request.method}" executed successfully. Result:`,
         response.result,
@@ -95,7 +97,9 @@ export default class Router {
         response.error = err.message
       } else if (typeof err === 'string') {
         response.error = err
-      } else throw err
+      } else {
+        throw err
+      }
     }
 
     console.log('[Router] Returning response:', response)

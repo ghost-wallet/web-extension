@@ -20,7 +20,7 @@ export interface RequestMappings {
   'account:balance': []
   'account:utxos': []
   'account:create': [[string, string][], number, string, CustomInput[]?]
-  'account:sign': [string[], string, CustomSignature[]?]
+  'account:sign': [string[]]
   'account:submitContextful': [string[]]
   'account:scan': []
   'provider:connect': [string]
@@ -38,7 +38,7 @@ export interface ResponseMappings {
   'wallet:status': Status
   'wallet:create': string
   'wallet:import': void
-  'wallet:unlock': void
+  'wallet:unlock': string // Updated to return a string (decrypted key)
   'wallet:export': string
   'wallet:lock': void
   'wallet:reset': void

@@ -25,7 +25,10 @@ const SendCrypto: React.FC = () => {
   const maxAmount = token.tick === 'KASPA' ? token.balance : formatBalance(token.balance, token.dec)
 
   // State management
-  const [inputs] = useState<KaspaInput[]>(JSON.parse(params.get('inputs')!) || [])
+  const [inputs] = useState<KaspaInput[]>(
+    params.get('inputs') ? JSON.parse(params.get('inputs')!) : [],
+  )
+  console.log('Inputs in SendCrypto.tsx:', inputs)
   const [outputs, setOutputs] = useState<[string, string][]>([['', '']])
   const [error, setError] = useState<string | null>(null)
   const [transactions, setTransactions] = useState<string[]>([])
@@ -113,6 +116,7 @@ const SendCrypto: React.FC = () => {
               recipient: outputs[0][0],
               amount: outputs[0][1],
               transactions,
+              inputs, // Pass the inputs state
             },
           })
         })
