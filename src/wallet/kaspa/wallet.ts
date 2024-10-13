@@ -1,11 +1,11 @@
 import { EventEmitter } from 'events'
 import {
-  Mnemonic,
-  encryptXChaCha20Poly1305,
+  Address,
   decryptXChaCha20Poly1305,
-  XPrv,
+  encryptXChaCha20Poly1305,
+  Mnemonic,
   PublicKeyGenerator,
-  Address, // Import the Address module from wasm
+  XPrv,
 } from '@/wasm'
 import LocalStorage from '@/storage/LocalStorage'
 import SessionStorage from '@/storage/SessionStorage'
@@ -33,6 +33,8 @@ export default class Wallet extends EventEmitter {
       .catch((error) => {
         console.error('[Wallet] Error during sync:', error)
       })
+
+    this.listenSession()
   }
 
   private async sync() {
@@ -160,23 +162,37 @@ export default class Wallet extends EventEmitter {
   }
 
   async reset() {
-    console.log('wallet.ts: Resetting wallet...')
+    console.log('[Wallet] Wallet hard reset... status:', this.status)
     await SessionStorage.clear()
     await LocalStorage.remove('wallet')
     await this.sync()
-    console.log('wallet.ts: Wallet reset completed.')
   }
 
-  // New method to validate an address
+  async lockWallet() {
+    this.status = Status.Locked
+    console.log('[Wallet] Lock wallet and set status to:', this.status)
+    this.emit('status', this.status)
+  }
+
   validate(address: string): boolean {
-    console.log('wallet.ts: Validating address:', address)
+    console.log('[Wallet] Validating address:', address)
     try {
-      const isValid = Address.validate(address)
-      console.log('wallet.ts: Address validation result:', isValid)
-      return isValid
+      return Address.validate(address)
     } catch (error) {
-      console.error('wallet.ts: Error validating address:', error)
+      console.log('[Wallet] Error validating address:', address)
       return false
     }
+  }
+
+  private listenSession() {
+    SessionStorage.subscribeChanges(async (key, newValue) => {
+      if (key !== 'session') return
+      if (newValue) {
+        console.log('[Wallet] Session active:', newValue)
+      } else {
+        console.log('[Wallet] Session expired or removed. Locking wallet.')
+        await this.lockWallet()
+      }
+    })
   }
 }
