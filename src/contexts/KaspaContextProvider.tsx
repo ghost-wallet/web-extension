@@ -118,7 +118,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       return connectionRef.current
     }
 
-    const connection = runtime.connect({ name: '@kaspian/client' })
+    const connection = runtime.connect({ name: '@ghost/client' })
     console.log('[KaspaContextProvider] New connection created.')
 
     connection.onMessage.addListener(async (message: Response | Event) => {

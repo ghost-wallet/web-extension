@@ -125,8 +125,8 @@
   "importWallet": {
     "message": "Import Wallet"
   },
-  "kaspianIntro": {
-    "message": "Welcome to Kaspian. Let's get you started!"
+  "ghostIntro": {
+    "message": "Welcome to Ghost. Let's get you started!"
   },
   "mnemonic": {
     "message": "Mnemonic phrase"
@@ -177,7 +177,7 @@
     "message": "Reset wallet"
   },
   "resetDescription": {
-    "message": "This action cannot be undone and Kaspian cant help you to get your wallet back."
+    "message": "This action cannot be undone and Ghost cant help you to get your wallet back."
   },
   "resetTitle": {
     "message": "Are you absolutely sure?"

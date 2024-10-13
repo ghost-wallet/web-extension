@@ -31,7 +31,7 @@ const manifest: ManifestV3Export = {
   // @ts-ignore
   browser_specific_settings: {
     gecko: {
-      id: 'wallet@kaspian.dev',
+      id: 'wallet@ghost.dev',
     },
   },
   content_security_policy: {
