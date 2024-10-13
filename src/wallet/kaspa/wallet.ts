@@ -36,38 +36,38 @@ export default class Wallet extends EventEmitter {
   }
 
   private async sync() {
-    console.log('wallet.ts: Syncing wallet state...')
+    console.log('[Wallet] Syncing wallet state...')
     const wallet = await LocalStorage.get('wallet', undefined)
 
     if (!wallet) {
-      console.log('wallet.ts: No wallet found, setting status to Uninitialized.')
+      console.log('[Wallet] No wallet found, setting status to Uninitialized.')
       this.status = Status.Uninitialized
     } else {
       this.encryptedKey = wallet.encryptedKey // Set the encryptedKey from the stored wallet
       const session = await SessionStorage.get('session', undefined)
 
-      console.log('wallet.ts: Session data retrieved:', session)
+      console.log('[Wallet] Session data retrieved:', session)
       this.status = session ? Status.Unlocked : Status.Locked
     }
 
-    console.log('wallet.ts: Emitting status update:', this.status)
+    console.log('[Wallet] Emitting status update:', this.status)
     this.emit('status', this.status)
   }
 
   async create(password: string) {
     //TODO remove password
-    console.log('wallet.ts: Creating new wallet...')
+    console.log('[Wallet] Creating new wallet...')
     const mnemonic = Mnemonic.random(12)
 
-    console.log('wallet.ts: Wallet created with mnemonic phrase.', mnemonic.phrase)
+    console.log('[Wallet] Wallet created with mnemonic phrase.', mnemonic.phrase)
     return mnemonic.phrase
   }
 
   async import(mnemonics: string, password: string) {
-    console.log('wallet.ts: Importing wallet...')
+    console.log('[Wallet] Importing wallet...')
     if (!Mnemonic.validate(mnemonics)) {
-      console.error('wallet.ts: Invalid mnemonic provided.')
-      throw Error('Invalid mnemonic')
+      console.error('[Wallet] Invalid mnemonic provided.')
+      throw Error('[Wallet] Invalid mnemonic')
     }
 
     const encryptedKey = encryptXChaCha20Poly1305(mnemonics, password)
@@ -84,51 +84,62 @@ export default class Wallet extends EventEmitter {
       ],
     })
 
-    console.log('wallet.ts: Wallet imported and stored. Unlocking...')
+    console.log('[Wallet] Wallet imported and stored. Unlocking...')
     await this.unlock(0, password)
     await this.sync()
   }
 
   async unlock(id: number, password: string): Promise<string> {
-    console.log(`wallet.ts: Unlocking wallet for account ID ${id}...`)
-
+    console.log(`[Wallet] Unlocking wallet for account ID ${id}...`)
     if (!this.encryptedKey) {
-      console.error('wallet.ts: No encrypted key available.')
+      console.error('[Wallet] No encrypted key available.')
       throw new Error('No encrypted key available.')
     }
 
     const mnemonic = new Mnemonic(await this.export(password))
     const extendedKey = new XPrv(mnemonic.toSeed())
-
-    console.log('wallet.ts: Derived extended key, generating public key...')
     const publicKey = await PublicKeyGenerator.fromMasterXPrv(extendedKey, false, BigInt(id))
-    console.log('wallet.ts: Public key generated:', publicKey.toString())
-
-    // Decrypt the key using the password
-    console.log(
-      'wallet.ts will decrypt key using encryptedKey and password',
-      this.encryptedKey,
-      password,
-    )
     const decryptedKey = decryptXChaCha20Poly1305(this.encryptedKey, password)
-
-    console.log('wallet.ts unlock  decryptedkey', decryptedKey)
-    // Store the session data, including the encryptedKey
 
     KeyManager.setKey(decryptedKey)
 
-    console.log("SessionStorage.set('session', {")
     await SessionStorage.set('session', {
       activeAccount: id,
       publicKey: publicKey.toString(),
       encryptedKey: this.encryptedKey, // Include the encrypted key here
     })
-
-    console.log('SessionStorage.set Complete')
-
     await this.sync()
 
-    return decryptedKey // Return the decrypted key for use in the component
+    console.log('[Wallet] Deriving all accounts from mnemonic....')
+    await this.deriveAccountsFromMnemonic()
+
+    return decryptedKey
+  }
+
+  async deriveAccountsFromMnemonic(): Promise<any[]> {
+    const decryptedKey = KeyManager.getKey()
+    const mnemonic = new Mnemonic(decryptedKey)
+    const seed = mnemonic.toSeed()
+    const masterKey = new XPrv(seed)
+    const coinType = 111111
+    const derivedAccounts = []
+
+    for (let accountIndex = 0; accountIndex < 5; accountIndex++) {
+      const accountPath = `m/44'/${coinType}'/${accountIndex}'/0/0`
+      const accountPrivateKey = masterKey.derivePath(accountPath)
+      const publicKey = PublicKeyGenerator.fromMasterXPrv(
+        accountPrivateKey,
+        false,
+        BigInt(accountIndex),
+      )
+      derivedAccounts.push({
+        index: accountIndex,
+        publicKey: publicKey.toString(),
+      })
+    }
+
+    console.log('[Wallet] Derived accounts:', derivedAccounts)
+    return derivedAccounts
   }
 
   async export(password: string) {

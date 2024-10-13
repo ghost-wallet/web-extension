@@ -27,6 +27,7 @@ export default class Router {
       'wallet:create': (password) => wallet.create(password),
       'wallet:import': (mnemonic, password) => wallet.import(mnemonic, password),
       'wallet:unlock': (password) => wallet.unlock(0, password), // Returns Promise<string>
+      'wallet:deriveAccountsFromMnemonic': () => wallet.deriveAccountsFromMnemonic(),
       'wallet:export': (password) => wallet.export(password),
       'wallet:lock': () => wallet.lock(),
       'wallet:reset': () => wallet.reset(),

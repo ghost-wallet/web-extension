@@ -4,13 +4,13 @@ export default new (class KeyManager {
 
   // Store the decrypted key in memory
   setKey(decryptedKey: string) {
-    console.log('setting key', this.decryptedKey)
+    console.log('[KeyManager] Setting key', this.decryptedKey)
     this.decryptedKey = decryptedKey
   }
 
   // Retrieve the decrypted key from memory
   getKey(): string {
-    console.log('getting key', this.decryptedKey)
+    console.log('[KeyManager] Getting key', this.decryptedKey)
     if (!this.decryptedKey) {
       throw new Error('No decrypted key available. Please log in again.')
     }
