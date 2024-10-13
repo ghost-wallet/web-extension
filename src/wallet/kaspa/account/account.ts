@@ -97,7 +97,7 @@ export default class Account extends EventEmitter {
     })
 
     this.processor.addEventListener('pending', async (event) => {
-      console.log('Pending event data:', event.data) // Log to check the structure
+      console.log('[Account] TODO - Use this data to fix data?.utxoEntires ??:', event.data)
 
       // Adjust based on the actual structure of event.data TODO
       // @ts-ignore
@@ -115,7 +115,6 @@ export default class Account extends EventEmitter {
     })
 
     this.processor.addEventListener('balance', () => {
-      console.log('[Account.tsx] this.emit balance', this.balance)
       this.emit('balance', this.balance)
     })
   }

@@ -1,5 +1,5 @@
 import { Status } from '../kaspa/wallet'
-import { UTXO } from '../kaspa/account'
+import { UTXO } from '../kaspa/account/account'
 import { CustomInput } from '../kaspa/account/transactions'
 import { PriorityBuckets } from '../kaspa/node'
 

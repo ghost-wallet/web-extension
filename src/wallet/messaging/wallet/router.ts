@@ -1,6 +1,6 @@
 import type Wallet from '../../kaspa/wallet'
 import type Node from '../../kaspa/node'
-import type Account from '../../kaspa/account'
+import type Account from '../../kaspa/account/account'
 import type { Request, Response, RequestMappings, ResponseMappings } from '../messageMappings'
 import type Provider from './provider'
 

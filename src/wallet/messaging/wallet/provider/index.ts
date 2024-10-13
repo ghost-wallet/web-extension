@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill'
 import type { Request, Event, EventMappings } from '@/provider/protocol'
 import Windows from '@/wallet/messaging/wallet/provider/windows'
-import Account from '@/wallet/kaspa/account'
+import Account from '@/wallet/kaspa/account/account'
 import { EventEmitter } from 'events'
 
 export default class Provider extends EventEmitter {

@@ -22,9 +22,8 @@ export default class Node extends EventEmitter {
   }
 
   async getPriorityBuckets() {
-    console.log('[Node] Fetching priority fee rate buckets')
     const { estimate } = await this.rpcClient.getFeeEstimate({})
-    console.log('[Node] Fee estimate retrieved:', estimate)
+    console.log('[Node] Fee estimate:', estimate)
 
     const getBucketEstimate = (bucket: IFeerateBucket) => ({
       feeRate: bucket.feerate,
@@ -59,26 +58,26 @@ export default class Node extends EventEmitter {
   }
 
   async reconnect(nodeAddress: string) {
-    console.log(`[Node] Reconnecting to node at address: ${nodeAddress}`)
+    console.log(`[Node] Reconnecting to: ${nodeAddress}`)
 
     try {
       await this.rpcClient.disconnect()
       console.log('[Node] Disconnected from current node')
 
       if (!this.rpcClient.resolver) {
-        console.log('[Node] Setting up resolver for the node address')
+        console.log('[Node] Setting new resolver')
         this.rpcClient.setResolver(new Resolver())
       }
-      console.log('[Node] Setting network ID based on node address', nodeAddress)
+      console.log('[Node] Setting network ID for:', nodeAddress)
       this.rpcClient.setNetworkId(new NetworkId(nodeAddress))
 
-      console.log('[Node] Attempting to connect...')
+      console.log('[Node] Attempting to connect to:', nodeAddress)
 
       // Run connect in a long-running, independent process
       this.rpcClient
         .connect()
         .then(() => {
-          console.log('[Node] Connected to node, fetching server info...')
+          console.log('[Node] Successfully connected to:', nodeAddress)
           this.rpcClient
             .getServerInfo()
             .then(({ isSynced, hasUtxoIndex, networkId }) => {

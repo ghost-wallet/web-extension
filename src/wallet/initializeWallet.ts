@@ -1,6 +1,6 @@
 import Wallet from './kaspa/wallet'
 import Node from './kaspa/node'
-import Account from './kaspa/account'
+import Account from './kaspa/account/account'
 import RPC from './messaging/rpc'
 
 import load, { initConsolePanicHook } from '@/wasm'
