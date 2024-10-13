@@ -4,7 +4,7 @@ import Notifier from './wallet/notifications'
 import type { Request } from './messageMappings'
 import type Wallet from '../kaspa/wallet'
 import type Node from '../kaspa/node'
-import type Account from '../kaspa/account'
+import type Account from '../kaspa/account/account'
 import Provider from './wallet/provider'
 
 export default class RPC {

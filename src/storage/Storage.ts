@@ -28,13 +28,6 @@ export default abstract class Storage<IStorage extends Record<string, any> = Rec
     await this.storage.clear()
   }
 
-  async getAll(): Promise<IStorage> {
-    const result = await this.storage.get(null)
-    return Object.fromEntries(
-      Object.entries(result).map(([key, value]) => [key, JSON.parse(value)]),
-    ) as IStorage
-  }
-
   subscribeChanges<key extends keyof IStorage>(
     callback: (
       key: key,

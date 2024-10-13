@@ -18,9 +18,7 @@ export default class Addresses extends EventEmitter {
   }
 
   get allAddresses() {
-    const addresses = [...this.receiveAddresses, ...this.changeAddresses]
-    console.log('[Addresses] allAddresses:', addresses)
-    return addresses
+    return [...this.receiveAddresses, ...this.changeAddresses]
   }
 
   async import(publicKey: PublicKeyGenerator, accountId: number) {
@@ -45,27 +43,13 @@ export default class Addresses extends EventEmitter {
     )
 
     if (isReceive) {
-      const receiveAddresses = await this.publicKey.receiveAddressAsStrings(
-        this.networkId,
-        start,
-        end,
-      )
-      console.log('[Addresses] Derived receiveAddresses:', receiveAddresses)
-      return receiveAddresses
+      return this.publicKey.receiveAddressAsStrings(this.networkId, start, end)
     } else {
-      const changeAddresses = await this.publicKey.changeAddressAsStrings(
-        this.networkId,
-        start,
-        end,
-      )
-      console.log('[Addresses] Derived changeAddresses:', changeAddresses)
-      return changeAddresses
+      return this.publicKey.changeAddressAsStrings(this.networkId, start, end)
     }
   }
 
   async increment(receiveCount: number, changeCount: number, commit = true) {
-    console.log('[Addresses] Increment counts:', receiveCount, changeCount)
-
     const addresses = await Promise.all([
       this.derive(true, this.receiveAddresses.length, this.receiveAddresses.length + receiveCount),
       this.derive(false, this.changeAddresses.length, this.changeAddresses.length + changeCount),
@@ -86,8 +70,6 @@ export default class Addresses extends EventEmitter {
     const receiveIndex = this.receiveAddresses.indexOf(address)
     const changeIndex = this.changeAddresses.indexOf(address)
 
-    console.log('[Addresses] receiveIndex:', receiveIndex, 'changeIndex:', changeIndex)
-
     if (receiveIndex !== -1) {
       return [true, receiveIndex]
     } else if (changeIndex !== -1) {
@@ -102,25 +84,14 @@ export default class Addresses extends EventEmitter {
     this.networkId = networkId
     this.receiveAddresses = await this.derive(true, 0, this.receiveAddresses.length)
     this.changeAddresses = await this.derive(false, 0, this.changeAddresses.length)
-
-    console.log('[Addresses] Updated receiveAddresses after network change:', this.receiveAddresses)
-    console.log('[Addresses] Updated changeAddresses after network change:', this.changeAddresses)
   }
 
   reset() {
-    console.log('[Addresses] Resetting Addresses state')
     delete this.publicKey
     delete this.accountId
 
     this.receiveAddresses = []
     this.changeAddresses = []
-
-    console.log(
-      '[Addresses] Reset complete. receiveAddresses:',
-      this.receiveAddresses,
-      'changeAddresses:',
-      this.changeAddresses,
-    )
   }
 
   private async commit() {
@@ -130,13 +101,6 @@ export default class Addresses extends EventEmitter {
 
     account.receiveCount = this.receiveAddresses.length
     account.changeCount = this.changeAddresses.length
-
-    console.log(
-      '[Addresses] Updated account receiveCount:',
-      account.receiveCount,
-      'changeCount:',
-      account.changeCount,
-    )
 
     await LocalStorage.set('wallet', wallet)
   }

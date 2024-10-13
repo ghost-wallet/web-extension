@@ -98,7 +98,7 @@ export default class Wallet extends EventEmitter {
 
     const mnemonic = new Mnemonic(await this.export(password))
     const extendedKey = new XPrv(mnemonic.toSeed())
-    const publicKey = await PublicKeyGenerator.fromMasterXPrv(extendedKey, false, BigInt(id))
+    const publicKey = PublicKeyGenerator.fromMasterXPrv(extendedKey, false, BigInt(id))
     const decryptedKey = decryptXChaCha20Poly1305(this.encryptedKey, password)
 
     KeyManager.setKey(decryptedKey)
@@ -143,11 +143,10 @@ export default class Wallet extends EventEmitter {
   }
 
   async export(password: string) {
-    console.log('wallet.ts: Exporting wallet...')
     const wallet = await LocalStorage.get('wallet', undefined)
 
     if (!wallet) {
-      console.error('wallet.ts: Wallet not initialized.')
+      console.error('[Wallet] Error exporting wallet')
       throw Error('Wallet is not initialized')
     }
 
@@ -155,11 +154,9 @@ export default class Wallet extends EventEmitter {
   }
 
   async lock() {
-    console.log('wallet.ts: Locking wallet...')
     await SessionStorage.remove('session')
     KeyManager.clearKey() // Clear the decrypted key from memory
     await this.sync()
-    console.log('wallet.ts: Wallet locked.')
   }
 
   async reset() {
