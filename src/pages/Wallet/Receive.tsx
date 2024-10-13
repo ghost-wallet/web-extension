@@ -32,7 +32,7 @@ export default function Receive() {
             <textarea
               readOnly
               value={kaspa.addresses[0][kaspa.addresses[0].length - 1]}
-              className="w-72 border-none resize-none text-base text-mutedtext bg-transparent"
+              className="w-72 h-20 border-none resize-none text-base text-mutedtext bg-transparent"
             />
             <div className="relative ml-2">
               <button

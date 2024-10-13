@@ -28,10 +28,10 @@ export default class Addresses extends EventEmitter {
     this.publicKey = publicKey
     this.accountId = accountId
 
-    const account = (await LocalStorage.get('wallet', undefined))!.accounts[accountId]
-    console.log('[Addresses] Imported account data:', account)
-    console.log('[Addresses] Starting increment...')
+    const accounts = (await LocalStorage.get('wallet', undefined))!.accounts
+    console.log('[Addresses] Accounts from LocalStorage', accounts)
 
+    const account = accounts[accountId]
     await this.increment(account.receiveCount, account.changeCount, false)
   }
 
