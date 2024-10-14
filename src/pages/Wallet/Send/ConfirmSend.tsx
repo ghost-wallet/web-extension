@@ -4,8 +4,8 @@ import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import BackButton from '@/components/BackButton'
 import TokenDetails from '@/components/TokenDetails'
+import RecipientAddress from '@/components/RecipientAddress' // Import the new component
 import useKaspa from '@/hooks/useKaspa'
-import { truncateAddress } from '@/utils/formatting'
 
 const ConfirmSend: React.FC = () => {
   const location = useLocation()
@@ -130,9 +130,7 @@ const ConfirmSend: React.FC = () => {
           <div className="bg-bgdarker rounded-md p-4">
             <div className="flex justify-between">
               <span className="text-base font-lato text-mutedtext">To</span>
-              <span className="text-base font-lato text-primarytext">
-                {truncateAddress(recipient)}
-              </span>
+              <RecipientAddress address={recipient} /> {/* Use the new component */}
             </div>
           </div>
 

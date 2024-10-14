@@ -2,6 +2,7 @@ import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
+import KaspaAddress from '@/components/KaspaAddress' // Import the new KaspaAddress component
 
 const Sent: React.FC = () => {
   const location = useLocation()
@@ -28,12 +29,9 @@ const Sent: React.FC = () => {
         {amount} {token.tick} was successfully sent to
       </p>
 
-      <textarea
-        className="w-full bg-bgdarker text-mutedtext text-base font-lato p-2 border border-muted rounded resize-none"
-        readOnly
-        rows={3}
-        value={recipient}
-      />
+      <div className="flex flex-col items-center justify-center relative w-full">
+        <KaspaAddress address={recipient} />
+      </div>
 
       <a
         href={`https://explorer.kaspa.org/txs/${txnId}`}
