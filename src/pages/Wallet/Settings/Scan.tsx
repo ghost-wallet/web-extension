@@ -1,11 +1,13 @@
 import React from 'react'
 import useKaspa from '@/hooks/useKaspa'
 
-const LogOut: React.FC = () => {
+const Scan: React.FC = () => {
   const { request } = useKaspa()
 
   const handleScan = () => {
-    request('account:scan', []).catch((error) => console.error('Error locking wallet:', error))
+    request('account:scan', []).catch((error) =>
+      console.error('[Scan] Error doing account scan:', error),
+    )
   }
 
   return (
@@ -20,4 +22,4 @@ const LogOut: React.FC = () => {
   )
 }
 
-export default LogOut
+export default Scan
