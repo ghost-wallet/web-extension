@@ -8,7 +8,6 @@ export interface RequestMappings {
   'wallet:create': [string] // Password
   'wallet:import': [string, string] // Mnemo, Password
   'wallet:unlock': [string] // Password
-  'wallet:deriveAccountsFromMnemonic': []
   'wallet:export': [string] // Password
   'wallet:lock': []
   'wallet:reset': []
@@ -40,7 +39,6 @@ export interface ResponseMappings {
   'wallet:create': string
   'wallet:import': void
   'wallet:unlock': string // Updated to return a string (decrypted key)
-  'wallet:deriveAccountsFromMnemonic': { index: number; publicKey: string }[]
   'wallet:export': string
   'wallet:lock': void
   'wallet:reset': void

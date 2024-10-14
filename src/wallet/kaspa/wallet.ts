@@ -6,6 +6,7 @@ import {
   Mnemonic,
   PublicKeyGenerator,
   XPrv,
+  createAddress,
 } from '@/wasm'
 import LocalStorage from '@/storage/LocalStorage'
 import SessionStorage from '@/storage/SessionStorage'
@@ -99,8 +100,8 @@ export default class Wallet extends EventEmitter {
     }
 
     const mnemonic = new Mnemonic(await this.export(password))
-    const extendedKey = new XPrv(mnemonic.toSeed())
-    const publicKey = PublicKeyGenerator.fromMasterXPrv(extendedKey, false, BigInt(id))
+    const xPrv = new XPrv(mnemonic.toSeed())
+    const publicKey = PublicKeyGenerator.fromMasterXPrv(xPrv, false, BigInt(id))
     const decryptedKey = decryptXChaCha20Poly1305(this.encryptedKey, password)
 
     KeyManager.setKey(decryptedKey)
@@ -112,36 +113,43 @@ export default class Wallet extends EventEmitter {
     })
     await this.sync()
 
-    console.log('[Wallet] Deriving all accounts from mnemonic....')
-    await this.deriveAccountsFromMnemonic()
+    // console.log('[Wallet] Deriving all accounts from mnemonic....')
+    // await this.deriveAllAddressesFromXPrv(xPrv, 'mainnet', 10)
 
     return decryptedKey
   }
 
-  async deriveAccountsFromMnemonic(): Promise<any[]> {
-    const decryptedKey = KeyManager.getKey()
-    const mnemonic = new Mnemonic(decryptedKey)
-    const seed = mnemonic.toSeed()
-    const masterKey = new XPrv(seed)
-    const coinType = 111111
-    const derivedAccounts = []
+  async deriveAllAddressesFromXPrv(xprv: XPrv, network: string, maxAddresses: number) {
+    const coinType = 111111 // Kaspa coin type for BIP44
+    const accountIndex = 0 // Account 0
+    //TODO figure out how to get addresses that have balances or utxos
+    const accountPath = `m/44'/${coinType}'/${accountIndex}'/0/0`
 
-    for (let accountIndex = 0; accountIndex < 5; accountIndex++) {
-      const accountPath = `m/44'/${coinType}'/${accountIndex}'/0/0`
-      const accountPrivateKey = masterKey.derivePath(accountPath)
-      const publicKey = PublicKeyGenerator.fromMasterXPrv(
-        accountPrivateKey,
-        false,
-        BigInt(accountIndex),
-      )
-      derivedAccounts.push({
-        index: accountIndex,
+    // Derive the account private key from the master key
+    const accountPrivateKey = xprv.derivePath(accountPath)
+
+    // Create a PublicKeyGenerator for deriving public keys
+    const publicKeyGenerator = PublicKeyGenerator.fromMasterXPrv(
+      accountPrivateKey,
+      false,
+      BigInt(accountIndex),
+    )
+
+    const derivedAddresses = []
+
+    // Derive receive addresses (external chain, 0)
+    for (let index = 0; index < maxAddresses; index++) {
+      const publicKey = publicKeyGenerator.receivePubkey(index)
+      const address = createAddress(publicKey.toString(), network).toString()
+      derivedAddresses.push({
+        index,
         publicKey: publicKey.toString(),
+        address,
       })
+      console.log(`[Wallet] Derived Receive Address ${address} at index ${index}`)
     }
 
-    console.log('[Wallet] Derived accounts:', derivedAccounts)
-    return derivedAccounts
+    return derivedAddresses
   }
 
   async export(password: string) {

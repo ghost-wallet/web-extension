@@ -95,17 +95,18 @@ const ConfirmSend: React.FC = () => {
         updatedTransactions,
       )
       const signedTransactions = await request('account:sign', [updatedTransactions])
-      console.log('Transaction signed:', signedTransactions)
+      console.log('[ConfirmSend] Transaction signed:', signedTransactions)
 
       // Submit the transaction
-      await request('account:submitContextful', [signedTransactions])
-      console.log('Transaction submitted successfully')
+      const submitContextful = await request('account:submitContextful', [signedTransactions])
+      const txnId = submitContextful[0]
+      console.log('[ConfirmSend] Transaction submitted successfully', txnId)
 
       navigate('/send/crypto/confirm/sent', {
-        state: { token, amount, recipient },
+        state: { token, amount, recipient, txnId },
       })
     } catch (err) {
-      console.error('Error during transaction confirmation:', err)
+      console.error('[ConfirmSend] Error during transaction confirmation:', err)
       setError('Failed to confirm and submit transaction.')
     } finally {
       setLoading(false)
