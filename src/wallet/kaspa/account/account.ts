@@ -29,6 +29,7 @@ export default class Account extends EventEmitter {
     this.context = new UtxoContext({ processor: this.processor })
     this.addresses = new Addresses(this.context, node.networkId)
     this.transactions = new Transactions(node.rpcClient, this.context, this.addresses)
+    this.transactions.setAccount(this)
 
     node.on('network', async (networkId: string) => {
       await this.addresses.changeNetwork(networkId)

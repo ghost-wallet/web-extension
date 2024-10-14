@@ -19,12 +19,14 @@ const ConfirmSendKRC20: React.FC = () => {
 
   const handleConfirmClick = useCallback(() => {
     request('account:writeInscription', [recipient, token.tick, amount, token.dec])
-      .then((scriptAddress) => {
-        console.log(
-          '[ConfirmSendKRC20] account write inscription success. Returning scriptAddress:',
-          scriptAddress,
-        )
-        setCommitAddress(scriptAddress)
+      .then((response) => {
+        console.log('[ConfirmSendKRC20] write inscription success. Response:', response)
+        // @ts-ignore
+        // const { script, scriptAddress } = response
+        // setCommitAddress(scriptAddress)
+        // setScript(script)
+
+        //TODO show transaction id on response here. Update the backend response
       })
       .catch((err) => {
         setError(err.message || 'Error occurred transferring KRC20 token.')
@@ -35,23 +37,6 @@ const ConfirmSendKRC20: React.FC = () => {
   const handleCancelClick = () => {
     navigate('/wallet')
   }
-
-  // TODO: invoke transaction
-  // const handleCommitment = useCallback(async () => {
-  //   try {
-  //     const commitment = await invoke('transact', [[[commitAddress!, '0.2']]])
-  //     const transaction = JSON.parse(commitment)
-  //     setCommit(transaction.id)
-  //     toast.success('Committed token transfer request successfully!', {
-  //       action: {
-  //         label: 'Copy',
-  //         onClick: () => navigator.clipboard.writeText(transaction.id),
-  //       },
-  //     })
-  //   } catch (error) {
-  //     toast.error(`Oops! Something went wrong with your wallet: ${error}`)
-  //   }
-  // }, [commitAddress, invoke])
 
   return (
     <>

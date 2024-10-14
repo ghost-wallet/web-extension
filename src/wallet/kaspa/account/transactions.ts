@@ -19,6 +19,7 @@ import Addresses from './addresses'
 import EventEmitter from 'events'
 import KeyManager from '@/wallet/kaspa/KeyManager'
 import { Inscription } from '@/wallet/kaspa/krc20/Inscription'
+import Account from '@/wallet/kaspa/account/account'
 
 export interface CustomInput {
   address: string
@@ -37,6 +38,7 @@ export default class Transactions extends EventEmitter {
   kaspa: RpcClient
   context: UtxoContext
   addresses: Addresses
+  account: Account | null = null
   encryptedKey: string | undefined
   accountId: number | undefined
 
@@ -48,6 +50,10 @@ export default class Transactions extends EventEmitter {
     this.kaspa = kaspa
     this.context = context
     this.addresses = addresses
+  }
+
+  setAccount(account: Account) {
+    this.account = account
   }
 
   async import(encryptedKey: string, accountId: number) {
@@ -153,38 +159,59 @@ export default class Transactions extends EventEmitter {
   }
 
   async writeInscription(recipient: string, ticker: string, amount: number, decimal: number) {
-    console.log('[Transactions] addresses', this.addresses)
-    console.log(
-      '[Transactions] starting writeInscription with four fields:',
-      recipient,
-      ticker,
-      amount,
-      decimal,
-    )
+    console.log('[Transactions] Writing inscription....')
+    const amountToSend = BigInt(+amount * 10 ** +decimal).toString()
+
     const inscription = new Inscription('transfer', {
       tick: ticker,
-      amt: BigInt(+amount * 10 ** +decimal).toString(),
+      amt: amountToSend,
       to: recipient.toString(),
     })
-    console.log('[Transactions] new Inscription built:', inscription)
 
-    const script = new ScriptBuilder()
-    console.log('[Transactions] new script built:', script)
-
+    let script = new ScriptBuilder()
     const senderAddress = this.addresses.receiveAddresses[0]
-    console.log('[Transactions] senders address:', senderAddress)
-
     const pubKey = XOnlyPublicKey.fromAddress(new Address(senderAddress)).toString()
-    console.log('[Transactions] public key for sender address:', pubKey)
     inscription.write(script, pubKey)
 
     const scriptAddress = addressFromScriptPublicKey(
       script.createPayToScriptHashScript(),
       this.addresses.networkId,
     )!.toString()
-    console.log('[Transactions] scriptAddress:', scriptAddress)
 
-    return scriptAddress
+    // const outputs = [
+    //   {
+    //     address: scriptAddress,  // The P2SH address you generated
+    //     amount: amountToSend,    // Amount in smallest denomination (satoshi-like units)
+    //   },
+    // ];
+    console.log('[Transactions] this.account:', this.account)
+    const firstUtxo = this.account?.UTXOs
+    console.log('[Transactions] First UTXO:', firstUtxo)
+
+    // Fetch UTXOs (unspent transaction outputs) from sender's address
+
+    // Use the first available UTXO to fund this transaction
+    // const inputs = [
+    //   {
+    //     transactionId: utxos[0].txId,
+    //     index: utxos[0].index,
+    //     amount: utxos[0].amount,
+    //   },
+    // ];
+    //
+    // // Create the transaction using Kaspa WASM
+    // const transaction = this.account.createTransaction({
+    //   outputs,
+    //   inputs,
+    //   fee: '0.0001', // Define the fee as needed
+    // });
+    //
+    // console.log('[Transactions] Transaction created to send output to script address:', transaction);
+    //
+    // // Broadcast the transaction
+    // await this.account.sendTransaction(transaction);
+    //
+    // return transaction;
   }
 
   reset() {
