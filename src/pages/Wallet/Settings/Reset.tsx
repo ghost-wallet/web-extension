@@ -12,10 +12,10 @@ export default function Reset() {
   return (
     <div className="flex flex-col items-center gap-4">
       <button
-        className="bg-error text-secondarytext text-lg font-bold font-lato w-full py-3 rounded-[25px]"
+        className="bg-error hover:bg-errormuted text-secondarytext text-lg font-bold font-lato w-[170px] py-3 rounded-[25px]"
         onClick={() => setShowPopup(true)}
       >
-        Reset Wallet
+        Reset wallet
       </button>
 
       {showPopup && (

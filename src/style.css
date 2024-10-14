@@ -46,6 +46,7 @@ main {
 
     /* Additional Colors */
     --color-error: #ff4d4d;
+    --color-error-muted: #b33a3a;
     --color-success: #4caf50;
     --color-warning: #ffd166;
     --color-muted: #6e6e6e; /* Darker muted color */

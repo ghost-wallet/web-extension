@@ -3,6 +3,7 @@ import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import Network from '@/pages/Wallet/Settings/Network'
 import Currency from '@/pages/Wallet/Settings/Currency'
+import Scan from '@/pages/Wallet/Settings/Scan'
 import LogOut from '@/pages/Wallet/Settings/LogOut'
 import Reset from '@/pages/Wallet/Settings/Reset'
 
@@ -14,11 +15,14 @@ export default function Settings() {
           <h1 className="text-primarytext text-3xl font-rubik text-center mb-4">Settings</h1>
           <Network />
           <Currency />
-          <div className="mt-24 flex flex-col w-full">
-            <Reset />
+          <div className="mt-16 flex flex-col">
+            <Scan />
           </div>
-          <div className="mt-2 flex flex-col w-full">
+          <div className="mt-1 flex flex-col">
             <LogOut />
+          </div>
+          <div className="mt-1 flex flex-col">
+            <Reset />
           </div>
         </div>
       </AnimatedMain>

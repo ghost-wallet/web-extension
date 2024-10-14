@@ -29,6 +29,7 @@ module.exports = {
 
         // Additional Colors
         error: 'var(--color-error)',
+        errormuted: 'var(--color-error-muted)',
         success: 'var(--color-success)',
         warning: 'var(--color-warning)',
         muted: 'var(--color-muted)',
