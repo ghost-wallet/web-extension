@@ -1,6 +1,7 @@
 import { PublicKeyGenerator, UtxoContext } from '@/wasm'
 import LocalStorage from '@/storage/LocalStorage'
 import { EventEmitter } from 'events'
+import SessionStorage from '@/storage/SessionStorage'
 
 export default class Addresses extends EventEmitter {
   context: UtxoContext
@@ -34,13 +35,12 @@ export default class Addresses extends EventEmitter {
   }
 
   async derive(isReceive: boolean, start: number, end: number) {
-    if (!this.publicKey) {
-      throw Error('No active account')
-    }
+    const session = await SessionStorage.get('session', undefined)
 
-    console.log(
-      `[Addresses] Deriving addresses: ${isReceive ? 'receive' : 'change'}, start: ${start}, end: ${end}`,
-    )
+    if (!session?.publicKey) {
+      throw Error('[Addresses] No publicKey in SessionStorage')
+    }
+    this.publicKey = PublicKeyGenerator.fromXPub(session.publicKey)
 
     if (isReceive) {
       return this.publicKey.receiveAddressAsStrings(this.networkId, start, end)

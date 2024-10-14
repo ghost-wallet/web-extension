@@ -21,7 +21,7 @@ const ConfirmSend: React.FC = () => {
 
   // Utility function to truncate the recipient address
   const truncateAddress = (address: string) => {
-    return `${address.slice(0, 10)}...${address.slice(-4)}`
+    return `${address.slice(0, 12)}.....${address.slice(-8)}`
   }
 
   const fee = useMemo(() => {
