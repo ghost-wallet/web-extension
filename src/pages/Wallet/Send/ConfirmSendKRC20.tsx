@@ -5,6 +5,10 @@ import BottomNav from '@/components/BottomNav'
 import BackButton from '@/components/BackButton'
 import TokenDetails from '@/components/TokenDetails'
 import { truncateAddress } from '@/utils/formatting'
+import { Inscription } from 'kasplexbuilder'
+import * as kaspa from '../../../wasm'
+import kapsajs_wasm from '../../../wasm/kaspa.js?url'
+import kapsabg_wasm from '../../../wasm/kaspa_bg.wasm?url'
 
 const ConfirmSendKRC20: React.FC = () => {
   const location = useLocation()
@@ -15,6 +19,29 @@ const ConfirmSendKRC20: React.FC = () => {
 
   const handleConfirmClick = () => {
     console.log('[ConfirmSendKRC20] Confirm clicked!')
+    console.log("[ConfirmSendKRC20] WASM js Path ", kapsajs_wasm);
+    console.log("[ConfirmSendKRC20] WASM bg Path ", kapsabg_wasm);
+    kaspa.default(kapsabg_wasm).then(r => console.log('[ConfirmSendKRC20] default success! ', r.toString()));
+    const script = new kaspa.ScriptBuilder();
+    console.log('[ConfirmSendKRC20] ScriptBuilder success! ', script)
+    const address = new kaspa.Address("kaspa:qqf8sr34pz5u4rvwfru8842yknfp2d2nwv2acyww2dtd6jr30dk6yfhhnn3x7")
+    console.log('[ConfirmSendKRC20] Address success! ', address)
+    const publicKey = kaspa.XOnlyPublicKey.fromAddress(address).toString()
+    console.log('[ConfirmSendKRC20] XOnlyPublicKey success! ', publicKey)
+    const inscription = new Inscription(
+      'transfer', {
+        tick: token.tick,
+        amt: BigInt(+amount * (10 ** +token.dec)).toString(),
+        to: recipient,
+      })
+    console.log('[ConfirmSendKRC20] Inscription success! ', inscription)
+    inscription.write(script, publicKey)
+    console.log('[ConfirmSendKRC20] Inscription.write success! ', inscription)
+    const scriptAddress = kaspa.addressFromScriptPublicKey(script.createPayToScriptHashScript(), 'mainnet')!.toString()
+    console.log('[ConfirmSendKRC20] addressFromScriptPublicKey success! ', inscription)
+    const commitment = localStorage.getItem(scriptAddress)
+    console.log('[ConfirmSendKRC20] locaStorage.get success! ', commitment)
+
   }
 
   const handleCancelClick = () => {
