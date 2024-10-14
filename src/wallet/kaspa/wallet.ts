@@ -176,12 +176,6 @@ export default class Wallet extends EventEmitter {
     await this.sync()
   }
 
-  async lockWallet() {
-    this.status = Status.Locked
-    console.log('[Wallet] Lock wallet and set status to:', this.status)
-    this.emit('status', this.status)
-  }
-
   validate(address: string): boolean {
     console.log('[Wallet] Validating address:', address)
     try {
@@ -199,7 +193,7 @@ export default class Wallet extends EventEmitter {
         console.log('[Wallet] Session active:', newValue)
       } else {
         console.log('[Wallet] Session expired or removed. Locking wallet.')
-        await this.lockWallet()
+        await this.sync()
       }
     })
   }
