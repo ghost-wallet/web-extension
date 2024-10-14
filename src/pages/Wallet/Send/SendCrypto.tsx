@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
@@ -8,6 +8,8 @@ import TokenDetails from '@/components/TokenDetails'
 import useKaspa from '@/hooks/useKaspa'
 import useURLParams from '@/hooks/useURLParams'
 import { Input as KaspaInput } from '@/provider/protocol'
+import { validateRecipient, validateAmountToSend } from '@/utils/validation'
+import { useFeeRate } from '@/hooks/useFeeRate'
 
 const SendCrypto: React.FC = () => {
   const location = useLocation()
@@ -16,43 +18,17 @@ const SendCrypto: React.FC = () => {
   const { request } = useKaspa()
   const [hash, params] = useURLParams()
 
-  // Check for missing or incomplete token information
-  if (!token || !token.tick || !token.balance || !token.dec) {
-    return <div>Token information is missing or incomplete.</div>
-  }
-
-  // Calculate max amount based on token type
   const maxAmount = token.tick === 'KASPA' ? token.balance : formatBalance(token.balance, token.dec)
 
-  // State management
   const [inputs] = useState<KaspaInput[]>(
     params.get('inputs') ? JSON.parse(params.get('inputs')!) : [],
   )
   const [outputs, setOutputs] = useState<[string, string][]>([['', '']])
-  const [error, setError] = useState<string | null>(null)
-  const [transactions, setTransactions] = useState<string[]>([])
-  const [feeRate, setFeerate] = useState(1)
+  const [recipientError, setRecipientError] = useState<string | null>(null)
+  const [amountError, setAmountError] = useState<string | null>(null)
   const [fee] = useState(params.get('fee') ?? '0')
 
-  useEffect(() => {
-    // Fetch the standard fee rate when the component loads
-    request('node:priorityBuckets', [])
-      .then((buckets) => setFeerate(buckets.standard.feeRate))
-      .catch((err) => {
-        console.error('Error fetching standard fee rate:', err)
-        setError('Failed to retrieve the fee rate.')
-      })
-  }, [request])
-
-  const validateRecipient = async (address: string) => {
-    try {
-      const isValid = await request('wallet:validate', [address])
-      setError(isValid ? null : 'Invalid Kaspa address')
-    } catch (err) {
-      console.error('Error validating address:', err)
-      setError('Error validating address.')
-    }
-  }
+  const { feeRate, error: feeRateError } = useFeeRate()
 
   const handleRecipientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -63,10 +39,9 @@ const SendCrypto: React.FC = () => {
     })
 
     if (token.tick !== 'KASPA') {
-      validateRecipient(value)
+      validateRecipient(request, value, setRecipientError)
     } else {
-      console.log('handleRecipientChange setError to null')
-      setError(null) // Clear error if it's KASPA as validation isn't needed
+      setRecipientError(null)
     }
   }
 
@@ -78,60 +53,54 @@ const SendCrypto: React.FC = () => {
       return newOutputs
     })
 
-    if (token.tick === 'KASPA') {
-      // If the token is KASPA, no need to validate the amount; clear any errors
-      if (value.length === 0 || parseFloat(value) <= 0) {
-        setError('Amount must be greater than 0.')
-      } else {
-        setError(null)
-      }
-    } else {
-      const numericValue = parseFloat(value)
-      const formattedBalance = parseFloat(formatBalance(token.balance, token.dec))
-
-      if (isNaN(numericValue) || numericValue <= 0 || numericValue > formattedBalance) {
-        setError('Amount must be greater than 0 and within available balance.')
-      } else {
-        setError(null)
-      }
-    }
+    validateAmountToSend(token.tick, value, parseFloat(maxAmount), setAmountError)
   }
 
   const handleMaxClick = () => {
-    const maxAmountStr = maxAmount.toString()
     setOutputs((prevOutputs) => {
       const newOutputs = [...prevOutputs]
-      newOutputs[0][1] = maxAmountStr
+      newOutputs[0][1] = maxAmount.toString()
       return newOutputs
     })
-    console.log('handleMaxClick setError to null')
-    setError(null)
+    setAmountError(null)
   }
 
   const initiateSend = useCallback(() => {
     if (!feeRate) return
-    console.log('initiateSend outputs feerate fee inputs', outputs, feeRate, fee, inputs)
-
     request('account:create', [outputs, feeRate, fee, inputs])
       .then((transactions) => {
-        setTransactions(transactions)
         navigate('/send/crypto/confirm', {
           state: {
             token,
             recipient: outputs[0][0],
             amount: outputs[0][1],
             transactions,
-            inputs, // Pass the inputs state
+            inputs,
           },
         })
       })
       .catch((err) => {
         console.error(`Error occurred: ${err}`)
-        setError(`Error occurred: ${err}`)
+        setRecipientError(`Error: ${err}`)
       })
   }, [outputs, token, navigate, request, feeRate, fee, inputs])
 
-  const isButtonEnabled = outputs[0][0].length > 0 && outputs[0][1].length > 0 && !error
+  const handleContinue = () => {
+    if (token.tick === 'KASPA') {
+      initiateSend()
+    } else {
+      navigate('/send/crypto/confirmkrc20', {
+        state: {
+          token,
+          recipient: outputs[0][0],
+          amount: outputs[0][1],
+        },
+      })
+    }
+  }
+
+  const isButtonEnabled =
+    outputs[0][0].length > 0 && outputs[0][1].length > 0 && !recipientError && !amountError
 
   return (
     <>
@@ -155,7 +124,7 @@ const SendCrypto: React.FC = () => {
             type="text"
             value={outputs[0][0]}
             onChange={handleRecipientChange}
-            placeholder="Recipient's Kaspa Address"
+            placeholder="Recipient's Address"
             className="w-full p-2 border border-muted bg-transparent text-base text-primarytext placeholder-mutedtext rounded"
           />
 
@@ -177,14 +146,21 @@ const SendCrypto: React.FC = () => {
           </div>
 
           <div className="min-h-[24px] mt-1 flex items-center justify-center">
-            {error && <div className="text-base font-lato text-error">{error}</div>}
+            {/* Error section with fixed height */}
+            <div className="h-6 flex items-center">
+              {(recipientError || amountError) && (
+                <div className="text-base font-lato text-error">
+                  {recipientError || amountError}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
         <div className="px-6 pt-6">
           <button
             type="button"
-            onClick={initiateSend}
+            onClick={handleContinue}
             disabled={!isButtonEnabled}
             className={`w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] ${
               isButtonEnabled

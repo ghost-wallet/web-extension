@@ -21,7 +21,7 @@ export default class Account extends EventEmitter {
 
   constructor(node: Node) {
     super()
-    console.log('constructor Account, which uses Node')
+    console.log('[Account] Setting up this.processor', node.rpcClient, node.networkId)
     this.processor = new UtxoProcessor({
       rpc: node.rpcClient,
       networkId: node.networkId,

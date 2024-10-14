@@ -12,6 +12,7 @@ import Receive from '@/pages/Wallet/Receive'
 import Swap from '@/pages/Wallet/Swap'
 import SendCrypto from '@/pages/Wallet/Send/SendCrypto'
 import ConfirmSend from '@/pages/Wallet/Send/ConfirmSend'
+import ConfirmSendKRC20 from '@/pages/Wallet/Send/ConfirmSendKRC20'
 import Sent from '@/pages/Wallet/Send/Sent'
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
             <Route path="/send" element={<Send />} />
             <Route path="/send/crypto" element={<SendCrypto />} />
             <Route path="/send/crypto/confirm" element={<ConfirmSend />} />
+            <Route path="/send/crypto/confirmkrc20" element={<ConfirmSendKRC20 />} />
             <Route path="/send/crypto/confirm/sent" element={<Sent />} />
             <Route path="/receive" element={<Receive />} />
             <Route path="/swap" element={<Swap />} />

@@ -5,6 +5,7 @@ import BottomNav from '@/components/BottomNav'
 import BackButton from '@/components/BackButton'
 import TokenDetails from '@/components/TokenDetails'
 import useKaspa from '@/hooks/useKaspa'
+import { truncateAddress } from '@/utils/formatting'
 
 const ConfirmSend: React.FC = () => {
   const location = useLocation()
@@ -13,16 +14,6 @@ const ConfirmSend: React.FC = () => {
   const { request } = useKaspa()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-
-  // Check for missing or incomplete information based on token type
-  if (!token || !recipient || !amount || (token.tick === 'KASPA' && !transactions)) {
-    return <div>Transaction information is missing or incomplete.</div>
-  }
-
-  // Utility function to truncate the recipient address
-  const truncateAddress = (address: string) => {
-    return `${address.slice(0, 12)}.....${address.slice(-8)}`
-  }
 
   const fee = useMemo(() => {
     try {
@@ -38,7 +29,7 @@ const ConfirmSend: React.FC = () => {
       return Number(inputValue - outputValue) / 1e8 // Convert from smallest unit
     } catch (error) {
       console.error('Error calculating fee:', error)
-      return 0 // Return 0 as a fallback
+      return 0
     }
   }, [transactions, token.tick])
 
