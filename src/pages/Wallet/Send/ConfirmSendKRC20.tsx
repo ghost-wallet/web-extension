@@ -1,10 +1,11 @@
-import React, { useMemo, useCallback, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import BackButton from '@/components/BackButton'
 import TokenDetails from '@/components/TokenDetails'
 import { truncateAddress } from '@/utils/formatting'
+import useKaspa from '@/hooks/useKaspa'
 
 const ConfirmSendKRC20: React.FC = () => {
   const location = useLocation()
@@ -12,14 +13,45 @@ const ConfirmSendKRC20: React.FC = () => {
   const { token, recipient, amount } = location.state || {}
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const { request } = useKaspa()
+  const [script, setScript] = useState<string>()
+  const [commitAddress, setCommitAddress] = useState<string>()
 
-  const handleConfirmClick = () => {
-    console.log('[ConfirmSendKRC20] Confirm clicked!')
-  }
+  const handleConfirmClick = useCallback(() => {
+    request('account:writeInscription', [recipient, token.tick, amount, token.dec])
+      .then((scriptAddress) => {
+        console.log(
+          '[ConfirmSendKRC20] account write inscription success. Returning scriptAddress:',
+          scriptAddress,
+        )
+        setCommitAddress(scriptAddress)
+      })
+      .catch((err) => {
+        setError(err.message || 'Error occurred transferring KRC20 token.')
+        console.error('[ConfirmSendKRC20] error writing inscription:', err)
+      })
+  }, [request])
 
   const handleCancelClick = () => {
     navigate('/wallet')
   }
+
+  // TODO: invoke transaction
+  // const handleCommitment = useCallback(async () => {
+  //   try {
+  //     const commitment = await invoke('transact', [[[commitAddress!, '0.2']]])
+  //     const transaction = JSON.parse(commitment)
+  //     setCommit(transaction.id)
+  //     toast.success('Committed token transfer request successfully!', {
+  //       action: {
+  //         label: 'Copy',
+  //         onClick: () => navigator.clipboard.writeText(transaction.id),
+  //       },
+  //     })
+  //   } catch (error) {
+  //     toast.error(`Oops! Something went wrong with your wallet: ${error}`)
+  //   }
+  // }, [commitAddress, invoke])
 
   return (
     <>

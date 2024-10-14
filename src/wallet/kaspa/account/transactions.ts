@@ -10,10 +10,15 @@ import {
   signTransaction,
   Transaction,
   UtxoContext,
+  ScriptBuilder,
+  XOnlyPublicKey,
+  Address,
+  addressFromScriptPublicKey,
 } from '@/wasm'
 import Addresses from './addresses'
 import EventEmitter from 'events'
 import KeyManager from '@/wallet/kaspa/KeyManager'
+import { Inscription } from '@/wallet/kaspa/krc20/Inscription'
 
 export interface CustomInput {
   address: string
@@ -145,6 +150,41 @@ export default class Transactions extends EventEmitter {
 
     this.emit('transaction', transactions[transactions.length - 1])
     return submittedIds
+  }
+
+  async writeInscription(recipient: string, ticker: string, amount: number, decimal: number) {
+    console.log('[Transactions] addresses', this.addresses)
+    console.log(
+      '[Transactions] starting writeInscription with four fields:',
+      recipient,
+      ticker,
+      amount,
+      decimal,
+    )
+    const inscription = new Inscription('transfer', {
+      tick: ticker,
+      amt: BigInt(+amount * 10 ** +decimal).toString(),
+      to: recipient.toString(),
+    })
+    console.log('[Transactions] new Inscription built:', inscription)
+
+    const script = new ScriptBuilder()
+    console.log('[Transactions] new script built:', script)
+
+    const senderAddress = this.addresses.receiveAddresses[0]
+    console.log('[Transactions] senders address:', senderAddress)
+
+    const pubKey = XOnlyPublicKey.fromAddress(new Address(senderAddress)).toString()
+    console.log('[Transactions] public key for sender address:', pubKey)
+    inscription.write(script, pubKey)
+
+    const scriptAddress = addressFromScriptPublicKey(
+      script.createPayToScriptHashScript(),
+      this.addresses.networkId,
+    )!.toString()
+    console.log('[Transactions] scriptAddress:', scriptAddress)
+
+    return scriptAddress
   }
 
   reset() {

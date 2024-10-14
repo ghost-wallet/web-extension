@@ -23,6 +23,7 @@ export interface RequestMappings {
   'account:sign': [string[]]
   'account:submitContextful': [string[]]
   'account:scan': []
+  'account:writeInscription': [string, string, number, number]
   'provider:connect': [string]
   'provider:connection': []
   'provider:disconnect': []
@@ -54,6 +55,7 @@ export interface ResponseMappings {
   'account:sign': string[]
   'account:submitContextful': string[]
   'account:scan': void
+  'account:writeInscription': string
   'provider:connect': void
   'provider:connection': string
   'provider:disconnect': void
