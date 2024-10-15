@@ -253,7 +253,7 @@ export default class Transactions extends EventEmitter {
     )
     console.log('[Transactions] Reveal transaction ID:', revealResult.transactionId)
 
-    return { commitTxId: commitResult.transactionId, revealTxId: revealResult.transactionId }
+    return [commitResult.transactionId, revealResult.transactionId]
   }
 
   buildInscription(recipient: string, ticker: string, amount: number, decimal: number) {
