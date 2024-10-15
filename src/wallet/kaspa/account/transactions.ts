@@ -80,7 +80,7 @@ export default class Transactions extends EventEmitter {
       }
     }
 
-    const { transactions } = await createTransactions({
+    const preparedTxn = {
       priorityEntries,
       entries: this.context,
       outputs: outputs.map((output) => ({
@@ -90,7 +90,11 @@ export default class Transactions extends EventEmitter {
       changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
       feeRate,
       priorityFee: kaspaToSompi(fee)!,
-    })
+    }
+    console.log('[Transactions] create - doing createTransasctions with obj:', preparedTxn)
+    console.log('[Transactions] this.context:', this.context)
+
+    const { transactions } = await createTransactions(preparedTxn)
 
     await this.addresses.increment(0, 1)
 
@@ -158,60 +162,107 @@ export default class Transactions extends EventEmitter {
     return submittedIds
   }
 
-  async writeInscription(recipient: string, ticker: string, amount: number, decimal: number) {
-    console.log('[Transactions] Writing inscription....')
-    const amountToSend = BigInt(+amount * 10 ** +decimal).toString()
+  // Step 1: Commit Transaction
+  async commitTransaction(outputs: [string, string][], feeRate: number, fee: string) {
+    console.log('[Transactions] Creating commit transaction....')
 
-    const inscription = new Inscription('transfer', {
-      tick: ticker,
-      amt: amountToSend,
-      to: recipient.toString(),
-    })
+    const serializedPendingTransactions = await this.create(outputs, feeRate, fee)
+    console.log(
+      '[Transactions] Serialized Pending Commit Transaction:',
+      serializedPendingTransactions,
+    )
+
+    const signedTransactions = await this.sign(serializedPendingTransactions)
+    console.log('[Transactions] Signed Commit Transaction:', signedTransactions)
+
+    const submittedTransactionIds = await this.submitContextful(signedTransactions)
+    console.log(
+      '[Transactions] Commit Transaction submitted successfully:',
+      submittedTransactionIds,
+    )
+
+    return { transactionId: submittedTransactionIds[0], signedTransactions }
+  }
+
+  // Step 2: Reveal Transaction
+  async revealTransaction(
+    recipient: string,
+    ticker: string,
+    amount: number,
+    decimal: number,
+    commitTxId: string,
+  ) {
+    console.log('[Transactions] Revealing transaction with inscription....')
+
+    const inscription = this.buildInscription(recipient, ticker, amount, decimal)
 
     let script = new ScriptBuilder()
     const senderAddress = this.addresses.receiveAddresses[0]
     const pubKey = XOnlyPublicKey.fromAddress(new Address(senderAddress)).toString()
-    inscription.write(script, pubKey)
 
+    inscription.write(script, pubKey)
+    console.log('[Transactions] Inscription:', inscription)
+
+    const scriptPublicKey = script.createPayToScriptHashScript()
     const scriptAddress = addressFromScriptPublicKey(
-      script.createPayToScriptHashScript(),
+      scriptPublicKey,
       this.addresses.networkId,
     )!.toString()
+    console.log('[Transactions] scriptAddress:', scriptAddress)
 
-    // const outputs = [
-    //   {
-    //     address: scriptAddress,  // The P2SH address you generated
-    //     amount: amountToSend,    // Amount in smallest denomination (satoshi-like units)
-    //   },
-    // ];
-    console.log('[Transactions] this.account:', this.account)
-    const firstUtxo = this.account?.UTXOs
-    console.log('[Transactions] First UTXO:', firstUtxo)
+    const outputs: [string, string][] = [
+      [scriptAddress, '0.2'], // KRC20 Inscription output
+    ]
+    console.log('[Transactions] outputs for reveal:', outputs)
 
-    // Fetch UTXOs (unspent transaction outputs) from sender's address
+    const fee = '0.0001'
+    const feeRate = 1
+    const serializedPendingTransactions = await this.create(outputs, feeRate, fee)
+    console.log(
+      '[Transactions] Serialized Pending Reveal Transaction:',
+      serializedPendingTransactions,
+    )
 
-    // Use the first available UTXO to fund this transaction
-    // const inputs = [
-    //   {
-    //     transactionId: utxos[0].txId,
-    //     index: utxos[0].index,
-    //     amount: utxos[0].amount,
-    //   },
-    // ];
-    //
-    // // Create the transaction using Kaspa WASM
-    // const transaction = this.account.createTransaction({
-    //   outputs,
-    //   inputs,
-    //   fee: '0.0001', // Define the fee as needed
-    // });
-    //
-    // console.log('[Transactions] Transaction created to send output to script address:', transaction);
-    //
-    // // Broadcast the transaction
-    // await this.account.sendTransaction(transaction);
-    //
-    // return transaction;
+    const signedTransactions = await this.sign(serializedPendingTransactions)
+    console.log('[Transactions] Signed Reveal Transaction:', signedTransactions)
+
+    const submittedTransactionIds = await this.submitContextful(signedTransactions)
+    console.log(
+      '[Transactions] Reveal Transaction submitted successfully:',
+      submittedTransactionIds,
+    )
+
+    return { transactionId: submittedTransactionIds[0] }
+  }
+
+  async writeInscription(recipient: string, ticker: string, amount: number, decimal: number) {
+    console.log('[Transactions] Writing inscription....')
+
+    const commitOutputs: [string, string][] = [
+      [recipient, '0.2'], // Commit a placeholder output
+    ]
+    const commitResult = await this.commitTransaction(commitOutputs, 1, '0.0001')
+    console.log('[Transactions] Commit transaction ID:', commitResult.transactionId)
+
+    const revealResult = await this.revealTransaction(
+      recipient,
+      ticker,
+      amount,
+      decimal,
+      commitResult.transactionId,
+    )
+    console.log('[Transactions] Reveal transaction ID:', revealResult.transactionId)
+
+    return { commitTxId: commitResult.transactionId, revealTxId: revealResult.transactionId }
+  }
+
+  buildInscription(recipient: string, ticker: string, amount: number, decimal: number) {
+    const amountToSend = BigInt(+amount * 10 ** +decimal).toString()
+    return new Inscription('transfer', {
+      tick: ticker,
+      amt: amountToSend,
+      to: recipient.toString(),
+    })
   }
 
   reset() {
