@@ -6,6 +6,7 @@ import Currency from '@/pages/Wallet/Settings/Currency'
 import Scan from '@/pages/Wallet/Settings/Scan'
 import LogOut from '@/pages/Wallet/Settings/LogOut'
 import Reset from '@/pages/Wallet/Settings/Reset'
+import CompoundUTXOs from '@/pages/Wallet/Settings/CompoundUTXOs'
 
 export default function Settings() {
   return (
@@ -15,8 +16,8 @@ export default function Settings() {
           <h1 className="text-primarytext text-3xl font-rubik text-center mb-4">Settings</h1>
           <Network />
           <Currency />
-          <div className="mt-16 flex flex-col">
-            <Scan />
+          <div className="mt-14 flex flex-col">
+            <CompoundUTXOs />
           </div>
           <div className="mt-1 flex flex-col">
             <LogOut />

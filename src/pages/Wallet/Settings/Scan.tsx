@@ -14,7 +14,7 @@ const Scan: React.FC = () => {
     <div className="flex flex-col items-center gap-2 mb-2">
       <button
         onClick={handleScan}
-        className="bg-primary hover:bg-secondary text-secondarytext text-lg font-bold font-lato w-[170px] px-8 py-3 rounded-[25px]"
+        className="bg-primary hover:bg-secondary text-secondarytext text-base font-semibold font-lato w-[240px] px-8 py-3 rounded-[25px]"
       >
         Scan
       </button>

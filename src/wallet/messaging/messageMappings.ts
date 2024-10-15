@@ -22,6 +22,7 @@ export interface RequestMappings {
   'account:create': [[string, string][], number, string, CustomInput[]?]
   'account:sign': [string[]]
   'account:submitContextful': [string[]]
+  'account:compoundUtxos': []
   'account:scan': []
   'account:writeInscription': [string, string, number, number]
   'provider:connect': [string]
@@ -54,6 +55,7 @@ export interface ResponseMappings {
   'account:create': string[]
   'account:sign': string[]
   'account:submitContextful': string[]
+  'account:compoundUtxos': void
   'account:scan': void
   'account:writeInscription': [string, string]
   'provider:connect': void

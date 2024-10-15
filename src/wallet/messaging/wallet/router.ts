@@ -47,6 +47,7 @@ export default class Router {
       'account:sign': (transactions) => account.transactions.sign(transactions),
       'account:submitContextful': (transactions) =>
         account.transactions.submitContextful(transactions),
+      'account:compoundUtxos': () => account.compoundUtxos(),
       'account:scan': () => account.scan(),
       'account:writeInscription': (recipient, ticker, amount, decimal) =>
         account.transactions.writeInscription(recipient, ticker, amount, decimal),

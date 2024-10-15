@@ -66,6 +66,73 @@ export default class Account extends EventEmitter {
     return [...pendingUTXOs, ...matureUTXOs]
   }
 
+  async compoundUtxos() {
+    console.log('[Account] Consolidating UTXOs across all change addresses...')
+
+    // Step 1: Fetch UTXOs from all change addresses
+    const changeAddresses = this.addresses.changeAddresses
+    const { entries } = await this.processor.rpc.getUtxosByAddresses(changeAddresses)
+
+    if (!entries || entries.length === 0) {
+      console.log('[Account] No UTXOs available for consolidation.')
+      return // Early return if no UTXOs to consolidate
+    }
+
+    // Optional: Only proceed if there are more than 1 UTXO to consolidate
+    if (entries.length < 2) {
+      console.log('[Account] Not enough UTXOs to consolidate. Skipping...')
+      return
+    }
+
+    console.log('[Account] UTXOs to consolidate:', entries)
+
+    // Step 2: Prepare the UTXO entry source (all UTXOs from change addresses)
+    const utxoEntrySource = entries.map((utxo) => ({
+      outpoint: {
+        transactionId: utxo.outpoint.transactionId,
+        index: utxo.outpoint.index,
+      },
+      amount: BigInt(utxo.amount), // UTXO amount as BigInt
+      scriptPublicKey: {
+        version: utxo.scriptPublicKey.version,
+        script: utxo.scriptPublicKey.script,
+      },
+      blockDaaScore: BigInt(utxo.blockDaaScore),
+      isCoinbase: utxo.isCoinbase,
+    }))
+
+    // Step 3: Define the output (consolidate to your original receive address)
+    const receiveAddress = this.addresses.receiveAddresses[0] // Use the original receive address
+    const totalAmount = utxoEntrySource.reduce((sum, utxo) => sum + utxo.amount, BigInt(0))
+
+    const outputs: [string, string][] = [
+      [receiveAddress, (Number(totalAmount) / 1e8 - 0.0001).toString()], // Consolidate to receive address, subtracting the fee
+    ]
+
+    console.log('[Account] Consolidating UTXOs to:', receiveAddress)
+
+    // Step 4: Create the transaction using `create()`
+    const fee = '0.0001' // Fee amount in KAS
+    const feeRate = 1 // Example fee rate
+
+    const serializedPendingTransactions = await this.transactions.create(outputs, feeRate, fee)
+    console.log('[Account] Serialized Consolidation Transaction:', serializedPendingTransactions)
+
+    // Step 5: Sign the consolidation transaction
+    const signedConsolidationTransaction = await this.transactions.sign(
+      serializedPendingTransactions,
+    )
+    console.log('[Account] Signed Consolidation Transaction:', signedConsolidationTransaction)
+
+    // Step 6: Submit the consolidation transaction
+    const consolidationTransactionId = await this.transactions.submitContextful(
+      signedConsolidationTransaction,
+    )
+    console.log('[Account] Consolidation transaction submitted:', consolidationTransactionId)
+
+    return consolidationTransactionId
+  }
+
   async scan(steps = 50, count = 10) {
     const scanAddresses = async (isReceive: boolean, startIndex: number) => {
       let foundIndex = 0
