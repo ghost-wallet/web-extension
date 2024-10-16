@@ -16,13 +16,17 @@ you can hold, send, receive, and trade KRC20 tokens. Ghost wallet is a Chrome-ba
 
 Install Bun from [NPM](https://www.npmjs.com/package/bun)
 
-`bun install`
+```
+bun install
+```
 
 ## Building
 
 Build the Chrome extension into a dist folder
 
-`bunx --bun vite build --minify false`
+```
+bunx --bun vite build --minify false
+```
 
 ## Deploying
 
