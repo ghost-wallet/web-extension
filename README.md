@@ -1,28 +1,34 @@
-# Ghost 🥮
+# Ghost Wallet - Browser Extension for Kaspa & KRC20 Tokens
 
-### 👛 Kaspa browser extension wallet for KRC20 tokens.
+## What is Ghost Wallet?
 
-## Features
+Ghost is a browser extension wallet designed for Kaspa and KRC20 tokens. With Ghost,
+you can hold, send, receive, and trade KRC20 tokens. Ghost wallet is a Chrome-based browser extension.
 
-- [x] Create wallet
-- [x] Import wallet
-- [x] Node selection, multiple networks
-- [x] Receive with QR code generation
+## The Wallet
+
+![Ghost Wallet Screenshot](/public/GhostToS.png)
+![Ghost Wallet Screenshot 2](/public/GhostWallet.png)
 
 ## Development
 
-Ensure you have Bun. If not, please install the latest version of Bun to proceed
-with the development process.
+## Installation
 
-Install the required Bun modules using the command `bun install`.
+Install Bun from [NPM](https://www.npmjs.com/package/bun)
 
-### Testing
+`bun install`
 
-To begin testing, execute `bun run dev` to run the development server. Then,
-utilize the contents of the dist folder as an unpacked extension in your browser
-for testing purposes.
+## Building
 
-### Building
+Build the Chrome extension into a dist folder
 
-To build it as an unpacked extension, execute `bun run build`. It will be built
-into dist folder. Load it into your chrome extensions.
+`bunx --bun vite build --minify false`
+
+## Deploying
+
+1. Go to chrome://extensions/
+2. Enable developer mode by clicking the toggle in the top right corner
+3. Click on "Load unpacked"
+4. Navigate to your project's root folder and select the `dist` folder
+
+

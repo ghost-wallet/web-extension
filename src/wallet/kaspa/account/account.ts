@@ -30,7 +30,7 @@ export default class Account extends EventEmitter {
     this.addresses = new Addresses(this.context, node.networkId)
     this.transactions = new Transactions(node.rpcClient, this.context, this.addresses)
     this.transactions.setAccount(this)
-
+    console.log('[Account] Initial context data:', this.context)
     node.on('network', async (networkId: string) => {
       await this.addresses.changeNetwork(networkId)
 
@@ -48,6 +48,7 @@ export default class Account extends EventEmitter {
   }
 
   get balance() {
+    console.log('[Account] Context data when balance is accessed:', this.context)
     return Number(this.context.balance?.mature ?? 0) / 1e8
   }
 
@@ -68,25 +69,15 @@ export default class Account extends EventEmitter {
 
   async compoundUtxos() {
     console.log('[Account] Consolidating UTXOs across all addresses...')
-
-    // Step 1: Fetch UTXOs from all addresses (receive + change addresses)
     const allAddresses = [...this.addresses.receiveAddresses, ...this.addresses.changeAddresses]
-    const { entries } = await this.processor.rpc.getUtxosByAddresses(allAddresses)
 
+    const { entries } = await this.processor.rpc.getUtxosByAddresses(allAddresses)
+    console.log('[Account] UTXOs:', entries)
     if (!entries || entries.length === 0) {
       console.log('[Account] No UTXOs available for consolidation.')
-      return // Early return if no UTXOs to consolidate
-    }
-
-    // Optional: Only proceed if there are more than 1 UTXO to consolidate
-    if (entries.length < 2) {
-      console.log('[Account] Not enough UTXOs to consolidate. Skipping...')
       return
     }
 
-    console.log('[Account] UTXOs to consolidate:', entries)
-
-    // Step 2: Prepare the UTXO entry source (all UTXOs from all addresses)
     const utxoEntrySource = entries.map((utxo) => ({
       outpoint: {
         transactionId: utxo.outpoint.transactionId,
@@ -101,11 +92,9 @@ export default class Account extends EventEmitter {
       isCoinbase: utxo.isCoinbase,
     }))
 
-    // Step 3: Define the output (consolidate to your primary receive address)
-    const receiveAddress = this.addresses.receiveAddresses[0] // Use the original receive address
+    const receiveAddress = this.addresses.receiveAddresses[0]
     const totalAmount = utxoEntrySource.reduce((sum, utxo) => sum + utxo.amount, BigInt(0))
 
-    // Handle fee: Fee in sompis (0.0001 KAS = 10000 sompis)
     const fee = BigInt(10000) // Fee as a BigInt (0.0001 KAS in sompis)
     const amountToSend = totalAmount - fee
 
@@ -116,17 +105,11 @@ export default class Account extends EventEmitter {
         'Required (including fee):',
         fee.toString(),
       )
-      return // Early return if no sufficient funds to cover fee
+      return
     }
 
-    // Convert the amount to send back to string for use in outputs
-    const outputs: [string, string][] = [
-      [receiveAddress, (amountToSend / BigInt(1e8)).toString()], // Convert back to KAS for the output
-    ]
+    const outputs: [string, string][] = [[receiveAddress, (amountToSend / BigInt(1e8)).toString()]]
 
-    console.log('[Account] Consolidating UTXOs to:', receiveAddress)
-
-    // Step 4: Create the transaction using `create()`
     const feeRate = 1 // Example fee rate
 
     try {
@@ -135,15 +118,10 @@ export default class Account extends EventEmitter {
         feeRate,
         (fee / BigInt(1e8)).toString(),
       )
-      console.log('[Account] Serialized Consolidation Transaction:', serializedPendingTransactions)
 
-      // Step 5: Sign the consolidation transaction
       const signedConsolidationTransaction = await this.transactions.sign(
         serializedPendingTransactions,
       )
-      console.log('[Account] Signed Consolidation Transaction:', signedConsolidationTransaction)
-
-      // Step 6: Submit the consolidation transaction
       const consolidationTransactionId = await this.transactions.submitContextful(
         signedConsolidationTransaction,
       )
@@ -176,6 +154,7 @@ export default class Account extends EventEmitter {
           foundIndex = startIndex - count + entryIndex
         }
       }
+      console.log('[Account] Scanned addresses:', this.addresses)
 
       await this.addresses.increment(isReceive ? foundIndex : 0, isReceive ? 0 : foundIndex)
     }
@@ -185,6 +164,8 @@ export default class Account extends EventEmitter {
   }
 
   private registerProcessor() {
+    console.log('[Account] Context data when processor is registered:', this.context)
+
     this.processor.addEventListener('utxo-proc-start', async () => {
       await this.context.clear()
       await this.context.trackAddresses(this.addresses.allAddresses)
