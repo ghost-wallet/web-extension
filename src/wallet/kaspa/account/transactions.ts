@@ -10,10 +10,16 @@ import {
   signTransaction,
   Transaction,
   UtxoContext,
+  ScriptBuilder,
+  XOnlyPublicKey,
+  Address,
+  addressFromScriptPublicKey,
 } from '@/wasm'
 import Addresses from './addresses'
 import EventEmitter from 'events'
 import KeyManager from '@/wallet/kaspa/KeyManager'
+import { Inscription } from '@/wallet/kaspa/krc20/Inscription'
+import Account from '@/wallet/kaspa/account/account'
 
 export interface CustomInput {
   address: string
@@ -32,6 +38,7 @@ export default class Transactions extends EventEmitter {
   kaspa: RpcClient
   context: UtxoContext
   addresses: Addresses
+  account: Account | null = null
   encryptedKey: string | undefined
   accountId: number | undefined
 
@@ -43,6 +50,10 @@ export default class Transactions extends EventEmitter {
     this.kaspa = kaspa
     this.context = context
     this.addresses = addresses
+  }
+
+  setAccount(account: Account) {
+    this.account = account
   }
 
   async import(encryptedKey: string, accountId: number) {
@@ -69,7 +80,7 @@ export default class Transactions extends EventEmitter {
       }
     }
 
-    const { transactions } = await createTransactions({
+    const preparedTxn = {
       priorityEntries,
       entries: this.context,
       outputs: outputs.map((output) => ({
@@ -79,7 +90,11 @@ export default class Transactions extends EventEmitter {
       changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
       feeRate,
       priorityFee: kaspaToSompi(fee)!,
-    })
+    }
+    console.log('[Transactions] create - doing createTransasctions with obj:', preparedTxn)
+    console.log('[Transactions] this.context:', this.context)
+
+    const { transactions } = await createTransactions(preparedTxn)
 
     await this.addresses.increment(0, 1)
 
@@ -145,6 +160,109 @@ export default class Transactions extends EventEmitter {
 
     this.emit('transaction', transactions[transactions.length - 1])
     return submittedIds
+  }
+
+  // Step 1: Commit Transaction
+  async commitTransaction(outputs: [string, string][], feeRate: number, fee: string) {
+    console.log('[Transactions] Creating commit transaction....')
+
+    const serializedPendingTransactions = await this.create(outputs, feeRate, fee)
+    console.log(
+      '[Transactions] Serialized Pending Commit Transaction:',
+      serializedPendingTransactions,
+    )
+
+    const signedTransactions = await this.sign(serializedPendingTransactions)
+    console.log('[Transactions] Signed Commit Transaction:', signedTransactions)
+
+    const submittedTransactionIds = await this.submitContextful(signedTransactions)
+    console.log(
+      '[Transactions] Commit Transaction submitted successfully:',
+      submittedTransactionIds,
+    )
+
+    return { transactionId: submittedTransactionIds[0], signedTransactions }
+  }
+
+  // Step 2: Reveal Transaction
+  async revealTransaction(
+    recipient: string,
+    ticker: string,
+    amount: number,
+    decimal: number,
+    commitTxId: string,
+  ) {
+    console.log('[Transactions] Revealing transaction with inscription....')
+
+    const inscription = this.buildInscription(recipient, ticker, amount, decimal)
+
+    let script = new ScriptBuilder()
+    const senderAddress = this.addresses.receiveAddresses[0]
+    const pubKey = XOnlyPublicKey.fromAddress(new Address(senderAddress)).toString()
+
+    inscription.write(script, pubKey)
+    console.log('[Transactions] Inscription:', inscription)
+
+    const scriptPublicKey = script.createPayToScriptHashScript()
+    const scriptAddress = addressFromScriptPublicKey(
+      scriptPublicKey,
+      this.addresses.networkId,
+    )!.toString()
+    console.log('[Transactions] scriptAddress:', scriptAddress)
+
+    const outputs: [string, string][] = [
+      [scriptAddress, '0.2'], // KRC20 Inscription output
+    ]
+    console.log('[Transactions] outputs for reveal:', outputs)
+
+    const fee = '0.0001'
+    const feeRate = 1
+    const serializedPendingTransactions = await this.create(outputs, feeRate, fee)
+    console.log(
+      '[Transactions] Serialized Pending Reveal Transaction:',
+      serializedPendingTransactions,
+    )
+
+    const signedTransactions = await this.sign(serializedPendingTransactions)
+    console.log('[Transactions] Signed Reveal Transaction:', signedTransactions)
+
+    const submittedTransactionIds = await this.submitContextful(signedTransactions)
+    console.log(
+      '[Transactions] Reveal Transaction submitted successfully:',
+      submittedTransactionIds,
+    )
+
+    return { transactionId: submittedTransactionIds[0] }
+  }
+
+  async writeInscription(recipient: string, ticker: string, amount: number, decimal: number) {
+    console.log('[Transactions] Writing inscription....')
+
+    const commitOutputs: [string, string][] = [
+      [recipient, '0.2'], // Commit a placeholder output
+    ]
+    const commitResult = await this.commitTransaction(commitOutputs, 1, '0.0001')
+    console.log('[Transactions] Commit transaction ID:', commitResult.transactionId)
+
+    const revealResult = await this.revealTransaction(
+      recipient,
+      ticker,
+      amount,
+      decimal,
+      commitResult.transactionId,
+    )
+    console.log('[Transactions] Reveal transaction ID:', revealResult.transactionId)
+
+    return [commitResult.transactionId, revealResult.transactionId]
+  }
+
+  buildInscription(recipient: string, ticker: string, amount: number, decimal: number) {
+    const amountToSend = BigInt(+amount * 10 ** +decimal).toString()
+    return new Inscription('transfer', {
+      tick: ticker,
+      amt: amountToSend,
+      to: recipient.toString(),
+    })
   }
 
   reset() {

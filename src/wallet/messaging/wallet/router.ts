@@ -43,11 +43,14 @@ export default class Router {
       'account:utxos': () => account.UTXOs,
       'account:create': (outputs, feeRate, fee, inputs) =>
         account.transactions.create(outputs, feeRate, fee, inputs),
-      // Update the `account:sign` mapping to not require password
+      // TODO update the `account:sign` mapping to not require password
       'account:sign': (transactions) => account.transactions.sign(transactions),
       'account:submitContextful': (transactions) =>
         account.transactions.submitContextful(transactions),
+      'account:compoundUtxos': () => account.compoundUtxos(),
       'account:scan': () => account.scan(),
+      'account:writeInscription': (recipient, ticker, amount, decimal) =>
+        account.transactions.writeInscription(recipient, ticker, amount, decimal),
       'provider:connect': (url) => provider.connect(url),
       'provider:connection': () => provider.connectedURL,
       'provider:disconnect': () => provider.disconnect(),

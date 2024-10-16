@@ -1,14 +1,11 @@
-import React, { useMemo, useCallback, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import BackButton from '@/components/BackButton'
 import TokenDetails from '@/components/TokenDetails'
 import { truncateAddress } from '@/utils/formatting'
-import { Inscription } from 'kasplexbuilder'
-import * as kaspa from '../../../wasm'
-import kapsajs_wasm from '../../../wasm/kaspa.js?url'
-import kapsabg_wasm from '../../../wasm/kaspa_bg.wasm?url'
+import useKaspa from '@/hooks/useKaspa'
 
 const ConfirmSendKRC20: React.FC = () => {
   const location = useLocation()
@@ -16,33 +13,26 @@ const ConfirmSendKRC20: React.FC = () => {
   const { token, recipient, amount } = location.state || {}
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const { request } = useKaspa()
+  const [script, setScript] = useState<string>()
+  const [commitAddress, setCommitAddress] = useState<string>()
 
-  const handleConfirmClick = () => {
-    console.log('[ConfirmSendKRC20] Confirm clicked!')
-    console.log("[ConfirmSendKRC20] WASM js Path ", kapsajs_wasm);
-    console.log("[ConfirmSendKRC20] WASM bg Path ", kapsabg_wasm);
-    kaspa.default(kapsabg_wasm).then(r => console.log('[ConfirmSendKRC20] default success! ', r.toString()));
-    const script = new kaspa.ScriptBuilder();
-    console.log('[ConfirmSendKRC20] ScriptBuilder success! ', script)
-    const address = new kaspa.Address("kaspa:qqf8sr34pz5u4rvwfru8842yknfp2d2nwv2acyww2dtd6jr30dk6yfhhnn3x7")
-    console.log('[ConfirmSendKRC20] Address success! ', address)
-    const publicKey = kaspa.XOnlyPublicKey.fromAddress(address).toString()
-    console.log('[ConfirmSendKRC20] XOnlyPublicKey success! ', publicKey)
-    const inscription = new Inscription(
-      'transfer', {
-        tick: token.tick,
-        amt: BigInt(+amount * (10 ** +token.dec)).toString(),
-        to: recipient,
+  const handleConfirmClick = useCallback(() => {
+    request('account:writeInscription', [recipient, token.tick, amount, token.dec])
+      .then((response) => {
+        console.log('[ConfirmSendKRC20] write inscription success. Response:', response)
+        // @ts-ignore
+        // const { script, scriptAddress } = response
+        // setCommitAddress(scriptAddress)
+        // setScript(script)
+
+        //TODO show transaction id on response here. Update the backend response
       })
-    console.log('[ConfirmSendKRC20] Inscription success! ', inscription)
-    inscription.write(script, publicKey)
-    console.log('[ConfirmSendKRC20] Inscription.write success! ', inscription)
-    const scriptAddress = kaspa.addressFromScriptPublicKey(script.createPayToScriptHashScript(), 'mainnet')!.toString()
-    console.log('[ConfirmSendKRC20] addressFromScriptPublicKey success! ', inscription)
-    const commitment = localStorage.getItem(scriptAddress)
-    console.log('[ConfirmSendKRC20] locaStorage.get success! ', commitment)
-
-  }
+      .catch((err) => {
+        setError(err.message || 'Error occurred transferring KRC20 token.')
+        console.error('[ConfirmSendKRC20] error writing inscription:', err)
+      })
+  }, [request])
 
   const handleCancelClick = () => {
     navigate('/wallet')

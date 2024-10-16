@@ -29,6 +29,7 @@ export default class Account extends EventEmitter {
     this.context = new UtxoContext({ processor: this.processor })
     this.addresses = new Addresses(this.context, node.networkId)
     this.transactions = new Transactions(node.rpcClient, this.context, this.addresses)
+    this.transactions.setAccount(this)
 
     node.on('network', async (networkId: string) => {
       await this.addresses.changeNetwork(networkId)
@@ -63,6 +64,99 @@ export default class Account extends EventEmitter {
       .map((utxo) => mapUTXO(utxo, true))
 
     return [...pendingUTXOs, ...matureUTXOs]
+  }
+
+  async compoundUtxos() {
+    console.log('[Account] Consolidating UTXOs across all addresses...')
+
+    // Step 1: Fetch UTXOs from all addresses (receive + change addresses)
+    const allAddresses = [...this.addresses.receiveAddresses, ...this.addresses.changeAddresses]
+    const { entries } = await this.processor.rpc.getUtxosByAddresses(allAddresses)
+
+    if (!entries || entries.length === 0) {
+      console.log('[Account] No UTXOs available for consolidation.')
+      return // Early return if no UTXOs to consolidate
+    }
+
+    // Optional: Only proceed if there are more than 1 UTXO to consolidate
+    if (entries.length < 2) {
+      console.log('[Account] Not enough UTXOs to consolidate. Skipping...')
+      return
+    }
+
+    console.log('[Account] UTXOs to consolidate:', entries)
+
+    // Step 2: Prepare the UTXO entry source (all UTXOs from all addresses)
+    const utxoEntrySource = entries.map((utxo) => ({
+      outpoint: {
+        transactionId: utxo.outpoint.transactionId,
+        index: utxo.outpoint.index,
+      },
+      amount: BigInt(utxo.amount), // UTXO amount as BigInt
+      scriptPublicKey: {
+        version: utxo.scriptPublicKey.version,
+        script: utxo.scriptPublicKey.script,
+      },
+      blockDaaScore: BigInt(utxo.blockDaaScore),
+      isCoinbase: utxo.isCoinbase,
+    }))
+
+    // Step 3: Define the output (consolidate to your primary receive address)
+    const receiveAddress = this.addresses.receiveAddresses[0] // Use the original receive address
+    const totalAmount = utxoEntrySource.reduce((sum, utxo) => sum + utxo.amount, BigInt(0))
+
+    // Handle fee: Fee in sompis (0.0001 KAS = 10000 sompis)
+    const fee = BigInt(10000) // Fee as a BigInt (0.0001 KAS in sompis)
+    const amountToSend = totalAmount - fee
+
+    if (amountToSend <= BigInt(0)) {
+      console.error(
+        'Insufficient funds to cover the fee. Available:',
+        totalAmount.toString(),
+        'Required (including fee):',
+        fee.toString(),
+      )
+      return // Early return if no sufficient funds to cover fee
+    }
+
+    // Convert the amount to send back to string for use in outputs
+    const outputs: [string, string][] = [
+      [receiveAddress, (amountToSend / BigInt(1e8)).toString()], // Convert back to KAS for the output
+    ]
+
+    console.log('[Account] Consolidating UTXOs to:', receiveAddress)
+
+    // Step 4: Create the transaction using `create()`
+    const feeRate = 1 // Example fee rate
+
+    try {
+      const serializedPendingTransactions = await this.transactions.create(
+        outputs,
+        feeRate,
+        (fee / BigInt(1e8)).toString(),
+      )
+      console.log('[Account] Serialized Consolidation Transaction:', serializedPendingTransactions)
+
+      // Step 5: Sign the consolidation transaction
+      const signedConsolidationTransaction = await this.transactions.sign(
+        serializedPendingTransactions,
+      )
+      console.log('[Account] Signed Consolidation Transaction:', signedConsolidationTransaction)
+
+      // Step 6: Submit the consolidation transaction
+      const consolidationTransactionId = await this.transactions.submitContextful(
+        signedConsolidationTransaction,
+      )
+      console.log('[Account] Consolidation transaction submitted:', consolidationTransactionId)
+
+      // After submitting the transaction, scan for the updated balance
+      await this.scan()
+
+      return consolidationTransactionId
+    } catch (error) {
+      console.error('[Account] Error consolidating UTXOs:', error)
+      throw error
+    }
   }
 
   async scan(steps = 50, count = 10) {
