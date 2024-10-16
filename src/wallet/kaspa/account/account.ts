@@ -127,9 +127,6 @@ export default class Account extends EventEmitter {
       )
       console.log('[Account] Consolidation transaction submitted:', consolidationTransactionId)
 
-      // After submitting the transaction, scan for the updated balance
-      await this.scan()
-
       return consolidationTransactionId
     } catch (error) {
       console.error('[Account] Error consolidating UTXOs:', error)
