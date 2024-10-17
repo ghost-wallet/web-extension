@@ -49,8 +49,8 @@ export default class Router {
         account.transactions.submitContextful(transactions),
       'account:compoundUtxos': () => account.compoundUtxos(),
       'account:scan': () => account.scan(),
-      'account:writeInscription': (recipient, ticker, amount, decimal) =>
-        account.transactions.writeInscription(recipient, ticker, amount, decimal),
+      'account:writeInscription': (recipient, token, amount, feeRate) =>
+        account.transactions.writeInscription(recipient, token, amount, feeRate),
       'provider:connect': (url) => provider.connect(url),
       'provider:connection': () => provider.connectedURL,
       'provider:disconnect': () => provider.disconnect(),

@@ -9,12 +9,17 @@ import {
   RpcClient,
   signTransaction,
   Transaction,
-  UtxoContext
+  UtxoContext,
+  Address,
+  ScriptBuilder,
+  createInputSignature
 } from '@/wasm'
 import Addresses from './addresses'
 import EventEmitter from 'events'
 import KeyManager from '@/wallet/kaspa/KeyManager'
 import Account from '@/wallet/kaspa/account/account'
+import { Token } from '@/hooks/useKasplex'
+import { setupkrc20Transaction } from '../krc20/Transact'
 
 export interface CustomInput {
   address: string
@@ -60,9 +65,13 @@ export default class Transactions extends EventEmitter {
     let priorityEntries: IUtxoEntry[] = []
 
     if (customs && customs.length > 0) {
+      console.log('customs:')
+      console.log(customs)
       const { entries } = await this.kaspa.getUtxosByAddresses({
         addresses: customs.map((custom) => custom.address),
       })
+      console.log('entries:')
+      console.log(entries)
       for (const custom of customs) {
         const matchingEntry = entries.find(
           ({ outpoint }) =>
@@ -100,7 +109,7 @@ export default class Transactions extends EventEmitter {
     return transactions.map((transaction) => transaction.serializeToSafeJSON())
   }
 
-  async sign(transactions: string[]) {
+  async sign(transactions: string[], customs: CustomSignature[] = []) {
     if (!this.encryptedKey) {
       console.error('[Transactions] No imported account available for signing.')
       throw Error('No imported account')
@@ -130,6 +139,22 @@ export default class Transactions extends EventEmitter {
       }
 
       const signedTransaction = signTransaction(parsedTransaction, privateKeys, false)
+
+      for (const custom of customs) {
+        const inputIndex = signedTransaction.inputs.findIndex(({ previousOutpoint }) => previousOutpoint.transactionId === custom.outpoint && previousOutpoint.index === custom.index)
+
+        if (Address.validate(custom.signer)) {
+          if (!custom.script) throw Error('Script is required when signer address is supplied')
+
+          const [ isReceive, index ] = this.addresses.findIndexes(custom.signer)
+          const privateKey = isReceive ? keyGenerator.receiveKey(index) : keyGenerator.changeKey(index)
+
+          signedTransaction.inputs[inputIndex].signatureScript = ScriptBuilder.fromScript(custom.script).encodePayToScriptHashSignatureScript(createInputSignature(signedTransaction, inputIndex, privateKey))
+        } else {
+          signedTransaction.inputs[inputIndex].signatureScript = custom.signer
+        }
+      }
+
       signedTransactions.push(signedTransaction)
     }
     return signedTransactions.map((transaction) => transaction.serializeToSafeJSON())
@@ -157,11 +182,55 @@ export default class Transactions extends EventEmitter {
     return submittedIds
   }
 
-  async writeInscription(recipient: string, ticker: string, amount: number, decimal: number) {
+  async writeInscription(recipient: string, token: Token, amount: string, feeRate: number) {
     console.log('[Transactions] Writing inscription....')
+
+    const ourAddress = this.addresses.receiveAddresses[0]
+
+    const {script, scriptAddress} = setupkrc20Transaction(ourAddress, recipient, amount, token)
+
+    // commit transaction:
+    // - create
+    console.log('[Transactions] commit transaction create:')
+    const commit1 = await this.create([[ scriptAddress, '0.2' ]], feeRate, '0')
+    console.log(commit1)
+    // - sign
+    console.log('[Transactions] commit transaction sign:')
+    const commit2 = await this.sign(commit1)
+    console.log(commit2)
+    // - submit (gives us the ID)
+    console.log('[Transactions] commit transaction submit:')
+    const commit3 = await this.submitContextful(commit2)
+    console.log(commit3)
+
+    const input = {
+      address: scriptAddress!,
+      outpoint: commit3[0],
+      index: 0,
+      signer: ourAddress!,
+      script: script.toString()
+    }
+
+    console.log(input)
+
+    // reveal transaction:
+    // - create
+    console.log('[Transactions] reveal transaction create:')
+    const reveal1 = await this.create([['', '']], feeRate, '0.01', [input])
+    console.log(reveal1)
+    // - sign
+    console.log('[Transactions] reveal transaction sign:')
+    const reveal2 = await this.sign(reveal1, [input])
+    console.log(reveal2)
+    // - submit (gives us the ID)
+    console.log('[Transactions] reveal transaction submit:')
+    const reveal3 = await this.submitContextful(reveal2)
+    console.log(reveal3)
+
+
     // TODO: make the inscription, make a create transaction, submit a reveal txn
 
-    return ['commitTxnId', 'revealTxnId']
+    return [commit3[0], reveal3[0]]
   }
 
   reset() {

@@ -10,7 +10,7 @@ import useKaspa from '@/hooks/useKaspa'
 const ConfirmSendKRC20: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { token, recipient, amount } = location.state || {}
+  const { token, recipient, amount, feeRate } = location.state || {}
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { request } = useKaspa()
@@ -18,7 +18,7 @@ const ConfirmSendKRC20: React.FC = () => {
   const [commitAddress, setCommitAddress] = useState<string>()
 
   const handleConfirmClick = useCallback(() => {
-    request('account:writeInscription', [recipient, token.tick, amount, token.dec])
+    request('account:writeInscription', [recipient, token, amount, feeRate])
       .then((response) => {
         console.log('[ConfirmSendKRC20] write inscription success. Response:', response)
         // @ts-ignore
