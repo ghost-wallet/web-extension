@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
@@ -17,22 +17,70 @@ const ConfirmSendKRC20: React.FC = () => {
   const [script, setScript] = useState<string>()
   const [commitAddress, setCommitAddress] = useState<string>()
 
-  const handleConfirmClick = useCallback(() => {
+  useEffect(() => {
     request('account:writeInscription', [recipient, token.tick, amount, token.dec])
       .then((response) => {
         console.log('[ConfirmSendKRC20] write inscription success. Response:', response)
-        // @ts-ignore
-        // const { script, scriptAddress } = response
-        // setCommitAddress(scriptAddress)
-        // setScript(script)
+        const [scriptString, scriptAddress] = response
+        console.log('[ConfirmSendKRC20] scriptString ', scriptString)
+        console.log('[ConfirmSendKRC20] scriptAddress ', scriptAddress)
 
-        //TODO show transaction id on response here. Update the backend response
+        setCommitAddress(scriptAddress)
+        setScript(scriptString)
       })
       .catch((err) => {
         setError(err.message || 'Error occurred transferring KRC20 token.')
         console.error('[ConfirmSendKRC20] error writing inscription:', err)
       })
-  }, [request])
+  }, [request, recipient, token.tick, amount, token.dec])
+  
+  // Add this new useEffect to log the updated state
+  useEffect(() => {
+    console.log('[ConfirmSendKRC20] Updated commitAddress:', commitAddress)
+  }, [commitAddress])
+  
+  useEffect(() => {
+    console.log('[ConfirmSendKRC20] Updated script:', script)
+  }, [script])
+
+  const handleConfirmClick = useCallback(async () => {
+    if (!script || !commitAddress) {
+      console.error('[ConfirmSendKRC20] Script or commit address is missing')
+      return
+    }
+
+    setLoading(true)
+    setError('')
+
+    try {
+      console.log('[ConfirmSendKRC20] Attempting to invoke KRC-20 transfer:')
+      console.log('[ConfirmSendKRC20] Commit Address:', commitAddress)
+      console.log('[ConfirmSendKRC20] Script:', script)
+
+      const invokeRequest = {
+        method: 'transfer',
+        params: {
+          recipient: recipient,
+          amount: amount,
+          ticker: token.tick,
+          script: script,
+          commitAddress: commitAddress
+        }
+      }
+      console.log('[ConfirmSendKRC20] invokeRequest ',  invokeRequest)
+      // Use kaspa:invoke to create the transaction
+      // const invokeResponse = await request('kaspa:invoke', invokeRequest)
+      // console.log('[ConfirmSendKRC20] KRC-20 transfer invoked:', invokeResponse)
+      //
+      // setError('[ConfirmSendKRC20] KRC-20 transfer prepared successfully. Check console for details.')
+    } catch (err) {
+      console.error('[ConfirmSendKRC20] Error during KRC-20 transfer process:', err)
+      // @ts-ignore
+      setError(err.message || '[ConfirmSendKRC20] An error occurred while processing the KRC-20 transfer.')
+    } finally {
+      setLoading(false)
+    }
+  }, [script, commitAddress, request, recipient, amount, token])
 
   const handleCancelClick = () => {
     navigate('/wallet')
@@ -91,7 +139,7 @@ const ConfirmSendKRC20: React.FC = () => {
             </button>
             <button
               onClick={handleConfirmClick}
-              disabled={loading}
+              disabled={loading || !commitAddress}
               className="flex-1 bg-primary text-secondarytext text-lg font-lato font-semibold rounded-[10px] cursor-pointer py-2 px-6"
             >
               {loading ? 'Processing...' : 'Send'}

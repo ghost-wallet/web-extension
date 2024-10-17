@@ -9,12 +9,13 @@ import {
   RpcClient,
   signTransaction,
   Transaction,
-  UtxoContext
+  UtxoContext, addressFromScriptPublicKey, Address, XOnlyPublicKey, ScriptBuilder
 } from '@/wasm'
 import Addresses from './addresses'
 import EventEmitter from 'events'
 import KeyManager from '@/wallet/kaspa/KeyManager'
 import Account from '@/wallet/kaspa/account/account'
+import { Inscription } from '@/wallet/kaspa/krc20/Inscription'
 
 export interface CustomInput {
   address: string
@@ -159,9 +160,20 @@ export default class Transactions extends EventEmitter {
 
   async writeInscription(recipient: string, ticker: string, amount: number, decimal: number) {
     console.log('[Transactions] Writing inscription....')
-    // TODO: make the inscription, make a create transaction, submit a reveal txn
+    const script = new ScriptBuilder()
+    const inscription = new Inscription('transfer', {
+      tick: ticker,
+      amt: BigInt(+amount * (10 ** decimal)).toString(),
+      to: recipient.toString()
+    })
+    console.log('[Transactions] inscription ', inscription)
+    inscription.write(script, XOnlyPublicKey.fromAddress(new Address(this.addresses.allAddresses[0])!).toString())
+    const scriptAddress = addressFromScriptPublicKey(script.createPayToScriptHashScript(), this.addresses.networkId)!.toString()
+    console.log('[Transactions] script ', script)
+    console.log('[Transactions] scriptString ', script.toString())
+    console.log('[Transactions] scriptAddress ', scriptAddress)
 
-    return ['commitTxnId', 'revealTxnId']
+    return [script, scriptAddress]
   }
 
   reset() {
