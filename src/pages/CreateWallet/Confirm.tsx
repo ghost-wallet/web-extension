@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import RecoveryPhraseGrid from '@/components/RecoveryPhraseGrid'
 import ErrorMessage from '@/components/ErrorMessage'
+import AnimatedMain from '@/components/AnimatedMain'
+import Header from '@/components/Header'
 
 export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; onConfirmed: () => void }) {
   const [userInputs, setUserInputs] = useState<string[]>(Array(12).fill(''))
@@ -41,26 +43,26 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
   }
 
   return (
-    <main className="p-6">
-      <h1 className="text-primarytext text-3xl font-rubik text-center mb-2">
-        Confirm Secret Recovery Phrase
-      </h1>
-      <p className="text-mutedtext text-lg font-lato text-center mb-10">Enter the missing words.</p>
-      <RecoveryPhraseGrid
-        values={userInputs}
-        seedPhrase={mnemonic.split(' ')}
-        onInputChange={(i, value) =>
-          setUserInputs((inputs) => {
-            const updated = [...inputs]
-            updated[i] = value
-            return updated
-          })
-        }
-        onPaste={() => {}}
-        editableIndices={[2, 4, 7]}
-      />
+    <AnimatedMain>
+      <Header title="Confirm Secret Phrase" showBackButton={false} />
+      <div className="px-6">
+        <p className="text-mutedtext text-lg font-lato text-center mb-6">Enter the missing words.</p>
+        <RecoveryPhraseGrid
+          values={userInputs}
+          seedPhrase={mnemonic.split(' ')}
+          onInputChange={(i, value) =>
+            setUserInputs((inputs) => {
+              const updated = [...inputs]
+              updated[i] = value
+              return updated
+            })
+          }
+          onPaste={() => {}}
+          editableIndices={[2, 4, 7]}
+        />
 
-      <ErrorMessage message={error} />
+        <ErrorMessage message={error} />
+      </div>
 
       <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
         <button
@@ -77,6 +79,6 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
           Continue
         </button>
       </div>
-    </main>
+    </AnimatedMain>
   )
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import TokenDetails from '@/components/TokenDetails'
 import RecipientAddress from '@/components/RecipientAddress'
-import BackButton from '@/components/BackButton'
+import Header from '@/components/Header'
 
 interface ConfirmSendDetailsProps {
   token: any
@@ -28,11 +28,7 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
 }) => {
   return (
     <>
-      <div className="flex items-center justify-between mb-4 p-6">
-        <BackButton />
-        <h1 className="text-primarytext text-3xl font-rubik text-center flex-grow">Confirm Send</h1>
-        <div className="w-6" />
-      </div>
+      <Header title="Confirm Send" showBackButton={true} />
 
       <TokenDetails token={token} />
       <div className="text-primarytext text-center p-2">

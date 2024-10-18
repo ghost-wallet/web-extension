@@ -2,9 +2,9 @@ import React from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import QRCode from 'react-qr-code'
-import BackButton from '@/components/BackButton'
-import KaspaAddress from '@/components/KaspaAddress' // Import the new component
+import KaspaAddress from '@/components/KaspaAddress'
 import useKaspa from '@/hooks/useKaspa'
+import Header from '@/components/Header'
 
 export default function Receive() {
   const { kaspa } = useKaspa()
@@ -12,13 +12,9 @@ export default function Receive() {
   return (
     <>
       <AnimatedMain>
-        <div className="flex items-center justify-between mb-4 p-6">
-          <BackButton />
-          <h1 className="text-primarytext text-3xl font-rubik text-center flex-grow">Receive</h1>
-          <div className="w-6" />
-        </div>
+        <Header title="Receive" showBackButton={true} />
 
-        <div className="flex flex-col items-center justify-center relative w-full">
+        <div className="flex flex-col items-center justify-center relative w-full pt-6">
           <KaspaAddress address={kaspa.addresses[0][kaspa.addresses[0].length - 1]} />
         </div>
 
