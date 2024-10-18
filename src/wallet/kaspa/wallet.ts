@@ -6,7 +6,6 @@ import {
   Mnemonic,
   PublicKeyGenerator,
   XPrv,
-  createAddress,
 } from '@/wasm'
 import LocalStorage from '@/storage/LocalStorage'
 import SessionStorage from '@/storage/SessionStorage'
@@ -73,6 +72,10 @@ export default class Wallet extends EventEmitter {
       throw Error('[Wallet] Invalid mnemonic')
     }
 
+    // TODO: Keyemanager setkey to decryptedKey, because potential issue is this:
+    // TODO: User imports/creates new wallet, but they will not be authorized to transfer any cryptos
+    // TODO: because their decrypted key is not stored. Replicate
+
     const encryptedKey = encryptXChaCha20Poly1305(mnemonics, password)
     this.encryptedKey = encryptedKey // Set the encryptedKey
 
@@ -109,47 +112,11 @@ export default class Wallet extends EventEmitter {
     await SessionStorage.set('session', {
       activeAccount: id,
       publicKey: publicKey.toString(),
-      encryptedKey: this.encryptedKey, // Include the encrypted key here
+      encryptedKey: this.encryptedKey,
     })
     await this.sync()
 
-    // console.log('[Wallet] Deriving all accounts from mnemonic....')
-    // await this.deriveAllAddressesFromXPrv(xPrv, 'mainnet', 10)
-
     return decryptedKey
-  }
-
-  async deriveAllAddressesFromXPrv(xprv: XPrv, network: string, maxAddresses: number) {
-    const coinType = 111111 // Kaspa coin type for BIP44
-    const accountIndex = 0 // Account 0
-    //TODO figure out how to get addresses that have balances or utxos
-    const accountPath = `m/44'/${coinType}'/${accountIndex}'/0/0`
-
-    // Derive the account private key from the master key
-    const accountPrivateKey = xprv.derivePath(accountPath)
-
-    // Create a PublicKeyGenerator for deriving public keys
-    const publicKeyGenerator = PublicKeyGenerator.fromMasterXPrv(
-      accountPrivateKey,
-      false,
-      BigInt(accountIndex),
-    )
-
-    const derivedAddresses = []
-
-    // Derive receive addresses (external chain, 0)
-    for (let index = 0; index < maxAddresses; index++) {
-      const publicKey = publicKeyGenerator.receivePubkey(index)
-      const address = createAddress(publicKey.toString(), network).toString()
-      derivedAddresses.push({
-        index,
-        publicKey: publicKey.toString(),
-        address,
-      })
-      console.log(`[Wallet] Derived Receive Address ${address} at index ${index}`)
-    }
-
-    return derivedAddresses
   }
 
   async export(password: string) {

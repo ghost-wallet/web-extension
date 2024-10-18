@@ -3,9 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import PasswordInput from '@/components/PasswordInput'
 import ErrorMessage from '@/components/ErrorMessage'
 import useKaspa from '@/hooks/useKaspa'
-import KeyManager from '@/wallet/kaspa/KeyManager'
 
-export default function UnlockWallet() {
+export default function Login() {
   const navigate = useNavigate()
   const { request } = useKaspa()
 
@@ -17,19 +16,19 @@ export default function UnlockWallet() {
   // TODO: please try again. Add in here node connection or kaspa context
   useEffect(() => {
     if (password.length >= 8) {
-      setError('')
       setIsValid(true)
-    } else if (password.length > 0 && password.length < 8) {
-      setError('Must be at least 8 characters')
+    } else {
       setIsValid(false)
     }
-  }, [password])
+    if (password.length >= 8 && error === 'Must be at least 8 characters') {
+      setError('')
+    }
+  }, [password, error])
 
-  const unlockWallet = useCallback(() => {
+  const login = useCallback(() => {
     request('wallet:unlock', [password])
       .then((decryptedKey: string) => {
         if (decryptedKey) {
-          KeyManager.setKey(decryptedKey)
           navigate('/')
         } else {
           setError('Failed to retrieve decrypted key')
@@ -44,7 +43,7 @@ export default function UnlockWallet() {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && isValid) {
       e.preventDefault() // Prevent form submission if there is a default behavior
-      unlockWallet()
+      login()
     }
   }
 
@@ -70,7 +69,7 @@ export default function UnlockWallet() {
         <button
           type="button"
           disabled={!isValid}
-          onClick={unlockWallet}
+          onClick={login}
           className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] ${
             isValid
               ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'

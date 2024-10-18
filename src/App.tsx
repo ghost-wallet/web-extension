@@ -4,7 +4,7 @@ import { KaspaProvider } from './contexts/KaspaContextProvider'
 import Landing from './pages/Landing'
 import CreateWallet from '@/pages/CreateWallet'
 import Wallet from '@/pages/Wallet'
-import UnlockWallet from '@/pages/Login'
+import Login from '@/pages/Login'
 import Settings from '@/pages/Wallet/Settings'
 import Transactions from '@/pages/Wallet/Transactions'
 import Send from '@/pages/Wallet/Send'
@@ -24,7 +24,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/create" element={<CreateWallet />} />
-            <Route path="/unlock" element={<UnlockWallet />} />
+            <Route path="/unlock" element={<Login />} />
             <Route path="/wallet" element={<Wallet />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings/reset" element={<ConfirmReset />} />
