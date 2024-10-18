@@ -28,7 +28,7 @@ const ConfirmSendKRC20: React.FC = () => {
         })
       })
       .catch((err) => {
-        setError(err.message || `Error occurred transferring KRC20 token: ${err.message}`)
+        setError(`Error: ${err}`)
         console.error('[ConfirmSendKRC20] error writing inscription:', err)
       })
       .finally(() => {

@@ -24,7 +24,7 @@ main {
 }
 
 .container {
-  background-color: var(--color-bg-dark); /* Apply the same background color */
+  background-color: var(--color-bg-dark);
 }
 
 @layer base {
@@ -32,7 +32,7 @@ main {
     /* Text Colors */
     --color-text-primary: #ffffff;
     --color-text-secondary: #000000;
-    --color-text-muted: #b0b0b0; /* Lighter muted text */
+    --color-text-muted: #b0b0b0;
 
     /* Background Colors */
     --color-bg-darker: #1c1819;
@@ -49,8 +49,9 @@ main {
     --color-error-muted: #b33a3a;
     --color-success: #4caf50;
     --color-warning: #ffd166;
-    --color-muted: #6e6e6e; /* Darker muted color */
-    --color-muted-dark: #2a2627; /* Very muted, between bg-dark and bg-darker */
+    --color-muted: #6e6e6e;
+    --color-slight-muted: #505050;
+    --color-muted-dark: #2a2627;
   }
 }
 

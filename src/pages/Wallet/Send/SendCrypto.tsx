@@ -10,6 +10,7 @@ import { Input as KaspaInput } from '@/provider/protocol'
 import { validateRecipient, validateAmountToSend } from '@/utils/validation'
 import { useFeeRate } from '@/hooks/useFeeRate'
 import Header from '@/components/Header'
+import ErrorMessage from '@/components/ErrorMessage' // Import ErrorMessage component
 
 const SendCrypto: React.FC = () => {
   const location = useLocation()
@@ -138,14 +139,7 @@ const SendCrypto: React.FC = () => {
             </button>
           </div>
 
-          <div className="min-h-[24px] mt-1 flex items-center justify-center">
-            {/* Error section with fixed height */}
-            <div className="h-6 flex items-center">
-              {(recipientError || amountError) && (
-                <div className="text-base font-lato text-error">{recipientError || amountError}</div>
-              )}
-            </div>
-          </div>
+          <ErrorMessage message={recipientError || amountError || ''} />
         </div>
 
         <div className="px-6 pt-6">

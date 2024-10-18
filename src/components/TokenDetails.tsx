@@ -1,5 +1,4 @@
 import React from 'react'
-import { formatBalance } from '@/utils/formatting'
 
 interface TokenDetailsProps {
   token: {
@@ -18,7 +17,7 @@ const TokenDetails: React.FC<TokenDetailsProps> = ({ token }) => (
           : `https://krc20-assets.kas.fyi/icons/${token.tick}.jpg`
       }
       alt={`${token.tick} logo`}
-      className="w-20 h-20 rounded-full mb-2"
+      className="w-20 h-20 rounded-full"
     />
   </div>
 )

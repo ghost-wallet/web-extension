@@ -33,6 +33,7 @@ module.exports = {
         success: 'var(--color-success)',
         warning: 'var(--color-warning)',
         muted: 'var(--color-muted)',
+        slightmuted: 'var(--color-slight-muted)',
         darkmuted: 'var(--color-muted-dark)',
 
         // Kaffin's

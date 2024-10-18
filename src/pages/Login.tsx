@@ -13,6 +13,8 @@ export default function UnlockWallet() {
   const [error, setError] = useState('')
   const [isValid, setIsValid] = useState(false)
 
+  // TODO: If node not connected, and user tries to login, show error Kaspa not connected to node
+  // TODO: please try again. Add in here node connection or kaspa context
   useEffect(() => {
     if (password.length >= 8) {
       setError('')
@@ -34,7 +36,8 @@ export default function UnlockWallet() {
         }
       })
       .catch((err) => {
-        setError(err.message || 'Incorrect password')
+        console.log('Password login error', err)
+        setError(`Error: ${err}`)
       })
   }, [password, request, navigate])
 

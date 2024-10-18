@@ -24,7 +24,7 @@ interface TokenInfoResponse {
 
 const CACHE_DURATION = 30000 // 30 seconds in milliseconds
 
-const useKasplex = () => {
+const useKasplex = (refresh: boolean) => {
   const [tokens, setTokens] = useState<Token[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
@@ -37,7 +37,12 @@ const useKasplex = () => {
     const cachedTimestamp = localStorage.getItem(`timestamp_${kaspa.addresses?.[0]?.[0]}`)
     const currentTime = Date.now()
 
-    if (cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < CACHE_DURATION) {
+    if (
+      !refresh &&
+      cachedTokens &&
+      cachedTimestamp &&
+      currentTime - parseInt(cachedTimestamp) < CACHE_DURATION
+    ) {
       // Use the cached tokens if still valid
       setTokens(JSON.parse(cachedTokens))
       setLoading(false)
@@ -76,11 +81,9 @@ const useKasplex = () => {
               }),
             )
 
-            // Update state and cache if the component is still mounted
             setTokens(tokensWithPrices)
             setLoading(false)
 
-            // Cache the tokens and timestamp
             localStorage.setItem(`tokens_${kaspa.addresses[0][0]}`, JSON.stringify(tokensWithPrices))
             localStorage.setItem(`timestamp_${kaspa.addresses[0][0]}`, currentTime.toString())
           } else {
@@ -95,7 +98,7 @@ const useKasplex = () => {
 
       fetchTokens()
     }
-  }, [kaspa.connected, kaspa.addresses, settings.selectedNode, price])
+  }, [kaspa.connected, kaspa.addresses, settings.selectedNode, price, refresh]) // Added refresh as dependency
 
   return { tokens, loading, error }
 }

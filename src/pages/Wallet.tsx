@@ -1,3 +1,4 @@
+import { ArrowPathIcon } from '@heroicons/react/24/outline' // Importing the refresh icon
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Status } from '@/wallet/kaspa/wallet'
@@ -14,8 +15,8 @@ export default function Wallet() {
   const { settings } = useSettings()
   const navigate = useNavigate()
 
-  // State to hold the total value, initially set to 0
   const [totalValue, setTotalValue] = useState<number>(0)
+  const [refresh, setRefresh] = useState(false)
 
   useEffect(() => {
     if (!kaspa.connected) {
@@ -34,6 +35,11 @@ export default function Wallet() {
     }
   }, [kaspa.status])
 
+  const handleRefresh = () => {
+    // Toggle the refresh state to force reload
+    setRefresh((prev) => !prev)
+  }
+
   return (
     <>
       <AnimatedMain>
@@ -43,9 +49,14 @@ export default function Wallet() {
               <TotalValue totalValue={totalValue} />
               <ActionButtons />
             </div>
-            <h2 className="text-2xl text-primarytext font-lato text-left w-full px-4 pb-4">Cryptos</h2>
+            <div className="w-full flex items-center justify-between px-6 pb-4">
+              <h2 className="text-2xl text-primarytext font-lato">Cryptos</h2>
+              <button onClick={handleRefresh} className="text-primarytext hover:text-primary">
+                <ArrowPathIcon className="h-6 w-6" />
+              </button>
+            </div>
           </div>
-          <Cryptos onTotalValueChange={setTotalValue} />
+          <Cryptos onTotalValueChange={setTotalValue} refresh={refresh} />
         </div>
       </AnimatedMain>
       <BottomNav />

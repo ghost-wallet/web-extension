@@ -38,13 +38,13 @@ const Sent: React.FC = () => {
         href={`https://explorer.kaspa.org/txs/${txnId}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-primary font-lato font-bold text-lg mt-6"
+        className="text-primary font-lato font-bold text-lg mt-6 hover:underline"
       >
         View transaction
       </a>
 
       <button
-        className="mt-20 w-full bg-muted text-primarytext text-lg font-lato font-semibold rounded-[10px] cursor-pointer py-2 px-6"
+        className="mt-20 w-full bg-muted text-primarytext text-lg font-lato font-semibold rounded-[10px] cursor-pointer py-2 px-6 hover:bg-slightmuted"
         onClick={() => navigate('/wallet')}
       >
         Close

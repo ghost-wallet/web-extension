@@ -2,6 +2,7 @@ import React from 'react'
 import TokenDetails from '@/components/TokenDetails'
 import RecipientAddress from '@/components/RecipientAddress'
 import Header from '@/components/Header'
+import ErrorMessage from '@/components/ErrorMessage'
 
 interface ConfirmSendDetailsProps {
   token: any
@@ -61,19 +62,19 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
           </div>
         </div>
 
-        {error && <div className="text-error mt-2">{error}</div>}
+        <ErrorMessage message={error || ''} />
 
         <div className="flex gap-[6px] mt-6">
           <button
             onClick={onCancel}
-            className="flex-1 bg-muted text-primarytext text-lg font-lato font-semibold rounded-[10px] cursor-pointer py-2 px-6"
+            className="flex-1 bg-muted text-primarytext text-lg font-lato font-semibold rounded-[10px] cursor-pointer py-2 px-6 hover:bg-slightmuted"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
             disabled={loading}
-            className="flex-1 bg-primary text-secondarytext text-lg font-lato font-semibold rounded-[10px] cursor-pointer py-2 px-6"
+            className="flex-1 bg-primary text-secondarytext text-lg font-lato font-semibold rounded-[10px] cursor-pointer py-2 px-6 hover:bg-secondary"
           >
             {loading ? 'Processing...' : 'Send'}
           </button>

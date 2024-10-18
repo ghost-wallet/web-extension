@@ -8,6 +8,7 @@ import TokenListItem from '@/components/TokenListItem'
 import useTotalValueCalculation from '@/hooks/useTotalValueCalculation'
 import { getCurrencySymbol } from '@/utils/currencies'
 import useKasplex from '@/hooks/useKasplex'
+import ErrorMessage from '@/components/ErrorMessage'
 
 interface CryptoProps {
   onTotalValueChange: (value: number) => void
@@ -18,6 +19,7 @@ interface CryptoProps {
     kaspaBalance: number,
     kaspaImageSrc: string,
   ) => React.ReactElement
+  refresh: boolean
 }
 
 interface Token {
@@ -28,7 +30,7 @@ interface Token {
   floorPrice?: number
 }
 
-const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem }) => {
+const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, refresh }) => {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
   const price = useCoingecko(settings.currency)
@@ -36,7 +38,7 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
   const [tokens, setTokens] = useState<Token[]>([]) // Tokens state
   const [tokensError, setTokensError] = useState<string | null>(null) // Error state
 
-  const { tokens: fetchedTokens, loading: tokensLoading, error: tokensErrorState } = useKasplex()
+  const { tokens: fetchedTokens, loading: tokensLoading, error: tokensErrorState } = useKasplex(refresh) // Pass refresh state to useKasplex hook
 
   useEffect(() => {
     if (!tokensLoading && !tokensErrorState) {
@@ -45,7 +47,7 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
     } else if (tokensErrorState) {
       setTokensError(tokensErrorState)
     }
-  }, [tokensLoading, fetchedTokens, tokensErrorState])
+  }, [tokensLoading, fetchedTokens, tokensErrorState, refresh])
 
   useTotalValueCalculation(tokens, price, onTotalValueChange)
 
@@ -59,7 +61,7 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
   }
 
   if (tokensError) {
-    return <p className="p-6 text-error text-base">{tokensError}</p>
+    return <ErrorMessage message={tokensError} />
   }
 
   const kaspaToken: Token = {
