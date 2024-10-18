@@ -12,7 +12,12 @@ import {
   UtxoContext,
   Address,
   ScriptBuilder,
-  createInputSignature
+  createInputSignature,
+  IUtxosChanged,
+  UtxoProcessor,
+  IMaturityEvent,
+  UtxoProcessorNotificationCallback,
+  UtxoProcessorEvent
 } from '@/wasm'
 import Addresses from './addresses'
 import EventEmitter from 'events'
@@ -37,6 +42,7 @@ export interface CustomSignature {
 export default class Transactions extends EventEmitter {
   kaspa: RpcClient
   context: UtxoContext
+  processor: UtxoProcessor
   addresses: Addresses
   account: Account | null = null
   encryptedKey: string | undefined
@@ -44,11 +50,12 @@ export default class Transactions extends EventEmitter {
 
   private transactions: Map<string, PendingTransaction> = new Map()
 
-  constructor(kaspa: RpcClient, context: UtxoContext, addresses: Addresses) {
+  constructor(kaspa: RpcClient, context: UtxoContext, processor: UtxoProcessor, addresses: Addresses) {
     super()
 
     this.kaspa = kaspa
     this.context = context
+    this.processor = processor
     this.addresses = addresses
   }
 
@@ -183,6 +190,8 @@ export default class Transactions extends EventEmitter {
   }
 
   async writeInscription(recipient: string, token: Token, amount: string, feeRate: number) {
+    console.log(`fee rate: ${feeRate}`)
+
     console.log('[Transactions] Writing inscription....')
 
     const ourAddress = this.addresses.receiveAddresses[0]
@@ -203,6 +212,26 @@ export default class Transactions extends EventEmitter {
     const commit3 = await this.submitContextful(commit2)
     console.log(commit3)
 
+    //console.log('waiting...')
+    //await new Promise(resolve => setTimeout(resolve, 5000))
+    //this.kaspa.
+    //onsole.log('done waiting!')
+
+    console.log('waiting for event')
+    await new Promise<void>((resolve) => {
+      const listener = (event: UtxoProcessorEvent<'maturity'>) => {
+        console.log(event)
+
+        if (event.data.id.toString() === commit3[0]) {
+          console.log('event found, continuing')
+          // i think the types for the callback are wrong?
+          this.processor.removeEventListener('maturity', listener as UtxoProcessorNotificationCallback);
+          resolve()
+        }
+      }
+      this.processor.addEventListener('maturity', listener)
+    })
+
     const input = {
       address: scriptAddress!,
       outpoint: commit3[0],
@@ -216,7 +245,7 @@ export default class Transactions extends EventEmitter {
     // reveal transaction:
     // - create
     console.log('[Transactions] reveal transaction create:')
-    const reveal1 = await this.create([['', '']], feeRate, '0.01', [input])
+    const reveal1 = await this.create([], feeRate, '0.01', [input])
     console.log(reveal1)
     // - sign
     console.log('[Transactions] reveal transaction sign:')
