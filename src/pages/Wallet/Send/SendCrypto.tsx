@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
-import BackButton from '@/components/BackButton'
 import { formatBalance } from '@/utils/formatting'
 import TokenDetails from '@/components/TokenDetails'
 import useKaspa from '@/hooks/useKaspa'
@@ -10,6 +9,7 @@ import useURLParams from '@/hooks/useURLParams'
 import { Input as KaspaInput } from '@/provider/protocol'
 import { validateRecipient, validateAmountToSend } from '@/utils/validation'
 import { useFeeRate } from '@/hooks/useFeeRate'
+import Header from '@/components/Header'
 
 const SendCrypto: React.FC = () => {
   const location = useLocation()
@@ -104,11 +104,7 @@ const SendCrypto: React.FC = () => {
   return (
     <>
       <AnimatedMain>
-        <div className="flex items-center justify-between mb-4 p-6">
-          <BackButton />
-          <h1 className="text-primarytext text-3xl font-rubik text-center flex-grow">Send {token.tick}</h1>
-          <div className="w-6" />
-        </div>
+        <Header title={`Send ${token.tick}`} showBackButton={true} />
 
         <TokenDetails token={token} />
         <div className="text-primarytext text-center p-2">

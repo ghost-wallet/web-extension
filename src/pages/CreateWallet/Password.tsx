@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import PasswordInput from '@/components/PasswordInput'
 import ErrorMessage from '@/components/ErrorMessage'
+import AnimatedMain from '@/components/AnimatedMain'
+import Header from '@/components/Header'
 
 interface PasswordProps {
   onPasswordSet: (password: string) => void
@@ -47,9 +49,9 @@ export default function Password({ onPasswordSet }: PasswordProps) {
   }
 
   return (
-    <main className="pt-10 px-6">
-      <h1 className="text-primarytext text-2xl font-rubik text-center mb-6 mt-36">Create password</h1>
-      <form className="flex flex-col items-center">
+    <AnimatedMain>
+      <Header title="Create Password" showBackButton={true} />
+      <form className="flex flex-col items-center pt-36 px-6">
         <PasswordInput
           id="password"
           value={password}
@@ -78,6 +80,6 @@ export default function Password({ onPasswordSet }: PasswordProps) {
           Continue
         </button>
       </div>
-    </main>
+    </AnimatedMain>
   )
 }

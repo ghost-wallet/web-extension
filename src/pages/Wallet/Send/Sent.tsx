@@ -2,7 +2,8 @@ import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
-import KaspaAddress from '@/components/KaspaAddress' // Import the new KaspaAddress component
+import KaspaAddress from '@/components/KaspaAddress'
+import Title from '@/components/Header' // Import the new KaspaAddress component
 
 const Sent: React.FC = () => {
   const location = useLocation()
@@ -19,11 +20,11 @@ const Sent: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-dark p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-dark p-4 mb-6">
       <motion.div initial="hidden" animate="visible" variants={checkmarkVariants}>
         <CheckCircleIcon className="w-24 h-24 text-green-500" />
       </motion.div>
-      <h1 className="text-2xl font-lato text-primarytext mt-6">Sent!</h1>
+      <Title title="Sent!" />
 
       <p className="text-base font-lato text-mutedtext mt-4 p-6 text-center">
         {amount} {token.tick} was successfully sent to

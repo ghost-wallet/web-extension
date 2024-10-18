@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react'
 import RecoveryPhraseGrid from '@/components/RecoveryPhraseGrid'
 import * as bip39 from 'bip39'
 import { Buffer } from 'buffer'
+import AnimatedMain from '@/components/AnimatedMain'
+import Header from '@/components/Header'
 
 if (typeof globalThis.Buffer === 'undefined') {
   globalThis.Buffer = Buffer
 }
 
 export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnemonics: string) => void }) {
-  // State to track 12-word or 24-word mode
   const [is24Words, setIs24Words] = useState<boolean>(false)
   const [userInputs, setUserInputs] = useState<string[]>(Array(12).fill(''))
   const [textAreaInput, setTextAreaInput] = useState<string>('') // For the 24-word input
@@ -59,48 +60,50 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
 
   const handleToggle = () => {
     setIs24Words((prev) => !prev)
-    setUserInputs(Array(12).fill('')) // Reset input if switching from 24 to 12
-    setTextAreaInput('') // Reset text area if switching from 12 to 24
-    setIsValid(false) // Reset validation status
+    setUserInputs(Array(12).fill(''))
+    setTextAreaInput('')
+    setIsValid(false)
   }
 
   return (
-    <main className="pt-10 px-6">
+    <AnimatedMain>
       <div className="flex flex-col items-center">
-        <h1 className="text-primarytext text-3xl font-rubik text-center mb-2">Secret Recovery Phrase</h1>
-        <p className="text-mutedtext text-lg font-lato text-center mb-4">
-          Import an existing wallet with your {is24Words ? '24-word' : '12-word'} secret recovery phrase.
-        </p>
+        <Header title="Import" showBackButton={false} />
+        <div className="px-6">
+          <p className="text-mutedtext text-lg font-lato text-center mb-4">
+            Import an existing wallet with your {is24Words ? '24-word' : '12-word'} secret recovery phrase.
+          </p>
+          <div className="flex justify-center mb-6">
+            <button
+              onClick={handleToggle}
+              className="text-center text-base font-semibold text-primary font-lato hover:underline"
+            >
+              {is24Words ? 'Switch to 12 words' : 'Switch to 24 words'}
+            </button>
+          </div>
 
-        <button
-          onClick={handleToggle}
-          className="mb-6 text-base font-semibold text-primary font-lato hover:underline"
-        >
-          {is24Words ? 'Switch to 12 words' : 'Switch to 24 words'}
-        </button>
-
-        {/* Conditionally render either the grid or the textarea */}
-        {!is24Words ? (
-          <RecoveryPhraseGrid
-            values={userInputs}
-            onInputChange={(i, value) =>
-              setUserInputs((inputs) => {
-                const updated = [...inputs]
-                updated[i] = value.trim().toLowerCase()
-                return updated
-              })
-            }
-            onPaste={handlePaste}
-            editableIndices={Array.from({ length: 12 }, (_, i) => i)}
-          />
-        ) : (
-          <textarea
-            value={textAreaInput}
-            onChange={(e) => setTextAreaInput(e.target.value)}
-            placeholder="Enter or paste your 24-word recovery phrase"
-            className="w-full h-32 border rounded-lg p-4 bg-bgdarker text-primarytext font-lato font-base"
-          />
-        )}
+          {!is24Words ? (
+            <RecoveryPhraseGrid
+              values={userInputs}
+              onInputChange={(i, value) =>
+                setUserInputs((inputs) => {
+                  const updated = [...inputs]
+                  updated[i] = value.trim().toLowerCase()
+                  return updated
+                })
+              }
+              onPaste={handlePaste}
+              editableIndices={Array.from({ length: 12 }, (_, i) => i)}
+            />
+          ) : (
+            <textarea
+              value={textAreaInput}
+              onChange={(e) => setTextAreaInput(e.target.value)}
+              placeholder="Enter or paste your 24-word recovery phrase"
+              className="w-full h-32 border rounded-lg p-4 bg-bgdarker text-primarytext font-lato font-base"
+            />
+          )}
+        </div>
 
         <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
           <button
@@ -117,6 +120,6 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
           </button>
         </div>
       </div>
-    </main>
+    </AnimatedMain>
   )
 }

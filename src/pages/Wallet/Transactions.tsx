@@ -2,6 +2,7 @@ import React from 'react'
 import BottomNav from '@/components/BottomNav'
 import useKaspa from '@/hooks/useKaspa'
 import AnimatedMain from '@/components/AnimatedMain'
+import Header from '@/components/Header'
 
 export default function Transactions() {
   const { kaspa } = useKaspa()
@@ -9,13 +10,13 @@ export default function Transactions() {
   return (
     <>
       <AnimatedMain>
-        <div className="p-6">
-          <h1 className="text-primarytext text-3xl font-rubik text-center mb-4">Transactions</h1>
+        <Header title="Transactions" showBackButton={false} />
+        <div className="pt-6 text-center">
           <a
             href={`https://explorer.kaspa.org/addresses/${kaspa.addresses[0]}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-lg font-lato text-primary hover:underline"
+            className="mt-10 text-lg font-lato text-primary hover:underline"
           >
             View on Kaspa Explorer
           </a>
