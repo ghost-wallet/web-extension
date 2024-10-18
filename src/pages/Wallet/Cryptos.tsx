@@ -86,7 +86,7 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
         <ul>
           {combinedTokens.map((token) =>
             renderTokenItem ? (
-              renderTokenItem(token, token.tick === 'KASPA', currencySymbol, kaspa.balance, kaspaImageSrc)
+              renderTokenItem(token, token.tick === 'KASPA', currencySymbol, kaspa.balance, kaspaSvg)
             ) : (
               <TokenListItem
                 key={token.opScoreMod}
