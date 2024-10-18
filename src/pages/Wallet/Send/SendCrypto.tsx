@@ -94,6 +94,7 @@ const SendCrypto: React.FC = () => {
           token,
           recipient: outputs[0][0],
           amount: outputs[0][1],
+          feeRate: feeRate
         },
       })
     }

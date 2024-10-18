@@ -4,7 +4,7 @@ import useKaspa from '@/hooks/useKaspa'
 import useSettings from '@/hooks/useSettings'
 import useCoingecko from '@/hooks/useCoingecko'
 
-interface Token {
+export interface Token {
   tick: string
   balance: string
   opScoreMod: string

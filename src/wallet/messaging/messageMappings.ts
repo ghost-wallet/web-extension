@@ -2,6 +2,7 @@ import { Status } from '../kaspa/wallet'
 import { UTXO } from '../kaspa/account/account'
 import { CustomInput } from '../kaspa/account/transactions'
 import { PriorityBuckets } from '../kaspa/node'
+import { Token } from '@/hooks/useKasplex'
 
 export interface RequestMappings {
   'wallet:status': []
@@ -24,7 +25,7 @@ export interface RequestMappings {
   'account:submitContextful': [string[]]
   'account:compoundUtxos': []
   'account:scan': []
-  'account:writeInscription': [string, string, number, number]
+  'account:writeInscription': [string, Token, string, number]
   'provider:connect': [string]
   'provider:connection': []
   'provider:disconnect': []

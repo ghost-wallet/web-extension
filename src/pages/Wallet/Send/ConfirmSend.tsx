@@ -51,35 +51,35 @@ const ConfirmSend: React.FC = () => {
       }
       console.log('[ConfirmSend] parsed transaction:', parsedTransactions)
 
-      if (token.tick !== 'KASPA') {
-        const krc20Transfer = {
-          p: 'krc-20',
-          op: 'transfer',
-          tick: token.tick,
-          amt: amount.toString(),
-          to: recipient,
-        }
+      // if (token.tick !== 'KASPA') {
+      //   const krc20Transfer = {
+      //     p: 'krc-20',
+      //     op: 'transfer',
+      //     tick: token.tick,
+      //     amt: amount.toString(),
+      //     to: recipient,
+      //   }
 
-        console.log('[ConfirmSend] krc20Transfer object:', krc20Transfer)
+      //   console.log('[ConfirmSend] krc20Transfer object:', krc20Transfer)
 
-        // TODO add signature script and utxo fields
-        // Combine the KRC-20 data with the first input object
-        parsedTransactions.inputs[0] = {
-          ...parsedTransactions.inputs[0],
-          ...krc20Transfer,
-        }
+      //   // TODO add signature script and utxo fields
+      //   // Combine the KRC-20 data with the first input object
+      //   parsedTransactions.inputs[0] = {
+      //     ...parsedTransactions.inputs[0],
+      //     ...krc20Transfer,
+      //   }
 
-        console.log('[ConfirmSend] parsedTransactions', parsedTransactions)
+      //   console.log('[ConfirmSend] parsedTransactions', parsedTransactions)
 
-        updatedTransactions = updatedTransactions.map((tx) => {
-          const parsedTx = JSON.parse(tx)
-          parsedTx.inputs[0] = {
-            ...parsedTx.inputs[0],
-            ...krc20Transfer,
-          }
-          return JSON.stringify(parsedTx)
-        })
-      }
+      //   updatedTransactions = updatedTransactions.map((tx) => {
+      //     const parsedTx = JSON.parse(tx)
+      //     parsedTx.inputs[0] = {
+      //       ...parsedTx.inputs[0],
+      //       ...krc20Transfer,
+      //     }
+      //     return JSON.stringify(parsedTx)
+      //   })
+      // }
 
       console.log(
         '[ConfirmSend] Attempting to account:sign with transactions:',
