@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Tabs } from '../CreateWallet'
+import ghostIcon from '../../../assets/ghost.svg'
 
 export default function Landing({
   forward,
@@ -15,7 +16,7 @@ export default function Landing({
         Secure Kaspa wallet for KRC20 tokens.
       </p>
       <div className="flex justify-center mt-7 mb-32">
-        <img className="w-[123px] h-[123px]" src="favicon.png" alt="logo" />
+        <img className="w-[123px] h-[123px]" src={ghostIcon} alt="logo" />
       </div>
       <div className="flex gap-3 justify-center items-center">
         <input

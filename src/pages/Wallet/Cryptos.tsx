@@ -10,6 +10,8 @@ import { getCurrencySymbol } from '@/utils/currencies'
 import useKasplex from '@/hooks/useKasplex'
 import ErrorMessage from '@/components/ErrorMessage'
 
+import kaspaSvg from '../../../assets/kaspa-kas-logo.svg'
+
 interface CryptoProps {
   onTotalValueChange: (value: number) => void
   renderTokenItem?: (
@@ -72,7 +74,6 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
     floorPrice: price,
   }
 
-  const kaspaImageSrc = '/kaspa-kas-logo.png'
   const sortedTokens = sortTokensByValue(tokens)
   const combinedTokens = [kaspaToken, ...sortedTokens]
   const currencySymbol = getCurrencySymbol(settings.currency)
@@ -93,7 +94,7 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
                 isKaspa={token.tick === 'KASPA'}
                 currencySymbol={currencySymbol}
                 kaspaBalance={kaspa.balance}
-                kaspaImageSrc={kaspaImageSrc}
+                kaspaImageSrc={kaspaSvg}
               />
             ),
           )}

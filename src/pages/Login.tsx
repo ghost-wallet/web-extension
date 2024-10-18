@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import PasswordInput from '@/components/PasswordInput'
 import ErrorMessage from '@/components/ErrorMessage'
 import useKaspa from '@/hooks/useKaspa'
+import ghostIcon from '../../assets/ghost.svg'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -50,7 +51,7 @@ export default function Login() {
   return (
     <main className="pt-10 px-6">
       <div className="flex justify-center mt-7">
-        <img className="w-[123px] h-[123px]" src="favicon.png" alt="logo" />
+        <img className="w-[123px] h-[123px]" src={ghostIcon} alt="logo" />
       </div>
       <h1 className="text-primarytext text-2xl font-rubik text-center mb-4 mt-14">Enter your password</h1>
       <form className="flex flex-col items-center" onKeyDown={handleKeyDown}>

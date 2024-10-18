@@ -7,8 +7,8 @@ you can hold, send, receive, and trade KRC20 tokens. Ghost wallet is a Chrome-ba
 
 ## The Wallet
 
-![Ghost Wallet Screenshot](/public/GhostToS.png)
-![Ghost Wallet Screenshot 2](/public/GhostWallet.png)
+![Ghost Wallet Screenshot](/assets/GhostToS.png)
+![Ghost Wallet Screenshot 2](/assets/GhostWallet.png)
 
 ## Development
 

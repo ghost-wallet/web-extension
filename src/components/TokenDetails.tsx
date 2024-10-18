@@ -8,12 +8,14 @@ interface TokenDetailsProps {
   }
 }
 
+import kaspaSvg from '../../assets/kaspa-kas-logo.svg'
+
 const TokenDetails: React.FC<TokenDetailsProps> = ({ token }) => (
   <div className="flex flex-col items-center mt-2">
     <img
       src={
         token.tick === 'KASPA'
-          ? '/kaspa-kas-logo.png'
+          ? kaspaSvg
           : `https://krc20-assets.kas.fyi/icons/${token.tick}.jpg`
       }
       alt={`${token.tick} logo`}
