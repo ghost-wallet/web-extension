@@ -50,9 +50,7 @@ export default function UnlockWallet() {
       <div className="flex justify-center mt-7">
         <img className="w-[123px] h-[123px]" src="favicon.png" alt="logo" />
       </div>
-      <h1 className="text-primarytext text-2xl font-rubik text-center mb-4 mt-14">
-        Enter your password
-      </h1>
+      <h1 className="text-primarytext text-2xl font-rubik text-center mb-4 mt-14">Enter your password</h1>
       <form className="flex flex-col items-center" onKeyDown={handleKeyDown}>
         <PasswordInput
           placeholder="Password"

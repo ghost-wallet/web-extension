@@ -48,9 +48,7 @@ export default function Password({ onPasswordSet }: PasswordProps) {
 
   return (
     <main className="pt-10 px-6">
-      <h1 className="text-primarytext text-2xl font-rubik text-center mb-6 mt-36">
-        Create password
-      </h1>
+      <h1 className="text-primarytext text-2xl font-rubik text-center mb-6 mt-36">Create password</h1>
       <form className="flex flex-col items-center">
         <PasswordInput
           id="password"

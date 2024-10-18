@@ -5,9 +5,7 @@ const Scan: React.FC = () => {
   const { request } = useKaspa()
 
   const handleScan = () => {
-    request('account:scan', []).catch((error) =>
-      console.error('[Scan] Error doing account scan:', error),
-    )
+    request('account:scan', []).catch((error) => console.error('[Scan] Error doing account scan:', error))
   }
 
   return (

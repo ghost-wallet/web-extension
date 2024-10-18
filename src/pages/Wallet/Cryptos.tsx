@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import { sortTokensByValue } from '@/utils/sorting'
 import useSettings from '@/hooks/useSettings'
 import Spinner from '@/components/Spinner'
@@ -83,13 +83,7 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
         <ul>
           {combinedTokens.map((token) =>
             renderTokenItem ? (
-              renderTokenItem(
-                token,
-                token.tick === 'KASPA',
-                currencySymbol,
-                kaspa.balance,
-                kaspaImageSrc,
-              )
+              renderTokenItem(token, token.tick === 'KASPA', currencySymbol, kaspa.balance, kaspaImageSrc)
             ) : (
               <TokenListItem
                 key={token.opScoreMod}

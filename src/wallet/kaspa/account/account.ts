@@ -119,9 +119,7 @@ export default class Account extends EventEmitter {
         (fee / BigInt(1e8)).toString(),
       )
 
-      const signedConsolidationTransaction = await this.transactions.sign(
-        serializedPendingTransactions,
-      )
+      const signedConsolidationTransaction = await this.transactions.sign(serializedPendingTransactions)
       const consolidationTransactionId = await this.transactions.submitContextful(
         signedConsolidationTransaction,
       )
@@ -198,10 +196,7 @@ export default class Account extends EventEmitter {
 
       if (newValue) {
         console.log('[Account] newValue')
-        await this.addresses.import(
-          PublicKeyGenerator.fromXPub(newValue.publicKey),
-          newValue.activeAccount,
-        )
+        await this.addresses.import(PublicKeyGenerator.fromXPub(newValue.publicKey), newValue.activeAccount)
         await this.transactions.import(newValue.encryptedKey, newValue.activeAccount)
         await this.processor.start()
       } else {

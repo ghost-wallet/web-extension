@@ -1,10 +1,7 @@
 import { EventEmitter } from 'events'
 import { RpcClient, Transaction, Resolver, NetworkId, IFeerateBucket } from '@/wasm'
 
-export type PriorityBuckets = Record<
-  'slow' | 'standard' | 'fast',
-  { feeRate: number; seconds: number }
->
+export type PriorityBuckets = Record<'slow' | 'standard' | 'fast', { feeRate: number; seconds: number }>
 
 export default class Node extends EventEmitter {
   rpcClient: RpcClient
@@ -84,9 +81,7 @@ export default class Node extends EventEmitter {
               console.log('[Node] Server info:', { isSynced, hasUtxoIndex, networkId })
 
               if (!isSynced || !hasUtxoIndex) {
-                console.error(
-                  '[Node] Node is not synchronized or lacks UTXO index. Disconnecting...',
-                )
+                console.error('[Node] Node is not synchronized or lacks UTXO index. Disconnecting...')
                 this.rpcClient.disconnect().catch((disconnectError) => {
                   console.error('[Node] Error during disconnect:', disconnectError)
                 })

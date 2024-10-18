@@ -35,18 +35,14 @@ export default class Router {
       'node:connect': (address) => node.reconnect(address),
       'node:priorityBuckets': () => node.getPriorityBuckets(),
       'node:submit': (transactions) => node.submit(transactions),
-      'account:addresses': () => [
-        account.addresses.receiveAddresses,
-        account.addresses.changeAddresses,
-      ],
+      'account:addresses': () => [account.addresses.receiveAddresses, account.addresses.changeAddresses],
       'account:balance': () => account.balance,
       'account:utxos': () => account.UTXOs,
       'account:create': (outputs, feeRate, fee, inputs) =>
         account.transactions.create(outputs, feeRate, fee, inputs),
       // TODO update the `account:sign` mapping to not require password
       'account:sign': (transactions) => account.transactions.sign(transactions),
-      'account:submitContextful': (transactions) =>
-        account.transactions.submitContextful(transactions),
+      'account:submitContextful': (transactions) => account.transactions.submitContextful(transactions),
       'account:compoundUtxos': () => account.compoundUtxos(),
       'account:scan': () => account.scan(),
       'account:writeInscription': (recipient, token, amount, feeRate) =>

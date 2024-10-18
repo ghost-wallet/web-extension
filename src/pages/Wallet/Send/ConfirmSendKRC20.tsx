@@ -2,10 +2,9 @@ import React, { useCallback, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
-import BackButton from '@/components/BackButton'
-import TokenDetails from '@/components/TokenDetails'
-import { truncateAddress } from '@/utils/formatting'
+import ConfirmSendDetails from '@/components/ConfirmSendDetails'
 import useKaspa from '@/hooks/useKaspa'
+import Spinner from '@/components/Spinner'
 
 const ConfirmSendKRC20: React.FC = () => {
   const location = useLocation()
@@ -14,25 +13,28 @@ const ConfirmSendKRC20: React.FC = () => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { request } = useKaspa()
-  const [script, setScript] = useState<string>()
-  const [commitAddress, setCommitAddress] = useState<string>()
 
   const handleConfirmClick = useCallback(() => {
+    setLoading(true)
+    setError('')
+
     request('account:writeInscription', [recipient, token, amount, feeRate])
       .then((response) => {
         console.log('[ConfirmSendKRC20] write inscription success. Response:', response)
-        // @ts-ignore
-        // const { script, scriptAddress } = response
-        // setCommitAddress(scriptAddress)
-        // setScript(script)
-
-        //TODO show transaction id on response here. Update the backend response
+        // const commitTxnId = response[0]
+        const txnId = response[1]
+        navigate('/send/crypto/confirm/sent', {
+          state: { token, amount, recipient, txnId },
+        })
       })
       .catch((err) => {
-        setError(err.message || 'Error occurred transferring KRC20 token.')
+        setError(err.message || `Error occurred transferring KRC20 token: ${err.message}`)
         console.error('[ConfirmSendKRC20] error writing inscription:', err)
       })
-  }, [request])
+      .finally(() => {
+        setLoading(false) // Reset loading state after the operation is complete
+      })
+  }, [request, recipient, token, amount, feeRate])
 
   const handleCancelClick = () => {
     navigate('/wallet')
@@ -41,65 +43,25 @@ const ConfirmSendKRC20: React.FC = () => {
   return (
     <>
       <AnimatedMain>
-        <div className="flex items-center justify-between mb-4 p-6">
-          <BackButton />
-          <h1 className="text-primarytext text-3xl font-rubik text-center flex-grow">
-            Confirm Send
-          </h1>
-          <div className="w-6" />
-        </div>
-
-        <TokenDetails token={token} />
-        <div className="text-primarytext text-center p-2">
-          <p className="text-lg font-lato">
-            {amount} {token.tick}
-          </p>
-        </div>
-
-        <div className="p-6">
-          <div className="bg-bgdarker rounded-md p-4">
-            <div className="flex justify-between">
-              <span className="text-base font-lato text-mutedtext">To</span>
-              <span className="text-base font-lato text-primarytext">
-                {truncateAddress(recipient)}
-              </span>
-            </div>
+        {loading ? (
+          <div className="flex justify-center items-center h-full">
+            <Spinner />
           </div>
-
-          <div className="bg-bgdarker rounded-md p-4">
-            <div className="flex justify-between">
-              <span className="text-base font-lato text-mutedtext">Network</span>
-              <span className="text-base font-lato text-primarytext">Mainnet</span>
-            </div>
-          </div>
-
-          <div className="bg-bgdarker rounded-md p-4">
-            <div className="flex justify-between">
-              <span className="text-base font-lato text-mutedtext">Network Fee</span>
-              <span className="text-base font-lato text-primarytext">(fee placeholder)</span>
-            </div>
-          </div>
-
-          {error && <div className="text-error mt-2">{error}</div>}
-
-          <div className="flex gap-[6px] mt-6">
-            <button
-              onClick={handleCancelClick}
-              className="flex-1 bg-muted text-primarytext text-lg font-lato font-semibold rounded-[10px] cursor-pointer py-2 px-6"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleConfirmClick}
-              disabled={loading}
-              className="flex-1 bg-primary text-secondarytext text-lg font-lato font-semibold rounded-[10px] cursor-pointer py-2 px-6"
-            >
-              {loading ? 'Processing...' : 'Send'}
-            </button>
-          </div>
-        </div>
+        ) : (
+          <ConfirmSendDetails
+            token={token}
+            recipient={recipient}
+            amount={amount}
+            fee={'TODO: Implement'}
+            network="Mainnet"
+            onConfirm={handleConfirmClick}
+            onCancel={handleCancelClick}
+            loading={loading}
+            error={error}
+          />
+        )}
       </AnimatedMain>
-      <BottomNav />
+      {!loading && <BottomNav />}
     </>
   )
 }

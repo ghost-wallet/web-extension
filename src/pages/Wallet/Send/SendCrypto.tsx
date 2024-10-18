@@ -20,9 +20,7 @@ const SendCrypto: React.FC = () => {
 
   const maxAmount = token.tick === 'KASPA' ? token.balance : formatBalance(token.balance, token.dec)
 
-  const [inputs] = useState<KaspaInput[]>(
-    params.get('inputs') ? JSON.parse(params.get('inputs')!) : [],
-  )
+  const [inputs] = useState<KaspaInput[]>(params.get('inputs') ? JSON.parse(params.get('inputs')!) : [])
   const [outputs, setOutputs] = useState<[string, string][]>([['', '']])
   const [recipientError, setRecipientError] = useState<string | null>(null)
   const [amountError, setAmountError] = useState<string | null>(null)
@@ -94,7 +92,7 @@ const SendCrypto: React.FC = () => {
           token,
           recipient: outputs[0][0],
           amount: outputs[0][1],
-          feeRate: feeRate
+          feeRate: feeRate,
         },
       })
     }
@@ -108,9 +106,7 @@ const SendCrypto: React.FC = () => {
       <AnimatedMain>
         <div className="flex items-center justify-between mb-4 p-6">
           <BackButton />
-          <h1 className="text-primarytext text-3xl font-rubik text-center flex-grow">
-            Send {token.tick}
-          </h1>
+          <h1 className="text-primarytext text-3xl font-rubik text-center flex-grow">Send {token.tick}</h1>
           <div className="w-6" />
         </div>
 
@@ -150,9 +146,7 @@ const SendCrypto: React.FC = () => {
             {/* Error section with fixed height */}
             <div className="h-6 flex items-center">
               {(recipientError || amountError) && (
-                <div className="text-base font-lato text-error">
-                  {recipientError || amountError}
-                </div>
+                <div className="text-base font-lato text-error">{recipientError || amountError}</div>
               )}
             </div>
           </div>
@@ -164,9 +158,7 @@ const SendCrypto: React.FC = () => {
             onClick={handleContinue}
             disabled={!isButtonEnabled}
             className={`w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] ${
-              isButtonEnabled
-                ? 'bg-primary cursor-pointer hover:bg-hover'
-                : 'bg-secondary cursor-not-allowed'
+              isButtonEnabled ? 'bg-primary cursor-pointer hover:bg-hover' : 'bg-secondary cursor-not-allowed'
             } text-secondarytext`}
           >
             Continue

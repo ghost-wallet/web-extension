@@ -64,9 +64,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     root.classList.remove('light', 'dark')
 
     if (settings['theme'] === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 
       root.classList.add(systemTheme)
       return
@@ -90,8 +88,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <SettingsContext.Provider value={{ load, settings, updateSetting }}>
-      {children}
-    </SettingsContext.Provider>
+    <SettingsContext.Provider value={{ load, settings, updateSetting }}>{children}</SettingsContext.Provider>
   )
 }

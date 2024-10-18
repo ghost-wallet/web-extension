@@ -1,10 +1,5 @@
 import React, { useState } from 'react'
-import {
-  EyeIcon,
-  EyeSlashIcon,
-  DocumentDuplicateIcon,
-  DocumentCheckIcon,
-} from '@heroicons/react/24/outline'
+import { EyeIcon, EyeSlashIcon, DocumentDuplicateIcon, DocumentCheckIcon } from '@heroicons/react/24/outline'
 
 export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSaved: () => void }) {
   const [isSeedVisible, setIsSeedVisible] = useState(false)
@@ -30,13 +25,11 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
 
   return (
     <main className="p-6">
-      <h1 className="text-primarytext text-3xl font-rubik text-center mb-6">
-        Secret Recovery Phrase
-      </h1>
+      <h1 className="text-primarytext text-3xl font-rubik text-center mb-6">Secret Recovery Phrase</h1>
       <p className="text-warning text-base font-lato text-center mb-6">
-        This phrase is the only way to recover your wallet. Do not share it with anyone. Do not
-        enter it into any app, site, or wallet other than official wallets from ghostapp.org. Beware
-        of scammers pretending to be Ghost support.
+        This phrase is the only way to recover your wallet. Do not share it with anyone. Do not enter it into
+        any app, site, or wallet other than official wallets from ghostapp.org. Beware of scammers pretending
+        to be Ghost support.
       </p>
 
       <div

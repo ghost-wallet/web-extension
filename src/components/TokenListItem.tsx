@@ -40,9 +40,7 @@ const TokenListItem: React.FC<TokenListItemProps> = ({
           {currencySymbol}
           {isKaspa
             ? formatValue(kaspaBalance * (token.floorPrice ?? 0))
-            : formatValue(
-                (token.floorPrice ?? 0) * parseFloat(formatBalance(token.balance, token.dec)),
-              )}
+            : formatValue((token.floorPrice ?? 0) * parseFloat(formatBalance(token.balance, token.dec)))}
         </span>
       </div>
     </li>
