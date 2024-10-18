@@ -70,33 +70,30 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
   const messagesRef = useRef(new Map<number, MessageEntry<any>>())
   const nonceRef = useRef(0)
 
-  const request = useCallback(
-    <M extends keyof RequestMappings>(method: M, params: RequestMappings[M]) => {
-      const message: Request<M> = {
-        id: ++nonceRef.current,
-        method,
-        params,
+  const request = useCallback(<M extends keyof RequestMappings>(method: M, params: RequestMappings[M]) => {
+    const message: Request<M> = {
+      id: ++nonceRef.current,
+      method,
+      params,
+    }
+
+    console.log(
+      `[KaspaContextProvider] Sending request - method: ${method}, params:`,
+      params,
+      'message:',
+      message,
+    )
+
+    return new Promise<ResponseMappings[M]>((resolve, reject) => {
+      messagesRef.current.set(message.id, { resolve, reject, message })
+      try {
+        getConnection().postMessage(message)
+      } catch (error) {
+        console.error('[KaspaContextProvider] Error posting message:', error)
+        reject(error)
       }
-
-      console.log(
-        `[KaspaContextProvider] Sending request - method: ${method}, params:`,
-        params,
-        'message:',
-        message,
-      )
-
-      return new Promise<ResponseMappings[M]>((resolve, reject) => {
-        messagesRef.current.set(message.id, { resolve, reject, message })
-        try {
-          getConnection().postMessage(message)
-        } catch (error) {
-          console.error('[KaspaContextProvider] Error posting message:', error)
-          reject(error)
-        }
-      })
-    },
-    [],
-  )
+    })
+  }, [])
 
   const getConnection = useCallback(() => {
     if (connectionRef.current) {
@@ -184,10 +181,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
     connection.onDisconnect.addListener(() => {
       console.warn('[KaspaContextProvider] Connection disconnected.')
 
-      if (
-        runtime.lastError?.message !==
-        'Could not establish connection. Receiving end does not exist.'
-      ) {
+      if (runtime.lastError?.message !== 'Could not establish connection. Receiving end does not exist.') {
         return
       }
 

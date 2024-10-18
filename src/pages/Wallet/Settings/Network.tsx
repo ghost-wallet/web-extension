@@ -30,9 +30,7 @@ const Network: React.FC = () => {
         <h1 className="text-primarytext text-base font-lato">Network</h1>
         <span
           className={`px-2 py-1 ${
-            kaspa.connected
-              ? 'text-success text-base font-lato'
-              : 'text-mutedtext text-base font-lato'
+            kaspa.connected ? 'text-success text-base font-lato' : 'text-mutedtext text-base font-lato'
           }`}
         >
           {kaspa.connected ? 'Connected' : 'Connecting...'}

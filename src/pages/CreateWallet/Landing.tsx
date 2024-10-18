@@ -26,11 +26,7 @@ export default function Landing({
         <p className="text-primarytext text-base font-lato">
           I agree to Ghost’s{' '}
           <span className="text-primary text-base font-lato font-semibold">
-            <a
-              href="https://www.ghostapp.org/terms-of-service"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://www.ghostapp.org/terms-of-service" target="_blank" rel="noopener noreferrer">
               Terms of Service
             </a>
           </span>

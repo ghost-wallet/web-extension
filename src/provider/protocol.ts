@@ -31,11 +31,7 @@ export interface Request<M extends keyof RequestMappings = keyof RequestMappings
 export function isRequest(object: any): object is Request {
   if (typeof object !== 'object') return false
 
-  if (
-    typeof object.id !== 'number' ||
-    typeof object.method !== 'string' ||
-    !Array.isArray(object.params)
-  ) {
+  if (typeof object.id !== 'number' || typeof object.method !== 'string' || !Array.isArray(object.params)) {
     return false
   }
 

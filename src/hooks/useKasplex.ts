@@ -37,11 +37,7 @@ const useKasplex = () => {
     const cachedTimestamp = localStorage.getItem(`timestamp_${kaspa.addresses?.[0]?.[0]}`)
     const currentTime = Date.now()
 
-    if (
-      cachedTokens &&
-      cachedTimestamp &&
-      currentTime - parseInt(cachedTimestamp) < CACHE_DURATION
-    ) {
+    if (cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < CACHE_DURATION) {
       // Use the cached tokens if still valid
       setTokens(JSON.parse(cachedTokens))
       setLoading(false)
@@ -53,14 +49,12 @@ const useKasplex = () => {
           setError(null)
 
           const apiBase =
-            settings.selectedNode === 0
-              ? 'api'
-              : settings.selectedNode === 1
-                ? 'tn10api'
-                : 'tn11api'
+            settings.selectedNode === 0 ? 'api' : settings.selectedNode === 1 ? 'tn10api' : 'tn11api'
 
           const response = await axios.get<ApiResponse>(
-            `https://${apiBase}.kasplex.org/v1/krc20/address/${kaspa.addresses[0][kaspa.addresses[0].length - 1]}/tokenlist`,
+            `https://${apiBase}.kasplex.org/v1/krc20/address/${
+              kaspa.addresses[0][kaspa.addresses[0].length - 1]
+            }/tokenlist`,
           )
 
           if (response.data && response.data.result) {
@@ -87,10 +81,7 @@ const useKasplex = () => {
             setLoading(false)
 
             // Cache the tokens and timestamp
-            localStorage.setItem(
-              `tokens_${kaspa.addresses[0][0]}`,
-              JSON.stringify(tokensWithPrices),
-            )
+            localStorage.setItem(`tokens_${kaspa.addresses[0][0]}`, JSON.stringify(tokensWithPrices))
             localStorage.setItem(`timestamp_${kaspa.addresses[0][0]}`, currentTime.toString())
           } else {
             throw new Error('Invalid API response structure')

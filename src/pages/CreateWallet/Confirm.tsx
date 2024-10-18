@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import RecoveryPhraseGrid from '@/components/RecoveryPhraseGrid'
 
-export default function Confirm({
-  mnemonic,
-  onConfirmed,
-}: {
-  mnemonic: string
-  onConfirmed: () => void
-}) {
+export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; onConfirmed: () => void }) {
   const [userInputs, setUserInputs] = useState<string[]>(Array(12).fill(''))
   const [isValid, setIsValid] = useState<boolean>(false)
 

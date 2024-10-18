@@ -7,11 +7,7 @@ if (typeof globalThis.Buffer === 'undefined') {
   globalThis.Buffer = Buffer
 }
 
-export default function Import({
-  onMnemonicsSubmit,
-}: {
-  onMnemonicsSubmit: (mnemonics: string) => void
-}) {
+export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnemonics: string) => void }) {
   // State to track 12-word or 24-word mode
   const [is24Words, setIs24Words] = useState<boolean>(false)
   const [userInputs, setUserInputs] = useState<string[]>(Array(12).fill(''))
@@ -71,12 +67,9 @@ export default function Import({
   return (
     <main className="pt-10 px-6">
       <div className="flex flex-col items-center">
-        <h1 className="text-primarytext text-3xl font-rubik text-center mb-2">
-          Secret Recovery Phrase
-        </h1>
+        <h1 className="text-primarytext text-3xl font-rubik text-center mb-2">Secret Recovery Phrase</h1>
         <p className="text-mutedtext text-lg font-lato text-center mb-4">
-          Import an existing wallet with your {is24Words ? '24-word' : '12-word'} secret recovery
-          phrase.
+          Import an existing wallet with your {is24Words ? '24-word' : '12-word'} secret recovery phrase.
         </p>
 
         <button

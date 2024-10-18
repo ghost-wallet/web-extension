@@ -17,10 +17,7 @@ const RecipientAddress: React.FC<RecipientAddressProps> = ({ address }) => {
   }
 
   return (
-    <div
-      className="flex items-center gap-2 bg-bgdarker rounded-md cursor-pointer"
-      onClick={handleCopy}
-    >
+    <div className="flex items-center gap-2 bg-bgdarker rounded-md cursor-pointer" onClick={handleCopy}>
       {copied ? (
         <>
           <span className="text-base font-lato text-primary">Copied</span>

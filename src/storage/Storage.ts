@@ -3,10 +3,7 @@ import browser from 'webextension-polyfill'
 export default abstract class Storage<IStorage extends Record<string, any> = Record<string, any>> {
   abstract storage: browser.Storage.StorageArea
 
-  async get<key extends keyof IStorage>(
-    key: key,
-    defaultValue: IStorage[key],
-  ): Promise<IStorage[key]> {
+  async get<key extends keyof IStorage>(key: key, defaultValue: IStorage[key]): Promise<IStorage[key]> {
     if (typeof key !== 'string') throw new Error('key must be a string')
     try {
       const result = await this.storage.get(key as string)
@@ -29,11 +26,7 @@ export default abstract class Storage<IStorage extends Record<string, any> = Rec
   }
 
   subscribeChanges<key extends keyof IStorage>(
-    callback: (
-      key: key,
-      newValue: IStorage[key] | undefined,
-      oldValue: IStorage[key] | undefined,
-    ) => void,
+    callback: (key: key, newValue: IStorage[key] | undefined, oldValue: IStorage[key] | undefined) => void,
   ): void {
     this.storage.onChanged.addListener((changes) => {
       for (const key of Object.keys(changes)) {

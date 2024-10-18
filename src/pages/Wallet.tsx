@@ -43,9 +43,7 @@ export default function Wallet() {
               <TotalValue totalValue={totalValue} />
               <ActionButtons />
             </div>
-            <h2 className="text-2xl text-primarytext font-lato text-left w-full px-4 pb-4">
-              Cryptos
-            </h2>
+            <h2 className="text-2xl text-primarytext font-lato text-left w-full px-4 pb-4">Cryptos</h2>
           </div>
           <Cryptos onTotalValueChange={setTotalValue} />
         </div>

@@ -22,9 +22,7 @@ export default function BottomNav() {
           <DocumentTextIcon
             className={`h-6 w-6 ${isActive('/transactions') ? 'text-primary' : 'text-primarytext'}`}
           />
-          <span
-            className={`text-xs ${isActive('/transactions') ? 'text-primary' : 'text-primarytext'}`}
-          >
+          <span className={`text-xs ${isActive('/transactions') ? 'text-primary' : 'text-primarytext'}`}>
             Transactions
           </span>
         </button>
@@ -32,9 +30,7 @@ export default function BottomNav() {
           <Cog6ToothIcon
             className={`h-6 w-6 ${isActive('/settings') ? 'text-primary' : 'text-primarytext'}`}
           />
-          <span
-            className={`text-xs ${isActive('/settings') ? 'text-primary' : 'text-primarytext'}`}
-          >
+          <span className={`text-xs ${isActive('/settings') ? 'text-primary' : 'text-primarytext'}`}>
             Settings
           </span>
         </button>
