@@ -16,8 +16,11 @@ export default function Settings() {
           <h1 className="text-primarytext text-3xl font-rubik text-center mb-4">Settings</h1>
           <Network />
           <Currency />
-          <div className="mt-14 flex flex-col">
+          <div className="mt-8 flex flex-col">
             <CompoundUTXOs />
+          </div>
+          <div className="mt-1 flex flex-col">
+            <Scan />
           </div>
           <div className="mt-1 flex flex-col">
             <LogOut />

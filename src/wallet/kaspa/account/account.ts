@@ -133,6 +133,9 @@ export default class Account extends EventEmitter {
   }
 
   async scan(steps = 50, count = 10) {
+    console.log('[Account] Scan started')
+    console.log('[Account] Scan: current recieve addresses', this.addresses.receiveAddresses)
+    console.log('[Account] Scan: current change addresses', this.addresses.changeAddresses)
     const scanAddresses = async (isReceive: boolean, startIndex: number) => {
       let foundIndex = 0
 
@@ -149,13 +152,15 @@ export default class Account extends EventEmitter {
           foundIndex = startIndex - count + entryIndex
         }
       }
-      console.log('[Account] Scanned addresses:', this.addresses)
-
+      
       await this.addresses.increment(isReceive ? foundIndex : 0, isReceive ? 0 : foundIndex)
     }
 
     await scanAddresses(true, this.addresses.receiveAddresses.length)
     await scanAddresses(false, this.addresses.changeAddresses.length)
+    console.log('[Account] Scan complete')
+    console.log('[Account] Scan: current recieve addresses', this.addresses.receiveAddresses)
+    console.log('[Account] Scan: current change addresses', this.addresses.changeAddresses)
   }
 
   private registerProcessor() {
@@ -167,7 +172,9 @@ export default class Account extends EventEmitter {
     })
 
     this.processor.addEventListener('pending', async (event) => {
-      console.log('[Account] TODO - Use this data to fix data?.utxoEntires ??:', event.data)
+      //console.log('[Account] TODO - Use this data to fix data?.utxoEntires ??:', event.data)
+
+      console.log('[Account] UTXO processor pending event:', event.data)
 
       // Adjust based on the actual structure of event.data TODO
       // @ts-ignore
@@ -180,6 +187,7 @@ export default class Account extends EventEmitter {
             this.addresses.receiveAddresses[this.addresses.receiveAddresses.length - 1],
         )
       ) {
+        console.log('[Account] Found matching address in UTXO, incrementing recieve address?')
         await this.addresses.increment(1, 0)
       }
     })

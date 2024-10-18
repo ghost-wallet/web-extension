@@ -61,6 +61,7 @@ export default class Addresses extends EventEmitter {
     if (this.context.isActive) await this.context.trackAddresses(addresses.flat())
     if (commit) await this.commit()
 
+    console.log('[Addresses] Increment addresses:', addresses)
     this.emit('addresses', addresses)
   }
 
