@@ -15,7 +15,7 @@ const TokenDetails: React.FC<TokenDetailsProps> = ({ token }) => (
     <img
       src={token.tick === 'KASPA' ? kaspaSvg : `https://krc20-assets.kas.fyi/icons/${token.tick}.jpg`}
       alt={`${token.tick} logo`}
-      className="w-20 h-20 rounded-full"
+      className="w-20 h-20 rounded-full object-cover"
     />
   </div>
 )
