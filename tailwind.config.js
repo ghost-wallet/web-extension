@@ -59,11 +59,6 @@ module.exports = {
           foreground: 'hsl(var(--card-foreground))',
         },
       },
-      // borderRadius: {
-      //   lg: 'calc(var(--radius) - 15px)',
-      //   md: 'calc(var(--radius) - 15px)',
-      //   sm: 'calc(var(--radius) - 15px)',
-      // },
       keyframes: {
         'accordion-down': {
           from: { height: 0 },
