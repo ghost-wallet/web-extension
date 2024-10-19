@@ -15,6 +15,7 @@ import ConfirmSend from '@/pages/Wallet/Send/ConfirmSend'
 import ConfirmSendKRC20 from '@/pages/Wallet/Send/ConfirmSendKRC20'
 import Sent from '@/pages/Wallet/Send/Sent'
 import ConfirmReset from '@/pages/Wallet/Settings/Reset/ConfirmReset'
+import ForgotPassword from '@/pages/Login/ForgotPassword'
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/create" element={<CreateWallet />} />
             <Route path="/unlock" element={<Login />} />
+            <Route path="/unlock/forgotpassword" element={<ForgotPassword />} />
             <Route path="/wallet" element={<Wallet />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings/reset" element={<ConfirmReset />} />

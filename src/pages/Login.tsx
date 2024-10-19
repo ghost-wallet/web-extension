@@ -13,8 +13,6 @@ export default function Login() {
   const [error, setError] = useState('')
   const [isValid, setIsValid] = useState(false)
 
-  // TODO: If node not connected, and user tries to login, show error Kaspa not connected to node
-  // TODO: please try again. Add in here node connection or kaspa context
   useEffect(() => {
     if (password.length >= 8) {
       setIsValid(true)
@@ -48,12 +46,16 @@ export default function Login() {
     }
   }
 
+  const handleForgotPassword = () => {
+    navigate('/unlock/forgotpassword') // Navigate to the forgot password page
+  }
+
   return (
     <main className="pt-10 px-6">
       <div className="flex justify-center mt-7">
         <img className="w-[123px] h-[123px]" src={ghostIcon} alt="logo" />
       </div>
-      <h1 className="text-primarytext text-2xl font-rubik text-center mb-4 mt-14">Enter your password</h1>
+      <h1 className="text-primarytext text-2xl font-rubik text-center mb-2 mt-14">Enter your password</h1>
       <form className="flex flex-col items-center" onKeyDown={handleKeyDown}>
         <PasswordInput
           placeholder="Password"
@@ -66,6 +68,18 @@ export default function Login() {
         />
         <ErrorMessage message={error} />
       </form>
+
+      {/* Forgot Password Button */}
+      <div className="mt-2 text-center">
+        <button
+          type="button"
+          onClick={handleForgotPassword}
+          className="text-primarytext hover:text-mutedtext underline font-lato text-base"
+        >
+          Forgot Password?
+        </button>
+      </div>
+
       <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
         <button
           type="button"
@@ -77,7 +91,7 @@ export default function Login() {
               : 'bg-secondary text-secondarytext cursor-default'
           }`}
         >
-          Unlock
+          Login
         </button>
       </div>
     </main>
