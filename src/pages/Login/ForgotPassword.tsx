@@ -1,7 +1,7 @@
 import React from 'react'
 import Header from '@/components/Header'
 import AnimatedMain from '@/components/AnimatedMain'
-import ResetWalletButton from '@/components/ResetWalletButton'
+import ResetWalletButton from '@/components/buttons/ResetWalletButton'
 
 const ForgotPassword: React.FC = () => {
   return (

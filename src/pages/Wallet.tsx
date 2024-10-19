@@ -6,7 +6,7 @@ import useKaspa from '@/hooks/useKaspa'
 import useSettings from '@/hooks/useSettings'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
-import ActionButtons from '@/components/ActionButtons'
+import ActionButtons from '@/components/buttons/ActionButtons'
 import Cryptos from '@/pages/Wallet/Cryptos'
 import TotalValue from '@/pages/Wallet/TotalValue'
 

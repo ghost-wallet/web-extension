@@ -45,7 +45,17 @@ const SendCrypto: React.FC = () => {
   }
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
+    let value = e.target.value
+
+    const decimalPlaces = value.split('.')[1]?.length || 0
+    if (decimalPlaces > token.dec) {
+      return // Don't update the state if the user exceeds the allowed decimal places
+    }
+
+    if (value.startsWith('.') && value.length > 1) {
+      value = `0${value}`
+    }
+
     setOutputs((prevOutputs) => {
       const newOutputs = [...prevOutputs]
       newOutputs[0][1] = value

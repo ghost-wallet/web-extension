@@ -20,16 +20,21 @@ export const validateAmountToSend = (
   formattedBalance: number,
   setAmountError: React.Dispatch<React.SetStateAction<string | null>>,
 ) => {
+  const numericValue = parseFloat(value)
+
   if (tokenTick === 'KASPA') {
-    if (value.length === 0 || parseFloat(value) <= 0) {
+    if (value.length === 0 || isNaN(numericValue) || numericValue <= 0) {
       setAmountError('Amount should be more than 0.')
+    } else if (numericValue < 0.2) {
+      setAmountError('Minimum amount to send is 0.2 KASPA.')
+    } else if (numericValue > formattedBalance) {
+      setAmountError(`Amount must be less than your balance of ${formattedBalance}.`)
     } else {
       setAmountError(null)
     }
   } else {
-    const numericValue = parseFloat(value)
     if (isNaN(numericValue) || numericValue <= 0 || numericValue > formattedBalance) {
-      setAmountError(`Amount must be more than 0 and less than ${formattedBalance}`)
+      setAmountError(`Amount must be more than 0 and less than ${formattedBalance}.`)
     } else {
       setAmountError(null)
     }
