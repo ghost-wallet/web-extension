@@ -39,7 +39,7 @@ const Network: React.FC = () => {
 
       <div className="flex flex-col gap-2">
         <p className="text-mutedtext text-sm font-lato">
-          Connected to mainnet. Testnet is not yet supported on Ghost wallet.
+          {kaspa.connected ? 'Connected to mainnet.' : 'Not yet connected to mainnet.'}
         </p>
         {/*<div className="flex gap-1 mx-1">*/}
         {/*  <select*/}

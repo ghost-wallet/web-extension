@@ -152,7 +152,7 @@ export default class Account extends EventEmitter {
           foundIndex = startIndex - count + entryIndex
         }
       }
-      
+
       await this.addresses.increment(isReceive ? foundIndex : 0, isReceive ? 0 : foundIndex)
     }
 
