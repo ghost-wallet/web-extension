@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
-import ClickableCryptos from '@/pages/Wallet/Send/ClickableCryptos'
+import Cryptos from '@/pages/Wallet/Cryptos' // Updated import for Cryptos
 import Header from '@/components/Header'
 
 export default function Send() {
@@ -11,7 +11,7 @@ export default function Send() {
     <>
       <AnimatedMain>
         <Header title="Send" showBackButton={true} />
-        <ClickableCryptos onTotalValueChange={setTotalValue} />
+        <Cryptos onTotalValueChange={setTotalValue} refresh={true} />
       </AnimatedMain>
       <BottomNav />
     </>
