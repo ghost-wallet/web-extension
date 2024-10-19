@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import RecoveryPhraseGrid from '@/components/RecoveryPhraseGrid'
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 import * as bip39 from 'bip39'
 import { Buffer } from 'buffer'
 import AnimatedMain from '@/components/AnimatedMain'
@@ -14,6 +15,7 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
   const [userInputs, setUserInputs] = useState<string[]>(Array(12).fill(''))
   const [textAreaInput, setTextAreaInput] = useState<string>('') // For the 24-word input
   const [isValid, setIsValid] = useState<boolean>(false)
+  const [isTextVisible, setIsTextVisible] = useState<boolean>(false) // State to control visibility of textarea
 
   useEffect(() => {
     const validateSeedPhrase = () => {
@@ -65,6 +67,10 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
     setIsValid(false)
   }
 
+  const toggleTextVisibility = () => {
+    setIsTextVisible(!isTextVisible)
+  }
+
   return (
     <AnimatedMain>
       <div className="flex flex-col items-center">
@@ -96,12 +102,21 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
               editableIndices={Array.from({ length: 12 }, (_, i) => i)}
             />
           ) : (
-            <textarea
-              value={textAreaInput}
-              onChange={(e) => setTextAreaInput(e.target.value)}
-              placeholder="Enter or paste your 24-word recovery phrase"
-              className="w-full h-32 border rounded-lg p-4 bg-bgdarker text-primarytext font-lato font-base"
-            />
+            <div className="relative w-full">
+              <textarea
+                value={isTextVisible ? textAreaInput : textAreaInput.replace(/./g, '•')} // Replace text with bullets if not visible
+                onChange={(e) => setTextAreaInput(e.target.value)}
+                placeholder="Enter or paste your 24-word recovery phrase"
+                className="w-full h-48 border border-muted rounded-lg p-4 bg-bgdarker text-mutedtext font-lato text-base resize-none"
+              />
+              <button
+                type="button"
+                onClick={toggleTextVisibility}
+                className="absolute right-4 bottom-4 text-mutedtext"
+              >
+                {isTextVisible ? <EyeIcon className="h-8 w-8" /> : <EyeSlashIcon className="h-8 w-8" />}
+              </button>
+            </div>
           )}
         </div>
 

@@ -18,13 +18,14 @@ const useTotalValueCalculation = (
   const { kaspa } = useKaspa()
 
   useEffect(() => {
-    if (tokens.length > 0) {
-      const totalValue = tokens.reduce((acc: number, token: Token) => {
-        const tokenValue = (token.floorPrice ?? 0) * parseFloat(formatBalance(token.balance, token.dec))
-        return acc + tokenValue
-      }, kaspa.balance * price)
-      onTotalValueChange(totalValue)
-    }
+    const kaspaValue = (kaspa.balance ?? 0) * price
+
+    const totalValue = tokens.reduce((acc: number, token: Token) => {
+      const tokenValue = (token.floorPrice ?? 0) * parseFloat(formatBalance(token.balance, token.dec))
+      return acc + tokenValue
+    }, kaspaValue)
+
+    onTotalValueChange(totalValue)
   }, [tokens, kaspa.balance, price, onTotalValueChange])
 }
 

@@ -40,20 +40,20 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
   const [tokens, setTokens] = useState<Token[]>([]) // Tokens state
   const [tokensError, setTokensError] = useState<string | null>(null) // Error state
 
-  const { tokens: fetchedTokens, loading: tokensLoading, error: tokensErrorState } = useKasplex(refresh) // Pass refresh state to useKasplex hook
+  const { tokens: fetchedTokens, loading: tokensLoading, error: tokensErrorState } = useKasplex(refresh)
 
   useEffect(() => {
-    if (!tokensLoading && !tokensErrorState) {
+    if (!tokensLoading && fetchedTokens) {
       setTokens(fetchedTokens)
       setTokensError(null)
-    } else if (tokensErrorState) {
+    }
+    if (tokensErrorState) {
       setTokensError(tokensErrorState)
     }
-  }, [tokensLoading, fetchedTokens, tokensErrorState, refresh])
+  }, [tokensLoading, fetchedTokens, tokensErrorState])
 
   useTotalValueCalculation(tokens, price, onTotalValueChange)
 
-  // Show the loading spinner if either the network or the tokens are loading
   if (tokensLoading) {
     return (
       <div className="mt-6">
