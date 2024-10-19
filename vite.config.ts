@@ -10,8 +10,6 @@ const manifest: ManifestV3Export = {
   version: '0.0.0.4',
   icons: {
     48: 'assets/ghost-outline-thick-48.png',
-    128: 'assets/ghost-outline-128.png',
-    512: 'assets/ghost-outline-512.png',
   },
   action: {
     default_popup: 'index.html',
