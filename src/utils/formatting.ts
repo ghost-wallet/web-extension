@@ -1,16 +1,19 @@
-export const formatBalance = (balance: string, decimals: string): string => {
-  console.log('formatting with balance, decimals', balance, decimals)
-  const dec = parseInt(decimals, 10)
-  if (dec === 0) return balance
+export const formatBalance = (balance: string, decimals: string | number): number => {
+  const dec = typeof decimals === 'string' ? parseInt(decimals, 10) : decimals
+  if (dec === 0) return parseFloat(balance)
 
   const factor = Math.pow(10, dec)
-  const numericalBalance = parseFloat(balance) / factor
-
-  return numericalBalance.toString() // Return the full balance with all decimal places
+  return parseFloat(balance) / factor
 }
 
-export const formatValue = (value: number): string => {
-  return value.toFixed(2)
+export const formatBalanceWithAbbreviation = (number: number): string => {
+  if (number >= 1000000) {
+    return `${(number / 1000000).toFixed(0)}M`
+  }
+  if (number % 1 === 0) {
+    return number.toLocaleString()
+  }
+  return number.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) // Up to two decimal places for fractional values
 }
 
 export const truncateAddress = (address: string) => {

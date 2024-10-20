@@ -21,7 +21,8 @@ const useTotalValueCalculation = (
     const kaspaValue = (kaspa.balance ?? 0) * price
 
     const totalValue = tokens.reduce((acc: number, token: Token) => {
-      const tokenValue = (token.floorPrice ?? 0) * parseFloat(formatBalance(token.balance, token.dec))
+      const tokenBalance = formatBalance(token.balance, token.dec)
+      const tokenValue = (token.floorPrice ?? 0) * tokenBalance
       return acc + tokenValue
     }, kaspaValue)
 

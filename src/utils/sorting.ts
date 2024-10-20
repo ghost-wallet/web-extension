@@ -18,7 +18,7 @@ export const sortTokensByValue = (
       if (tick === 'KASPA') {
         formattedBalance = parseFloat(balance)
       } else {
-        formattedBalance = parseFloat(formatBalance(balance, dec))
+        formattedBalance = parseFloat(String(formatBalance(balance, dec)))
       }
 
       const totalValue = floorPrice * formattedBalance

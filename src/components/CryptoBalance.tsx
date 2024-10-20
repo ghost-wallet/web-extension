@@ -1,5 +1,5 @@
 import React from 'react'
-import { formatBalance } from '@/utils/formatting'
+import { formatBalance, formatBalanceWithAbbreviation } from '@/utils/formatting'
 
 interface Token {
   tick: string
@@ -13,10 +13,8 @@ interface CryptoBalanceProps {
 
 const CryptoBalance: React.FC<CryptoBalanceProps> = ({ token }) => {
   const { tick, balance, dec } = token
-  const formattedBalance =
-    tick === 'KASPA'
-      ? parseFloat(balance).toLocaleString()
-      : parseFloat(formatBalance(balance, dec)).toLocaleString()
+  const numericalBalance = tick === 'KASPA' ? parseFloat(balance) : formatBalance(balance, dec)
+  const formattedBalance = formatBalanceWithAbbreviation(numericalBalance)
 
   return (
     <div className="text-primarytext text-center p-2 mt-4">

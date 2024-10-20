@@ -114,9 +114,13 @@ const SendCrypto: React.FC = () => {
 
   const formattedBalance =
     token.tick === 'KASPA'
-      ? token.balance // Skip parseFloat and formatBalance for KASPA
-      : parseFloat(formatBalance(token.balance, token.dec)).toLocaleString(undefined, {
-          minimumFractionDigits: parseFloat(formatBalance(token.balance, token.dec)) % 1 === 0 ? 0 : 2, // Show 0 decimals for whole numbers
+      ? parseFloat(token.balance).toLocaleString(undefined, {
+          minimumFractionDigits: parseFloat(token.balance) % 1 === 0 ? 0 : 2, // Show 0 decimals for whole numbers
+          maximumFractionDigits: 8, // Up to 8 decimal places for non-integer values
+        })
+      : parseFloat(String(formatBalance(token.balance, token.dec))).toLocaleString(undefined, {
+          minimumFractionDigits:
+            parseFloat(String(formatBalance(token.balance, token.dec))) % 1 === 0 ? 0 : 2, // Show 0 decimals for whole numbers
           maximumFractionDigits: 8, // Up to 8 decimal places for non-integer values
         })
 
