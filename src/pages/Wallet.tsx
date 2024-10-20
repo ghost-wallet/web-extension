@@ -7,7 +7,7 @@ import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import ActionButtons from '@/components/buttons/ActionButtons'
 import Cryptos from '@/pages/Wallet/Cryptos'
-import TotalValue from '@/pages/Wallet/TotalValue'
+import TotalWalletValue from '@/components/TotalWalletValue'
 
 export default function Wallet() {
   const { kaspa, request } = useKaspa()
@@ -42,10 +42,9 @@ export default function Wallet() {
     <>
       <AnimatedMain>
         <div className="flex flex-col items-center overflow-hidden">
-          {' '}
           <div className="sticky top-0 bg-bgdark w-full flex flex-col border-b border-darkmuted">
             <div className="items-center flex flex-col pt-6">
-              <TotalValue totalValue={totalValue} />
+              <TotalWalletValue totalValue={totalValue} />
               <ActionButtons onRefresh={handleRefresh} />
             </div>
           </div>

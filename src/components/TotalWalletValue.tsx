@@ -6,7 +6,7 @@ interface TotalValueProps {
   totalValue: number
 }
 
-const TotalValue: React.FC<TotalValueProps> = ({ totalValue }) => {
+const TotalWalletValue: React.FC<TotalValueProps> = ({ totalValue }) => {
   const { settings } = useSettings()
 
   return (
@@ -17,4 +17,4 @@ const TotalValue: React.FC<TotalValueProps> = ({ totalValue }) => {
   )
 }
 
-export default TotalValue
+export default TotalWalletValue
