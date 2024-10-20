@@ -3,14 +3,15 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import { formatBalance } from '@/utils/formatting'
-import CryptoDetails from '@/components/CryptoDetails'
+import CryptoImage from '@/components/CryptoImage'
 import useKaspa from '@/hooks/useKaspa'
 import useURLParams from '@/hooks/useURLParams'
 import { Input as KaspaInput } from '@/provider/protocol'
 import { validateRecipient, validateAmountToSend } from '@/utils/validation'
 import { useFeeRate } from '@/hooks/useFeeRate'
 import Header from '@/components/Header'
-import ErrorMessage from '@/components/ErrorMessage' // Import ErrorMessage component
+import ErrorMessage from '@/components/ErrorMessage'
+import CryptoBalance from '@/components/CryptoBalance'
 
 const SendCrypto: React.FC = () => {
   const location = useLocation()
@@ -116,12 +117,8 @@ const SendCrypto: React.FC = () => {
     <>
       <AnimatedMain>
         <Header title={`Send ${token.tick}`} showBackButton={true} />
-
-        <CryptoDetails token={token} />
-        <div className="text-primarytext text-center p-2">
-          <p className="text-lg font-lato">Balance</p>
-          <p className="text-xl font-lato">{maxAmount}</p>
-        </div>
+        <CryptoImage ticker={token.tick} size={'large'} />
+        <CryptoBalance token={token} />
 
         <div className="flex flex-col items-center space-y-4 p-4">
           <input

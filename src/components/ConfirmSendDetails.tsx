@@ -1,5 +1,5 @@
 import React from 'react'
-import CryptoDetails from '@/components/CryptoDetails'
+import CryptoImage from '@/components/CryptoImage'
 import RecipientAddress from '@/components/RecipientAddress'
 import Header from '@/components/Header'
 import ErrorMessage from '@/components/ErrorMessage'
@@ -31,7 +31,7 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
     <>
       <Header title="Confirm Send" showBackButton={true} />
 
-      <CryptoDetails token={token} />
+      <CryptoImage ticker={token.tick} size={'small'} />
       <div className="text-primarytext text-center p-2">
         <p className="text-lg font-lato">
           {amount} {token.tick}

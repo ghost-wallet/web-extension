@@ -1,27 +1,20 @@
 import React from 'react'
 import { formatBalance, formatValue } from '@/utils/formatting'
+import CryptoImage from '@/components/CryptoImage'
 
 interface TokenListItemProps {
   token: {
     tick: string
     balance: string
     dec: string
-    opScoreMod: string
     floorPrice?: number
   }
   isKaspa: boolean
   currencySymbol: string
   kaspaBalance: number
-  kaspaImageSrc: string
 }
 
-const CryptoListItem: React.FC<TokenListItemProps> = ({
-  token,
-  isKaspa,
-  currencySymbol,
-  kaspaBalance,
-  kaspaImageSrc,
-}) => {
+const CryptoListItem: React.FC<TokenListItemProps> = ({ token, isKaspa, currencySymbol, kaspaBalance }) => {
   const formatBalanceWithAbbreviation = (number: number) => {
     if (number >= 1000000) {
       return `${(number / 1000000).toFixed(0)}M` // No decimals, clean M formatting
@@ -32,11 +25,7 @@ const CryptoListItem: React.FC<TokenListItemProps> = ({
   return (
     <div className="flex items-center justify-between w-full p-3 bg-darkmuted hover:bg-slightmuted transition-colors rounded-[15px]">
       <div className="flex items-center">
-        <img
-          src={isKaspa ? kaspaImageSrc : `https://krc20-assets.kas.fyi/icons/${token.tick}.jpg`}
-          alt={`${token.tick} logo`}
-          className="w-12 h-12 rounded-full object-cover"
-        />
+        <CryptoImage ticker={token.tick} size={'small'} />
         <div className="ml-4">
           <span className="text-lg text-primarytext font-lato">{token.tick}</span>
           <div className="text-base text-mutedtext font-lato">

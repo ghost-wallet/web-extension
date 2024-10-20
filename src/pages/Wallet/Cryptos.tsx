@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { sortTokensByValue } from '@/utils/sorting'
 import useSettings from '@/hooks/useSettings'
 import Spinner from '@/components/Spinner'
@@ -10,7 +10,6 @@ import useTotalValueCalculation from '@/hooks/useTotalValueCalculation'
 import { getCurrencySymbol } from '@/utils/currencies'
 import useKasplex from '@/hooks/useKasplex'
 import ErrorMessage from '@/components/ErrorMessage'
-import kaspaSvg from '../../../assets/kaspa-kas-logo.svg'
 
 interface Token {
   tick: string
@@ -27,7 +26,6 @@ interface CryptoProps {
     isKaspa: boolean,
     currencySymbol: string,
     kaspaBalance: number,
-    kaspaImageSrc: string,
   ) => React.ReactElement
   refresh: boolean
 }
@@ -37,6 +35,7 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
   const { settings } = useSettings()
   const price = useCoingecko(settings.currency)
   const navigate = useNavigate()
+  const location = useLocation()
 
   const [tokens, setTokens] = useState<Token[]>([])
   const [tokensError, setTokensError] = useState<string | null>(null)
@@ -80,7 +79,11 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
   const currencySymbol = getCurrencySymbol(settings.currency)
 
   const handleTokenClick = (token: Token) => {
-    navigate('/wallet/crypto', { state: { token } }) // Navigate to the new component with the token as state
+    if (location.pathname.includes('/send')) {
+      navigate('/send/crypto', { state: { token } })
+    } else if (location.pathname.includes('/wallet')) {
+      navigate('/wallet/crypto', { state: { token } })
+    }
   }
 
   return (
@@ -91,11 +94,11 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
         <ul className="space-y-3">
           {sortedTokens.map((token) =>
             renderTokenItem ? (
-              renderTokenItem(token, token.tick === 'KASPA', currencySymbol, kaspa.balance, kaspaSvg)
+              renderTokenItem(token, token.tick === 'KASPA', currencySymbol, kaspa.balance)
             ) : (
               <li
                 key={token.opScoreMod}
-                onClick={() => handleTokenClick(token)} // Navigate to the new route on click
+                onClick={() => handleTokenClick(token)}
                 className="w-full text-left transition-colors hover:cursor-pointer rounded-lg"
               >
                 <CryptoListItem
@@ -103,7 +106,6 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
                   isKaspa={token.tick === 'KASPA'}
                   currencySymbol={currencySymbol}
                   kaspaBalance={kaspa.balance}
-                  kaspaImageSrc={kaspaSvg}
                 />
               </li>
             ),
