@@ -11,7 +11,6 @@ import { validateRecipient, validateAmountToSend } from '@/utils/validation'
 import { useFeeRate } from '@/hooks/useFeeRate'
 import Header from '@/components/Header'
 import ErrorMessage from '@/components/ErrorMessage'
-import CryptoBalance from '@/components/CryptoBalance'
 
 const SendCrypto: React.FC = () => {
   const location = useLocation()
@@ -113,20 +112,27 @@ const SendCrypto: React.FC = () => {
   const isButtonEnabled =
     outputs[0][0].length > 0 && outputs[0][1].length > 0 && !recipientError && !amountError
 
+  const formattedBalance =
+    token.tick === 'KASPA'
+      ? token.balance // Skip parseFloat and formatBalance for KASPA
+      : parseFloat(formatBalance(token.balance, token.dec)).toLocaleString(undefined, {
+          minimumFractionDigits: parseFloat(formatBalance(token.balance, token.dec)) % 1 === 0 ? 0 : 2, // Show 0 decimals for whole numbers
+          maximumFractionDigits: 8, // Up to 8 decimal places for non-integer values
+        })
+
   return (
     <>
       <AnimatedMain>
         <Header title={`Send ${token.tick}`} showBackButton={true} />
         <CryptoImage ticker={token.tick} size={'large'} />
-        <CryptoBalance token={token} />
 
         <div className="flex flex-col items-center space-y-4 p-4">
           <input
             type="text"
             value={outputs[0][0]}
             onChange={handleRecipientChange}
-            placeholder="Recipient's Address"
-            className="w-full p-2 border border-muted bg-transparent text-base text-primarytext placeholder-mutedtext rounded"
+            placeholder="Recipient's Kaspa address"
+            className="w-full p-3 border border-slightmuted bg-bgdarker text-base text-primarytext placeholder-mutedtext rounded"
           />
 
           <div className="relative w-full">
@@ -135,15 +141,19 @@ const SendCrypto: React.FC = () => {
               value={outputs[0][1]}
               onChange={handleAmountChange}
               placeholder="Amount"
-              className="w-full p-2 pr-20 border border-muted bg-transparent text-base text-primarytext placeholder-mutedtext rounded"
+              className="w-full p-3 pr-20 border border-slightmuted bg-bgdarker text-base text-primarytext placeholder-mutedtext rounded"
             />
             <button
               type="button"
               onClick={handleMaxClick}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-secondarytext font-lato text-base bg-primary rounded-[10px] px-2 py-1"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-primarytext font-lato text-base bg-slightmuted hover:bg-muted rounded-[10px] px-2 py-1"
             >
-              MAX
+              Max
             </button>
+          </div>
+
+          <div className="w-full text-right text-mutedtext font-lato font-light text-base">
+            Available {formattedBalance} {token.tick}
           </div>
 
           <ErrorMessage message={recipientError || amountError || ''} />
