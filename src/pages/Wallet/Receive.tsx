@@ -12,20 +12,25 @@ export default function Receive() {
   return (
     <>
       <AnimatedMain>
-        <Header title="Receive" showBackButton={true} />
+        <Header title="Receive Address" showBackButton={true} />
+        <div className="pt-6 flex flex-col items-center justify-center relative w-full">
+          <div className="p-2 bg-white rounded-lg">
+            <QRCode
+              style={{ height: '150px', width: '150px' }}
+              value={kaspa.addresses[0][kaspa.addresses[0].length - 1]}
+            />
+          </div>
 
-        <div className="flex flex-col items-center justify-center relative w-full">
-          <p className="p-6 font-lato text-base text-primarytext">
-            You can receive Kaspa or any KRC20 token to your Kaspa address.
+          <h1 className="pt-4 font-lato font-semibold text-base text-primarytext text-center">
+            Your Kaspa Address
+          </h1>
+          <div className="py-6 w-full flex justify-center">
+            <KaspaAddress address={kaspa.addresses[0][kaspa.addresses[0].length - 1]} />
+          </div>
+
+          <p className="px-6 font-lato text-base text-mutedtext text-center">
+            This address can be used to receive Kaspa and KRC20 tokens.
           </p>
-          <KaspaAddress address={kaspa.addresses[0][kaspa.addresses[0].length - 1]} />
-        </div>
-
-        <div className="flex flex-col items-center mt-6">
-          <QRCode
-            style={{ height: 'auto', width: '45%' }}
-            value={kaspa.addresses[0][kaspa.addresses[0].length - 1]}
-          />
         </div>
       </AnimatedMain>
       <BottomNav />

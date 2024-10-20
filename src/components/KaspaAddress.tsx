@@ -26,8 +26,8 @@ const KaspaAddress: React.FC<KaspaAddressProps> = ({ address }) => {
 
   return (
     <div
-      className="relative flex items-center justify-start w-full max-w-[90%] bg-bgdarker text-mutedtext text-base font-lato p-4 border border-muted rounded cursor-pointer"
-      style={{ height: fixedHeight !== null ? `${fixedHeight + 16}px` : 'auto' }} // Add padding space
+      className="relative flex items-center justify-center w-full max-w-[90%] bg-bgdarker text-primarytext text-base font-lato p-4 border border-slightmuted rounded cursor-pointer"
+      style={{ height: fixedHeight !== null ? `${fixedHeight + 16}px` : 'auto' }}
       onClick={handleCopy}
     >
       {copied ? (
@@ -36,11 +36,11 @@ const KaspaAddress: React.FC<KaspaAddressProps> = ({ address }) => {
           <CheckIcon className="h-6 w-6 text-primary ml-2" />
         </div>
       ) : (
-        <div className="flex items-start justify-between w-full hover:text-primary group">
-          <span ref={addressRef} className="break-words break-all">
+        <div className="flex items-center justify-center w-full hover:text-primary group">
+          <span ref={addressRef} className="break-words break-all text-center">
             {address}
           </span>
-          <div className="ml-2 flex items-end">
+          <div className="ml-2">
             <DocumentDuplicateIcon className="h-6 w-6 stroke-mutedtext group-hover:stroke-primary transition" />
           </div>
         </div>

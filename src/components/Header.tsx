@@ -17,7 +17,7 @@ const Header: React.FC<HeaderProps> = ({ title, showBackButton = false }) => {
       )}
 
       {/* Title centered */}
-      <h1 className="text-primarytext text-3xl font-rubik text-center">{title}</h1>
+      <h1 className="text-primarytext text-2xl font-rubik text-center">{title}</h1>
     </div>
   )
 }
