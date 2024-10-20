@@ -80,7 +80,7 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
   const currencySymbol = getCurrencySymbol(settings.currency)
 
   const handleTokenClick = (token: Token) => {
-    navigate('/send/crypto', { state: { token } })
+    navigate('/wallet/crypto', { state: { token } }) // Navigate to the new component with the token as state
   }
 
   return (
@@ -95,8 +95,8 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
             ) : (
               <li
                 key={token.opScoreMod}
-                onClick={() => handleTokenClick(token)}
-                className="w-full text-left transition-colors hover:cursor-pointer rounded-lg" // Make sure the rounded-lg is applied here
+                onClick={() => handleTokenClick(token)} // Navigate to the new route on click
+                className="w-full text-left transition-colors hover:cursor-pointer rounded-lg"
               >
                 <TokenListItem
                   token={token}

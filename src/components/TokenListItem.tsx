@@ -22,7 +22,6 @@ const TokenListItem: React.FC<TokenListItemProps> = ({
   kaspaBalance,
   kaspaImageSrc,
 }) => {
-  // TODO: fix corner rounding. this method below is messing up rounded corners. corners should not be squared
   const formatBalanceWithAbbreviation = (number: number) => {
     if (number >= 1000000) {
       return `${(number / 1000000).toFixed(0)}M` // No decimals, clean M formatting

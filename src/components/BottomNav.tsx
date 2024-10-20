@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Cog6ToothIcon, CircleStackIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
+import { Cog6ToothIcon, HomeIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
 
 export default function BottomNav() {
   const navigate = useNavigate()
@@ -8,31 +8,31 @@ export default function BottomNav() {
   const isActive = (path: string) => location.pathname === path
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full bg-bgdark border-t border-muted p-2">
-      <div className="flex justify-around text-primarytext">
-        <button onClick={() => navigate('/wallet')} className="flex flex-col items-center">
-          <CircleStackIcon
-            className={`h-6 w-6 ${isActive('/wallet') ? 'text-primary' : 'text-primarytext'}`}
+    <nav
+      className="fixed bottom-0 left-0 w-full bg-bgdark border-t border-darkmuted p-4"
+      style={{ boxShadow: '0 -10px 15px rgba(0, 0, 0, 0.3)' }} // Taller shadow above the nav
+    >
+      <div className="relative flex justify-around text-primarytext">
+        <button onClick={() => navigate('/wallet')} className="flex flex-col items-center relative">
+          <HomeIcon
+            className={`h-7 w-7 transform transition-transform duration-300 hover:scale-125 ${
+              isActive('/wallet') ? 'text-primary' : 'text-primarytext'
+            }`}
           />
-          <span className={`text-xs ${isActive('/wallet') ? 'text-primary' : 'text-primarytext'}`}>
-            Cryptos
-          </span>
         </button>
-        <button onClick={() => navigate('/transactions')} className="flex flex-col items-center">
+        <button onClick={() => navigate('/transactions')} className="flex flex-col items-center relative">
           <DocumentTextIcon
-            className={`h-6 w-6 ${isActive('/transactions') ? 'text-primary' : 'text-primarytext'}`}
+            className={`h-7 w-7 transform transition-transform duration-300 hover:scale-125 ${
+              isActive('/transactions') ? 'text-primary' : 'text-primarytext'
+            }`}
           />
-          <span className={`text-xs ${isActive('/transactions') ? 'text-primary' : 'text-primarytext'}`}>
-            Transactions
-          </span>
         </button>
-        <button onClick={() => navigate('/settings')} className="flex flex-col items-center">
+        <button onClick={() => navigate('/settings')} className="flex flex-col items-center relative">
           <Cog6ToothIcon
-            className={`h-6 w-6 ${isActive('/settings') ? 'text-primary' : 'text-primarytext'}`}
+            className={`h-7 w-7 transform transition-transform duration-300 hover:scale-125 ${
+              isActive('/settings') ? 'text-primary' : 'text-primarytext'
+            }`}
           />
-          <span className={`text-xs ${isActive('/settings') ? 'text-primary' : 'text-primarytext'}`}>
-            Settings
-          </span>
         </button>
       </div>
     </nav>

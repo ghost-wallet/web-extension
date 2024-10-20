@@ -8,10 +8,16 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ title, showBackButton = false }) => {
   return (
-    <div className="flex items-center justify-between p-6">
-      {showBackButton ? <BackButton /> : <div className="w-6" />}
-      <h1 className="text-primarytext text-3xl font-rubik text-center flex-grow">{title}</h1>
-      <div className="w-6" />
+    <div className="relative flex items-center justify-center p-6">
+      {/* Back Button with padding */}
+      {showBackButton && (
+        <div className="absolute left-0 pl-4">
+          <BackButton />
+        </div>
+      )}
+
+      {/* Title centered */}
+      <h1 className="text-primarytext text-3xl font-rubik text-center">{title}</h1>
     </div>
   )
 }

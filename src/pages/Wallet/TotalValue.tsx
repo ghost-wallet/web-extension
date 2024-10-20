@@ -10,7 +10,7 @@ const TotalValue: React.FC<TotalValueProps> = ({ totalValue }) => {
   const { settings } = useSettings()
 
   return (
-    <h1 className="text-primarytext text-4xl font-rubik text-center flex-grow">
+    <h1 className="text-primarytext text-5xl font-rubik text-center flex-grow">
       {getCurrencySymbol(settings.currency)}
       {totalValue.toFixed(2)}
     </h1>
