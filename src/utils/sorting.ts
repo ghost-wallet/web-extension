@@ -11,8 +11,18 @@ export const sortTokensByValue = (
 ) => {
   return tokens
     .map(({ tick, balance, floorPrice = 0, dec, opScoreMod }) => {
-      const totalValue = floorPrice * parseFloat(formatBalance(balance, dec))
+      let formattedBalance
+
+      // Skip formatting for KASPA, because Kas already has decimals inserted
+      // TODO see where decimals were already inserted in previous sections?
+      if (tick === 'KASPA') {
+        formattedBalance = parseFloat(balance)
+      } else {
+        formattedBalance = parseFloat(formatBalance(balance, dec))
+      }
+
+      const totalValue = floorPrice * formattedBalance
       return { tick, balance, floorPrice, dec, opScoreMod, totalValue }
     })
-    .sort((a, b) => b.totalValue - a.totalValue)
+    .sort((a, b) => b.totalValue - a.totalValue) // Sort by total value
 }

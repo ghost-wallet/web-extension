@@ -49,10 +49,7 @@ export default function Wallet() {
               <ActionButtons onRefresh={handleRefresh} />
             </div>
           </div>
-          <div className="w-full h-full overflow-auto">
-            {' '}
-            <Cryptos onTotalValueChange={setTotalValue} refresh={refresh} />
-          </div>
+          <Cryptos onTotalValueChange={setTotalValue} refresh={refresh} />
         </div>
       </AnimatedMain>
       <BottomNav />

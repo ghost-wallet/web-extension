@@ -15,7 +15,7 @@ interface TokenListItemProps {
   kaspaImageSrc: string
 }
 
-const TokenListItem: React.FC<TokenListItemProps> = ({
+const CryptoListItem: React.FC<TokenListItemProps> = ({
   token,
   isKaspa,
   currencySymbol,
@@ -60,4 +60,4 @@ const TokenListItem: React.FC<TokenListItemProps> = ({
   )
 }
 
-export default TokenListItem
+export default CryptoListItem

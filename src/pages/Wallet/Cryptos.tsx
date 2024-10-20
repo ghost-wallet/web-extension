@@ -5,7 +5,7 @@ import useSettings from '@/hooks/useSettings'
 import Spinner from '@/components/Spinner'
 import useKaspa from '@/hooks/useKaspa'
 import useCoingecko from '@/hooks/useCoingecko'
-import TokenListItem from '@/components/TokenListItem'
+import CryptoListItem from '@/components/CryptoListItem'
 import useTotalValueCalculation from '@/hooks/useTotalValueCalculation'
 import { getCurrencySymbol } from '@/utils/currencies'
 import useKasplex from '@/hooks/useKasplex'
@@ -75,8 +75,8 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
     floorPrice: price,
   }
 
-  const sortedTokens = sortTokensByValue(tokens)
-  const combinedTokens = [kaspaToken, ...sortedTokens]
+  const allTokens = [...tokens, kaspaToken]
+  const sortedTokens = sortTokensByValue(allTokens)
   const currencySymbol = getCurrencySymbol(settings.currency)
 
   const handleTokenClick = (token: Token) => {
@@ -84,12 +84,12 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
   }
 
   return (
-    <div className="w-full p-4 mb-20">
-      {combinedTokens.length === 0 ? (
+    <div className="w-full p-4 mb-20 h-full overflow-auto">
+      {sortedTokens.length === 0 ? (
         <p className="text-base text-mutedtext font-lato">None</p>
       ) : (
         <ul className="space-y-3">
-          {combinedTokens.map((token) =>
+          {sortedTokens.map((token) =>
             renderTokenItem ? (
               renderTokenItem(token, token.tick === 'KASPA', currencySymbol, kaspa.balance, kaspaSvg)
             ) : (
@@ -98,7 +98,7 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
                 onClick={() => handleTokenClick(token)} // Navigate to the new route on click
                 className="w-full text-left transition-colors hover:cursor-pointer rounded-lg"
               >
-                <TokenListItem
+                <CryptoListItem
                   token={token}
                   isKaspa={token.tick === 'KASPA'}
                   currencySymbol={currencySymbol}

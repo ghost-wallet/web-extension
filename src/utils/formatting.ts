@@ -5,7 +5,6 @@ export const formatBalance = (balance: string, decimals: string): string => {
   const factor = Math.pow(10, dec)
   const numericalBalance = parseFloat(balance) / factor
 
-  // Check if the number is a whole number (integer) or has decimals
   if (numericalBalance % 1 === 0) {
     return numericalBalance.toString()
   }
@@ -14,13 +13,7 @@ export const formatBalance = (balance: string, decimals: string): string => {
 }
 
 export const formatValue = (value: number): string => {
-  if (value >= 1) {
-    return value.toFixed(2)
-  } else if (value >= 0.01) {
-    return value.toFixed(4)
-  } else {
-    return value.toFixed(7)
-  }
+  return value.toFixed(2)
 }
 
 export const truncateAddress = (address: string) => {

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import { formatBalance } from '@/utils/formatting'
-import TokenDetails from '@/components/TokenDetails'
+import CryptoDetails from '@/components/CryptoDetails'
 import useKaspa from '@/hooks/useKaspa'
 import useURLParams from '@/hooks/useURLParams'
 import { Input as KaspaInput } from '@/provider/protocol'
@@ -117,7 +117,7 @@ const SendCrypto: React.FC = () => {
       <AnimatedMain>
         <Header title={`Send ${token.tick}`} showBackButton={true} />
 
-        <TokenDetails token={token} />
+        <CryptoDetails token={token} />
         <div className="text-primarytext text-center p-2">
           <p className="text-lg font-lato">Balance</p>
           <p className="text-xl font-lato">{maxAmount}</p>
