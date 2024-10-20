@@ -31,7 +31,7 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
     <>
       <Header title="Confirm Send" showBackButton={true} />
 
-      <CryptoImage ticker={token.tick} size={'small'} />
+      <CryptoImage ticker={token.tick} size={'large'} />
       <div className="text-primarytext text-center p-2">
         <p className="text-lg font-lato">
           {amount} {token.tick}
