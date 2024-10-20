@@ -79,6 +79,17 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
           <p className="text-mutedtext text-lg font-lato text-center mb-4">
             Import an existing wallet with your {is24Words ? '24-word' : '12-word'} secret recovery phrase.
           </p>
+
+          <div className="flex justify-center mb-4">
+            <a
+              href="https://ghostapp.org"
+              // href="https://ghostapp.org/docs/supportedSeedPhrases" TODO: Add this link in docs
+              className="text-center text-base font-semibold text-primary font-lato hover:underline"
+            >
+              Supported Kaspa Seed Phrases
+            </a>
+          </div>
+
           <div className="flex justify-center mb-6">
             <button
               onClick={handleToggle}
