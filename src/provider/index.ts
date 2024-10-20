@@ -1,10 +1,13 @@
 import browser from 'webextension-polyfill'
 import { isRequest, type ProviderInfo } from './protocol'
 
+// @ts-ignore
+import pageScript from './page-script?script&module'
+
 function announceProvider() {
   const info: ProviderInfo = {
     id: browser.runtime.id,
-    name: 'Kaspian',
+    name: 'Ghost',
   }
 
   window.dispatchEvent(
@@ -23,7 +26,7 @@ window.addEventListener('kaspa:connect', (event) => {
   if (browser.runtime.id !== extensionId) return
 
   const port = browser.runtime.connect({
-    name: '@kaspian/provider',
+    name: '@ghost/provider',
   })
 
   port.onMessage.addListener((message) => {
@@ -53,3 +56,21 @@ window.addEventListener('kaspa:connect', (event) => {
 })
 
 announceProvider()
+
+
+function injectScript(path: string) {
+  try {
+    const container = document.head || document.documentElement;
+    const scriptTag = document.createElement('script');
+    scriptTag.setAttribute('async', 'false');
+    //scriptTag.setAttribute('channel', channelName);
+    scriptTag.src = browser.runtime.getURL(path);
+    scriptTag.type = 'module'
+    container.insertBefore(scriptTag, container.children[0]);
+    container.removeChild(scriptTag);
+  } catch (error) {
+    console.error('Provider injection failed.', error);
+  }
+}
+
+injectScript(pageScript)
