@@ -4,7 +4,7 @@ import Header from '@/components/Header'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import ActionButton from '@/components/buttons/ActionButtons/ActionButton'
-import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline'
+import { PaperAirplaneIcon, ArrowUpIcon } from '@heroicons/react/24/outline'
 import CryptoBalance from '@/components/CryptoBalance'
 import CryptoImage from '@/components/CryptoImage'
 
@@ -28,7 +28,7 @@ const Crypto: React.FC = () => {
           />
 
           <ActionButton
-            icon={<ArrowDownIcon strokeWidth={2} />}
+            icon={<PaperAirplaneIcon strokeWidth={2} />}
             label="Receive"
             onClick={() => navigate('/receive')}
           />

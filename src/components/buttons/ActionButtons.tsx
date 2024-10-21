@@ -1,5 +1,10 @@
 import { useState } from 'react'
-import { ArrowUpIcon, ArrowDownIcon, ArrowsRightLeftIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
+import {
+  ArrowUpIcon,
+  PaperAirplaneIcon,
+  ArrowsRightLeftIcon,
+  ArrowPathIcon,
+} from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
 import ActionButton from '@/components/buttons/ActionButtons/ActionButton'
 import useKasplex from '@/hooks/useKasplex'
@@ -24,7 +29,7 @@ export default function ActionButtons() {
     <div className="my-4 flex justify-between gap-4">
       <ActionButton icon={<ArrowUpIcon strokeWidth={2} />} label="Send" onClick={() => navigate('/send')} />
       <ActionButton
-        icon={<ArrowDownIcon strokeWidth={2} />}
+        icon={<PaperAirplaneIcon strokeWidth={2} />}
         label="Receive"
         onClick={() => navigate('/receive')}
       />
