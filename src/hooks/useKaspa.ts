@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { KaspaContext } from '@/contexts/KaspaContext'
+import { KaspaContext } from '@/contexts/kaspa/KaspaContext'
 
 export default function useKaspa() {
   const context = useContext(KaspaContext)
