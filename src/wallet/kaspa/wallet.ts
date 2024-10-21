@@ -62,15 +62,10 @@ export default class Wallet extends EventEmitter {
   }
 
   async import(mnemonics: string, password: string) {
-    console.log('[Wallet] Importing wallet...')
     if (!Mnemonic.validate(mnemonics)) {
       console.error('[Wallet] Invalid mnemonic provided.')
       throw Error('[Wallet] Invalid mnemonic')
     }
-
-    // TODO: Keyemanager setkey to decryptedKey, because potential issue is this:
-    // TODO: User imports/creates new wallet, but they will not be authorized to transfer any cryptos
-    // TODO: because their decrypted key is not stored. Replicate
 
     const encryptedKey = encryptXChaCha20Poly1305(mnemonics, password)
     this.encryptedKey = encryptedKey // Set the encryptedKey
@@ -86,13 +81,11 @@ export default class Wallet extends EventEmitter {
       ],
     })
 
-    console.log('[Wallet] Wallet imported and stored. Unlocking...')
-    await this.unlock(0, password)
+    await this.unlock(0, password) // Unlock wallet and send user to wallet page
     await this.sync()
   }
 
   async unlock(id: number, password: string): Promise<string> {
-    console.log(`[Wallet] Unlocking wallet for account ID ${id}...`)
     if (!this.encryptedKey) {
       console.error('[Wallet] No encrypted key available.')
       throw new Error('No encrypted key available.')
