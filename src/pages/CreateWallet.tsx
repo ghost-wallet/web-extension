@@ -6,6 +6,8 @@ import Password from '@/pages/CreateWallet/Password'
 import Import from '@/pages/CreateWallet/Import'
 import Confirm from '@/pages/CreateWallet/Confirm'
 import useKaspa from '@/hooks/useKaspa'
+import AnimatedMain from '@/components/AnimatedMain'
+import SpinnerPage from '@/components/SpinnerPage'
 
 export enum Tabs {
   Landing,
@@ -23,6 +25,7 @@ export default function CreateWallet() {
   const [password, setPassword] = useState('')
   const [mnemonic, setMnemonic] = useState('')
   const [flowType, setFlowType] = useState<'create' | 'import'>('create')
+  const [loading, setLoading] = useState(false) // Loading state
 
   const handleForward = (nextTab: Tabs, nextFlowType?: 'create' | 'import') => {
     if (nextFlowType) setFlowType(nextFlowType)
@@ -41,26 +44,42 @@ export default function CreateWallet() {
   }
 
   const handleMnemonicSubmit = async (mnemonic: string) => {
-    await request('wallet:import', [mnemonic, password])
-    navigate('/wallet')
+    try {
+      setLoading(true)
+      await request('wallet:import', [mnemonic, password])
+      // TODO do an account:scan here?
+      navigate('/wallet')
+    } catch (error) {
+      console.error('Error setting up wallet:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleConfirm = () => {
     setTab(Tabs.Confirm)
   }
 
-  return {
-    [Tabs.Landing]: <Landing forward={handleForward} />,
-    [Tabs.Password]: <Password onPasswordSet={handlePasswordSet} />,
-    [Tabs.Import]: <Import onMnemonicsSubmit={handleMnemonicSubmit} />,
-    [Tabs.Create]: <Create mnemonic={mnemonic} onSaved={handleConfirm} />,
-    [Tabs.Confirm]: (
-      <Confirm
-        mnemonic={mnemonic}
-        onConfirmed={async () => {
-          await handleMnemonicSubmit(mnemonic)
-        }}
-      />
-    ),
-  }[tab]
+  return (
+    <AnimatedMain>
+      {loading ? (
+        <SpinnerPage displayText="Initializing wallet and connecting to Kaspa network. This process could take a few minutes." />
+      ) : (
+        {
+          [Tabs.Landing]: <Landing forward={handleForward} />,
+          [Tabs.Password]: <Password onPasswordSet={handlePasswordSet} />,
+          [Tabs.Import]: <Import onMnemonicsSubmit={handleMnemonicSubmit} />,
+          [Tabs.Create]: <Create mnemonic={mnemonic} onSaved={handleConfirm} />,
+          [Tabs.Confirm]: (
+            <Confirm
+              mnemonic={mnemonic}
+              onConfirmed={async () => {
+                await handleMnemonicSubmit(mnemonic)
+              }}
+            />
+          ),
+        }[tab]
+      )}
+    </AnimatedMain>
+  )
 }

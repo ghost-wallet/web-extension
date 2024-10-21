@@ -104,29 +104,28 @@ export default class Wallet extends EventEmitter {
       encryptedKey: this.encryptedKey,
     })
     await this.sync()
-
     return decryptedKey
   }
 
+  // TODO: export should return KeyManager.getKey(), which is the seed phrase
+  // no password necessary
   async export(password: string) {
     const wallet = await LocalStorage.get('wallet', undefined)
-
     if (!wallet) {
       console.error('[Wallet] Error exporting wallet')
       throw Error('Wallet is not initialized')
     }
-
     return decryptXChaCha20Poly1305(wallet.encryptedKey, password)
   }
 
   async lock() {
     await SessionStorage.remove('session')
-    KeyManager.clearKey() // Clear the decrypted key from memory
+    KeyManager.clearKey()
     await this.sync()
   }
 
   async reset() {
-    console.log('[Wallet] Wallet hard reset... status:', this.status)
+    // TODO: see if more things need to be reset
     await SessionStorage.clear()
     await LocalStorage.remove('wallet')
     await this.sync()

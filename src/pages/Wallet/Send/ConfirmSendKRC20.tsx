@@ -4,7 +4,7 @@ import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import ConfirmSendDetails from '@/components/ConfirmSendDetails'
 import useKaspa from '@/hooks/useKaspa'
-import Spinner from '@/components/Spinner'
+import SpinnerPage from '@/components/SpinnerPage'
 
 const ConfirmSendKRC20: React.FC = () => {
   const location = useLocation()
@@ -32,7 +32,7 @@ const ConfirmSendKRC20: React.FC = () => {
         console.error('[ConfirmSendKRC20] error writing inscription:', err)
       })
       .finally(() => {
-        setLoading(false) // Reset loading state after the operation is complete
+        setLoading(false)
       })
   }, [request, recipient, token, amount, feeRate])
 
@@ -44,9 +44,7 @@ const ConfirmSendKRC20: React.FC = () => {
     <>
       <AnimatedMain>
         {loading ? (
-          <div className="flex justify-center items-center h-full">
-            <Spinner />
-          </div>
+          <SpinnerPage displayText={`Transferring ${amount} ${token.tick}...`} />
         ) : (
           <ConfirmSendDetails
             token={token}

@@ -49,7 +49,6 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
         <p className="text-mutedtext text-lg font-lato text-center mb-6">Enter the missing words.</p>
         <RecoveryPhraseGrid
           values={userInputs}
-          seedPhrase={mnemonic.split(' ')}
           onInputChange={(i, value) =>
             setUserInputs((inputs) => {
               const updated = [...inputs]
