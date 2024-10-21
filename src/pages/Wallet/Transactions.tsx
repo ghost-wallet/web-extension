@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import BottomNav from '@/components/BottomNav'
 import useKaspa from '@/hooks/useKaspa'
 import AnimatedMain from '@/components/AnimatedMain'
@@ -13,38 +13,57 @@ export default function Transactions() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [loadingMore, setLoadingMore] = useState(false) // State for loading more transactions
+  const [loadingMore, setLoadingMore] = useState(false)
+  const lastElementRef = useRef<HTMLLIElement | null>(null) // Reference for the last transaction
 
   useEffect(() => {
-    const fetchOperations = async () => {
-      setLoading(true)
-      try {
-        await loadOperations()
-      } catch (err) {
-        console.error(err)
-        setError('Error loading operations')
-      } finally {
-        setLoading(false)
+    if (!kasplex.operations.result.length) {
+      const fetchOperations = async () => {
+        setLoading(true)
+        try {
+          await loadOperations()
+        } catch (err) {
+          console.error(err)
+          setError('Error loading operations')
+        } finally {
+          setLoading(false)
+        }
       }
+
+      fetchOperations()
+    }
+  }, [loadOperations, kasplex.operations.result.length])
+
+  // Load more transactions automatically when the last element becomes visible
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      async (entries) => {
+        const lastEntry = entries[0]
+        if (lastEntry.isIntersecting && kasplex.operations.next && !loadingMore) {
+          setLoadingMore(true)
+          try {
+            await loadOperations(undefined, kasplex.operations.next) // Load more using the next cursor
+          } catch (err) {
+            console.error('Error loading more operations:', err)
+            setError('Error loading more operations')
+          } finally {
+            setLoadingMore(false)
+          }
+        }
+      },
+      { threshold: 1.0 },
+    )
+
+    if (lastElementRef.current) {
+      observer.observe(lastElementRef.current)
     }
 
-    fetchOperations()
-  }, [loadOperations])
-
-  // Load more transactions when the "Load More" button is clicked
-  const handleLoadMore = async () => {
-    if (kasplex.operations.next) {
-      setLoadingMore(true)
-      try {
-        await loadOperations(undefined, kasplex.operations.next) // Load more using the next cursor
-      } catch (err) {
-        console.error('Error loading more operations:', err)
-        setError('Error loading more operations')
-      } finally {
-        setLoadingMore(false)
+    return () => {
+      if (lastElementRef.current) {
+        observer.unobserve(lastElementRef.current)
       }
     }
-  }
+  }, [kasplex.operations.next, loadingMore, loadOperations])
 
   return (
     <>
@@ -73,36 +92,40 @@ export default function Transactions() {
         {!loading && !error && kasplex.operations.result.length > 0 && (
           <div className="mt-10 px-4 pb-24">
             <ul className="space-y-3">
-              {kasplex.operations.result.map((operation) => (
-                <li key={operation.hashRev} className="p-4 bg-darkmuted rounded-lg shadow-md">
-                  <p className="font-bold text-primarytext">{operation.op}</p>
-                  <p className="text-sm text-mutedtext">Amount: {parseInt(operation.amt, 10) / 1e8}</p>
-                  <p className="text-sm text-mutedtext">From: {operation.from}</p>
-                  <p className="text-sm text-mutedtext">To: {operation.to}</p>
-                  <p className="text-sm text-mutedtext">
-                    Timestamp: {new Date(parseInt(operation.mtsAdd)).toLocaleString()}
-                  </p>
-                  <a
-                    href={`https://explorer.kaspa.org/txs/${operation.hashRev}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline text-sm"
+              {kasplex.operations.result.map((operation, index) => {
+                const isLastElement = index === kasplex.operations.result.length - 1
+                return (
+                  <li
+                    key={operation.hashRev}
+                    ref={isLastElement ? lastElementRef : null} // Assign the ref to the last element
+                    className="p-4 bg-darkmuted rounded-lg shadow-md"
                   >
-                    View Transaction
-                  </a>
-                </li>
-              ))}
+                    <p className="text-base font-lato text-mutedtext">
+                      {new Date(parseInt(operation.mtsAdd)).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </p>
+                    <p className="text-base font-lato text-primarytext">
+                      {operation.op} of {parseInt(operation.amt, 10) / 1e8} {operation.tick}
+                    </p>
+                    <a
+                      href={`https://explorer.kaspa.org/txs/${operation.hashRev}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary font-lato text-base hover:underline"
+                    >
+                      View Transaction
+                    </a>
+                  </li>
+                )
+              })}
             </ul>
 
-            {kasplex.operations.next && (
-              <div className="flex justify-center mt-6">
-                <button
-                  onClick={handleLoadMore}
-                  disabled={loadingMore}
-                  className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark"
-                >
-                  {loadingMore ? 'Loading...' : 'Load More'}
-                </button>
+            {loadingMore && (
+              <div className="flex justify-center mt-6 mb-20">
+                <Spinner />
               </div>
             )}
           </div>

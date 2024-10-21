@@ -32,14 +32,18 @@ export function KasplexProvider({ children }: { children: ReactNode }) {
     async (tick?: string, next?: string, prev?: string) => {
       const apiBase = getApiBase(settings.selectedNode)
 
-      await fetchData(
-        () => fetchOperations({ address: kaspa.addresses[0][0], apiBase, tick, next, prev }), // Fetching operations
-        dispatch,
-        'operations',
-        'error',
-      )
+      const response = await fetchOperations({ address: kaspa.addresses[0][0], apiBase, tick, next, prev })
+
+      dispatch({
+        type: 'operations',
+        payload: {
+          ...kasplex.operations,
+          result: [...kasplex.operations.result, ...response.result], // Append new results
+          next: response.next, // Update next cursor
+        },
+      })
     },
-    [kaspa.addresses, settings.selectedNode],
+    [kasplex.operations, kaspa.addresses, settings.selectedNode],
   )
 
   useEffect(() => {
