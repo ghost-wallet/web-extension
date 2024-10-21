@@ -2,7 +2,7 @@ import { ArrowUpIcon, ArrowDownIcon, ArrowsRightLeftIcon, ArrowPathIcon } from '
 import { useNavigate } from 'react-router-dom'
 import ActionButton from '@/components/buttons/ActionButtons/ActionButton'
 import { useContext } from 'react'
-import { KasplexContext } from '@/contexts/KasplexContext'
+import { KasplexContext } from '@/contexts/kasplex/KasplexContext'
 
 export default function ActionButtons() {
   const navigate = useNavigate()

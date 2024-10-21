@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { KasplexContext } from '@/contexts/KasplexContext'
+import { KasplexContext } from '@/contexts/kasplex/KasplexContext'
 
 export default function useKasplex() {
   const context = useContext(KasplexContext)

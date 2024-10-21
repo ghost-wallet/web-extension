@@ -10,7 +10,7 @@ export default function Transactions() {
   return (
     <>
       <AnimatedMain>
-        <Header title="Transactions" showBackButton={false} />
+        <Header title="Recent Activity" showBackButton={false} />
         <div className="pt-6 text-center">
           <a
             href={`https://explorer.kaspa.org/addresses/${kaspa.addresses[0]}`}
