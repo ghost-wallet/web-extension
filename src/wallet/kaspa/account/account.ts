@@ -48,7 +48,6 @@ export default class Account extends EventEmitter {
   }
 
   get balance() {
-    console.log('[Account] Context data when balance is accessed:', this.context)
     return Number(this.context.balance?.mature ?? 0) / 1e8
   }
 
@@ -134,7 +133,7 @@ export default class Account extends EventEmitter {
 
   async scan(steps = 50, count = 10) {
     console.log('[Account] Scan started')
-    console.log('[Account] Scan: current recieve addresses', this.addresses.receiveAddresses)
+    console.log('[Account] Scan: current receive addresses', this.addresses.receiveAddresses)
     console.log('[Account] Scan: current change addresses', this.addresses.changeAddresses)
     const scanAddresses = async (isReceive: boolean, startIndex: number) => {
       let foundIndex = 0
@@ -159,7 +158,7 @@ export default class Account extends EventEmitter {
     await scanAddresses(true, this.addresses.receiveAddresses.length)
     await scanAddresses(false, this.addresses.changeAddresses.length)
     console.log('[Account] Scan complete')
-    console.log('[Account] Scan: current recieve addresses', this.addresses.receiveAddresses)
+    console.log('[Account] Scan: current receive addresses', this.addresses.receiveAddresses)
     console.log('[Account] Scan: current change addresses', this.addresses.changeAddresses)
   }
 

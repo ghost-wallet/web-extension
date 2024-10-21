@@ -68,7 +68,6 @@ export default class RPC {
 
       try {
         const response = await this.router.route(request)
-        console.log('[RPC] Router response:', response)
 
         port.postMessage(response)
       } catch (error) {

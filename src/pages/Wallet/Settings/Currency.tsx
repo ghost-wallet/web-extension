@@ -1,5 +1,5 @@
 import React from 'react'
-import { currencies } from '@/contexts/Settings'
+import { currencies } from '@/contexts/SettingsContext'
 import useSettings from '@/hooks/useSettings'
 
 const Currency: React.FC = () => {
