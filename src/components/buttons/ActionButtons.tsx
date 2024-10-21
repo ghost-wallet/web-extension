@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-  ArrowUpIcon,
+  ArrowDownIcon,
   PaperAirplaneIcon,
   ArrowsRightLeftIcon,
   ArrowPathIcon,
@@ -27,11 +27,15 @@ export default function ActionButtons() {
 
   return (
     <div className="my-4 flex justify-between gap-4">
-      <ActionButton icon={<ArrowUpIcon strokeWidth={2} />} label="Send" onClick={() => navigate('/send')} />
       <ActionButton
-        icon={<PaperAirplaneIcon strokeWidth={2} />}
+        icon={<ArrowDownIcon strokeWidth={2} />}
         label="Receive"
         onClick={() => navigate('/receive')}
+      />
+      <ActionButton
+        icon={<PaperAirplaneIcon strokeWidth={2} />}
+        label="Send"
+        onClick={() => navigate('/send')}
       />
       <ActionButton
         icon={<ArrowsRightLeftIcon strokeWidth={2} />}

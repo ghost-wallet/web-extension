@@ -4,7 +4,7 @@ import Header from '@/components/Header'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import ActionButton from '@/components/buttons/ActionButtons/ActionButton'
-import { PaperAirplaneIcon, ArrowUpIcon } from '@heroicons/react/24/outline'
+import { PaperAirplaneIcon, ArrowDownIcon } from '@heroicons/react/24/outline'
 import CryptoBalance from '@/components/CryptoBalance'
 import CryptoImage from '@/components/CryptoImage'
 
@@ -22,15 +22,14 @@ const Crypto: React.FC = () => {
 
         <div className="flex justify-center space-x-6 mt-4">
           <ActionButton
-            icon={<ArrowUpIcon strokeWidth={2} />}
-            label="Send"
-            onClick={() => navigate('/send/crypto', { state: { token } })}
-          />
-
-          <ActionButton
-            icon={<PaperAirplaneIcon strokeWidth={2} />}
+            icon={<ArrowDownIcon strokeWidth={2} />}
             label="Receive"
             onClick={() => navigate('/receive')}
+          />
+          <ActionButton
+            icon={<PaperAirplaneIcon strokeWidth={2} />}
+            label="Send"
+            onClick={() => navigate('/send/crypto', { state: { token } })}
           />
         </div>
       </AnimatedMain>

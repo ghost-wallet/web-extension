@@ -11,7 +11,6 @@ interface Operation {
   hashRev: string
 }
 
-// Utility function to group transactions by date
 const groupTransactionsByDate = (transactions: Operation[]): { [date: string]: Operation[] } => {
   return transactions.reduce(
     (groups, transaction) => {
@@ -36,7 +35,6 @@ export default function TransactionList() {
   const [loadingMore, setLoadingMore] = useState(false)
   const lastElementRef = useRef<HTMLLIElement | null>(null)
 
-  // Group transactions by date
   const groupedTransactions = groupTransactionsByDate(kasplex.operations.result)
 
   // Observer for automatic "Load More" functionality
@@ -70,7 +68,7 @@ export default function TransactionList() {
   }, [kasplex.operations.next, loadingMore, loadOperations])
 
   return (
-    <div className="pt-6 px-4 pb-24">
+    <div className="px-4 pb-24">
       <ul className="space-y-6">
         {Object.entries(groupedTransactions).map(([date, transactions], groupIndex) => (
           <li key={date}>

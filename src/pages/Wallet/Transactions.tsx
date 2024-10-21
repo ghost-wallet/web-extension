@@ -35,17 +35,15 @@ export default function Transactions() {
     <>
       <AnimatedMain>
         <Header title="Recent Activity" showBackButton={false} />
-
         {loading && (
           <div className="mt-10 flex justify-center">
             <Spinner />
           </div>
         )}
-
         {error && <ErrorMessage message={error} />}
-
         {!loading && !error && kasplex.operations.result.length > 0 && <TransactionList />}
 
+        {/* TODO: Update no recent activity UI */}
         {!loading && !error && kasplex.operations.result.length === 0 && (
           <p className="text-mutedtext mt-10 text-center">No recent activity found.</p>
         )}
