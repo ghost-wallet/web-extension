@@ -68,7 +68,7 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
           onClick={handleClearClick}
           className="mb-4 w-full h-[52px] text-base font-lato font-semibold text-primary hover:underline cursor-pointer"
         >
-          Clear
+          Clear Entries
         </button>
 
         <button

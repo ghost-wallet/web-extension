@@ -104,10 +104,15 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
           ) : (
             <div className="relative w-full">
               <textarea
-                value={isTextVisible ? textAreaInput : textAreaInput.replace(/./g, '•')} // Replace text with bullets if not visible
+                value={textAreaInput}
                 onChange={(e) => setTextAreaInput(e.target.value)}
-                placeholder="Enter or paste your 24-word recovery phrase"
-                className="w-full h-48 border border-muted rounded-lg p-4 bg-bgdarker text-mutedtext font-lato text-base resize-none"
+                placeholder="Enter or paste your 24-word secret recovery phrase"
+                className={`w-full h-48 border border-muted rounded-lg p-4 bg-bgdarker text-mutedtext font-lato text-base resize-none`}
+                style={
+                  {
+                    WebkitTextSecurity: isTextVisible ? 'none' : 'disc',
+                  } as React.CSSProperties
+                }
               />
               <button
                 type="button"

@@ -27,12 +27,12 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
 
   return (
     <AnimatedMain>
-      <Header title="Create New Wallet" showBackButton={false} />
+      <Header title="Secret Phrase" showBackButton={false} />
       <div className="px-6">
-        <p className="text-warning text-base font-lato text-center pt-6 mb-6">
-          This secret phrase is the only way to recover your wallet. Do not share it with anyone. Do not enter
-          it into app or site other than wallets from ghostapp.org. Beware of scammers pretending to be Ghost
-          support.
+        <p className="text-warning text-base font-lato text-justify pt-4 mb-6">
+          This secret recovery phrase is the only way to restore your wallet. Do not share it with anyone. Do
+          not enter it into any app or site other than wallets from ghostapp.org. Beware of fake customer
+          support scams.
         </p>
 
         <div
@@ -78,7 +78,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
           {isCopied ? 'Copied' : 'Copy to clipboard'}
         </button>
 
-        <div className="flex gap-3 justify-start items-center mt-8 mb-8">
+        <div className="flex gap-3 justify-start items-center p-2 mt-8 mb-8">
           <input
             type="checkbox"
             id="confirmation"
