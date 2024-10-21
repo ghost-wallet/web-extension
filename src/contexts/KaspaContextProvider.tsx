@@ -101,7 +101,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
     }
 
     // TODO: update kaspian to ghost
-    const connection = runtime.connect({ name: '@kaspian/client' })
+    const connection = runtime.connect({ name: '@ghost/client' })
 
     connection.onMessage.addListener(async (message: Response | Event) => {
       if (!isEvent(message)) {

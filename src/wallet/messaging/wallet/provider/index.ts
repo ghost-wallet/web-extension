@@ -29,7 +29,7 @@ export default class Provider extends EventEmitter {
     this.port = port
 
     const id = await this.windows.open(
-      'connect',
+      '/connect',
       {
         url: port.sender!.url!,
       },

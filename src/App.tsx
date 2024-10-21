@@ -1,4 +1,4 @@
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { HashRouter, MemoryRouter, Route, Routes } from 'react-router-dom'
 import { SettingsProvider } from './contexts/Settings'
 import { KaspaProvider } from './contexts/KaspaContextProvider'
 import Landing from './pages/Landing'
@@ -17,12 +17,13 @@ import Sent from '@/pages/Wallet/Send/Sent'
 import ConfirmReset from '@/pages/Wallet/Settings/Reset/ConfirmReset'
 import ForgotPassword from '@/pages/Login/ForgotPassword'
 import Crypto from '@/pages/Wallet/Cryptos/Crypto'
+import Connect from './pages/Connect'
 
 function App() {
   return (
     <SettingsProvider>
       <KaspaProvider>
-        <MemoryRouter>
+        <HashRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/create" element={<CreateWallet />} />
@@ -40,8 +41,9 @@ function App() {
             <Route path="/send/crypto/confirm/sent" element={<Sent />} />
             <Route path="/receive" element={<Receive />} />
             <Route path="/swap" element={<Swap />} />
+            <Route path="/connect" element={<Connect />} />
           </Routes>
-        </MemoryRouter>
+        </HashRouter>
       </KaspaProvider>
     </SettingsProvider>
   )

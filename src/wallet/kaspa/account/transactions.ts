@@ -21,7 +21,7 @@ import Addresses from './addresses'
 import EventEmitter from 'events'
 import KeyManager from '@/wallet/kaspa/KeyManager'
 import Account from '@/wallet/kaspa/account/account'
-import { Token } from '@/hooks/useKasplex'
+import type { Token } from '@/hooks/useKasplex' // TODO: move to shared types file
 import { setupkrc20Transaction } from '../krc20/Transact'
 
 export interface CustomInput {
