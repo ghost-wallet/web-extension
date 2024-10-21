@@ -6,7 +6,7 @@ import { Token } from '@/hooks/useKasplex'
 
 export interface RequestMappings {
   'wallet:status': []
-  'wallet:create': [string] // Password
+  'wallet:createMnemonic': []
   'wallet:import': [string, string] // Mnemo, Password
   'wallet:unlock': [string] // Password
   'wallet:export': [string] // Password
@@ -39,7 +39,7 @@ export interface Request<M extends keyof ResponseMappings = keyof ResponseMappin
 
 export interface ResponseMappings {
   'wallet:status': Status
-  'wallet:create': string
+  'wallet:createMnemonic': string
   'wallet:import': void
   'wallet:unlock': string // Updated to return a string (decrypted key)
   'wallet:export': string

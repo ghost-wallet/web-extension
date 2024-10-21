@@ -24,7 +24,7 @@ export default class Router {
   }) {
     this.mappings = {
       'wallet:status': () => wallet.status,
-      'wallet:create': (password) => wallet.create(password),
+      'wallet:createMnemonic': () => wallet.createMnemonic(),
       'wallet:import': (mnemonic, password) => wallet.import(mnemonic, password),
       'wallet:unlock': (password) => wallet.unlock(0, password), // Returns Promise<string>
       'wallet:export': (password) => wallet.export(password),

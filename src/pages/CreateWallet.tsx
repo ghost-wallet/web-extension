@@ -20,19 +20,20 @@ export default function CreateWallet() {
   const { request } = useKaspa()
 
   const [tab, setTab] = useState(Tabs.Landing)
-  const [sensitive, setsensitive] = useState('')
+  const [password, setPassword] = useState('')
+  const [mnemonic, setMnemonic] = useState('')
   const [flowType, setFlowType] = useState<'create' | 'import'>('create')
 
-  const handleForward = (tab: Tabs, flowType?: 'create' | 'import') => {
-    if (flowType) setFlowType(flowType)
-    setTab(tab)
+  const handleForward = (nextTab: Tabs, nextFlowType?: 'create' | 'import') => {
+    if (nextFlowType) setFlowType(nextFlowType)
+    setTab(nextTab)
   }
 
-  const handlePasswordSet = async (pw: string) => {
-    setsensitive(pw)
+  const handlePasswordSet = async (_password: string) => {
+    setPassword(_password)
     if (flowType === 'create') {
-      const mnemonic = await request('wallet:create', [pw])
-      setsensitive(mnemonic)
+      const mnemonic = await request('wallet:createMnemonic', [])
+      setMnemonic(mnemonic)
       setTab(Tabs.Create)
     } else {
       setTab(Tabs.Import)
@@ -40,7 +41,7 @@ export default function CreateWallet() {
   }
 
   const handleMnemonicSubmit = async (mnemonic: string) => {
-    await request('wallet:import', [mnemonic, sensitive])
+    await request('wallet:import', [mnemonic, password])
     navigate('/wallet')
   }
 
@@ -52,12 +53,12 @@ export default function CreateWallet() {
     [Tabs.Landing]: <Landing forward={handleForward} />,
     [Tabs.Password]: <Password onPasswordSet={handlePasswordSet} />,
     [Tabs.Import]: <Import onMnemonicsSubmit={handleMnemonicSubmit} />,
-    [Tabs.Create]: <Create mnemonic={sensitive} onSaved={handleConfirm} />,
+    [Tabs.Create]: <Create mnemonic={mnemonic} onSaved={handleConfirm} />,
     [Tabs.Confirm]: (
       <Confirm
-        mnemonic={sensitive}
+        mnemonic={mnemonic}
         onConfirmed={async () => {
-          await handleMnemonicSubmit(sensitive)
+          await handleMnemonicSubmit(mnemonic)
         }}
       />
     ),
