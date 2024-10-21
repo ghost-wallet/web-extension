@@ -31,7 +31,7 @@ interface CryptoProps {
 
 const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem }) => {
   const { kaspa } = useKaspa()
-  const { kasplex } = useKasplex()
+  const { kasplex, loadTokens } = useKasplex() // Added loadTokens from context
   const { settings } = useSettings()
   const price = useCoingecko(settings.currency)
   const navigate = useNavigate()
@@ -40,7 +40,20 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
   const [tokens, setTokens] = useState<Token[]>([])
   const [tokensError, setTokensError] = useState<string | null>(null)
 
-  // Fetch tokens when the component mounts and when kaspa addresses change
+  // Fetch tokens when the component mounts
+  useEffect(() => {
+    const fetchTokensOnMount = async () => {
+      try {
+        await loadTokens() // Call loadTokens to fetch tokens
+      } catch (error) {
+        setTokensError('Error loading tokens')
+      }
+    }
+
+    fetchTokensOnMount() // Fetch tokens every time the component is mounted
+  }, [loadTokens])
+
+  // Update state based on kasplex tokens and loading state
   useEffect(() => {
     if (!kasplex.loading && kasplex.tokens) {
       setTokens(kasplex.tokens)
@@ -61,12 +74,10 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
     )
   }
 
-  // If there's an error loading tokens, show the error message
   if (tokensError) {
     return <ErrorMessage message={tokensError} />
   }
 
-  // Prepare the Kaspa token and merge with other tokens
   const kaspaCrypto: Token = {
     tick: 'KASPA',
     balance: kaspa.balance.toString(),
@@ -79,7 +90,6 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
   const sortedCryptos = sortTokensByValue(cryptos)
   const currencySymbol = getCurrencySymbol(settings.currency)
 
-  // Handle token click events
   const handleTokenClick = (token: Token) => {
     if (location.pathname.includes('/send')) {
       navigate('/send/crypto', { state: { token } })

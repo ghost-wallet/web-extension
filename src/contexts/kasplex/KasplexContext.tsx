@@ -2,12 +2,15 @@ import React, { createContext, ReactNode, useEffect, useReducer, useCallback } f
 import useKaspa from '@/hooks/useKaspa'
 import useSettings from '@/hooks/useSettings'
 import useCoingecko from '@/hooks/useCoingecko'
+import { fetchOperations } from './getOperationList'
 import { fetchTokens } from './tokenFetcher'
 import { kasplexReducer, defaultState, IKasplex } from './kasplexReducer'
+import { fetchData, getApiBase } from './fetchHelper' // Import the helper function
 
 export const KasplexContext = createContext<
   | {
-      loadTokens: (refresh?: boolean) => Promise<void>
+      loadTokens: () => Promise<void>
+      loadOperations: (tick?: string, next?: string, prev?: string) => Promise<void>
       kasplex: IKasplex
     }
   | undefined
@@ -19,44 +22,24 @@ export function KasplexProvider({ children }: { children: ReactNode }) {
   const { settings } = useSettings()
   const price = useCoingecko(settings.currency)
 
-  const loadTokens = useCallback(
-    async (refresh = false) => {
-      try {
-        dispatch({ type: 'loading', payload: true })
-        dispatch({ type: 'error', payload: null })
+  const loadTokens = useCallback(async () => {
+    const apiBase = getApiBase(settings.selectedNode)
 
-        const cachedTokens = localStorage.getItem(`tokens_${kaspa.addresses?.[0]?.[0]}`)
-        const cachedTimestamp = localStorage.getItem(`timestamp_${kaspa.addresses?.[0]?.[0]}`)
-        const currentTime = Date.now()
+    await fetchData(() => fetchTokens(kaspa.addresses[0][0], apiBase, price), dispatch, 'tokens', 'error')
+  }, [kaspa.addresses, settings.selectedNode, price])
 
-        const CACHE_DURATION = 30000 // 30 seconds
+  const loadOperations = useCallback(
+    async (tick?: string, next?: string, prev?: string) => {
+      const apiBase = getApiBase(settings.selectedNode)
 
-        if (
-          !refresh &&
-          cachedTokens &&
-          cachedTimestamp &&
-          currentTime - parseInt(cachedTimestamp) < CACHE_DURATION
-        ) {
-          dispatch({ type: 'tokens', payload: JSON.parse(cachedTokens) })
-        } else {
-          const apiBase =
-            settings.selectedNode === 0 ? 'api' : settings.selectedNode === 1 ? 'tn10api' : 'tn11api'
-
-          const fetchedTokens = await fetchTokens(kaspa.addresses[0][0], apiBase, price)
-
-          dispatch({ type: 'tokens', payload: fetchedTokens })
-
-          // TODO better local storage consistency across files (e.g. localStorage vs LocalStorage)
-          localStorage.setItem(`tokens_${kaspa.addresses[0][0]}`, JSON.stringify(fetchedTokens))
-          localStorage.setItem(`timestamp_${kaspa.addresses[0][0]}`, currentTime.toString())
-        }
-      } catch (err) {
-        dispatch({ type: 'error', payload: `Error fetching KRC20 tokens: ${err}` })
-      } finally {
-        dispatch({ type: 'loading', payload: false })
-      }
+      await fetchData(
+        () => fetchOperations({ address: kaspa.addresses[0][0], apiBase, tick, next, prev }), // Fetching operations
+        dispatch,
+        'operations',
+        'error',
+      )
     },
-    [kaspa.addresses, settings.selectedNode, price],
+    [kaspa.addresses, settings.selectedNode],
   )
 
   useEffect(() => {
@@ -65,5 +48,9 @@ export function KasplexProvider({ children }: { children: ReactNode }) {
     }
   }, [kaspa.connected, kaspa.addresses, loadTokens])
 
-  return <KasplexContext.Provider value={{ kasplex, loadTokens }}>{children}</KasplexContext.Provider>
+  return (
+    <KasplexContext.Provider value={{ kasplex, loadTokens, loadOperations }}>
+      {children}
+    </KasplexContext.Provider>
+  )
 }

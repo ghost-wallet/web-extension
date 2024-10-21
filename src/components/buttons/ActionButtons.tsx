@@ -6,13 +6,13 @@ import useKasplex from '@/hooks/useKasplex'
 
 export default function ActionButtons() {
   const navigate = useNavigate()
-  const { loadTokens } = useKasplex()
+  const { loadTokens } = useKasplex() // No need for refresh prop
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   const handleRefresh = async () => {
     setIsRefreshing(true)
     try {
-      await loadTokens(true)
+      await loadTokens() // No refresh parameter is needed
     } catch (error) {
       console.error('Error refreshing KRC20 tokens:', error)
     } finally {
