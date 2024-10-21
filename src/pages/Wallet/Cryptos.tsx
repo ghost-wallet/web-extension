@@ -27,11 +27,11 @@ interface CryptoProps {
     currencySymbol: string,
     kaspaBalance: number,
   ) => React.ReactElement
-  refresh: boolean
 }
 
-const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, refresh }) => {
+const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem }) => {
   const { kaspa } = useKaspa()
+  const { kasplex } = useKasplex()
   const { settings } = useSettings()
   const price = useCoingecko(settings.currency)
   const navigate = useNavigate()
@@ -40,21 +40,20 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
   const [tokens, setTokens] = useState<Token[]>([])
   const [tokensError, setTokensError] = useState<string | null>(null)
 
-  const { tokens: fetchedTokens, loading: tokensLoading, error: tokensErrorState } = useKasplex(refresh)
-
+  // Fetch tokens when the component mounts and when kaspa addresses change
   useEffect(() => {
-    if (!tokensLoading && fetchedTokens) {
-      setTokens(fetchedTokens)
+    if (!kasplex.loading && kasplex.tokens) {
+      setTokens(kasplex.tokens)
       setTokensError(null)
     }
-    if (tokensErrorState) {
-      setTokensError(tokensErrorState)
+    if (kasplex.error) {
+      setTokensError(kasplex.error)
     }
-  }, [tokensLoading, fetchedTokens, tokensErrorState])
+  }, [kasplex.loading, kasplex.tokens, kasplex.error])
 
   useTotalValueCalculation(tokens, price, onTotalValueChange)
 
-  if (tokensLoading) {
+  if (kasplex.loading) {
     return (
       <div className="mt-6">
         <Spinner />
@@ -62,11 +61,13 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
     )
   }
 
+  // If there's an error loading tokens, show the error message
   if (tokensError) {
     return <ErrorMessage message={tokensError} />
   }
 
-  const kaspaToken: Token = {
+  // Prepare the Kaspa token and merge with other tokens
+  const kaspaCrypto: Token = {
     tick: 'KASPA',
     balance: kaspa.balance.toString(),
     dec: '8',
@@ -74,10 +75,11 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
     floorPrice: price,
   }
 
-  const allTokens = [...tokens, kaspaToken]
-  const sortedTokens = sortTokensByValue(allTokens)
+  const cryptos = [...tokens, kaspaCrypto]
+  const sortedCryptos = sortTokensByValue(cryptos)
   const currencySymbol = getCurrencySymbol(settings.currency)
 
+  // Handle token click events
   const handleTokenClick = (token: Token) => {
     if (location.pathname.includes('/send')) {
       navigate('/send/crypto', { state: { token } })
@@ -88,11 +90,11 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem, r
 
   return (
     <div className="w-full p-4 mb-20 h-full overflow-auto">
-      {sortedTokens.length === 0 ? (
+      {sortedCryptos.length === 0 ? (
         <p className="text-base text-mutedtext font-lato">None</p>
       ) : (
         <ul className="space-y-3">
-          {sortedTokens.map((token) =>
+          {sortedCryptos.map((token) =>
             renderTokenItem ? (
               renderTokenItem(token, token.tick === 'KASPA', currencySymbol, kaspa.balance)
             ) : (

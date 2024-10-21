@@ -15,7 +15,6 @@ export default function Wallet() {
   const navigate = useNavigate()
 
   const [totalValue, setTotalValue] = useState<number>(0)
-  const [refresh, setRefresh] = useState(false)
 
   useEffect(() => {
     if (!kaspa.connected) {
@@ -34,10 +33,6 @@ export default function Wallet() {
     }
   }, [kaspa.status])
 
-  const handleRefresh = () => {
-    setRefresh((prev) => !prev)
-  }
-
   return (
     <>
       <AnimatedMain>
@@ -45,10 +40,10 @@ export default function Wallet() {
           <div className="sticky top-0 bg-bgdark w-full flex flex-col border-b border-darkmuted">
             <div className="items-center flex flex-col pt-6">
               <TotalWalletValue totalValue={totalValue} />
-              <ActionButtons onRefresh={handleRefresh} />
+              <ActionButtons />
             </div>
           </div>
-          <Cryptos onTotalValueChange={setTotalValue} refresh={refresh} />
+          <Cryptos onTotalValueChange={setTotalValue} />
         </div>
       </AnimatedMain>
       <BottomNav />
