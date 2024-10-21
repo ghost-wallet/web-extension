@@ -1,6 +1,6 @@
 import { Address, addressFromScriptPublicKey, ScriptBuilder, XOnlyPublicKey } from '@/wasm/kaspa'
 import { Inscription } from './Inscription'
-import { Token } from '@/hooks/useKasplex'
+import { Token } from '@/contexts/kasplex/kasplexReducer'
 
 export function setupkrc20Transaction(
   address: string,

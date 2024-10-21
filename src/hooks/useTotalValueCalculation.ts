@@ -10,7 +10,7 @@ interface Token {
 
 type TotalValueChangeCallback = (value: number) => void
 
-const useTotalValueCalculation = (
+export const useTotalValueCalculation = (
   tokens: Token[],
   price: number,
   onTotalValueChange: TotalValueChangeCallback,
@@ -29,5 +29,3 @@ const useTotalValueCalculation = (
     onTotalValueChange(totalValue)
   }, [tokens, kaspa.balance, price, onTotalValueChange])
 }
-
-export default useTotalValueCalculation

@@ -11,7 +11,7 @@ export default function Send() {
     <>
       <AnimatedMain>
         <Header title="Send" showBackButton={true} />
-        <Cryptos onTotalValueChange={setTotalValue} refresh={true} />
+        <Cryptos onTotalValueChange={setTotalValue} />
       </AnimatedMain>
       <BottomNav />
     </>
