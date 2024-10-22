@@ -301,6 +301,13 @@ export default class Transactions extends EventEmitter {
     console.log('inputValue', sompiToKaspaString(inputValue))
     console.log('outputValue', sompiToKaspaString(outputValue))
     console.log('fee', sompiToKaspaString(inputValue - outputValue))
+
+    return inputValue - outputValue
+  }
+
+  logFeeFromJsonArray(input: string[]) {
+    const transaction = Transaction.deserializeFromSafeJSON(input[input.length - 1])
+    return this.logFee(transaction)
   }
 
   async estimateKRC20Transaction(recipient: string, token: Token, amount: string, feeRate: number) {
@@ -403,6 +410,8 @@ export default class Transactions extends EventEmitter {
     const commit3 = await this.submitContextful(commit2)
     console.log(commit3)
 
+    const commitFee = this.logFeeFromJsonArray(commit3)
+
     //console.log('waiting...')
     //await new Promise(resolve => setTimeout(resolve, 5000))
     //this.kaspa.
@@ -436,7 +445,7 @@ export default class Transactions extends EventEmitter {
     // reveal transaction:
     // - create
     console.log('[Transactions] reveal transaction create:')
-    const reveal1 = await this.create([], feeRate, '0.01', [input])
+    const reveal1 = await this.create([], feeRate, '0', [input])
     console.log(reveal1)
     // - sign
     console.log('[Transactions] reveal transaction sign:')
@@ -446,6 +455,10 @@ export default class Transactions extends EventEmitter {
     console.log('[Transactions] reveal transaction submit:')
     const reveal3 = await this.submitContextful(reveal2)
     console.log(reveal3)
+
+    const revealFee = this.logFeeFromJsonArray(reveal3)
+
+    console.log('REAL total fee:', sompiToKaspaString(commitFee + revealFee))
 
     // TODO: make the inscription, make a create transaction, submit a reveal txn
 
