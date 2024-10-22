@@ -4,16 +4,13 @@ export default function useCoingecko(currency: string) {
   const [price, setPrice] = useState(0)
 
   useEffect(() => {
-    // Try to get the cached price from localStorage
     const cachedPrice = localStorage.getItem(`price_${currency}`)
     const cachedTimestamp = localStorage.getItem(`timestamp_${currency}`)
     const currentTime = Date.now()
 
-    if (cachedPrice && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 5000) {
-      // Use the cached price if it's still valid
+    if (cachedPrice && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 30000) {
       setPrice(parseFloat(cachedPrice))
     } else {
-      // Fetch from the API if the cache is expired or not available
       fetch(`https://api.coingecko.com/api/v3/simple/price?ids=kaspa&vs_currencies=${currency}`)
         .then(async (res) => {
           if (res.ok) {
@@ -29,6 +26,7 @@ export default function useCoingecko(currency: string) {
           }
         })
         .catch((error) => {
+          // TODO: If error, use another fallback API to get price.
           console.error('Error fetching price:', error)
         })
     }
