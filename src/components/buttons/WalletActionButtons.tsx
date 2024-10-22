@@ -6,10 +6,10 @@ import {
   ArrowPathIcon,
 } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
-import ActionButton from '@/components/buttons/ActionButtons/ActionButton'
+import WalletActionButton from '@/components/buttons/WalletActionButtons/WalletActionButton'
 import useKasplex from '@/hooks/useKasplex'
 
-export default function ActionButtons() {
+export default function WalletActionButtons() {
   const navigate = useNavigate()
   const { loadKrc20Tokens } = useKasplex()
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -27,23 +27,23 @@ export default function ActionButtons() {
 
   return (
     <div className="my-4 flex justify-between gap-4">
-      <ActionButton
+      <WalletActionButton
         icon={<ArrowDownIcon strokeWidth={2} />}
         label="Receive"
         onClick={() => navigate('/receive')}
       />
-      <ActionButton
+      <WalletActionButton
         icon={<PaperAirplaneIcon strokeWidth={2} />}
         label="Send"
         onClick={() => navigate('/send')}
       />
-      <ActionButton
+      <WalletActionButton
         icon={<ArrowsRightLeftIcon strokeWidth={2} />}
         label="Swap"
         onClick={() => navigate('/swap')}
       />
 
-      <ActionButton
+      <WalletActionButton
         icon={<ArrowPathIcon strokeWidth={2} className={isRefreshing ? 'animate-spin' : ''} />}
         label="Refresh"
         onClick={handleRefresh}
