@@ -357,7 +357,7 @@ export default class Transactions extends EventEmitter {
       outputs: [],
       changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
       feeRate,
-      priorityFee: kaspaToSompi('0')!
+      priorityFee: kaspaToSompi('0.01')!
     }
 
     console.log('[Transaction] estimateKRC20Transaction revealSettings: ', revealSettings)
@@ -445,7 +445,7 @@ export default class Transactions extends EventEmitter {
     // reveal transaction:
     // - create
     console.log('[Transactions] reveal transaction create:')
-    const reveal1 = await this.create([], feeRate, '0', [input])
+    const reveal1 = await this.create([], feeRate, '0.01', [input])
     console.log(reveal1)
     // - sign
     console.log('[Transactions] reveal transaction sign:')
@@ -459,6 +459,7 @@ export default class Transactions extends EventEmitter {
     const revealFee = this.logFeeFromJsonArray(reveal3)
 
     console.log('REAL total fee:', sompiToKaspaString(commitFee + revealFee))
+    console.log('REAL TXNS', [commit3[0], reveal3[0]].map(x => `https://explorer.kaspa.org/txs/${x}`))
 
     // TODO: make the inscription, make a create transaction, submit a reveal txn
 
