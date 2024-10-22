@@ -15,7 +15,6 @@ export default class Addresses extends EventEmitter {
     super()
     this.context = context
     this.networkId = networkId
-    console.log('[Addresses] Initialized with networkId:', networkId)
   }
 
   get allAddresses() {
@@ -23,13 +22,10 @@ export default class Addresses extends EventEmitter {
   }
 
   async import(publicKey: PublicKeyGenerator, accountId: number) {
-    console.log('[Addresses] Importing publicKey and accountId:', publicKey, accountId)
     this.publicKey = publicKey
     this.accountId = accountId
 
     const accounts = (await LocalStorage.get('wallet', undefined))!.accounts
-    console.log('[Addresses] Accounts from LocalStorage', accounts)
-
     const account = accounts[accountId]
     await this.increment(account.receiveCount, account.changeCount, false)
   }
@@ -61,13 +57,10 @@ export default class Addresses extends EventEmitter {
     if (this.context.isActive) await this.context.trackAddresses(addresses.flat())
     if (commit) await this.commit()
 
-    console.log('[Addresses] Increment addresses:', addresses)
     this.emit('addresses', addresses)
   }
 
   findIndexes(address: string): [boolean, number] {
-    console.log('[Addresses] Finding index for address:', address)
-
     const receiveIndex = this.receiveAddresses.indexOf(address)
     const changeIndex = this.changeAddresses.indexOf(address)
 
@@ -81,7 +74,6 @@ export default class Addresses extends EventEmitter {
   }
 
   async changeNetwork(networkId: string) {
-    console.log('[Addresses] Changing network to:', networkId)
     this.networkId = networkId
     this.receiveAddresses = await this.derive(true, 0, this.receiveAddresses.length)
     this.changeAddresses = await this.derive(false, 0, this.changeAddresses.length)
@@ -97,7 +89,6 @@ export default class Addresses extends EventEmitter {
 
   private async commit() {
     const wallet = (await LocalStorage.get('wallet', undefined))!
-    console.log('[Addresses] Commit wallet', wallet)
     const account = wallet.accounts[this.accountId!]
 
     account.receiveCount = this.receiveAddresses.length
