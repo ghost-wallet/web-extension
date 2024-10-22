@@ -16,12 +16,18 @@ import {
   UtxoProcessor,
   UtxoProcessorNotificationCallback,
   UtxoProcessorEvent,
+  UtxoEntry,
+  estimateTransactions,
+  IGeneratorSettingsObject,
+  ITransactionOutpoint,
+  IScriptPublicKey,
+  sompiToKaspaString,
 } from '@/wasm'
 import Addresses from './addresses'
 import EventEmitter from 'events'
 import KeyManager from '@/wallet/kaspa/KeyManager'
 import Account from '@/wallet/kaspa/account/account'
-import { Token } from '@/contexts/kasplex/kasplexReducer'
+import type { Token } from '@/contexts/kasplex/kasplexReducer' // TODO: move to shared types file
 import { setupkrc20Transaction } from '../krc20/Transact'
 
 export interface CustomInput {
@@ -66,26 +72,58 @@ export default class Transactions extends EventEmitter {
     this.accountId = accountId
   }
 
+  async findCustomEntries(customs: CustomInput[]) {
+    let priorityEntries: IUtxoEntry[] = []
+
+    console.log('customs:')
+    console.log(customs)
+    const { entries } = await this.kaspa.getUtxosByAddresses({
+      addresses: customs.map((custom) => custom.address),
+    })
+    console.log('entries:')
+    console.log(entries)
+    for (const custom of customs) {
+      const matchingEntry = entries.find(
+        ({ outpoint }) => outpoint.transactionId === custom.outpoint && outpoint.index === custom.index,
+      )
+
+      if (matchingEntry) {
+        priorityEntries.push(matchingEntry)
+      } else throw Error('Failed to resolve custom entry')
+    }
+
+    return priorityEntries
+  }
+
+  async estimateKaspaTransactions(outputs: [string, string][], feeRate: number, fee: string, customs?: CustomInput[]) {
+    let priorityEntries: IUtxoEntry[] = []
+
+    if (customs && customs.length > 0) {
+      priorityEntries = await this.findCustomEntries(customs)
+    }
+
+    const preparedTxn = {
+      priorityEntries,
+      entries: this.context,
+      outputs: outputs.map((output) => ({
+        address: output[0],
+        amount: kaspaToSompi(output[1])!,
+      })),
+      changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
+      feeRate,
+      priorityFee: kaspaToSompi(fee)!,
+    }
+
+    const summary = await estimateTransactions(preparedTxn)
+    
+    return summary
+  }
+
   async create(outputs: [string, string][], feeRate: number, fee: string, customs?: CustomInput[]) {
     let priorityEntries: IUtxoEntry[] = []
 
     if (customs && customs.length > 0) {
-      console.log('customs:')
-      console.log(customs)
-      const { entries } = await this.kaspa.getUtxosByAddresses({
-        addresses: customs.map((custom) => custom.address),
-      })
-      console.log('entries:')
-      console.log(entries)
-      for (const custom of customs) {
-        const matchingEntry = entries.find(
-          ({ outpoint }) => outpoint.transactionId === custom.outpoint && outpoint.index === custom.index,
-        )
-
-        if (matchingEntry) {
-          priorityEntries.push(matchingEntry)
-        } else throw Error('Failed to resolve custom entry')
-      }
+      priorityEntries = await this.findCustomEntries(customs)
     }
 
     const preparedTxn = {
@@ -102,8 +140,9 @@ export default class Transactions extends EventEmitter {
     console.log('Creating transaction with:')
     console.log(preparedTxn)
 
-    const { transactions } = await createTransactions(preparedTxn)
+    const { transactions, summary } = await createTransactions(preparedTxn)
 
+    // TODO: Move this to later?
     await this.addresses.increment(0, 1)
 
     for (const transaction of transactions) {
@@ -171,6 +210,64 @@ export default class Transactions extends EventEmitter {
     return signedTransactions.map((transaction) => transaction.serializeToSafeJSON())
   }
 
+  async signTransactions(transactions: Transaction[], customs: CustomSignature[] = []) {
+    if (!this.encryptedKey) {
+      console.error('[Transactions] No imported account available for signing.')
+      throw Error('No imported account')
+    }
+
+    const decryptedKey = KeyManager.getKey()
+    if (!decryptedKey) {
+      console.error('[Transactions] No decrypted key available in KeyManager.')
+      throw Error('No decrypted key available in KeyManager.')
+    }
+
+    const mnemonic = new Mnemonic(decryptedKey)
+    const seed = mnemonic.toSeed() // This should be a 64-byte buffer
+    const xprv = new XPrv(seed)
+    const keyGenerator = new PrivateKeyGenerator(xprv, false, BigInt(this.accountId!))
+    const signedTransactions: Transaction[] = []
+
+    for (const transaction of transactions) {
+      const parsedTransaction = transaction
+      const privateKeys = []
+      for (let address of parsedTransaction.addresses(this.addresses.networkId)) {
+        if (address.version === 'ScriptHash') {
+          continue
+        }
+        const [isReceive, index] = this.addresses.findIndexes(address.toString())
+        privateKeys.push(isReceive ? keyGenerator.receiveKey(index) : keyGenerator.changeKey(index))
+      }
+
+      const signedTransaction = signTransaction(parsedTransaction, privateKeys, false)
+
+      for (const custom of customs) {
+        const inputIndex = signedTransaction.inputs.findIndex(
+          ({ previousOutpoint }) =>
+            previousOutpoint.transactionId === custom.outpoint && previousOutpoint.index === custom.index,
+        )
+
+        if (Address.validate(custom.signer)) {
+          if (!custom.script) throw Error('Script is required when signer address is supplied')
+
+          const [isReceive, index] = this.addresses.findIndexes(custom.signer)
+          const privateKey = isReceive ? keyGenerator.receiveKey(index) : keyGenerator.changeKey(index)
+
+          signedTransaction.inputs[inputIndex].signatureScript = ScriptBuilder.fromScript(
+            custom.script,
+          ).encodePayToScriptHashSignatureScript(
+            createInputSignature(signedTransaction, inputIndex, privateKey),
+          )
+        } else {
+          signedTransaction.inputs[inputIndex].signatureScript = custom.signer
+        }
+      }
+
+      signedTransactions.push(signedTransaction)
+    }
+    return signedTransactions
+  }
+
   async submitContextful(transactions: string[]) {
     const submittedIds: string[] = []
 
@@ -192,6 +289,97 @@ export default class Transactions extends EventEmitter {
     return submittedIds
   }
 
+  logFee(txn: Transaction) {
+    const inputValue = txn.inputs.reduce((acc: bigint, input: any) => {
+      return acc + BigInt(input.utxo!.amount)
+    }, 0n)
+
+    const outputValue = txn.outputs.reduce((acc: bigint, output: any) => {
+      return acc + BigInt(output.value)
+    }, 0n)
+
+    console.log('inputValue', sompiToKaspaString(inputValue))
+    console.log('outputValue', sompiToKaspaString(outputValue))
+    console.log('fee', sompiToKaspaString(inputValue - outputValue))
+  }
+
+  async estimateKRC20Transaction(recipient: string, token: Token, amount: string, feeRate: number) {
+    const ourAddress = this.addresses.receiveAddresses[0]
+    const { script, scriptAddress } = setupkrc20Transaction(ourAddress, recipient, amount, token)
+  
+    //const commit1 = await this.create([[scriptAddress, '0.2']], feeRate, '0')
+
+    const commitSettings: IGeneratorSettingsObject = {
+      priorityEntries: [],
+      entries: this.context,
+      outputs: [{
+        address: scriptAddress,
+        amount: kaspaToSompi('0.2')!
+      }],
+      changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
+      feeRate,
+      priorityFee: kaspaToSompi('0')!,
+    }
+    const commitResult = await createTransactions(commitSettings)
+
+    console.log('[Transaction] estimateKRC20Transaction commitResult: ', commitResult)
+
+    const commitTxn = commitResult.transactions[commitResult.transactions.length - 1]
+
+    const commitSummary = commitResult.summary
+
+    const commitOutput = commitTxn.transaction.outputs[0]
+
+    const commitOutpoint: ITransactionOutpoint = {
+      transactionId: commitTxn.id,
+      index: 0
+    }
+
+    const commitUTXO: IUtxoEntry = {
+      address: scriptAddress,
+      outpoint: commitOutpoint,
+      amount: commitOutput.value,
+      scriptPublicKey: commitOutput.scriptPublicKey as IScriptPublicKey, // hopefully this works
+      blockDaaScore: BigInt(0),
+      isCoinbase: false
+    }
+
+    const revealSettings: IGeneratorSettingsObject = {
+      priorityEntries: [commitUTXO],
+      entries: this.context,
+      outputs: [],
+      changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
+      feeRate,
+      priorityFee: kaspaToSompi('0')!
+    }
+
+    console.log('[Transaction] estimateKRC20Transaction revealSettings: ', revealSettings)
+
+    const revealEstimateResult = await estimateTransactions(revealSettings)
+    //const revealResult = await createTransactions(revealSettings)
+    
+    //const revealEstimateResult = revealResult.summary
+
+    console.log('[Transaction] estimateKRC20Transaction revealEstimateResult: ', revealEstimateResult)
+
+    const totalFee = commitSummary.fees + revealEstimateResult.fees
+    const totalAmount = commitSummary.finalAmount! + revealEstimateResult.finalAmount!
+
+    console.log('[Transaction] estimateKRC20Transaction commitSummary.fees', sompiToKaspaString(commitSummary.fees))
+    console.log('[Transaction] estimateKRC20Transaction commitSummary.finalAmount', sompiToKaspaString(commitSummary.finalAmount!))
+    console.log('[Transaction] estimateKRC20Transaction revealEstimateResult.fees', sompiToKaspaString(revealEstimateResult.fees))
+    console.log('[Transaction] estimateKRC20Transaction revealEstimateResult.finalAmount', sompiToKaspaString(revealEstimateResult.finalAmount!))
+    
+    console.log('[Transaction] estimateKRC20Transaction totalFee', sompiToKaspaString(totalFee))
+    console.log('[Transaction] estimateKRC20Transaction totalAmount', sompiToKaspaString(totalAmount))
+
+
+
+    return {totalFee: sompiToKaspaString(totalFee), totalAmount: sompiToKaspaString(totalAmount)}
+  }
+
+
+
   async writeInscription(recipient: string, token: Token, amount: string, feeRate: number) {
     console.log(`fee rate: ${feeRate}`)
 
@@ -204,7 +392,7 @@ export default class Transactions extends EventEmitter {
     // commit transaction:
     // - create
     console.log('[Transactions] commit transaction create:')
-    const commit1 = await this.create([[scriptAddress, '0.2']], feeRate, '0')
+    const commit1 = await this.create([[scriptAddress.toString(), '0.2']], feeRate, '0')
     console.log(commit1)
     // - sign
     console.log('[Transactions] commit transaction sign:')
@@ -236,7 +424,7 @@ export default class Transactions extends EventEmitter {
     })
 
     const input = {
-      address: scriptAddress!,
+      address: scriptAddress.toString(),
       outpoint: commit3[0],
       index: 0,
       signer: ourAddress!,

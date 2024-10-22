@@ -21,7 +21,9 @@ export function setupkrc20Transaction(
   const scriptAddress = addressFromScriptPublicKey(
     script.createPayToScriptHashScript(),
     networkId!,
-  )!.toString()
+  )!
 
   return { script, scriptAddress }
 }
+
+
