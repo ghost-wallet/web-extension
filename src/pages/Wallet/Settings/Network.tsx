@@ -26,21 +26,18 @@ const Network: React.FC = () => {
 
   return (
     <>
-      <div className="flex items-center gap-2 mb-2">
+      <div className="flex items-center justify-center gap-2 mb-2">
         <h1 className="text-primarytext text-base font-lato">Network</h1>
         <span
           className={`px-2 py-1 ${
             kaspa.connected ? 'text-success text-base font-lato' : 'text-mutedtext text-base font-lato'
           }`}
         >
-          {kaspa.connected ? 'Connected' : 'Connecting...'}
+          {kaspa.connected ? 'Connected to Mainnet' : 'Connecting...'}
         </span>
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="text-mutedtext text-sm font-lato">
-          {kaspa.connected ? 'Connected to mainnet.' : 'Not yet connected to mainnet.'}
-        </p>
         {/*<div className="flex gap-1 mx-1">*/}
         {/*  <select*/}
         {/*    value={settings.selectedNode.toString()}*/}

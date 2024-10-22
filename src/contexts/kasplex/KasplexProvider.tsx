@@ -1,20 +1,12 @@
-import React, { createContext, ReactNode, useEffect, useReducer, useCallback } from 'react'
+import React, { ReactNode, useEffect, useReducer, useCallback } from 'react'
 import useKaspa from '@/hooks/useKaspa'
 import useSettings from '@/hooks/useSettings'
 import useCoingecko from '@/hooks/useCoingecko'
 import { fetchOperations } from './getOperationList'
 import { fetchTokens } from './tokenFetcher'
-import { kasplexReducer, defaultState, IKasplex } from './kasplexReducer'
+import { kasplexReducer, defaultState } from './kasplexReducer'
 import { fetchData, getApiBase } from './fetchHelper' // Import the helper function
-
-export const KasplexContext = createContext<
-  | {
-      loadTokens: () => Promise<void>
-      loadOperations: (tick?: string, next?: string, prev?: string) => Promise<void>
-      kasplex: IKasplex
-    }
-  | undefined
->(undefined)
+import { KasplexContext } from './KasplexContext'
 
 export function KasplexProvider({ children }: { children: ReactNode }) {
   const [kasplex, dispatch] = useReducer(kasplexReducer, defaultState)

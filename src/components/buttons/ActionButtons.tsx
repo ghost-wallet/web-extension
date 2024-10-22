@@ -17,7 +17,7 @@ export default function ActionButtons() {
   const handleRefresh = async () => {
     setIsRefreshing(true)
     try {
-      await loadTokens() // No refresh parameter is needed
+      await loadTokens()
     } catch (error) {
       console.error('Error refreshing KRC20 tokens:', error)
     } finally {
