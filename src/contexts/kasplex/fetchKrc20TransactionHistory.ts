@@ -1,14 +1,14 @@
 import axios from 'axios'
 
 interface Operation {
-  op: string // Operation type (e.g., transfer)
-  tick: string // Token ticker (e.g., KONAN)
-  amt: string // Amount transferred
-  from: string // Sender address
-  to: string // Receiver address
-  opScore: string // Operation score
-  hashRev: string // Transaction hash
-  mtsAdd: string // Timestamp when the operation was added
+  op: string
+  tick: string
+  amt: string
+  from: string
+  to: string
+  opScore: string
+  hashRev: string
+  mtsAdd: string
 }
 
 interface ApiResponse {
@@ -51,7 +51,7 @@ export const fetchOperations = async ({
     )
 
     if (response.data && response.data.result) {
-      return response.data // Return the entire ApiResponse object
+      return response.data
     } else {
       throw new Error('Error fetching KRC20 operations. Invalid API response structure')
     }

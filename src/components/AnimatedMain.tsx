@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import useKaspa from '@/hooks/useKaspa'
+import Spinner from '@/components/Spinner' // Make sure to import your Spinner component
 
 interface AnimatedMainProps {
   children: React.ReactNode
@@ -22,8 +23,11 @@ const AnimatedMain: React.FC<AnimatedMainProps> = ({ children, className }) => {
   return (
     <>
       {showError && (
-        <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center p-1 bg-red-700 text-primarytext font-lato text-sm">
-          <p>Error: Not connected to Kaspa network</p>
+        <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center bg-slightmuted text-primarytext font-lato text-sm p-1">
+          <p className="pl-4">Connecting to Kaspa network...</p>
+          <div className="p-1">
+            <Spinner size={'small'} />
+          </div>
         </div>
       )}
       <motion.main

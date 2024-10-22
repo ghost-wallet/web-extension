@@ -1,9 +1,9 @@
 import React, { ReactNode, useEffect, useReducer, useCallback } from 'react'
 import useKaspa from '@/hooks/useKaspa'
 import useSettings from '@/hooks/useSettings'
-import useCoingecko from '@/hooks/useCoingecko'
-import { fetchOperations } from './getOperationList'
-import { fetchTokens } from './tokenFetcher'
+import useKaspaPrice from '@/hooks/useKaspaPrice'
+import { fetchOperations } from './fetchKrc20TransactionHistory'
+import { fetchTokens } from './fetchKrc20Tokens'
 import { kasplexReducer, defaultState } from './kasplexReducer'
 import { fetchData, getApiBase } from './fetchHelper'
 import { KasplexContext } from './KasplexContext'
@@ -12,7 +12,7 @@ export function KasplexProvider({ children }: { children: ReactNode }) {
   const [kasplex, dispatch] = useReducer(kasplexReducer, defaultState)
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
-  const price = useCoingecko(settings.currency)
+  const price = useKaspaPrice(settings.currency)
 
   const loadTokens = useCallback(
     async (refresh = false) => {

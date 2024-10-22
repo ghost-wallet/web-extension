@@ -6,7 +6,7 @@ import { getCurrencySymbol } from '@/utils/currencies'
 import useSettings from '@/hooks/useSettings'
 import Spinner from '@/components/Spinner'
 import useKaspa from '@/hooks/useKaspa'
-import useCoingecko from '@/hooks/useCoingecko'
+import useKaspaPrice from '@/hooks/useKaspaPrice'
 import CryptoListItem from '@/components/CryptoListItem'
 import useKasplex from '@/hooks/useKasplex'
 import ErrorMessage from '@/components/ErrorMessage'
@@ -33,7 +33,7 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
   const { kaspa } = useKaspa()
   const { kasplex, loadTokens } = useKasplex() // Added loadTokens from context
   const { settings } = useSettings()
-  const price = useCoingecko(settings.currency)
+  const price = useKaspaPrice(settings.currency)
   const navigate = useNavigate()
   const location = useLocation()
 
