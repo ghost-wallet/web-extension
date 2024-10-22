@@ -95,10 +95,11 @@ const SendCrypto: React.FC = () => {
   }, [outputs, token, navigate, request, feeRate, fee, inputs])
 
   const handleContinue = () => {
+    console.log('handling continue with token', token.tick)
     if (token.tick === 'KASPA') {
       initiateSend()
     } else {
-      navigate(`/send/${token.tick}/confirm`, {
+      navigate(`/send/${token.tick}/confirmkrc20`, {
         state: {
           token,
           recipient: outputs[0][0],
