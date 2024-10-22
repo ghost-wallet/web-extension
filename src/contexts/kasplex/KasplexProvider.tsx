@@ -5,7 +5,7 @@ import useCoingecko from '@/hooks/useCoingecko'
 import { fetchOperations } from './getOperationList'
 import { fetchTokens } from './tokenFetcher'
 import { kasplexReducer, defaultState } from './kasplexReducer'
-import { fetchData, getApiBase } from './fetchHelper' // Import the helper function
+import { fetchData, getApiBase } from './fetchHelper'
 import { KasplexContext } from './KasplexContext'
 
 export function KasplexProvider({ children }: { children: ReactNode }) {
@@ -14,11 +14,19 @@ export function KasplexProvider({ children }: { children: ReactNode }) {
   const { settings } = useSettings()
   const price = useCoingecko(settings.currency)
 
-  const loadTokens = useCallback(async () => {
-    const apiBase = getApiBase(settings.selectedNode)
+  const loadTokens = useCallback(
+    async (refresh = false) => {
+      const apiBase = getApiBase(settings.selectedNode)
 
-    await fetchData(() => fetchTokens(kaspa.addresses[0][0], apiBase, price), dispatch, 'tokens', 'error')
-  }, [kaspa.addresses, settings.selectedNode, price])
+      await fetchData(
+        () => fetchTokens(kaspa.addresses[0][0], apiBase, price, refresh),
+        dispatch,
+        'tokens',
+        'error',
+      )
+    },
+    [kaspa.addresses, settings.selectedNode, price],
+  )
 
   const loadOperations = useCallback(
     async (tick?: string, next?: string, prev?: string) => {
@@ -30,8 +38,8 @@ export function KasplexProvider({ children }: { children: ReactNode }) {
         type: 'operations',
         payload: {
           ...kasplex.operations,
-          result: [...kasplex.operations.result, ...response.result], // Append new results
-          next: response.next, // Update next cursor
+          result: [...kasplex.operations.result, ...response.result],
+          next: response.next,
         },
       })
     },

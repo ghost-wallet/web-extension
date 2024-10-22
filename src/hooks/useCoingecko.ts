@@ -9,7 +9,7 @@ export default function useCoingecko(currency: string) {
     const cachedTimestamp = localStorage.getItem(`timestamp_${currency}`)
     const currentTime = Date.now()
 
-    if (cachedPrice && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 60000) {
+    if (cachedPrice && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 5000) {
       // Use the cached price if it's still valid
       setPrice(parseFloat(cachedPrice))
     } else {
