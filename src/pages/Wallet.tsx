@@ -5,7 +5,7 @@ import useKaspa from '@/hooks/useKaspa'
 import useSettings from '@/hooks/useSettings'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
-import ActionButtons from '@/components/buttons/ActionButtons'
+import WalletActionButtons from '@/components/buttons/WalletActionButtons'
 import Cryptos from '@/pages/Wallet/Cryptos'
 import TotalWalletValue from '@/components/TotalWalletValue'
 
@@ -38,7 +38,7 @@ export default function Wallet() {
       <AnimatedMain>
         <div className="flex flex-col items-center pt-10">
           <TotalWalletValue totalValue={totalValue} />
-          <ActionButtons />
+          <WalletActionButtons />
           <Cryptos onTotalValueChange={setTotalValue} />
         </div>
       </AnimatedMain>

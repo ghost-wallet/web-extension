@@ -51,10 +51,7 @@ export default class RPC {
     })
 
     this.notifier.registerCallback((event) => {
-      console.log('[RPC] Notifier callback received an event:', event)
-
       for (const port of this.ports) {
-        console.log('[RPC] Posting event to port:', port)
         port.postMessage(event)
       }
     })
@@ -64,8 +61,6 @@ export default class RPC {
     this.ports.add(port)
 
     const onMessageListener = async (request: Request) => {
-      console.log('[RPC] Message received on port:', request)
-
       try {
         const response = await this.router.route(request)
 

@@ -6,6 +6,21 @@ export const formatBalance = (balance: string, decimals: string | number): numbe
   return parseFloat(balance) / factor
 }
 
+export const formatTokenPrice = (price: number): string => {
+  if (price >= 1) {
+    return price.toFixed(2) // For prices >= 1, round to 2 decimal places
+  } else if (price >= 0.01) {
+    return price.toFixed(2) // For prices between 0.01 and 1, round to 2 decimal places
+  } else if (price >= 0.0001) {
+    return price.toFixed(4) // For prices between 0.0001 and 0.01, round to 4 decimal places
+  } else if (price >= 0.0000001) {
+    return price.toFixed(7) // For prices between 0.0000001 and 0.0001, round to 7 decimal places
+  } else if (price >= 0.000000000001) {
+    return price.toFixed(14) // For very small prices, show 14 decimal places
+  } else {
+    return price.toPrecision(14) // Catch-all for extremely small numbers
+  }
+}
 export const formatBalanceWithAbbreviation = (number: number): string => {
   if (number >= 1000000) {
     return `${(number / 1000000).toFixed(0)}M`
