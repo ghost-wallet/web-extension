@@ -92,9 +92,9 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
 
   const handleTokenClick = (token: Token) => {
     if (location.pathname.includes('/send')) {
-      navigate('/send/crypto', { state: { token } })
+      navigate(`/send/${token.tick}`, { state: { token } })
     } else if (location.pathname.includes('/wallet')) {
-      navigate('/wallet/crypto', { state: { token } })
+      navigate(`/wallet/${token.tick}`, { state: { token } })
     }
   }
 

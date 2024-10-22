@@ -14,7 +14,7 @@ export function KasplexProvider({ children }: { children: ReactNode }) {
   const { settings } = useSettings()
   const price = useKaspaPrice(settings.currency)
 
-  const loadTokens = useCallback(
+  const loadKrc20Tokens = useCallback(
     async (refresh = false) => {
       const apiBase = getApiBase(settings.selectedNode)
 
@@ -28,7 +28,7 @@ export function KasplexProvider({ children }: { children: ReactNode }) {
     [kaspa.addresses, settings.selectedNode, price],
   )
 
-  const loadOperations = useCallback(
+  const loadKrc20TransactionHistory = useCallback(
     async (tick?: string, next?: string, prev?: string) => {
       const apiBase = getApiBase(settings.selectedNode)
 
@@ -48,12 +48,14 @@ export function KasplexProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (kaspa.connected && kaspa.addresses.length > 0 && kaspa.addresses[0].length > 0) {
-      loadTokens()
+      loadKrc20Tokens()
     }
-  }, [kaspa.connected, kaspa.addresses, loadTokens])
+  }, [kaspa.connected, kaspa.addresses, loadKrc20Tokens])
 
   return (
-    <KasplexContext.Provider value={{ kasplex, loadTokens, loadOperations }}>
+    <KasplexContext.Provider
+      value={{ kasplex, loadTokens: loadKrc20Tokens, loadOperations: loadKrc20TransactionHistory }}
+    >
       {children}
     </KasplexContext.Provider>
   )

@@ -78,7 +78,7 @@ const SendCrypto: React.FC = () => {
     if (!feeRate) return
     request('account:create', [outputs, feeRate, fee, inputs])
       .then((transactions) => {
-        navigate('/send/crypto/confirm', {
+        navigate(`/send/${token.tick}/confirm`, {
           state: {
             token,
             recipient: outputs[0][0],
@@ -98,7 +98,7 @@ const SendCrypto: React.FC = () => {
     if (token.tick === 'KASPA') {
       initiateSend()
     } else {
-      navigate('/send/crypto/confirmkrc20', {
+      navigate(`/send/${token.tick}/confirm`, {
         state: {
           token,
           recipient: outputs[0][0],

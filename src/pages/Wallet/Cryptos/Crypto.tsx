@@ -29,7 +29,7 @@ const Crypto: React.FC = () => {
           <ActionButton
             icon={<PaperAirplaneIcon strokeWidth={2} />}
             label="Send"
-            onClick={() => navigate('/send/crypto', { state: { token } })}
+            onClick={() => navigate(`/send/${token.tick}`, { state: { token } })}
           />
         </div>
       </AnimatedMain>
