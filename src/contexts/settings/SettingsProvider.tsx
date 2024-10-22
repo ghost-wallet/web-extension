@@ -1,5 +1,6 @@
+import React, { useState, useEffect, useCallback, type ReactNode } from 'react'
 import LocalStorage from '@/storage/LocalStorage'
-import { createContext, useState, type ReactNode, useEffect, useCallback } from 'react'
+import { SettingsContext } from './SettingsContext'
 
 export interface ISettings {
   version: number
@@ -42,15 +43,6 @@ export const defaultSettings: ISettings = {
   selectedNode: 0,
 }
 
-export const SettingsContext = createContext<
-  | {
-      load: () => Promise<void>
-      settings: ISettings
-      updateSetting: <K extends keyof ISettings>(key: K, value: ISettings[K]) => void
-    }
-  | undefined
->(undefined)
-
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState(defaultSettings)
 
@@ -63,19 +55,17 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
     root.classList.remove('light', 'dark')
 
-    if (settings['theme'] === 'system') {
+    if (settings.theme === 'system') {
       const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-
       root.classList.add(systemTheme)
       return
     }
 
-    root.classList.add(settings['theme'])
-  }, [settings['theme']])
+    root.classList.add(settings.theme)
+  }, [settings.theme])
 
   const load = useCallback(async () => {
     const storedSettings = await LocalStorage.get('settings', defaultSettings)
-
     if (storedSettings.version !== defaultSettings.version) return
     setSettings(storedSettings)
   }, [])

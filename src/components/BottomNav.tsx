@@ -12,25 +12,25 @@ export default function BottomNav() {
       className="fixed bottom-0 left-0 w-full bg-bgdark border-t border-darkmuted p-4"
       style={{ boxShadow: '0 -10px 15px rgba(0, 0, 0, 0.3)' }} // Taller shadow above the nav
     >
-      <div className="relative flex justify-around text-primarytext">
+      <div className="relative flex justify-around">
         <button onClick={() => navigate('/wallet')} className="flex flex-col items-center relative">
           <HomeIcon
             className={`h-7 w-7 transform transition-transform duration-300 hover:scale-125 ${
-              isActive('/wallet') ? 'text-primary' : 'text-primarytext'
+              isActive('/wallet') ? 'text-primary' : 'text-mutedtext'
             }`}
           />
         </button>
         <button onClick={() => navigate('/transactions')} className="flex flex-col items-center relative">
           <DocumentTextIcon
             className={`h-7 w-7 transform transition-transform duration-300 hover:scale-125 ${
-              isActive('/transactions') ? 'text-primary' : 'text-primarytext'
+              isActive('/transactions') ? 'text-primary' : 'text-mutedtext'
             }`}
           />
         </button>
         <button onClick={() => navigate('/settings')} className="flex flex-col items-center relative">
           <Cog6ToothIcon
             className={`h-7 w-7 transform transition-transform duration-300 hover:scale-125 ${
-              isActive('/settings') ? 'text-primary' : 'text-primarytext'
+              isActive('/settings') ? 'text-primary' : 'text-mutedtext'
             }`}
           />
         </button>

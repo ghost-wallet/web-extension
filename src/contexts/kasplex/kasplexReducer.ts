@@ -6,27 +6,27 @@ export interface Token {
   floorPrice?: number
 }
 
-export interface Operation {
-  op: string // Operation type (e.g., transfer)
-  tick: string // Token ticker (e.g., KONAN)
-  amt: string // Amount transferred
-  from: string // Sender address
-  to: string // Receiver address
-  opScore: string // Operation score
-  hashRev: string // Transaction hash
-  mtsAdd: string // Timestamp when the operation was added
+export interface Transaction {
+  op: string
+  tick: string
+  amt: string
+  from: string
+  to: string
+  opScore: string
+  hashRev: string
+  mtsAdd: string
 }
 
-export interface ApiResponse {
+export interface Transactions {
   message: string
   prev: string | null
   next: string | null
-  result: Operation[]
+  result: Transaction[]
 }
 
 export interface IKasplex {
   tokens: Token[]
-  operations: ApiResponse // Change operations to match ApiResponse
+  transactions: Transactions
   prevCursor: string | null
   nextCursor: string | null
   loading: boolean
@@ -35,11 +35,11 @@ export interface IKasplex {
 
 export const defaultState: IKasplex = {
   tokens: [],
-  operations: {
+  transactions: {
     message: '',
     prev: null,
     next: null,
-    result: [], // Initialize result as an empty array
+    result: [],
   },
   prevCursor: null,
   nextCursor: null,

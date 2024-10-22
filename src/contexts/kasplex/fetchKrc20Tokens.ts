@@ -11,14 +11,34 @@ interface TokenInfoResponse {
   }
 }
 
-export const fetchTokens = async (address: string, apiBase: string, price: number): Promise<Token[]> => {
+export const fetchTokens = async (
+  address: string,
+  apiBase: string,
+  price: number,
+  refresh = false,
+): Promise<Token[]> => {
+  const cacheKey = `tokens_${address}`
+  const timestampKey = `tokens_timestamp_${address}`
+  const cachedTokens = localStorage.getItem(cacheKey)
+  const cachedTimestamp = localStorage.getItem(timestampKey)
+  const currentTime = Date.now()
+
+  if (!refresh && cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 10000) {
+    try {
+      const parsedTokens = JSON.parse(cachedTokens)
+      return parsedTokens as Token[]
+    } catch (error) {
+      console.error('Error parsing cached tokens:', error)
+    }
+  }
+
   try {
     const response = await axios.get<ApiResponse>(
       `https://${apiBase}.kasplex.org/v1/krc20/address/${address}/tokenlist`,
     )
 
     if (response.data && response.data.result) {
-      return await Promise.all(
+      const tokens = await Promise.all(
         response.data.result.map(async (token: Token) => {
           try {
             const tokenInfoResponse = await axios.get<TokenInfoResponse>(
@@ -34,8 +54,13 @@ export const fetchTokens = async (address: string, apiBase: string, price: numbe
           }
         }),
       )
+
+      localStorage.setItem(cacheKey, JSON.stringify(tokens))
+      localStorage.setItem(timestampKey, currentTime.toString())
+
+      return tokens
     } else {
-      throw new Error('Error feteching KRC20 tokens. Invalid API response structure')
+      throw new Error('Error fetching KRC20 tokens. Invalid API response structure')
     }
   } catch (error) {
     console.error('Error fetching tokens:', error)

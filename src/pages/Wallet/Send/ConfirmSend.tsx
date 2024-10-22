@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import ConfirmSendDetails from '@/components/ConfirmSendDetails'
-import Spinner from '@/components/Spinner' // Import your Spinner component
+import Spinner from '@/components/Spinner'
 import useKaspa from '@/hooks/useKaspa'
 
 const ConfirmSend: React.FC = () => {
@@ -16,15 +16,14 @@ const ConfirmSend: React.FC = () => {
 
   const fee = useMemo(() => {
     try {
+      console.log('Calculate fee from transactions:', transactions)
       const transaction = JSON.parse(transactions[transactions.length - 1])
       const inputValue = transaction.inputs.reduce((acc: bigint, input: any) => {
         return acc + BigInt(input.utxo!.amount)
       }, 0n)
-
       const outputValue = transaction.outputs.reduce((acc: bigint, output: any) => {
         return acc + BigInt(output.value)
       }, 0n)
-
       return Number(inputValue - outputValue) / 1e8 // Convert from smallest unit
     } catch (error) {
       console.error('Error calculating fee:', error)
@@ -51,7 +50,7 @@ const ConfirmSend: React.FC = () => {
       const submitContextful = await request('account:submitContextful', [signedTransactions])
       const txnId = submitContextful[0]
 
-      navigate('/send/crypto/confirm/sent', {
+      navigate(`/send/${token.tick}/confirm/sent`, {
         state: { token, amount, recipient, txnId },
       })
     } catch (err) {

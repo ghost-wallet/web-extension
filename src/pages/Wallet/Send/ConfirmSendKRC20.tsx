@@ -23,7 +23,7 @@ const ConfirmSendKRC20: React.FC = () => {
         console.log('[ConfirmSendKRC20] write inscription success. Response:', response)
         // const commitTxnId = response[0]
         const txnId = response[1]
-        navigate('/send/crypto/confirm/sent', {
+        navigate(`/send/${token.tick}/confirm/sent`, {
           state: { token, amount, recipient, txnId },
         })
       })

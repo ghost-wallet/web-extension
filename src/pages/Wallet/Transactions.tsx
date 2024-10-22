@@ -8,17 +8,17 @@ import ErrorMessage from '@/components/ErrorMessage'
 import useKasplex from '@/hooks/useKasplex'
 
 export default function Transactions() {
-  const { kasplex, loadOperations } = useKasplex()
+  const { kasplex, loadKrc20Transactions } = useKasplex()
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!kasplex.operations.result.length) {
+    if (!kasplex.transactions.result.length) {
       const fetchOperations = async () => {
         setLoading(true)
         try {
-          await loadOperations()
+          await loadKrc20Transactions()
         } catch (err) {
           console.error(err)
           setError('Error loading operations')
@@ -29,7 +29,7 @@ export default function Transactions() {
 
       fetchOperations()
     }
-  }, [loadOperations, kasplex.operations.result.length])
+  }, [loadKrc20Transactions, kasplex.transactions.result.length])
 
   return (
     <>
@@ -41,10 +41,10 @@ export default function Transactions() {
           </div>
         )}
         {error && <ErrorMessage message={error} />}
-        {!loading && !error && kasplex.operations.result.length > 0 && <TransactionList />}
+        {!loading && !error && kasplex.transactions.result.length > 0 && <TransactionList />}
 
         {/* TODO: Update no recent activity UI */}
-        {!loading && !error && kasplex.operations.result.length === 0 && (
+        {!loading && !error && kasplex.transactions.result.length === 0 && (
           <p className="text-mutedtext mt-10 text-center">No recent activity found.</p>
         )}
       </AnimatedMain>

@@ -36,13 +36,9 @@ export default function Wallet() {
   return (
     <>
       <AnimatedMain>
-        <div className="flex flex-col items-center overflow-hidden">
-          <div className="sticky top-0 bg-bgdark w-full flex flex-col border-b border-darkmuted">
-            <div className="items-center flex flex-col pt-6">
-              <TotalWalletValue totalValue={totalValue} />
-              <ActionButtons />
-            </div>
-          </div>
+        <div className="flex flex-col items-center pt-10">
+          <TotalWalletValue totalValue={totalValue} />
+          <ActionButtons />
           <Cryptos onTotalValueChange={setTotalValue} />
         </div>
       </AnimatedMain>

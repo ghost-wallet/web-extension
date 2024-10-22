@@ -31,21 +31,21 @@ const groupTransactionsByDate = (transactions: Operation[]): { [date: string]: O
 }
 
 export default function TransactionList() {
-  const { kasplex, loadOperations } = useKasplex()
+  const { kasplex, loadKrc20Transactions } = useKasplex()
   const [loadingMore, setLoadingMore] = useState(false)
   const lastElementRef = useRef<HTMLLIElement | null>(null)
 
-  const groupedTransactions = groupTransactionsByDate(kasplex.operations.result)
+  const groupedTransactions = groupTransactionsByDate(kasplex.transactions.result)
 
   // Observer for automatic "Load More" functionality
   useEffect(() => {
     const observer = new IntersectionObserver(
       async (entries) => {
         const lastEntry = entries[0]
-        if (lastEntry.isIntersecting && kasplex.operations.next && !loadingMore) {
+        if (lastEntry.isIntersecting && kasplex.transactions.next && !loadingMore) {
           setLoadingMore(true)
           try {
-            await loadOperations(undefined, kasplex.operations.next)
+            await loadKrc20Transactions(undefined, kasplex.transactions.next)
           } catch (err) {
             console.error('Error loading more operations:', err)
           } finally {
@@ -65,7 +65,7 @@ export default function TransactionList() {
         observer.unobserve(lastElementRef.current)
       }
     }
-  }, [kasplex.operations.next, loadingMore, loadOperations])
+  }, [kasplex.transactions.next, loadingMore, loadKrc20Transactions])
 
   return (
     <div className="px-4 pb-24">

@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill'
-import { ISettings } from '@/contexts/SettingsContext'
+import { ISettings } from '@/contexts/settings/SettingsProvider'
 import Storage from './Storage'
 
 export interface IWallet {

@@ -6,7 +6,7 @@ import { getCurrencySymbol } from '@/utils/currencies'
 import useSettings from '@/hooks/useSettings'
 import Spinner from '@/components/Spinner'
 import useKaspa from '@/hooks/useKaspa'
-import useCoingecko from '@/hooks/useCoingecko'
+import useKaspaPrice from '@/hooks/useKaspaPrice'
 import CryptoListItem from '@/components/CryptoListItem'
 import useKasplex from '@/hooks/useKasplex'
 import ErrorMessage from '@/components/ErrorMessage'
@@ -31,9 +31,9 @@ interface CryptoProps {
 
 const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem }) => {
   const { kaspa } = useKaspa()
-  const { kasplex, loadTokens } = useKasplex() // Added loadTokens from context
+  const { kasplex, loadKrc20Tokens } = useKasplex() // Added loadTokens from context
   const { settings } = useSettings()
-  const price = useCoingecko(settings.currency)
+  const price = useKaspaPrice(settings.currency)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -44,14 +44,14 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
   useEffect(() => {
     const fetchTokensOnMount = async () => {
       try {
-        await loadTokens() // Call loadTokens to fetch tokens
+        await loadKrc20Tokens() // Call loadTokens to fetch tokens
       } catch (error) {
         setTokensError('Error loading tokens')
       }
     }
 
     fetchTokensOnMount() // Fetch tokens every time the component is mounted
-  }, [loadTokens])
+  }, [loadKrc20Tokens])
 
   // Update state based on kasplex tokens and loading state
   useEffect(() => {
@@ -92,9 +92,9 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
 
   const handleTokenClick = (token: Token) => {
     if (location.pathname.includes('/send')) {
-      navigate('/send/crypto', { state: { token } })
+      navigate(`/send/${token.tick}`, { state: { token } })
     } else if (location.pathname.includes('/wallet')) {
-      navigate('/wallet/crypto', { state: { token } })
+      navigate(`/wallet/${token.tick}`, { state: { token } })
     }
   }
 
