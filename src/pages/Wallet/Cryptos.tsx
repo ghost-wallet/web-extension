@@ -31,7 +31,7 @@ interface CryptoProps {
 
 const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem }) => {
   const { kaspa } = useKaspa()
-  const { kasplex, loadTokens } = useKasplex() // Added loadTokens from context
+  const { kasplex, loadKrc20Tokens } = useKasplex() // Added loadTokens from context
   const { settings } = useSettings()
   const price = useKaspaPrice(settings.currency)
   const navigate = useNavigate()
@@ -44,14 +44,14 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
   useEffect(() => {
     const fetchTokensOnMount = async () => {
       try {
-        await loadTokens() // Call loadTokens to fetch tokens
+        await loadKrc20Tokens() // Call loadTokens to fetch tokens
       } catch (error) {
         setTokensError('Error loading tokens')
       }
     }
 
     fetchTokensOnMount() // Fetch tokens every time the component is mounted
-  }, [loadTokens])
+  }, [loadKrc20Tokens])
 
   // Update state based on kasplex tokens and loading state
   useEffect(() => {

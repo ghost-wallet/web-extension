@@ -6,7 +6,7 @@ export interface Token {
   floorPrice?: number
 }
 
-export interface Operation {
+export interface Transaction {
   op: string
   tick: string
   amt: string
@@ -17,16 +17,16 @@ export interface Operation {
   mtsAdd: string
 }
 
-export interface ApiResponse {
+export interface Transactions {
   message: string
   prev: string | null
   next: string | null
-  result: Operation[]
+  result: Transaction[]
 }
 
 export interface IKasplex {
   tokens: Token[]
-  operations: ApiResponse
+  transactions: Transactions
   prevCursor: string | null
   nextCursor: string | null
   loading: boolean
@@ -35,7 +35,7 @@ export interface IKasplex {
 
 export const defaultState: IKasplex = {
   tokens: [],
-  operations: {
+  transactions: {
     message: '',
     prev: null,
     next: null,
