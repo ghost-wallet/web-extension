@@ -39,7 +39,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
     if (connectionRef.current) {
       return connectionRef.current
     }
-    const connection = runtime.connect({ name: '@kaspian/client' })
+    const connection = runtime.connect({ name: '@ghost/client' })
     connection.onMessage.addListener(async (message: Response | Event) => {
       if (!isEvent(message)) {
         const messageEntry = messagesRef.current.get(message.id)

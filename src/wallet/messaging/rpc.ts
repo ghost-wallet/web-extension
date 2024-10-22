@@ -40,9 +40,9 @@ export default class RPC {
         return port.disconnect()
       }
 
-      if (port.name === '@kaspian/client') {
+      if (port.name === '@ghost/client') {
         this.permitPort(port)
-      } else if (port.name === '@kaspian/provider') {
+      } else if (port.name === '@ghost/provider') {
         this.provider.askAccess(port)
       } else {
         console.warn(`[RPC] Unrecognized port name: ${port.name}. Disconnecting port...`)

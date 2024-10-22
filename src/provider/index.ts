@@ -4,7 +4,7 @@ import { isRequest, type ProviderInfo } from './protocol'
 function announceProvider() {
   const info: ProviderInfo = {
     id: browser.runtime.id,
-    name: 'Kaspian',
+    name: 'Ghost',
   }
 
   window.dispatchEvent(
@@ -23,7 +23,7 @@ window.addEventListener('kaspa:connect', (event) => {
   if (browser.runtime.id !== extensionId) return
 
   const port = browser.runtime.connect({
-    name: '@kaspian/provider',
+    name: '@ghost/provider',
   })
 
   port.onMessage.addListener((message) => {
