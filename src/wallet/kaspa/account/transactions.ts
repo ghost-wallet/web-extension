@@ -27,8 +27,7 @@ import Addresses from './addresses'
 import EventEmitter from 'events'
 import KeyManager from '@/wallet/kaspa/KeyManager'
 import Account from '@/wallet/kaspa/account/account'
-import type { Token } from '@/contexts/kasplex/kasplexReducer' // TODO: move to shared types file
-import { setupkrc20Transaction } from '../krc20/Transact'
+import { KRC20Info, setupkrc20Transaction, Token } from '../krc20/Transact'
 
 export interface CustomInput {
   address: string
@@ -385,20 +384,38 @@ export default class Transactions extends EventEmitter {
     return {totalFee: sompiToKaspaString(totalFee), totalAmount: sompiToKaspaString(totalAmount)}
   }
 
+  async getKRC20Info(sender: string, recipient: string, token: Token, amount: string, feeRate: number): Promise<KRC20Info> {
+
+    const { script, scriptAddress } = setupkrc20Transaction(sender, recipient, amount, token)
+
+    return {
+      sender,
+      recipient,
+      feeRate,
+      scriptAddress: scriptAddress.toString(),
+      script: script.toString(),
+    }
+
+  }
+
+  async waitForUTXO(transactionID: string) {
+    return new Promise<void>((resolve) => {
+      const listener = (event: UtxoProcessorEvent<'maturity'>) => {
+        console.log(event)
+
+        if (event.data.id.toString() === transactionID) {
+          console.log('event found, continuing')
+          // i think the types for the callback are wrong?
+          this.processor.removeEventListener('maturity', listener as UtxoProcessorNotificationCallback)
+          resolve()
+        }
+      }
+      this.processor.addEventListener('maturity', listener)
+    })
+  }
 
 
-  async writeInscription(recipient: string, token: Token, amount: string, feeRate: number) {
-    console.log(`fee rate: ${feeRate}`)
-
-    console.log('[Transactions] Writing inscription....')
-
-    const ourAddress = this.addresses.receiveAddresses[0]
-
-    const { script, scriptAddress } = setupkrc20Transaction(ourAddress, recipient, amount, token)
-
-    // commit transaction:
-    // - create
-    console.log('[Transactions] commit transaction create:')
+  async submitKRC20Commit({scriptAddress, feeRate}: KRC20Info) {
     const commit1 = await this.create([[scriptAddress.toString(), '0.2']], feeRate, '0')
     console.log(commit1)
     // - sign
@@ -408,36 +425,19 @@ export default class Transactions extends EventEmitter {
     // - submit (gives us the ID)
     console.log('[Transactions] commit transaction submit:')
     const commit3 = await this.submitContextful(commit2)
-    console.log(commit3)
 
-    const commitFee = this.logFeeFromJsonArray(commit3)
+    return commit3;
+  }
 
-    //console.log('waiting...')
-    //await new Promise(resolve => setTimeout(resolve, 5000))
-    //this.kaspa.
-    //onsole.log('done waiting!')
 
-    console.log('waiting for event')
-    await new Promise<void>((resolve) => {
-      const listener = (event: UtxoProcessorEvent<'maturity'>) => {
-        console.log(event)
 
-        if (event.data.id.toString() === commit3[0]) {
-          console.log('event found, continuing')
-          // i think the types for the callback are wrong?
-          this.processor.removeEventListener('maturity', listener as UtxoProcessorNotificationCallback)
-          resolve()
-        }
-      }
-      this.processor.addEventListener('maturity', listener)
-    })
-
+  async submitKRC20Reveal(commitId: string, {scriptAddress, sender, script, feeRate}: KRC20Info) {
     const input = {
       address: scriptAddress.toString(),
-      outpoint: commit3[0],
+      outpoint: commitId,
       index: 0,
-      signer: ourAddress!,
-      script: script.toString(),
+      signer: sender,
+      script: script,
     }
 
     console.log(input)
@@ -451,19 +451,33 @@ export default class Transactions extends EventEmitter {
     console.log('[Transactions] reveal transaction sign:')
     const reveal2 = await this.sign(reveal1, [input])
     console.log(reveal2)
+
     // - submit (gives us the ID)
     console.log('[Transactions] reveal transaction submit:')
     const reveal3 = await this.submitContextful(reveal2)
     console.log(reveal3)
 
-    const revealFee = this.logFeeFromJsonArray(reveal3)
+    return reveal3
+  }
 
-    console.log('REAL total fee:', sompiToKaspaString(commitFee + revealFee))
-    console.log('REAL TXNS', [commit3[0], reveal3[0]].map(x => `https://explorer.kaspa.org/txs/${x}`))
 
-    // TODO: make the inscription, make a create transaction, submit a reveal txn
+  async writeInscription(recipient: string, token: Token, amount: string, feeRate: number) {
 
-    return [commit3[0], reveal3[0]]
+    const ourAddress = this.addresses.receiveAddresses[0]
+
+    const info = await this.getKRC20Info(ourAddress, recipient, token, amount, feeRate)
+
+    const commit = await this.submitKRC20Commit(info)
+
+    const commitId = commit[commit.length - 1]
+
+    await this.waitForUTXO(commitId)
+
+    const reveal = await this.submitKRC20Reveal(commitId, info)
+
+    const revealId = reveal[reveal.length - 1]
+    
+    return [commitId, revealId]
   }
 
   reset() {

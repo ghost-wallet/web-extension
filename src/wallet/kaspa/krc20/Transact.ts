@@ -1,6 +1,15 @@
 import { Address, addressFromScriptPublicKey, ScriptBuilder, XOnlyPublicKey } from '@/wasm/kaspa'
 import { Inscription } from './Inscription'
-import { Token } from '@/contexts/kasplex/kasplexReducer'
+
+// TODO: move to shared types
+export interface Token {
+  tick: string
+  balance: string
+  opScoreMod: string
+  dec: string
+  floorPrice?: number
+}
+
 
 export function setupkrc20Transaction(
   address: string,
@@ -25,5 +34,3 @@ export function setupkrc20Transaction(
 
   return { script, scriptAddress }
 }
-
-
