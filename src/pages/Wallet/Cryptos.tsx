@@ -113,12 +113,7 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
                 onClick={() => handleTokenClick(token)}
                 className="w-full text-left transition-colors hover:cursor-pointer rounded-lg"
               >
-                <CryptoListItem
-                  token={token}
-                  isKaspa={token.tick === 'KASPA'}
-                  currencySymbol={currencySymbol}
-                  kaspaBalance={kaspa.balance}
-                />
+                <CryptoListItem token={token} currencySymbol={currencySymbol} kaspaBalance={kaspa.balance} />
               </li>
             ),
           )}

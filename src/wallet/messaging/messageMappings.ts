@@ -25,7 +25,7 @@ export interface RequestMappings {
   'account:submitContextful': [string[]]
   'account:compoundUtxos': []
   'account:scan': []
-  'account:writeInscription': [string, Token, string, number],
+  'account:writeInscription': [string, Token, string, number]
   'account:estimateKRC20Transaction': [string, Token, string, number]
   'provider:connect': [string]
   'provider:connection': []

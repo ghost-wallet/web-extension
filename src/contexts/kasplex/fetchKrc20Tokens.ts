@@ -23,7 +23,7 @@ export const fetchTokens = async (
   const cachedTimestamp = localStorage.getItem(timestampKey)
   const currentTime = Date.now()
 
-  if (!refresh && cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 10000) {
+  if (!refresh && cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 15000) {
     try {
       const parsedTokens = JSON.parse(cachedTokens)
       return parsedTokens as Token[]

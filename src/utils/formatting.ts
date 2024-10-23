@@ -14,16 +14,17 @@ export const formatTokenPrice = (price: number): string => {
   } else if (price >= 0.0001) {
     return price.toFixed(4) // For prices between 0.0001 and 0.01, round to 4 decimal places
   } else if (price >= 0.0000001) {
-    return price.toFixed(7) // For prices between 0.0000001 and 0.0001, round to 7 decimal places
-  } else if (price >= 0.000000000001) {
-    return price.toFixed(14) // For very small prices, show 14 decimal places
+    return price.toFixed(8) // For prices between 0.0000001 and 0.0001, round to 8 decimal places
+  } else if (price > 0) {
+    return price.toFixed(10) // For very small numbers, round to 10 decimal places
   } else {
-    return price.toPrecision(14) // Catch-all for extremely small numbers
+    return '0' // Handle cases where price is 0 or less
   }
 }
+
 export const formatBalanceWithAbbreviation = (number: number): string => {
   if (number >= 1000000) {
-    return `${(number / 1000000).toFixed(0)}M`
+    return `${(number / 1000000).toFixed(2)}M` // Two decimal places for millions
   }
   if (number % 1 === 0) {
     return number.toLocaleString()

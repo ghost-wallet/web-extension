@@ -10,7 +10,6 @@ export interface Token {
   floorPrice?: number
 }
 
-
 export function setupkrc20Transaction(
   address: string,
   recipient: string,
@@ -27,10 +26,7 @@ export function setupkrc20Transaction(
 
   inscription.write(script, XOnlyPublicKey.fromAddress(new Address(address!)).toString())
 
-  const scriptAddress = addressFromScriptPublicKey(
-    script.createPayToScriptHashScript(),
-    networkId!,
-  )!
+  const scriptAddress = addressFromScriptPublicKey(script.createPayToScriptHashScript(), networkId!)!
 
   return { script, scriptAddress }
 }

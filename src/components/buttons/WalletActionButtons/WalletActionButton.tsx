@@ -10,7 +10,9 @@ interface ActionButtonProps {
 export default function WalletActionButton({ icon, label, onClick, disabled = false }: ActionButtonProps) {
   return (
     <button
-      className={`flex flex-col items-center justify-center group ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
+      className={`flex flex-col items-center justify-center group ${
+        disabled ? 'cursor-not-allowed opacity-50' : ''
+      }`}
       onClick={!disabled ? onClick : undefined}
       disabled={disabled}
     >
