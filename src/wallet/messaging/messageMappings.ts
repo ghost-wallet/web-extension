@@ -26,7 +26,7 @@ export interface RequestMappings {
   'account:compoundUtxos': []
   'account:scan': []
   'account:writeInscription': [string, Token, string, number]
-  'account:estimateKRC20Transaction': [string, Token, string, number]
+  'account:estimateKRC20TransactionFee': [string, Token, string, number]
   'provider:connect': [string]
   'provider:connection': []
   'provider:disconnect': []
@@ -60,7 +60,7 @@ export interface ResponseMappings {
   'account:compoundUtxos': void
   'account:scan': void
   'account:writeInscription': [string, string]
-  'account:estimateKRC20Transaction': [string, string]
+  'account:estimateKRC20TransactionFee': [string]
   'provider:connect': void
   'provider:connection': string
   'provider:disconnect': void

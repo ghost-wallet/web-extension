@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
@@ -12,7 +12,28 @@ const ConfirmSendKRC20: React.FC = () => {
   const { token, recipient, amount, feeRate } = location.state || {}
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [estimatedFee, setEstimatedFee] = useState<string>('') // State to hold the estimated fee
   const { request } = useKaspa()
+
+  const fetchEstimatedFee = useCallback(() => {
+    setLoading(true)
+    request('account:estimateKRC20TransactionFee', [recipient, token, amount, feeRate])
+      .then((response) => {
+        const _estimatedFee = response[0]
+        setEstimatedFee(_estimatedFee || '')
+      })
+      .catch((err) => {
+        setError(`Error fetching estimated fee: ${err}`)
+        console.error('[ConfirmSendKRC20] error fetching estimated fee:', err)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }, [request, recipient, token, amount, feeRate])
+
+  useEffect(() => {
+    fetchEstimatedFee() // Fetch the fee when the component mounts
+  }, [fetchEstimatedFee])
 
   const handleConfirmClick = useCallback(() => {
     setLoading(true)
@@ -21,7 +42,6 @@ const ConfirmSendKRC20: React.FC = () => {
     request('account:writeInscription', [recipient, token, amount, feeRate])
       .then((response) => {
         console.log('[ConfirmSendKRC20] write inscription success. Response:', response)
-        // const commitTxnId = response[0]
         const txnId = response[1]
         navigate(`/send/${token.tick}/confirm/sent`, {
           state: { token, amount, recipient, txnId },
@@ -50,7 +70,7 @@ const ConfirmSendKRC20: React.FC = () => {
             token={token}
             recipient={recipient}
             amount={amount}
-            fee={'TODO: Implement'}
+            fee={estimatedFee || 'Calculating...'}
             network="Mainnet"
             onConfirm={handleConfirmClick}
             onCancel={handleCancelClick}
