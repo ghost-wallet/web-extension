@@ -4,6 +4,7 @@ import PasswordInput from '@/components/PasswordInput'
 import ErrorMessage from '@/components/ErrorMessage'
 import useKaspa from '@/hooks/useKaspa'
 import ghostIcon from '../../assets/ghost.svg'
+import AnimatedMain from '@/components/AnimatedMain'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -34,29 +35,29 @@ export default function Login() {
         }
       })
       .catch((err) => {
-        console.log('Password login error', err)
-        setError(`Error: ${err}`)
+        console.log('[Login] Password login error', err)
+        setError('Incorrect password')
       })
   }, [password, request, navigate])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && isValid) {
-      e.preventDefault() // Prevent form submission if there is a default behavior
+      e.preventDefault()
       login()
     }
   }
 
   const handleForgotPassword = () => {
-    navigate('/unlock/forgotpassword') // Navigate to the forgot password page
+    navigate('/unlock/forgotpassword')
   }
 
   return (
-    <main className="pt-10 px-6">
-      <div className="flex justify-center mt-7">
+    <AnimatedMain showConnectingMessage={false}>
+      <div className="flex justify-center mt-10">
         <img className="w-[123px] h-[123px]" src={ghostIcon} alt="logo" />
       </div>
       <h1 className="text-primarytext text-2xl font-rubik text-center mb-2 mt-14">Enter your password</h1>
-      <form className="flex flex-col items-center" onKeyDown={handleKeyDown}>
+      <form className="flex flex-col items-center p-6" onKeyDown={handleKeyDown}>
         <PasswordInput
           placeholder="Password"
           id="password"
@@ -69,7 +70,6 @@ export default function Login() {
         <ErrorMessage message={error} />
       </form>
 
-      {/* Forgot Password Button */}
       <div className="mt-2 text-center">
         <button
           type="button"
@@ -94,6 +94,6 @@ export default function Login() {
           Login
         </button>
       </div>
-    </main>
+    </AnimatedMain>
   )
 }

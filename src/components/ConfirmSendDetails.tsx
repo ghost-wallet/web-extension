@@ -3,6 +3,7 @@ import CryptoImage from '@/components/CryptoImage'
 import RecipientAddress from '@/components/RecipientAddress'
 import Header from '@/components/Header'
 import ErrorMessage from '@/components/ErrorMessage'
+import KRC20NetworkFee from '@/pages/Wallet/Send/KRC20NetworkFee'
 
 interface ConfirmSendDetailsProps {
   token: any
@@ -56,9 +57,7 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
         <div className="bg-bgdarker rounded-md p-4">
           <div className="flex justify-between">
             <span className="text-base font-lato text-mutedtext">Network Fee</span>
-            <span className="text-base font-lato text-primarytext">
-              {fee} {token.tick === 'KASPA' ? 'KAS' : ''}
-            </span>
+            <KRC20NetworkFee fee={fee} />
           </div>
         </div>
 
@@ -84,4 +83,4 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
   )
 }
 
-export default ConfirmSendDetails
+export default React.memo(ConfirmSendDetails)

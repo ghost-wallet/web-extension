@@ -16,23 +16,24 @@ const ConfirmSendKRC20: React.FC = () => {
   const { request } = useKaspa()
 
   const fetchEstimatedFee = useCallback(() => {
-    setLoading(true)
     request('account:estimateKRC20TransactionFee', [recipient, token, amount, feeRate])
       .then((response) => {
         const _estimatedFee = response[0]
         setEstimatedFee(_estimatedFee || '')
+        console.log('Estimated fee:', _estimatedFee)
       })
       .catch((err) => {
         setError(`Error fetching estimated fee: ${err}`)
         console.error('[ConfirmSendKRC20] error fetching estimated fee:', err)
       })
-      .finally(() => {
-        setLoading(false)
-      })
   }, [request, recipient, token, amount, feeRate])
 
   useEffect(() => {
-    fetchEstimatedFee() // Fetch the fee when the component mounts
+    fetchEstimatedFee()
+
+    // Update estimated fee every 7 seconds
+    const intervalId = setInterval(fetchEstimatedFee, 7000)
+    return () => clearInterval(intervalId)
   }, [fetchEstimatedFee])
 
   const handleConfirmClick = useCallback(() => {

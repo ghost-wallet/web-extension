@@ -16,6 +16,7 @@ export default function Wallet() {
 
   const [totalValue, setTotalValue] = useState<number>(0)
 
+  // TODO move initial Node connection to Login page, or run in service worker automatically?
   useEffect(() => {
     if (!kaspa.connected) {
       console.warn('Kaspa is not connected. Attempting to connect...')
