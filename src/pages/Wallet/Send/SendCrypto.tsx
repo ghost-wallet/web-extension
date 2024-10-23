@@ -77,7 +77,7 @@ const SendCrypto: React.FC = () => {
   const initiateSend = useCallback(() => {
     if (!feeRate) return
     request('account:create', [outputs, feeRate, fee, inputs])
-      .then((transactions) => {
+      .then(([transactions, fee]) => {
         navigate(`/send/${token.tick}/confirm`, {
           state: {
             token,

@@ -16,16 +16,18 @@ const ConfirmSendKRC20: React.FC = () => {
   const { request } = useKaspa()
 
   const fetchEstimatedFee = useCallback(() => {
-    request('account:estimateKRC20TransactionFee', [recipient, token, amount, feeRate])
-      .then((response) => {
-        const _estimatedFee = response[0]
-        setEstimatedFee(_estimatedFee || '')
-        console.log('Estimated fee:', _estimatedFee)
-      })
-      .catch((err) => {
-        setError(`Error fetching estimated fee: ${err}`)
-        console.error('[ConfirmSendKRC20] error fetching estimated fee:', err)
-      })
+    request('account:getKRC20Info', [recipient, token, amount]).then((info) => {
+      request('account:estimateKRC20TransactionFee', [info, feeRate])
+        .then((response) => {
+          const _estimatedFee = response
+          setEstimatedFee(_estimatedFee || '')
+          console.log('Estimated fee:', _estimatedFee)
+        })
+        .catch((err) => {
+          setError(`Error fetching estimated fee: ${err}`)
+          console.error('[ConfirmSendKRC20] error fetching estimated fee:', err)
+        })
+    })
   }, [request, recipient, token, amount, feeRate])
 
   useEffect(() => {
@@ -39,8 +41,8 @@ const ConfirmSendKRC20: React.FC = () => {
   const handleConfirmClick = useCallback(() => {
     setLoading(true)
     setError('')
-
-    request('account:writeInscription', [recipient, token, amount, feeRate])
+    request('account:getKRC20Info', [recipient, token, amount]).then((info) => {
+      request('account:submitKRC20Transaction', [info, feeRate])
       .then((response) => {
         console.log('[ConfirmSendKRC20] write inscription success. Response:', response)
         const txnId = response[1]
@@ -55,6 +57,7 @@ const ConfirmSendKRC20: React.FC = () => {
       .finally(() => {
         setLoading(false)
       })
+    })
   }, [request, recipient, token, amount, feeRate])
 
   const handleCancelClick = () => {

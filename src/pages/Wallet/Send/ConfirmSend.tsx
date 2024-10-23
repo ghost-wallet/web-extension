@@ -46,8 +46,7 @@ const ConfirmSend: React.FC = () => {
         throw new Error('No inputs found in transaction')
       }
 
-      const signedTransactions = await request('account:sign', [updatedTransactions])
-      const submitContextful = await request('account:submitContextful', [signedTransactions])
+      const submitContextful = await request('account:submitKaspaTransaction', [updatedTransactions])
       const txnId = submitContextful[0]
 
       navigate(`/send/${token.tick}/confirm/sent`, {

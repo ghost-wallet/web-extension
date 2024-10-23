@@ -13,7 +13,6 @@ export interface Token {
 export interface KRC20Info {
   sender: string
   recipient: string
-  feeRate: number
   scriptAddress: string
   script: string
 }

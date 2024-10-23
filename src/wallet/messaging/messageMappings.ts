@@ -3,6 +3,7 @@ import { UTXO } from '../kaspa/account/account'
 import { CustomInput } from '../kaspa/account/transactions'
 import { PriorityBuckets } from '../kaspa/node'
 import { Token } from '@/contexts/kasplex/kasplexReducer'
+import { KRC20Info } from '../kaspa/krc20/Transact'
 
 export interface RequestMappings {
   'wallet:status': []
@@ -20,13 +21,16 @@ export interface RequestMappings {
   'account:addresses': []
   'account:balance': []
   'account:utxos': []
+  'account:estimateKaspaTransactionFee': [[string, string][], number, string]
   'account:create': [[string, string][], number, string, CustomInput[]?]
   'account:sign': [string[]]
   'account:submitContextful': [string[]]
+  'account:submitKaspaTransaction': [string[]]
   'account:compoundUtxos': []
-  'account:scan': []
-  'account:writeInscription': [string, Token, string, number]
-  'account:estimateKRC20TransactionFee': [string, Token, string, number]
+  'account:scan': [],
+  'account:getKRC20Info': [string, Token, string]
+  'account:submitKRC20Transaction': [KRC20Info, number]
+  'account:estimateKRC20TransactionFee': [KRC20Info, number]
   'provider:connect': [string]
   'provider:connection': []
   'provider:disconnect': []
@@ -54,13 +58,16 @@ export interface ResponseMappings {
   'account:addresses': [string[], string[]]
   'account:balance': number
   'account:utxos': UTXO[]
-  'account:create': string[]
-  'account:sign': string[]
+  'account:estimateKaspaTransactionFee': string
+  'account:create': [string[], string]
+  'account:sign': string[],
   'account:submitContextful': string[]
+  'account:submitKaspaTransaction': string[]
   'account:compoundUtxos': void
-  'account:scan': void
-  'account:writeInscription': [string, string]
-  'account:estimateKRC20TransactionFee': [string]
+  'account:scan': void,
+  'account:getKRC20Info': KRC20Info
+  'account:submitKRC20Transaction': [string, string]
+  'account:estimateKRC20TransactionFee': string
   'provider:connect': void
   'provider:connection': string
   'provider:disconnect': void
