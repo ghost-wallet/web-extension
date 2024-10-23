@@ -1,28 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import useKaspa from '@/hooks/useKaspa'
-import Spinner from '@/components/Spinner' // Make sure to import your Spinner component
+import Spinner from '@/components/Spinner'
 
 interface AnimatedMainProps {
   children: React.ReactNode
   className?: string
+  showConnectingMessage?: boolean
 }
 
-const AnimatedMain: React.FC<AnimatedMainProps> = ({ children, className }) => {
+const AnimatedMain: React.FC<AnimatedMainProps> = ({ children, className, showConnectingMessage = true }) => {
   const { kaspa } = useKaspa()
-  const [showError, setShowError] = useState(false)
+  const [isConnecting, setIsConnecting] = useState(false)
 
   useEffect(() => {
     if (!kaspa.connected) {
-      setShowError(true)
+      setIsConnecting(true)
     } else {
-      setShowError(false)
+      setIsConnecting(false)
     }
   }, [kaspa.connected])
 
   return (
     <>
-      {showError && (
+      {isConnecting && showConnectingMessage && (
         <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center bg-slightmuted text-primarytext font-lato text-sm p-1">
           <p className="pl-4">Connecting to Kaspa network...</p>
           <div className="p-1">

@@ -49,7 +49,7 @@ export default function Password({ onPasswordSet }: PasswordProps) {
   }
 
   return (
-    <AnimatedMain>
+    <AnimatedMain showConnectingMessage={false}>
       <Header title="Create Password" showBackButton={true} />
       <form className="flex flex-col items-center pt-36 px-6">
         <PasswordInput

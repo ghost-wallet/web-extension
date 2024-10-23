@@ -26,7 +26,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
   }
 
   return (
-    <AnimatedMain>
+    <AnimatedMain showConnectingMessage={false}>
       <Header title="Secret Phrase" showBackButton={false} />
       <div className="px-6">
         <p className="text-warning text-base font-lato text-justify pt-4 mb-6">

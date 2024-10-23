@@ -61,7 +61,7 @@ export default function CreateWallet() {
   }
 
   return (
-    <AnimatedMain>
+    <AnimatedMain showConnectingMessage={false}>
       {loading ? (
         <SpinnerPage displayText="Initializing wallet and connecting to Kaspa network. This process could take a few minutes." />
       ) : (

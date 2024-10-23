@@ -43,7 +43,7 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
   }
 
   return (
-    <AnimatedMain>
+    <AnimatedMain showConnectingMessage={false}>
       <Header title="Confirm Secret Phrase" showBackButton={false} />
       <div className="px-6">
         <p className="text-mutedtext text-lg font-lato text-center mb-6">Enter the missing words.</p>
