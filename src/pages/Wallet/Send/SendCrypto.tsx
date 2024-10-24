@@ -8,6 +8,7 @@ import ErrorMessage from '@/components/ErrorMessage'
 import RecipientInput from '@/components/RecipientInput'
 import AmountInput from '@/components/AmountInput'
 import ContinueToConfirmTxnButton from '@/components/buttons/ContinueToConfirmTxnButton'
+import FeePrioritySelector from '@/components/FeePrioritySelector'
 import useKaspa from '@/hooks/useKaspa'
 import useURLParams from '@/hooks/useURLParams'
 import { useTransactionInputs } from '@/hooks/useTransactionInputs'
@@ -31,7 +32,7 @@ const SendCrypto: React.FC = () => {
 
   const selectedFeeRate = feeRates[FEE_TYPES[currentFeeTypeIndex]] || 1
 
-  // Function to estimate Kaspa Transaction Fee
+  // TODO: get KRC20 script info and krc20 fee
   const fetchEstimatedFee = useCallback(() => {
     if (outputs[0][0].length > 0 && outputs[0][1].length > 0 && !recipientError && !amountError) {
       request('account:estimateKaspaTransactionFee', [outputs, selectedFeeRate, '0'])
@@ -85,8 +86,6 @@ const SendCrypto: React.FC = () => {
     outputs[0][0].length > 0 && outputs[0][1].length > 0 && !recipientError && !amountError
   const formattedBalance = formatTokenBalance(token.balance, token.tick, token.dec)
 
-  const feeTypeText = FEE_TYPES[currentFeeTypeIndex]
-
   return (
     <>
       <AnimatedMain>
@@ -109,26 +108,16 @@ const SendCrypto: React.FC = () => {
           </div>
         </div>
 
-        {/* Fee priority and fee estimate - always visible */}
-        <div className="w-full text-left text-mutedtext font-lato font-light text-base px-6">
-          <span
-            className={`font-bold ${isButtonEnabled ? 'text-primary hover:cursor-pointer' : 'text-mutedtext'}`}
-            onClick={isButtonEnabled ? handleFeeTypeClick : undefined}
-          >
-            Fee priority: {feeTypeText.charAt(0).toUpperCase() + feeTypeText.slice(1)}
-          </span>
-        </div>
-        <div className="w-full text-left text-mutedtext font-lato font-light text-base px-6">
-          Fee: {estimatedFee ? `${estimatedFee} KAS` : <span className="invisible">Fee Placeholder</span>}
-        </div>
+        <FeePrioritySelector
+          currentFeeTypeIndex={currentFeeTypeIndex}
+          estimatedFee={estimatedFee}
+          isButtonEnabled={isButtonEnabled}
+          onFeeTypeClick={handleFeeTypeClick}
+        />
 
-        {/* Error message */}
         <ErrorMessage message={recipientError || amountError || ''} />
 
-        {/* Reduced padding to move button up */}
         <div className="px-6">
-          {' '}
-          {/* Further reduced padding */}
           <ContinueToConfirmTxnButton onClick={handleContinue} disabled={!isButtonEnabled} />
         </div>
       </AnimatedMain>

@@ -43,9 +43,7 @@ const CryptoDetailsTable: React.FC<CryptoDetailsTableProps> = ({ token }) => {
               </td>
             </tr>
             <tr>
-              <td className="text-base font-lato text-mutedtext py-2">
-                {token.tick === 'KASPA' ? 'Coins' : 'Tokens'}
-              </td>
+              <td className="text-base font-lato text-mutedtext py-2">{token.tick}</td>
               <td className="text-base font-lato text-primarytext py-2 text-right">
                 {tick === 'KASPA'
                   ? token.balance

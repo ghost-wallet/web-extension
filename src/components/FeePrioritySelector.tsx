@@ -1,0 +1,37 @@
+import React from 'react'
+const FEE_TYPES = ['slow', 'standard', 'fast'] as const
+
+interface FeePrioritySelectorProps {
+  currentFeeTypeIndex: number
+  estimatedFee: string
+  isButtonEnabled: boolean
+  onFeeTypeClick: () => void
+}
+
+const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
+  currentFeeTypeIndex,
+  estimatedFee,
+  isButtonEnabled,
+  onFeeTypeClick,
+}) => {
+  const feeTypeText = FEE_TYPES[currentFeeTypeIndex]
+
+  return (
+    <>
+      {/* Fee priority and fee estimate */}
+      <div className="w-full text-left text-mutedtext font-lato font-light text-base px-6">
+        <span
+          className={`font-bold ${isButtonEnabled ? 'text-primary hover:cursor-pointer' : 'text-mutedtext'}`}
+          onClick={isButtonEnabled ? onFeeTypeClick : undefined}
+        >
+          Fee priority: {feeTypeText.charAt(0).toUpperCase() + feeTypeText.slice(1)}
+        </span>
+      </div>
+      <div className="w-full text-left text-mutedtext font-lato font-light text-base px-6">
+        Fee: {estimatedFee ? `${estimatedFee} KAS` : <span className="invisible">Fee Placeholder</span>}
+      </div>
+    </>
+  )
+}
+
+export default FeePrioritySelector
