@@ -111,7 +111,7 @@ const SendCrypto: React.FC = () => {
         <Header title={`Send ${token.tick}`} showBackButton={true} />
         <CryptoImage ticker={token.tick} size="large" />
 
-        <div className="flex flex-col items-center space-y-4 p-4">
+        <div className="flex flex-col items-center space-y-4 px-4 pt-4">
           <RecipientInput
             value={outputs[0][0]}
             onChange={(e) => handleRecipientChange(e.target.value, request)}
@@ -121,12 +121,10 @@ const SendCrypto: React.FC = () => {
             onChange={(e) => handleAmountChange(e.target.value)}
             onMaxClick={handleMaxClick}
           />
-
-          <div className="w-full text-right text-mutedtext font-lato font-light text-base">
-            Available {formattedBalance} {token.tick}
-          </div>
         </div>
-
+        <div className="w-full text-right text-mutedtext font-lato font-light text-base px-4 pt-1 pb-1">
+          Available {formattedBalance} {token.tick}
+        </div>
         <FeePrioritySelector
           currentFeeTypeIndex={currentFeeTypeIndex}
           estimatedFee={estimatedFee}
@@ -137,7 +135,7 @@ const SendCrypto: React.FC = () => {
 
         <ErrorMessage message={recipientError || amountError || ''} />
 
-        <div className="px-6">
+        <div className="px-4 pt-1">
           <ContinueToConfirmTxnButton onClick={handleContinue} disabled={!isButtonEnabled} />
         </div>
       </AnimatedMain>
