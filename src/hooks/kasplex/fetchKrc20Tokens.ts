@@ -11,6 +11,7 @@ export interface Token {
 
 interface Tokens {
   result: Token[]
+  next: string | null
 }
 
 interface TokenInfoResponse {
@@ -31,7 +32,7 @@ export const fetchKrc20Tokens = async (
   const currentTime = Date.now()
   const apiBase = getApiBase(selectedNode)
 
-  if (cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 15000) {
+  if (cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 30000) {
     try {
       const parsedTokens = JSON.parse(cachedTokens)
       return parsedTokens as Token[]
@@ -39,36 +40,50 @@ export const fetchKrc20Tokens = async (
       console.error('Error parsing cached tokens:', error)
     }
   }
+
   try {
-    const response = await axios.get<Tokens>(
-      `https://${apiBase}.kasplex.org/v1/krc20/address/${address}/tokenlist`,
-    )
+    let allTokens: Token[] = []
+    let nextPage: string | null = null
 
-    if (response.data && response.data.result) {
-      const tokens = await Promise.all(
-        response.data.result.map(async (token: Token) => {
-          try {
-            const tokenInfoResponse = await axios.get<TokenInfoResponse>(
-              `https://api-v2-do.kas.fyi/token/krc20/${token.tick}/info`,
-            )
-            const tokenData = tokenInfoResponse.data
-            const floorPrice = ((tokenData?.price?.floorPrice || 0) * price).toFixed(8)
+    do {
+      const params = new URLSearchParams()
+      if (nextPage) {
+        params.append('next', nextPage)
+      }
 
-            return { ...token, floorPrice: parseFloat(floorPrice) }
-          } catch (err) {
-            console.error(`Error fetching info for ${token.tick}:`, err)
-            return { ...token, floorPrice: 0 }
-          }
-        }),
+      const response = await axios.get<Tokens>(
+        `https://${apiBase}.kasplex.org/v1/krc20/address/${address}/tokenlist?${params.toString()}`,
       )
 
-      localStorage.setItem(cacheKey, JSON.stringify(tokens))
-      localStorage.setItem(timestampKey, currentTime.toString())
+      if (response.data && response.data.result) {
+        const tokens = await Promise.all(
+          response.data.result.map(async (token: Token) => {
+            try {
+              const tokenInfoResponse = await axios.get<TokenInfoResponse>(
+                `https://api-v2-do.kas.fyi/token/krc20/${token.tick}/info`,
+              )
+              const tokenData = tokenInfoResponse.data
+              const floorPrice = ((tokenData?.price?.floorPrice || 0) * price).toFixed(8)
 
-      return tokens
-    } else {
-      throw new Error('Error fetching KRC20 tokens. Invalid API response structure')
-    }
+              return { ...token, floorPrice: parseFloat(floorPrice) }
+            } catch (err) {
+              console.error(`Error fetching info for ${token.tick}:`, err)
+              return { ...token, floorPrice: 0 }
+            }
+          }),
+        )
+
+        allTokens = [...allTokens, ...tokens]
+        nextPage = response.data.next
+      } else {
+        throw new Error('Error fetching KRC20 tokens. Invalid API response structure')
+      }
+    } while (nextPage)
+
+    localStorage.setItem(cacheKey, JSON.stringify(allTokens))
+    localStorage.setItem(timestampKey, currentTime.toString())
+
+    return allTokens
   } catch (error) {
     console.error('Error fetching tokens:', error)
     throw error
