@@ -45,7 +45,7 @@ export interface CustomSignature {
 
 function calculateScriptExtraFee(script: HexString, feeRate: number) {
   const scriptBytes = ScriptBuilder.canonicalDataSize(script)
-  const scriptExtraFee = BigInt(Math.ceil(scriptBytes * feeRate))
+  const scriptExtraFee = BigInt(Math.ceil((scriptBytes + 1) * feeRate))
   console.log('scriptBytes', scriptBytes)
   console.log('scriptExtraFee', scriptExtraFee)
   console.log('scriptExtraFee kaspa', sompiToKaspaString(scriptExtraFee))
