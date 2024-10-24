@@ -4,6 +4,7 @@ import { FEE_TYPES } from '@/utils/constants'
 interface FeePrioritySelectorProps {
   currentFeeTypeIndex: number
   estimatedFee: string
+  estimatedSeconds: number
   isButtonEnabled: boolean
   onFeeTypeClick: () => void
 }
@@ -11,6 +12,7 @@ interface FeePrioritySelectorProps {
 const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
   currentFeeTypeIndex,
   estimatedFee,
+  estimatedSeconds,
   isButtonEnabled,
   onFeeTypeClick,
 }) => {
@@ -24,7 +26,8 @@ const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
           className={`font-bold ${isButtonEnabled ? 'text-primary hover:cursor-pointer' : 'text-mutedtext'}`}
           onClick={isButtonEnabled ? onFeeTypeClick : undefined}
         >
-          Fee priority: {feeTypeText.charAt(0).toUpperCase() + feeTypeText.slice(1)}
+          Fee priority: {feeTypeText.charAt(0).toUpperCase() + feeTypeText.slice(1)} ~{' '}
+          {estimatedSeconds.toFixed(3)} seconds
         </span>
       </div>
       <div className="w-full text-left text-mutedtext font-lato font-light text-base px-6">
