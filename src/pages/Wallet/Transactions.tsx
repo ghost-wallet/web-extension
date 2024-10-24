@@ -5,11 +5,14 @@ import Header from '@/components/Header'
 import TransactionList from '@/pages/Wallet/Transactions/TransactionList'
 import Spinner from '@/components/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
-import useKasplex from '@/hooks/contexts/useKasplex'
-import { Transaction } from '@/contexts/kasplex/kasplexReducer'
+import { fetchKRC20TransactionHistory } from '@/hooks/kasplex/fetchKrc20TransactionHistory'
+import { Transaction } from '@/hooks/kasplex/fetchKrc20TransactionHistory'
+import useKaspa from '@/hooks/contexts/useKaspa'
+import useSettings from '@/hooks/contexts/useSettings'
 
 export default function Transactions() {
-  const { loadKrc20Transactions } = useKasplex()
+  const { kaspa } = useKaspa()
+  const { settings } = useSettings()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [initialLoading, setInitialLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -20,7 +23,11 @@ export default function Transactions() {
     const fetchTransactionsOnMount = async () => {
       try {
         setInitialLoading(true)
-        const response = await loadKrc20Transactions()
+        const response = await fetchKRC20TransactionHistory(
+          settings.selectedNode,
+          kaspa.addresses[0][0],
+          nextCursor,
+        )
         setTransactions(response.result)
         setNextCursor(response.next)
         setError(null)
@@ -32,14 +39,18 @@ export default function Transactions() {
     }
 
     fetchTransactionsOnMount()
-  }, [loadKrc20Transactions])
+  }, [kaspa.addresses])
 
   const loadMoreTransactions = async () => {
     if (!nextCursor || loadingMore) return
 
     try {
       setLoadingMore(true)
-      const response = await loadKrc20Transactions(undefined, nextCursor)
+      const response = await fetchKRC20TransactionHistory(
+        settings.selectedNode,
+        kaspa.addresses[0][0],
+        nextCursor,
+      )
       setTransactions((prev) => [...prev, ...response.result])
       setNextCursor(response.next)
     } catch (error) {

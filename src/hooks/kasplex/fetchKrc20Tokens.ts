@@ -1,7 +1,15 @@
 import axios from 'axios'
-import { Token } from './kasplexReducer'
+import { getApiBase } from '@/hooks/kasplex/fetchHelper'
 
-interface ApiResponse {
+export interface Token {
+  tick: string
+  balance: string
+  opScoreMod: string
+  dec: string
+  floorPrice?: number
+}
+
+interface Tokens {
   result: Token[]
 }
 
@@ -11,19 +19,19 @@ interface TokenInfoResponse {
   }
 }
 
-export const fetchTokens = async (
+export const fetchKrc20Tokens = async (
+  selectedNode: number,
   address: string,
-  apiBase: string,
   price: number,
-  refresh = false,
 ): Promise<Token[]> => {
   const cacheKey = `tokens_${address}`
   const timestampKey = `tokens_timestamp_${address}`
   const cachedTokens = localStorage.getItem(cacheKey)
   const cachedTimestamp = localStorage.getItem(timestampKey)
   const currentTime = Date.now()
+  const apiBase = getApiBase(selectedNode)
 
-  if (!refresh && cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 15000) {
+  if (cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 15000) {
     try {
       const parsedTokens = JSON.parse(cachedTokens)
       return parsedTokens as Token[]
@@ -31,9 +39,8 @@ export const fetchTokens = async (
       console.error('Error parsing cached tokens:', error)
     }
   }
-
   try {
-    const response = await axios.get<ApiResponse>(
+    const response = await axios.get<Tokens>(
       `https://${apiBase}.kasplex.org/v1/krc20/address/${address}/tokenlist`,
     )
 

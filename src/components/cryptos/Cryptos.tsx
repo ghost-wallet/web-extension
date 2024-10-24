@@ -8,8 +8,8 @@ import Spinner from '@/components/Spinner'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import useKaspaPrice from '@/hooks/useKaspaPrice'
 import CryptoListItem from '@/components/cryptos/CryptoListItem'
-import useKasplex from '@/hooks/contexts/useKasplex'
 import ErrorMessage from '@/components/ErrorMessage'
+import { fetchKrc20Tokens } from '@/hooks/kasplex/fetchKrc20Tokens'
 
 interface Token {
   tick: string
@@ -31,42 +31,34 @@ interface CryptoProps {
 
 const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem }) => {
   const { kaspa } = useKaspa()
-  const { kasplex, loadKrc20Tokens } = useKasplex() // Added loadTokens from context
   const { settings } = useSettings()
   const price = useKaspaPrice(settings.currency)
   const navigate = useNavigate()
   const location = useLocation()
 
   const [tokens, setTokens] = useState<Token[]>([])
-  const [tokensError, setTokensError] = useState<string | null>(null)
+  const [initialLoading, setInitialLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Fetch tokens when the component mounts
   useEffect(() => {
     const fetchTokensOnMount = async () => {
       try {
-        await loadKrc20Tokens() // Call loadTokens to fetch tokens
+        setInitialLoading(true)
+        const fetchedTokens = await fetchKrc20Tokens(settings.selectedNode, kaspa.addresses[0][0], price)
+        setTokens(fetchedTokens)
+        setError(null)
       } catch (error) {
-        setTokensError('Error loading tokens')
+        setError('Error loading tokens')
+      } finally {
+        setInitialLoading(false)
       }
     }
-
-    fetchTokensOnMount() // Fetch tokens every time the component is mounted
-  }, [loadKrc20Tokens])
-
-  // Update state based on kasplex tokens and loading state
-  useEffect(() => {
-    if (!kasplex.loading && kasplex.tokens) {
-      setTokens(kasplex.tokens)
-      setTokensError(null)
-    }
-    if (kasplex.error) {
-      setTokensError(kasplex.error)
-    }
-  }, [kasplex.loading, kasplex.tokens, kasplex.error])
+    fetchTokensOnMount()
+  }, [kaspa.addresses, price])
 
   useTotalValueCalculation(tokens, price, onTotalValueChange)
 
-  if (kasplex.loading) {
+  if (initialLoading) {
     return (
       <div className="mt-6">
         <Spinner />
@@ -74,8 +66,8 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
     )
   }
 
-  if (tokensError) {
-    return <ErrorMessage message={tokensError} />
+  if (error) {
+    return <ErrorMessage message={error} />
   }
 
   const kaspaCrypto: Token = {
