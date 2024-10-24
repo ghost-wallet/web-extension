@@ -26,7 +26,7 @@ interface FetchOperationsParams {
   prev?: string
 }
 
-export const fetchOperations = async ({
+export const fetchKRC20TransactionHistory = async ({
   address,
   apiBase,
   tick,
