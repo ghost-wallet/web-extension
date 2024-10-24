@@ -3,6 +3,7 @@ import {
   createInputSignature,
   createTransactions,
   estimateTransactions,
+  HexString,
   IGeneratorSettingsObject,
   IScriptPublicKey,
   ITransactionOutpoint,
@@ -27,6 +28,7 @@ import EventEmitter from 'events'
 import KeyManager from '@/wallet/kaspa/KeyManager'
 import Account from '@/wallet/kaspa/account/account'
 import { KRC20Info, setupkrc20Transaction, Token } from '../krc20/Transact'
+import { KRC20_COMMIT_AMOUNT } from '@/utils/constants'
 
 export interface CustomInput {
   address: string
@@ -39,6 +41,15 @@ export interface CustomSignature {
   index: number
   signer: string
   script?: string
+}
+
+function calculateScriptExtraFee(script: HexString, feeRate: number) {
+  const scriptBytes = ScriptBuilder.canonicalDataSize(script)
+  const scriptExtraFee = BigInt(Math.ceil(scriptBytes * feeRate))
+  console.log('scriptBytes', scriptBytes)
+  console.log('scriptExtraFee', scriptExtraFee)
+  console.log('scriptExtraFee kaspa', sompiToKaspaString(scriptExtraFee))
+  return scriptExtraFee
 }
 
 export default class Transactions extends EventEmitter {
@@ -315,7 +326,7 @@ export default class Transactions extends EventEmitter {
   }
 
   async estimateKRC20TransactionFee(info: KRC20Info, feeRate: number) {
-    const { scriptAddress } = info
+    const { scriptAddress, script } = info
 
     const commitSettings: IGeneratorSettingsObject = {
       priorityEntries: [],
@@ -323,7 +334,7 @@ export default class Transactions extends EventEmitter {
       outputs: [
         {
           address: scriptAddress,
-          amount: kaspaToSompi('0.2')!,
+          amount: kaspaToSompi(KRC20_COMMIT_AMOUNT)!,
         },
       ],
       changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
@@ -349,13 +360,15 @@ export default class Transactions extends EventEmitter {
       isCoinbase: false,
     }
 
+    const scriptExtraFee = calculateScriptExtraFee(script, feeRate)
+
     const revealSettings: IGeneratorSettingsObject = {
       priorityEntries: [commitUTXO],
       entries: this.context,
       outputs: [],
       changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
       feeRate,
-      priorityFee: kaspaToSompi('0')!,
+      priorityFee: scriptExtraFee,
     }
 
     console.log('[Transaction] estimateKRC20Transaction revealSettings: ', revealSettings)
@@ -415,7 +428,7 @@ export default class Transactions extends EventEmitter {
   }
 
   async submitKRC20Commit({ scriptAddress }: KRC20Info, feeRate: number) {
-    const [commit1] = await this.create([[scriptAddress.toString(), '0.2']], feeRate, '0')
+    const [commit1] = await this.create([[scriptAddress.toString(), KRC20_COMMIT_AMOUNT]], feeRate, '0')
     console.log('[Transactions] Created commit transaction:', commit1)
 
     // - sign
@@ -439,8 +452,10 @@ export default class Transactions extends EventEmitter {
     }
     console.log('[Transactions] Reveal transaction input:', input)
 
+    const scriptExtraFee = calculateScriptExtraFee(script, feeRate)
+
     // - create
-    const [reveal1] = await this.create([], feeRate, '0.01', [input])
+    const [reveal1] = await this.create([], feeRate, sompiToKaspaString(scriptExtraFee), [input])
     console.log('[Transactions] Created reveal transaction:', reveal1)
 
     // - sign
