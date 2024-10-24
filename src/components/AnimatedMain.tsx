@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import useKaspa from '@/hooks/useKaspa'
+import useKaspa from '@/hooks/contexts/useKaspa'
 import Spinner from '@/components/Spinner'
 
 interface AnimatedMainProps {

@@ -20,7 +20,7 @@ import {
   UtxoProcessor,
   UtxoProcessorEvent,
   UtxoProcessorNotificationCallback,
-  XPrv
+  XPrv,
 } from '@/wasm'
 import Addresses from './addresses'
 import EventEmitter from 'events'

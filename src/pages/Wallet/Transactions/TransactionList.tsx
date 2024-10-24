@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import TransactionItem from './TransactionItem'
 import Spinner from '@/components/Spinner'
-import useKasplex from '@/hooks/useKasplex'
+import useKasplex from '@/hooks/contexts/useKasplex'
 
 interface Operation {
   mtsAdd: string

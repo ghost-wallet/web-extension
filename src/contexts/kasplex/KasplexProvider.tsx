@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useReducer, useCallback } from 'react'
-import useKaspa from '@/hooks/useKaspa'
-import useSettings from '@/hooks/useSettings'
+import useKaspa from '@/hooks/contexts/useKaspa'
+import useSettings from '@/hooks/contexts/useSettings'
 import useKaspaPrice from '@/hooks/useKaspaPrice'
 import { fetchOperations } from './fetchKrc20TransactionHistory'
 import { fetchTokens } from './fetchKrc20Tokens'

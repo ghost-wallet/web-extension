@@ -5,7 +5,7 @@ import Header from '@/components/Header'
 import TransactionList from '@/pages/Wallet/Transactions/TransactionList'
 import Spinner from '@/components/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
-import useKasplex from '@/hooks/useKasplex'
+import useKasplex from '@/hooks/contexts/useKasplex'
 
 export default function Transactions() {
   const { kasplex, loadKrc20Transactions } = useKasplex()

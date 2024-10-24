@@ -3,7 +3,7 @@ import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import QRCode from 'react-qr-code'
 import KaspaAddress from '@/components/KaspaAddress'
-import useKaspa from '@/hooks/useKaspa'
+import useKaspa from '@/hooks/contexts/useKaspa'
 import Header from '@/components/Header'
 
 export default function Receive() {

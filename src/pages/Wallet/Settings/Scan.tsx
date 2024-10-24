@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import useKaspa from '@/hooks/useKaspa'
+import useKaspa from '@/hooks/contexts/useKaspa'
 
 const Scan: React.FC = () => {
   const { request } = useKaspa()

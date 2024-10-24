@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import useKaspa from '@/hooks/useKaspa'
+import useKaspa from '@/hooks/contexts/useKaspa'
 
 export const useFeeRate = () => {
   const { request } = useKaspa()

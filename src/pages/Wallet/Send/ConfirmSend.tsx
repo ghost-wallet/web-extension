@@ -4,7 +4,7 @@ import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import ConfirmSendDetails from '@/components/ConfirmSendDetails'
 import Spinner from '@/components/Spinner'
-import useKaspa from '@/hooks/useKaspa'
+import useKaspa from '@/hooks/contexts/useKaspa'
 
 const ConfirmSend: React.FC = () => {
   const location = useLocation()

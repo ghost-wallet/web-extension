@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PasswordInput from '@/components/PasswordInput'
 import ErrorMessage from '@/components/ErrorMessage'
-import useKaspa from '@/hooks/useKaspa'
+import useKaspa from '@/hooks/contexts/useKaspa'
 import ghostIcon from '../../assets/ghost.svg'
 import AnimatedMain from '@/components/AnimatedMain'
 

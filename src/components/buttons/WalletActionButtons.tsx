@@ -7,7 +7,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
 import WalletActionButton from '@/components/buttons/WalletActionButtons/WalletActionButton'
-import useKasplex from '@/hooks/useKasplex'
+import useKasplex from '@/hooks/contexts/useKasplex'
 
 export default function WalletActionButtons() {
   const navigate = useNavigate()

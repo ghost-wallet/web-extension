@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Status } from '@/wallet/kaspa/wallet'
 import { useNavigate } from 'react-router-dom'
-import useKaspa from '@/hooks/useKaspa'
+import useKaspa from '@/hooks/contexts/useKaspa'
 
 const LogOut: React.FC = () => {
   const { kaspa, request } = useKaspa()
