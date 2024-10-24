@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import RecoveryPhraseInput from './RecoveryPhraseInput'
+import RecoveryPhraseInput from './inputs/RecoveryPhraseInput'
 
 interface RecoveryPhraseGridProps {
   values: string[]

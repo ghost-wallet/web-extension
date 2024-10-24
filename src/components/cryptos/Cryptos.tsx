@@ -7,7 +7,7 @@ import useSettings from '@/hooks/contexts/useSettings'
 import Spinner from '@/components/Spinner'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import useKaspaPrice from '@/hooks/useKaspaPrice'
-import CryptoListItem from '@/components/CryptoListItem'
+import CryptoListItem from '@/components/cryptos/CryptoListItem'
 import useKasplex from '@/hooks/contexts/useKasplex'
 import ErrorMessage from '@/components/ErrorMessage'
 

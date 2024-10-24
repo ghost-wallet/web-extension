@@ -6,7 +6,7 @@ import useSettings from '@/hooks/contexts/useSettings'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import WalletActionButtons from '@/components/buttons/WalletActionButtons'
-import Cryptos from '@/pages/Wallet/Cryptos'
+import Cryptos from '@/components/cryptos/Cryptos'
 import TotalWalletValue from '@/components/TotalWalletValue'
 
 export default function Wallet() {

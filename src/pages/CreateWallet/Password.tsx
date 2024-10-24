@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import PasswordInput from '@/components/PasswordInput'
+import PasswordInput from '@/components/inputs/PasswordInput'
 import ErrorMessage from '@/components/ErrorMessage'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'

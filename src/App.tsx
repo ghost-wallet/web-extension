@@ -17,7 +17,7 @@ import ConfirmSendKRC20 from '@/pages/Wallet/Send/ConfirmSendKRC20'
 import Sent from '@/pages/Wallet/Send/Sent'
 import ConfirmReset from '@/pages/Wallet/Settings/Reset/ConfirmReset'
 import ForgotPassword from '@/pages/Login/ForgotPassword'
-import Crypto from '@/pages/Wallet/Cryptos/Crypto'
+import Crypto from '@/pages/Wallet/Crypto'
 
 function App() {
   return (

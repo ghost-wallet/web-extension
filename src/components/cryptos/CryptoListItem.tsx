@@ -1,6 +1,6 @@
 import React from 'react'
 import { formatBalance, formatBalanceWithAbbreviation } from '@/utils/formatting'
-import CryptoImage from '@/components/CryptoImage'
+import CryptoImage from '@/components/cryptos/CryptoImage'
 
 interface CryptoListItemProps {
   token: {
