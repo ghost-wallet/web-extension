@@ -27,7 +27,9 @@ const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
           onClick={isButtonEnabled ? onFeeTypeClick : undefined}
         >
           Fee priority: {feeTypeText.charAt(0).toUpperCase() + feeTypeText.slice(1)} ~{' '}
-          {estimatedSeconds.toFixed(3)} seconds
+          {estimatedSeconds >= 60
+            ? `${parseFloat((estimatedSeconds / 60).toFixed(2))} minute${parseFloat((estimatedSeconds / 60).toFixed(2)) !== 1 ? 's' : ''}`
+            : `${parseFloat(estimatedSeconds.toFixed(2))} second${parseFloat(estimatedSeconds.toFixed(2)) !== 1 ? 's' : ''}`}
         </span>
       </div>
       <div className="w-full text-left text-mutedtext font-lato font-light text-base px-6">
