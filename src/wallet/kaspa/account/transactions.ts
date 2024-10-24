@@ -20,7 +20,7 @@ import {
   UtxoProcessor,
   UtxoProcessorEvent,
   UtxoProcessorNotificationCallback,
-  XPrv,
+  XPrv
 } from '@/wasm'
 import Addresses from './addresses'
 import EventEmitter from 'events'
@@ -76,13 +76,13 @@ export default class Transactions extends EventEmitter {
     console.log('customs:')
     console.log(customs)
     const { entries } = await this.kaspa.getUtxosByAddresses({
-      addresses: customs.map((custom) => custom.address),
+      addresses: customs.map((custom) => custom.address)
     })
     console.log('entries:')
     console.log(entries)
     for (const custom of customs) {
       const matchingEntry = entries.find(
-        ({ outpoint }) => outpoint.transactionId === custom.outpoint && outpoint.index === custom.index,
+        ({ outpoint }) => outpoint.transactionId === custom.outpoint && outpoint.index === custom.index
       )
 
       if (matchingEntry) {
@@ -98,15 +98,14 @@ export default class Transactions extends EventEmitter {
       entries: this.context,
       outputs: outputs.map((output) => ({
         address: output[0],
-        amount: kaspaToSompi(output[1])!,
+        amount: kaspaToSompi(output[1])!
       })),
       changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
       feeRate,
-      priorityFee: kaspaToSompi(fee)!,
+      priorityFee: kaspaToSompi(fee)!
     }
 
     const estimate = await estimateTransactions(preparedTxn)
-    console.log('estimated kaspa fee:', estimate.fees)
 
     return sompiToKaspaString(estimate.fees)
   }
@@ -115,7 +114,7 @@ export default class Transactions extends EventEmitter {
     outputs: [string, string][],
     feeRate: number,
     fee: string,
-    customs?: CustomInput[],
+    customs?: CustomInput[]
   ): Promise<[string[], string]> {
     let priorityEntries: IUtxoEntry[] = []
 
@@ -128,11 +127,11 @@ export default class Transactions extends EventEmitter {
       entries: this.context,
       outputs: outputs.map((output) => ({
         address: output[0],
-        amount: kaspaToSompi(output[1])!,
+        amount: kaspaToSompi(output[1])!
       })),
       changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
       feeRate,
-      priorityFee: kaspaToSompi(fee)!,
+      priorityFee: kaspaToSompi(fee)!
     }
     console.log('Creating transaction with:')
     console.log(preparedTxn)
@@ -184,7 +183,7 @@ export default class Transactions extends EventEmitter {
       for (const custom of customs) {
         const inputIndex = signedTransaction.inputs.findIndex(
           ({ previousOutpoint }) =>
-            previousOutpoint.transactionId === custom.outpoint && previousOutpoint.index === custom.index,
+            previousOutpoint.transactionId === custom.outpoint && previousOutpoint.index === custom.index
         )
 
         if (Address.validate(custom.signer)) {
@@ -194,9 +193,9 @@ export default class Transactions extends EventEmitter {
           const privateKey = isReceive ? keyGenerator.receiveKey(index) : keyGenerator.changeKey(index)
 
           signedTransaction.inputs[inputIndex].signatureScript = ScriptBuilder.fromScript(
-            custom.script,
+            custom.script
           ).encodePayToScriptHashSignatureScript(
-            createInputSignature(signedTransaction, inputIndex, privateKey),
+            createInputSignature(signedTransaction, inputIndex, privateKey)
           )
         } else {
           signedTransaction.inputs[inputIndex].signatureScript = custom.signer
@@ -242,7 +241,7 @@ export default class Transactions extends EventEmitter {
       for (const custom of customs) {
         const inputIndex = signedTransaction.inputs.findIndex(
           ({ previousOutpoint }) =>
-            previousOutpoint.transactionId === custom.outpoint && previousOutpoint.index === custom.index,
+            previousOutpoint.transactionId === custom.outpoint && previousOutpoint.index === custom.index
         )
 
         if (Address.validate(custom.signer)) {
@@ -252,9 +251,9 @@ export default class Transactions extends EventEmitter {
           const privateKey = isReceive ? keyGenerator.receiveKey(index) : keyGenerator.changeKey(index)
 
           signedTransaction.inputs[inputIndex].signatureScript = ScriptBuilder.fromScript(
-            custom.script,
+            custom.script
           ).encodePayToScriptHashSignatureScript(
-            createInputSignature(signedTransaction, inputIndex, privateKey),
+            createInputSignature(signedTransaction, inputIndex, privateKey)
           )
         } else {
           signedTransaction.inputs[inputIndex].signatureScript = custom.signer
@@ -326,12 +325,12 @@ export default class Transactions extends EventEmitter {
       outputs: [
         {
           address: scriptAddress,
-          amount: kaspaToSompi('0.2')!,
-        },
+          amount: kaspaToSompi('0.2')!
+        }
       ],
       changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
       feeRate,
-      priorityFee: kaspaToSompi('0')!,
+      priorityFee: kaspaToSompi('0')!
     }
     const commitResult = await createTransactions(commitSettings)
 
@@ -345,7 +344,7 @@ export default class Transactions extends EventEmitter {
 
     const commitOutpoint: ITransactionOutpoint = {
       transactionId: commitTxn.id,
-      index: 0,
+      index: 0
     }
 
     const commitUTXO: IUtxoEntry = {
@@ -354,7 +353,7 @@ export default class Transactions extends EventEmitter {
       amount: commitOutput.value,
       scriptPublicKey: commitOutput.scriptPublicKey as IScriptPublicKey, // hopefully this works
       blockDaaScore: BigInt(0),
-      isCoinbase: false,
+      isCoinbase: false
     }
 
     const revealSettings: IGeneratorSettingsObject = {
@@ -363,7 +362,7 @@ export default class Transactions extends EventEmitter {
       outputs: [],
       changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
       feeRate,
-      priorityFee: kaspaToSompi('0.01')!,
+      priorityFee: kaspaToSompi('0.01')!
     }
 
     console.log('[Transaction] estimateKRC20Transaction revealSettings: ', revealSettings)
@@ -377,19 +376,19 @@ export default class Transactions extends EventEmitter {
 
     console.log(
       '[Transaction] estimateKRC20Transaction commitSummary.fees',
-      sompiToKaspaString(commitSummary.fees),
+      sompiToKaspaString(commitSummary.fees)
     )
     console.log(
       '[Transaction] estimateKRC20Transaction commitSummary.finalAmount',
-      sompiToKaspaString(commitSummary.finalAmount!),
+      sompiToKaspaString(commitSummary.finalAmount!)
     )
     console.log(
       '[Transaction] estimateKRC20Transaction revealEstimateResult.fees',
-      sompiToKaspaString(revealEstimateResult.fees),
+      sompiToKaspaString(revealEstimateResult.fees)
     )
     console.log(
       '[Transaction] estimateKRC20Transaction revealEstimateResult.finalAmount',
-      sompiToKaspaString(revealEstimateResult.finalAmount!),
+      sompiToKaspaString(revealEstimateResult.finalAmount!)
     )
 
     console.log('[Transaction] estimateKRC20Transaction totalFee', sompiToKaspaString(totalFee))
@@ -405,7 +404,7 @@ export default class Transactions extends EventEmitter {
       sender,
       recipient,
       scriptAddress: scriptAddress.toString(),
-      script: script.toString(),
+      script: script.toString()
     }
   }
 
@@ -446,7 +445,7 @@ export default class Transactions extends EventEmitter {
       outpoint: commitId,
       index: 0,
       signer: sender,
-      script: script,
+      script: script
     }
     console.log('[Transactions] Reveal transaction input:', input)
 

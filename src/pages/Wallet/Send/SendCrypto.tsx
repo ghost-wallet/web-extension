@@ -10,26 +10,25 @@ import AmountInput from '@/components/AmountInput'
 import ContinueToConfirmTxnButton from '@/components/buttons/ContinueToConfirmTxnButton'
 import FeePrioritySelector from '@/components/FeePrioritySelector'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import useURLParams from '@/hooks/useURLParams'
 import { useTransactionInputs } from '@/hooks/useTransactionInputs'
 import { useFeeRate } from '@/hooks/useFeeRate'
 import { formatBalance, formatTokenBalance } from '@/utils/formatting'
-
-const FEE_TYPES = ['slow', 'standard', 'fast'] as const
+import { FEE_TYPES } from '@/utils/constants'
 
 const SendCrypto: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { token } = location.state || {}
   const { request } = useKaspa()
-  const [hash, params] = useURLParams()
-  const maxAmount = token.tick === 'KASPA' ? token.balance : formatBalance(token.balance, token.dec)
   const { feeRates, updateFeeRate } = useFeeRate()
-  const [currentFeeTypeIndex, setCurrentFeeTypeIndex] = useState(1) // Start with 'standard'
-  const [estimatedFee, setEstimatedFee] = useState<string>('') // Store estimated fee
+  const [currentFeeTypeIndex, setCurrentFeeTypeIndex] = useState(1)
+  const [estimatedFee, setEstimatedFee] = useState<string>('')
+  const { token } = location.state || {}
+
+  const maxAmount = token.tick === 'KASPA' ? token.balance : formatBalance(token.balance, token.dec)
   const { outputs, recipientError, amountError, handleRecipientChange, handleAmountChange, handleMaxClick } =
     useTransactionInputs(token, maxAmount)
 
+  console.log(`Estimated fee: ${estimatedFee}, Fee rate: ${feeRates[FEE_TYPES[currentFeeTypeIndex]]}`)
   const selectedFeeRate = feeRates[FEE_TYPES[currentFeeTypeIndex]] || 1
 
   // TODO: get KRC20 script info and krc20 fee
@@ -37,7 +36,7 @@ const SendCrypto: React.FC = () => {
     if (outputs[0][0].length > 0 && outputs[0][1].length > 0 && !recipientError && !amountError) {
       request('account:estimateKaspaTransactionFee', [outputs, selectedFeeRate, '0'])
         .then((feeEstimate) => {
-          setEstimatedFee(feeEstimate) // Set the estimated fee
+          setEstimatedFee(feeEstimate)
         })
         .catch((err) => {
           console.error(`Error estimating fee: ${err}`)
@@ -45,18 +44,17 @@ const SendCrypto: React.FC = () => {
     }
   }, [outputs, selectedFeeRate, request, recipientError, amountError])
 
-  // Automatically refresh the fee rate and the estimated fee every 5 seconds
   useEffect(() => {
-    fetchEstimatedFee() // Initial fetch
+    fetchEstimatedFee()
     const intervalId = setInterval(() => {
-      updateFeeRate() // Update the fee rates from the API
-      fetchEstimatedFee() // Re-fetch the estimated fee based on the updated fee rates
+      updateFeeRate()
+      fetchEstimatedFee()
     }, 5000)
-    return () => clearInterval(intervalId) // Clear interval on component unmount
+    return () => clearInterval(intervalId)
   }, [fetchEstimatedFee, updateFeeRate])
 
   const initiateSend = useCallback(() => {
-    request('account:create', [outputs, selectedFeeRate, estimatedFee, JSON.parse(params.get('inputs')!)])
+    request('account:create', [outputs, selectedFeeRate, estimatedFee])
       .then(([transactions]) => {
         navigate(`/send/${token.tick}/confirm`, {
           state: { token, recipient: outputs[0][0], amount: outputs[0][1], transactions, fee: estimatedFee },
@@ -65,7 +63,7 @@ const SendCrypto: React.FC = () => {
       .catch((err) => {
         console.error(`Error occurred: ${err}`)
       })
-  }, [outputs, token, navigate, request, selectedFeeRate, estimatedFee, params])
+  }, [outputs, token, navigate, request, selectedFeeRate, estimatedFee])
 
   const handleContinue = () => {
     if (token.tick === 'KASPA') {
