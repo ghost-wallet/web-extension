@@ -1,10 +1,10 @@
-import React, { ReactNode, useEffect, useReducer, useCallback } from 'react'
+import React, { ReactNode, useCallback, useEffect, useReducer } from 'react'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import useSettings from '@/hooks/contexts/useSettings'
 import useKaspaPrice from '@/hooks/useKaspaPrice'
 import { fetchKRC20TransactionHistory } from './fetchKrc20TransactionHistory'
 import { fetchTokens } from './fetchKrc20Tokens'
-import { kasplexReducer, defaultState } from './kasplexReducer'
+import { defaultState, kasplexReducer } from './kasplexReducer'
 import { fetchData, getApiBase } from './fetchHelper'
 import { KasplexContext } from './KasplexContext'
 
@@ -31,14 +31,13 @@ export function KasplexProvider({ children }: { children: ReactNode }) {
   const loadKrc20Transactions = useCallback(
     async (tick?: string, next?: string, prev?: string) => {
       const apiBase = getApiBase(settings.selectedNode)
-      const response = await fetchKRC20TransactionHistory({
-        address: kaspa.addresses[0][0], // Fetch address from kaspa context
-        apiBase, // Fetch API base URL
-        tick, // Optional token filter
-        next, // Optional pagination
-        prev, // Optional pagination
+      return await fetchKRC20TransactionHistory({
+        address: kaspa.addresses[0][0],
+        apiBase,
+        tick,
+        next,
+        prev,
       })
-      return response // Do not store the response in context, return it to the caller
     },
     [kaspa.addresses, settings.selectedNode],
   )

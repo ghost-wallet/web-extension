@@ -10,10 +10,10 @@ export const fetchData = async (
     dispatch({ type: 'loading', payload: true })
     dispatch({ type: 'error', payload: null })
 
-    const result = await fetchFn() // Perform the actual fetch operation
-    dispatch({ type: successType, payload: result }) // Dispatch success payload
+    const result = await fetchFn()
+    dispatch({ type: successType, payload: result })
   } catch (err) {
-    dispatch({ type: errorType, payload: `Error fetching data: ${err}` }) // Dispatch error payload
+    dispatch({ type: errorType, payload: `Error fetching data: ${err}` })
   } finally {
     dispatch({ type: 'loading', payload: false })
   }
