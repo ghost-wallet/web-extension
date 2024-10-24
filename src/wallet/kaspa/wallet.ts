@@ -49,7 +49,11 @@ export default class Wallet extends EventEmitter {
       const session = await SessionStorage.get('session', undefined)
 
       console.log('[Wallet] Session data retrieved:', session)
-      this.status = session ? Status.Unlocked : Status.Locked
+      const hasKey = KeyManager.hasKey()
+      this.status = session && hasKey ? Status.Unlocked : Status.Locked
+      if(this.status === Status.Locked && hasKey) {
+        KeyManager.clearKey()
+      }
     }
 
     console.log('[Wallet] Emitting status update:', this.status)

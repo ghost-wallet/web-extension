@@ -12,6 +12,10 @@ export default new (class KeyManager {
     return this.decryptedKey
   }
 
+  hasKey(): boolean {
+    return !!this.decryptedKey
+  }
+
   clearKey() {
     this.decryptedKey = null
   }
