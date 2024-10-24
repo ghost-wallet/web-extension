@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Status } from '@/wallet/kaspa/wallet'
-import useSettings from '../hooks/useSettings'
-import useKaspa from '../hooks/useKaspa'
+import useSettings from '../hooks/contexts/useSettings'
+import useKaspa from '../hooks/contexts/useKaspa'
 import usePromise from '../hooks/usePromise'
 
 export default function Landing() {

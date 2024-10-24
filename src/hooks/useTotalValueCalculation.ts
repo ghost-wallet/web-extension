@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { formatBalance } from '@/utils/formatting'
-import useKaspa from '@/hooks/useKaspa'
+import useKaspa from '@/hooks/contexts/useKaspa'
 
 interface Token {
   balance: string

@@ -1,6 +1,6 @@
 import React from 'react'
 import useKaspaPrice from '@/hooks/useKaspaPrice'
-import useSettings from '@/hooks/useSettings'
+import useSettings from '@/hooks/contexts/useSettings'
 import { getCurrencySymbol } from '@/utils/currencies'
 import { formatTokenPrice } from '@/utils/formatting'
 

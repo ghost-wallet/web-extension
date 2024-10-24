@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react'
-import CryptoImage from '@/components/CryptoImage'
+import CryptoImage from '@/components/cryptos/CryptoImage'
 import { PaperAirplaneIcon, ArrowDownIcon } from '@heroicons/react/24/outline'
-import useKaspa from '@/hooks/useKaspa'
+import useKaspa from '@/hooks/contexts/useKaspa'
 
 interface TransactionItemProps {
   operation: any
@@ -14,6 +14,8 @@ const TransactionItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ opera
   const address = kaspa.addresses[0][0] // Your address
 
   const isReceived = operation.op === 'transfer' && operation.to === address
+
+  // TODO: if you send tokens to yourself, show both operations
   const operationType = isReceived ? 'Received' : 'Sent'
 
   return (

@@ -21,7 +21,7 @@ import {
   UtxoProcessor,
   UtxoProcessorEvent,
   UtxoProcessorNotificationCallback,
-  XPrv
+  XPrv,
 } from '@/wasm'
 import Addresses from './addresses'
 import EventEmitter from 'events'
@@ -116,7 +116,6 @@ export default class Transactions extends EventEmitter {
     }
 
     const estimate = await estimateTransactions(preparedTxn)
-    console.log('estimated kaspa fee:', estimate.fees)
 
     return sompiToKaspaString(estimate.fees)
   }
@@ -328,8 +327,6 @@ export default class Transactions extends EventEmitter {
   async estimateKRC20TransactionFee(info: KRC20Info, feeRate: number) {
     const { scriptAddress, script } = info
 
-    //const commit1 = await this.create([[scriptAddress, '0.2']], feeRate, '0')
-
     const commitSettings: IGeneratorSettingsObject = {
       priorityEntries: [],
       entries: this.context,
@@ -343,16 +340,11 @@ export default class Transactions extends EventEmitter {
       feeRate,
       priorityFee: kaspaToSompi('0')!,
     }
+
     const commitResult = await createTransactions(commitSettings)
-
-    console.log('[Transaction] estimateKRC20Transaction commitResult: ', commitResult)
-
     const commitTxn = commitResult.transactions[commitResult.transactions.length - 1]
-
     const commitSummary = commitResult.summary
-
     const commitOutput = commitTxn.transaction.outputs[0]
-
     const commitOutpoint: ITransactionOutpoint = {
       transactionId: commitTxn.id,
       index: 0,
@@ -391,10 +383,7 @@ export default class Transactions extends EventEmitter {
       '[Transaction] estimateKRC20Transaction commitSummary.fees',
       sompiToKaspaString(commitSummary.fees),
     )
-    console.log(
-      '[Transaction] estimateKRC20Transaction commitSummary.finalAmount',
-      sompiToKaspaString(commitSummary.finalAmount!),
-    )
+
     console.log(
       '[Transaction] estimateKRC20Transaction revealEstimateResult.fees',
       sompiToKaspaString(revealEstimateResult.fees),

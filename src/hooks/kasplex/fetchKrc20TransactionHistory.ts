@@ -1,6 +1,7 @@
 import axios from 'axios'
+import { getApiBase } from '@/hooks/kasplex/fetchHelper'
 
-interface Operation {
+export interface Transaction {
   op: string
   tick: string
   amt: string
@@ -11,42 +12,26 @@ interface Operation {
   mtsAdd: string
 }
 
-interface ApiResponse {
+export interface Transactions {
   message: string
   prev: string | null
   next: string | null
-  result: Operation[]
+  result: Transaction[]
 }
 
-interface FetchOperationsParams {
-  address: string
-  apiBase: string
-  tick?: string
-  next?: string
-  prev?: string
-}
-
-export const fetchOperations = async ({
-  address,
-  apiBase,
-  tick,
-  next,
-  prev,
-}: FetchOperationsParams): Promise<ApiResponse> => {
+export const fetchKRC20TransactionHistory = async (
+  selectedNode: number,
+  address: string,
+  next: string | null = null,
+): Promise<Transactions> => {
   try {
     const params = new URLSearchParams()
     params.append('address', address)
-    if (tick) {
-      params.append('tick', tick)
-    }
     if (next) {
       params.append('next', next)
     }
-    if (prev) {
-      params.append('prev', prev)
-    }
-
-    const response = await axios.get<ApiResponse>(
+    const apiBase = getApiBase(selectedNode)
+    const response = await axios.get<Transactions>(
       `https://${apiBase}.kasplex.org/v1/krc20/oplist?${params.toString()}`,
     )
 

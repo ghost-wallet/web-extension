@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import useSettings from '@/hooks/useSettings'
-import useKaspa from '@/hooks/useKaspa'
+import useSettings from '@/hooks/contexts/useSettings'
+import useKaspa from '@/hooks/contexts/useKaspa'
 
 const Network: React.FC = () => {
   const { settings, updateSetting } = useSettings()

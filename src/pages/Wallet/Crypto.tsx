@@ -3,9 +3,9 @@ import { useLocation } from 'react-router-dom'
 import Header from '@/components/Header'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
-import CryptoImage from '@/components/CryptoImage'
+import CryptoImage from '@/components/cryptos/CryptoImage'
 import CryptoActionButtons from '@/components/buttons/CryptoActionButtons'
-import CryptoDetailsTable from '@/pages/Wallet/Cryptos/Crypto/CryptoDetailsTable'
+import CryptoDetailsTable from '@/components/cryptos/CryptoDetailsTable'
 
 const Crypto: React.FC = () => {
   const location = useLocation()

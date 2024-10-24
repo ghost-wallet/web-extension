@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Status } from '@/wallet/kaspa/wallet'
-import useKaspa from '@/hooks/useKaspa'
-import useSettings from '@/hooks/useSettings'
+import useKaspa from '@/hooks/contexts/useKaspa'
+import useSettings from '@/hooks/contexts/useSettings'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import WalletActionButtons from '@/components/buttons/WalletActionButtons'
-import Cryptos from '@/pages/Wallet/Cryptos'
+import Cryptos from '@/components/cryptos/Cryptos'
 import TotalWalletValue from '@/components/TotalWalletValue'
 
 export default function Wallet() {

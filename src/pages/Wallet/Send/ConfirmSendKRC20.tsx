@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import ConfirmSendDetails from '@/components/ConfirmSendDetails'
-import useKaspa from '@/hooks/useKaspa'
+import useKaspa from '@/hooks/contexts/useKaspa'
 import SpinnerPage from '@/components/SpinnerPage'
 
 const ConfirmSendKRC20: React.FC = () => {

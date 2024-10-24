@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import TransactionItem from './TransactionItem'
 import Spinner from '@/components/Spinner'
-import useKasplex from '@/hooks/useKasplex'
 
 interface Operation {
   mtsAdd: string
@@ -9,6 +8,12 @@ interface Operation {
   amt: string
   tick: string
   hashRev: string
+}
+
+interface TransactionListProps {
+  transactions: Operation[]
+  loadMore: () => void
+  loadingMore: boolean
 }
 
 const groupTransactionsByDate = (transactions: Operation[]): { [date: string]: Operation[] } => {
@@ -30,27 +35,17 @@ const groupTransactionsByDate = (transactions: Operation[]): { [date: string]: O
   )
 }
 
-export default function TransactionList() {
-  const { kasplex, loadKrc20Transactions } = useKasplex()
-  const [loadingMore, setLoadingMore] = useState(false)
+export default function TransactionList({ transactions, loadMore, loadingMore }: TransactionListProps) {
   const lastElementRef = useRef<HTMLLIElement | null>(null)
 
-  const groupedTransactions = groupTransactionsByDate(kasplex.transactions.result)
+  const groupedTransactions = groupTransactionsByDate(transactions)
 
-  // Observer for automatic "Load More" functionality
   useEffect(() => {
     const observer = new IntersectionObserver(
       async (entries) => {
         const lastEntry = entries[0]
-        if (lastEntry.isIntersecting && kasplex.transactions.next && !loadingMore) {
-          setLoadingMore(true)
-          try {
-            await loadKrc20Transactions(undefined, kasplex.transactions.next)
-          } catch (err) {
-            console.error('Error loading more operations:', err)
-          } finally {
-            setLoadingMore(false)
-          }
+        if (lastEntry.isIntersecting && !loadingMore) {
+          await loadMore()
         }
       },
       { threshold: 1.0 },
@@ -65,7 +60,7 @@ export default function TransactionList() {
         observer.unobserve(lastElementRef.current)
       }
     }
-  }, [kasplex.transactions.next, loadingMore, loadKrc20Transactions])
+  }, [loadingMore, loadMore])
 
   return (
     <div className="px-4 pb-24">
@@ -82,7 +77,7 @@ export default function TransactionList() {
                   <TransactionItem
                     key={transaction.hashRev}
                     operation={transaction}
-                    ref={isLastElement ? lastElementRef : null} // Assign the ref to the last element across all groups
+                    ref={isLastElement ? lastElementRef : null}
                     isLast={isLastElement}
                   />
                 )

@@ -5,7 +5,7 @@ import Create from '@/pages/CreateWallet/Create'
 import Password from '@/pages/CreateWallet/Password'
 import Import from '@/pages/CreateWallet/Import'
 import Confirm from '@/pages/CreateWallet/Confirm'
-import useKaspa from '@/hooks/useKaspa'
+import useKaspa from '@/hooks/contexts/useKaspa'
 import AnimatedMain from '@/components/AnimatedMain'
 import SpinnerPage from '@/components/SpinnerPage'
 

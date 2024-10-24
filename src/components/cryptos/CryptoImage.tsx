@@ -1,5 +1,5 @@
 import React from 'react'
-import kaspaSvg from '../../assets/kaspa-kas-logo.svg'
+import kaspaSvg from '../../../assets/kaspa-kas-logo.svg'
 
 interface CryptoImageProps {
   ticker: string
