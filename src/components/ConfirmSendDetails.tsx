@@ -56,7 +56,7 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
 
         <div className="bg-bgdarker rounded-md p-4">
           <div className="flex justify-between">
-            <span className="text-base font-lato text-mutedtext">Network Fee</span>
+            <span className="text-base font-lato text-mutedtext">Gas Fee</span>
             <KRC20NetworkFee fee={fee} />
           </div>
         </div>

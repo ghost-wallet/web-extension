@@ -43,20 +43,20 @@ const ConfirmSendKRC20: React.FC = () => {
     setError('')
     request('account:getKRC20Info', [recipient, token, amount]).then((info) => {
       request('account:submitKRC20Transaction', [info, feeRate])
-      .then((response) => {
-        console.log('[ConfirmSendKRC20] write inscription success. Response:', response)
-        const txnId = response[1]
-        navigate(`/send/${token.tick}/confirm/sent`, {
-          state: { token, amount, recipient, txnId },
+        .then((response) => {
+          console.log('[ConfirmSendKRC20] write inscription success. Response:', response)
+          const txnId = response[1]
+          navigate(`/send/${token.tick}/confirm/sent`, {
+            state: { token, amount, recipient, txnId },
+          })
         })
-      })
-      .catch((err) => {
-        setError(`Error: ${err}`)
-        console.error('[ConfirmSendKRC20] error writing inscription:', err)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+        .catch((err) => {
+          setError(`Error: ${err}`)
+          console.error('[ConfirmSendKRC20] error writing inscription:', err)
+        })
+        .finally(() => {
+          setLoading(false)
+        })
     })
   }, [request, recipient, token, amount, feeRate])
 

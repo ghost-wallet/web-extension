@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
@@ -9,27 +9,10 @@ import useKaspa from '@/hooks/useKaspa'
 const ConfirmSend: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { token, recipient, amount, transactions = [] } = location.state || {}
+  const { token, recipient, amount, transactions = [], fee } = location.state || {}
   const { request } = useKaspa()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-
-  const fee = useMemo(() => {
-    try {
-      console.log('Calculate fee from transactions:', transactions)
-      const transaction = JSON.parse(transactions[transactions.length - 1])
-      const inputValue = transaction.inputs.reduce((acc: bigint, input: any) => {
-        return acc + BigInt(input.utxo!.amount)
-      }, 0n)
-      const outputValue = transaction.outputs.reduce((acc: bigint, output: any) => {
-        return acc + BigInt(output.value)
-      }, 0n)
-      return Number(inputValue - outputValue) / 1e8 // Convert from smallest unit
-    } catch (error) {
-      console.error('Error calculating fee:', error)
-      return 0
-    }
-  }, [transactions])
 
   const handleConfirmClick = useCallback(async () => {
     try {

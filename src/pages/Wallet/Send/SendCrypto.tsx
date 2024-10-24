@@ -1,16 +1,20 @@
-import React, { useState, useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
-import { formatBalance } from '@/utils/formatting'
 import CryptoImage from '@/components/CryptoImage'
-import useKaspa from '@/hooks/useKaspa'
-import useURLParams from '@/hooks/useURLParams'
-import { Input as KaspaInput } from '@/provider/protocol'
-import { validateRecipient, validateAmountToSend } from '@/utils/validation'
-import { useFeeRate } from '@/hooks/useFeeRate'
 import Header from '@/components/Header'
 import ErrorMessage from '@/components/ErrorMessage'
+import RecipientInput from '@/components/RecipientInput'
+import AmountInput from '@/components/AmountInput'
+import ContinueToConfirmTxnButton from '@/components/buttons/ContinueToConfirmTxnButton'
+import useKaspa from '@/hooks/useKaspa'
+import useURLParams from '@/hooks/useURLParams'
+import { useTransactionInputs } from '@/hooks/useTransactionInputs'
+import { useFeeRate } from '@/hooks/useFeeRate'
+import { formatBalance, formatTokenBalance } from '@/utils/formatting'
+
+const FEE_TYPES = ['slow', 'standard', 'fast'] as const
 
 const SendCrypto: React.FC = () => {
   const location = useLocation()
@@ -18,163 +22,114 @@ const SendCrypto: React.FC = () => {
   const { token } = location.state || {}
   const { request } = useKaspa()
   const [hash, params] = useURLParams()
-
   const maxAmount = token.tick === 'KASPA' ? token.balance : formatBalance(token.balance, token.dec)
+  const { feeRates, updateFeeRate } = useFeeRate()
+  const [currentFeeTypeIndex, setCurrentFeeTypeIndex] = useState(1) // Start with 'standard'
+  const [estimatedFee, setEstimatedFee] = useState<string>('') // Store estimated fee
+  const { outputs, recipientError, amountError, handleRecipientChange, handleAmountChange, handleMaxClick } =
+    useTransactionInputs(token, maxAmount)
 
-  const [inputs] = useState<KaspaInput[]>(params.get('inputs') ? JSON.parse(params.get('inputs')!) : [])
-  const [outputs, setOutputs] = useState<[string, string][]>([['', '']])
-  const [recipientError, setRecipientError] = useState<string | null>(null)
-  const [amountError, setAmountError] = useState<string | null>(null)
-  const [fee] = useState(params.get('fee') ?? '0')
+  const selectedFeeRate = feeRates[FEE_TYPES[currentFeeTypeIndex]] || 1
 
-  const { feeRate, error: feeRateError } = useFeeRate()
-
-  const handleRecipientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setOutputs((prevOutputs) => {
-      const newOutputs = [...prevOutputs]
-      newOutputs[0][0] = value
-      return newOutputs
-    })
-
-    if (token.tick !== 'KASPA') {
-      validateRecipient(request, value, setRecipientError)
-    } else {
-      setRecipientError(null)
+  // Function to estimate Kaspa Transaction Fee
+  const fetchEstimatedFee = useCallback(() => {
+    if (outputs[0][0].length > 0 && outputs[0][1].length > 0 && !recipientError && !amountError) {
+      request('account:estimateKaspaTransactionFee', [outputs, selectedFeeRate, '0'])
+        .then((feeEstimate) => {
+          setEstimatedFee(feeEstimate) // Set the estimated fee
+        })
+        .catch((err) => {
+          console.error(`Error estimating fee: ${err}`)
+        })
     }
-  }
+  }, [outputs, selectedFeeRate, request, recipientError, amountError])
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value
-
-    const decimalPlaces = value.split('.')[1]?.length || 0
-    if (decimalPlaces > token.dec) {
-      return // Don't update the state if the user exceeds the allowed decimal places
-    }
-
-    if (value.startsWith('.') && value.length > 1) {
-      value = `0${value}`
-    }
-
-    setOutputs((prevOutputs) => {
-      const newOutputs = [...prevOutputs]
-      newOutputs[0][1] = value
-      return newOutputs
-    })
-
-    validateAmountToSend(token.tick, value, parseFloat(maxAmount), setAmountError)
-  }
-
-  const handleMaxClick = () => {
-    setOutputs((prevOutputs) => {
-      const newOutputs = [...prevOutputs]
-      newOutputs[0][1] = maxAmount.toString()
-      return newOutputs
-    })
-    setAmountError(null)
-  }
+  // Automatically refresh the fee rate and the estimated fee every 5 seconds
+  useEffect(() => {
+    fetchEstimatedFee() // Initial fetch
+    const intervalId = setInterval(() => {
+      updateFeeRate() // Update the fee rates from the API
+      fetchEstimatedFee() // Re-fetch the estimated fee based on the updated fee rates
+    }, 5000)
+    return () => clearInterval(intervalId) // Clear interval on component unmount
+  }, [fetchEstimatedFee, updateFeeRate])
 
   const initiateSend = useCallback(() => {
-    if (!feeRate) return
-    request('account:create', [outputs, feeRate, fee, inputs])
-      .then(([transactions, fee]) => {
+    request('account:create', [outputs, selectedFeeRate, estimatedFee, JSON.parse(params.get('inputs')!)])
+      .then(([transactions]) => {
         navigate(`/send/${token.tick}/confirm`, {
-          state: {
-            token,
-            recipient: outputs[0][0],
-            amount: outputs[0][1],
-            transactions,
-            inputs,
-          },
+          state: { token, recipient: outputs[0][0], amount: outputs[0][1], transactions, fee: estimatedFee },
         })
       })
       .catch((err) => {
         console.error(`Error occurred: ${err}`)
-        setRecipientError(`Error: ${err}`)
       })
-  }, [outputs, token, navigate, request, feeRate, fee, inputs])
+  }, [outputs, token, navigate, request, selectedFeeRate, estimatedFee, params])
 
   const handleContinue = () => {
-    console.log('handling continue with token', token.tick)
     if (token.tick === 'KASPA') {
       initiateSend()
     } else {
       navigate(`/send/${token.tick}/confirmkrc20`, {
-        state: {
-          token,
-          recipient: outputs[0][0],
-          amount: outputs[0][1],
-          feeRate: feeRate,
-        },
+        state: { token, recipient: outputs[0][0], amount: outputs[0][1], feeRate: selectedFeeRate },
       })
     }
   }
 
+  const handleFeeTypeClick = () => {
+    const nextIndex = (currentFeeTypeIndex + 1) % FEE_TYPES.length
+    setCurrentFeeTypeIndex(nextIndex)
+  }
+
   const isButtonEnabled =
     outputs[0][0].length > 0 && outputs[0][1].length > 0 && !recipientError && !amountError
+  const formattedBalance = formatTokenBalance(token.balance, token.tick, token.dec)
 
-  const formattedBalance =
-    token.tick === 'KASPA'
-      ? parseFloat(token.balance).toLocaleString(undefined, {
-          minimumFractionDigits: parseFloat(token.balance) % 1 === 0 ? 0 : 2, // Show 0 decimals for whole numbers
-          maximumFractionDigits: 8, // Up to 8 decimal places for non-integer values
-        })
-      : parseFloat(String(formatBalance(token.balance, token.dec))).toLocaleString(undefined, {
-          minimumFractionDigits:
-            parseFloat(String(formatBalance(token.balance, token.dec))) % 1 === 0 ? 0 : 2, // Show 0 decimals for whole numbers
-          maximumFractionDigits: 8, // Up to 8 decimal places for non-integer values
-        })
+  const feeTypeText = FEE_TYPES[currentFeeTypeIndex]
 
   return (
     <>
       <AnimatedMain>
         <Header title={`Send ${token.tick}`} showBackButton={true} />
-        <CryptoImage ticker={token.tick} size={'large'} />
+        <CryptoImage ticker={token.tick} size="large" />
 
         <div className="flex flex-col items-center space-y-4 p-4">
-          <input
-            type="text"
+          <RecipientInput
             value={outputs[0][0]}
-            onChange={handleRecipientChange}
-            placeholder="Recipient's Kaspa address"
-            className="w-full p-3 border border-slightmuted bg-bgdarker text-base text-primarytext placeholder-mutedtext rounded"
+            onChange={(e) => handleRecipientChange(e.target.value, request)}
           />
-
-          <div className="relative w-full">
-            <input
-              type="number"
-              value={outputs[0][1]}
-              onChange={handleAmountChange}
-              placeholder="Amount"
-              className="w-full p-3 pr-20 border border-slightmuted bg-bgdarker text-base text-primarytext placeholder-mutedtext rounded"
-            />
-            <button
-              type="button"
-              onClick={handleMaxClick}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-primarytext font-lato text-base bg-slightmuted hover:bg-muted rounded-[10px] px-2 py-1"
-            >
-              Max
-            </button>
-          </div>
+          <AmountInput
+            value={outputs[0][1]}
+            onChange={(e) => handleAmountChange(e.target.value)}
+            onMaxClick={handleMaxClick}
+          />
 
           <div className="w-full text-right text-mutedtext font-lato font-light text-base">
             Available {formattedBalance} {token.tick}
           </div>
-
-          <ErrorMessage message={recipientError || amountError || ''} />
         </div>
 
-        <div className="px-6 pt-6">
-          <button
-            type="button"
-            onClick={handleContinue}
-            disabled={!isButtonEnabled}
-            className={`w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] ${
-              isButtonEnabled ? 'bg-primary cursor-pointer hover:bg-hover' : 'bg-secondary cursor-not-allowed'
-            } text-secondarytext`}
+        {/* Fee priority and fee estimate - always visible */}
+        <div className="w-full text-left text-mutedtext font-lato font-light text-base px-6">
+          <span
+            className={`font-bold ${isButtonEnabled ? 'text-primary hover:cursor-pointer' : 'text-mutedtext'}`}
+            onClick={isButtonEnabled ? handleFeeTypeClick : undefined}
           >
-            Continue
-          </button>
+            Fee priority: {feeTypeText.charAt(0).toUpperCase() + feeTypeText.slice(1)}
+          </span>
+        </div>
+        <div className="w-full text-left text-mutedtext font-lato font-light text-base px-6">
+          Fee: {estimatedFee ? `${estimatedFee} KAS` : <span className="invisible">Fee Placeholder</span>}
+        </div>
+
+        {/* Error message */}
+        <ErrorMessage message={recipientError || amountError || ''} />
+
+        {/* Reduced padding to move button up */}
+        <div className="px-6">
+          {' '}
+          {/* Further reduced padding */}
+          <ContinueToConfirmTxnButton onClick={handleContinue} disabled={!isButtonEnabled} />
         </div>
       </AnimatedMain>
       <BottomNav />

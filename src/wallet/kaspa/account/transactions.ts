@@ -20,7 +20,7 @@ import {
   UtxoProcessor,
   UtxoProcessorEvent,
   UtxoProcessorNotificationCallback,
-  XPrv,
+  XPrv
 } from '@/wasm'
 import Addresses from './addresses'
 import EventEmitter from 'events'
@@ -40,7 +40,6 @@ export interface CustomSignature {
   signer: string
   script?: string
 }
-
 
 export default class Transactions extends EventEmitter {
   kaspa: RpcClient
@@ -94,7 +93,6 @@ export default class Transactions extends EventEmitter {
     return priorityEntries
   }
 
-
   async estimateKaspaTransactionFee(outputs: [string, string][], feeRate: number, fee: string) {
     const preparedTxn = {
       entries: this.context,
@@ -108,11 +106,17 @@ export default class Transactions extends EventEmitter {
     }
 
     const estimate = await estimateTransactions(preparedTxn)
+    console.log('estimated kaspa fee:', estimate.fees)
 
     return sompiToKaspaString(estimate.fees)
   }
 
-  async create(outputs: [string, string][], feeRate: number, fee: string, customs?: CustomInput[]): Promise<[string[], string]> {
+  async create(
+    outputs: [string, string][],
+    feeRate: number,
+    fee: string,
+    customs?: CustomInput[],
+  ): Promise<[string[], string]> {
     let priorityEntries: IUtxoEntry[] = []
 
     if (customs && customs.length > 0) {
@@ -391,15 +395,10 @@ export default class Transactions extends EventEmitter {
     console.log('[Transaction] estimateKRC20Transaction totalFee', sompiToKaspaString(totalFee))
     console.log('[Transaction] estimateKRC20Transaction totalAmount', sompiToKaspaString(totalAmount))
 
-    const estimatedFee = sompiToKaspaString(totalFee)
-    return estimatedFee
+    return sompiToKaspaString(totalFee)
   }
 
-  async getKRC20Info(
-    recipient: string,
-    token: Token,
-    amount: string,
-  ): Promise<KRC20Info> {
+  async getKRC20Info(recipient: string, token: Token, amount: string): Promise<KRC20Info> {
     const sender = this.addresses.receiveAddresses[0]
     const { script, scriptAddress } = setupkrc20Transaction(sender, recipient, amount, token)
     return {
@@ -467,7 +466,6 @@ export default class Transactions extends EventEmitter {
   }
 
   async submitKRC20Transaction(info: KRC20Info, feeRate: number) {
-
     const commit = await this.submitKRC20Commit(info, feeRate)
 
     const commitId = commit[commit.length - 1]

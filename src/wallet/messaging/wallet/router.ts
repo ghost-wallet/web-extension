@@ -38,17 +38,18 @@ export default class Router {
       'account:addresses': () => [account.addresses.receiveAddresses, account.addresses.changeAddresses],
       'account:balance': () => account.balance,
       'account:utxos': () => account.UTXOs,
-      'account:estimateKaspaTransactionFee': (outputs, feeRate, fee) => 
+      'account:estimateKaspaTransactionFee': (outputs, feeRate, fee) =>
         account.transactions.estimateKaspaTransactionFee(outputs, feeRate, fee),
       'account:create': (outputs, feeRate, fee, inputs) =>
         account.transactions.create(outputs, feeRate, fee, inputs),
       // TODO update the `account:sign` mapping to not require password
       'account:sign': (transactions) => account.transactions.sign(transactions),
       'account:submitContextful': (transactions) => account.transactions.submitContextful(transactions),
-      'account:submitKaspaTransaction': (transactions) => account.transactions.submitKaspaTransaction(transactions),
+      'account:submitKaspaTransaction': (transactions) =>
+        account.transactions.submitKaspaTransaction(transactions),
       'account:compoundUtxos': () => account.compoundUtxos(),
       'account:scan': () => account.scan(),
-      'account:getKRC20Info': (recipient, token, amount) => 
+      'account:getKRC20Info': (recipient, token, amount) =>
         account.transactions.getKRC20Info(recipient, token, amount),
       'account:submitKRC20Transaction': (info, feeRate) =>
         account.transactions.submitKRC20Transaction(info, feeRate),

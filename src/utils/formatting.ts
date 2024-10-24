@@ -6,6 +6,18 @@ export const formatBalance = (balance: string, decimals: string | number): numbe
   return parseFloat(balance) / factor
 }
 
+export const formatTokenBalance = (balance: string, tick: string, decimals: string | number): string => {
+  return tick === 'KASPA'
+    ? parseFloat(balance).toLocaleString(undefined, {
+        minimumFractionDigits: parseFloat(balance) % 1 === 0 ? 0 : 2,
+        maximumFractionDigits: 8,
+      })
+    : formatBalance(balance, decimals).toLocaleString(undefined, {
+        minimumFractionDigits: formatBalance(balance, decimals) % 1 === 0 ? 0 : 2,
+        maximumFractionDigits: 8,
+      })
+}
+
 export const formatTokenPrice = (price: number): string => {
   if (price >= 1) {
     return price.toFixed(2) // For prices >= 1, round to 2 decimal places
