@@ -3,6 +3,7 @@ import {
   createInputSignature,
   createTransactions,
   estimateTransactions,
+  HexString,
   IGeneratorSettingsObject,
   IScriptPublicKey,
   ITransactionOutpoint,
@@ -39,6 +40,15 @@ export interface CustomSignature {
   index: number
   signer: string
   script?: string
+}
+
+function calculateScriptExtraFee(script: HexString, feeRate: number) {
+  const scriptBytes = ScriptBuilder.canonicalDataSize(script)
+  const scriptExtraFee = BigInt(Math.ceil(scriptBytes * feeRate))
+  console.log('scriptBytes', scriptBytes)
+  console.log('scriptExtraFee', scriptExtraFee)
+  console.log('scriptExtraFee kaspa', sompiToKaspaString(scriptExtraFee))
+  return scriptExtraFee
 }
 
 export default class Transactions extends EventEmitter {
@@ -316,7 +326,7 @@ export default class Transactions extends EventEmitter {
   }
 
   async estimateKRC20TransactionFee(info: KRC20Info, feeRate: number) {
-    const { scriptAddress } = info
+    const { scriptAddress, script } = info
 
     //const commit1 = await this.create([[scriptAddress, '0.2']], feeRate, '0')
 
@@ -357,13 +367,15 @@ export default class Transactions extends EventEmitter {
       isCoinbase: false,
     }
 
+    const scriptExtraFee = calculateScriptExtraFee(script, feeRate)
+
     const revealSettings: IGeneratorSettingsObject = {
       priorityEntries: [commitUTXO],
       entries: this.context,
       outputs: [],
       changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
       feeRate,
-      priorityFee: kaspaToSompi('0.01')!,
+      priorityFee: scriptExtraFee,
     }
 
     console.log('[Transaction] estimateKRC20Transaction revealSettings: ', revealSettings)
@@ -450,8 +462,10 @@ export default class Transactions extends EventEmitter {
     }
     console.log('[Transactions] Reveal transaction input:', input)
 
+    const scriptExtraFee = calculateScriptExtraFee(script, feeRate)
+
     // - create
-    const [reveal1] = await this.create([], feeRate, '0.01', [input])
+    const [reveal1] = await this.create([], feeRate, sompiToKaspaString(scriptExtraFee), [input])
     console.log('[Transactions] Created reveal transaction:', reveal1)
 
     // - sign
