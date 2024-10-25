@@ -34,10 +34,16 @@ const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
           <span className="font-bold">
             {feeTypeText.charAt(0).toUpperCase() + feeTypeText.slice(1)} ~{' '}
             {estimatedSeconds >= 60
-              ? `${parseFloat((estimatedSeconds / 60).toPrecision(2))} minute${parseFloat((estimatedSeconds / 60).toPrecision(2)) !== 1 ? 's' : ''}`
+              ? `${parseFloat((estimatedSeconds / 60).toPrecision(2))} minute${
+                  parseFloat((estimatedSeconds / 60).toPrecision(2)) !== 1 ? 's' : ''
+                }`
               : estimatedSeconds < 1
-                ? `${parseFloat(estimatedSeconds.toPrecision(1))} second${parseFloat(estimatedSeconds.toPrecision(1)) !== 1 ? 's' : ''}`
-                : `${parseFloat(estimatedSeconds.toPrecision(1))} second${parseFloat(estimatedSeconds.toPrecision(1)) !== 1 ? 's' : ''}`}
+                ? `${parseFloat(estimatedSeconds.toPrecision(1))} second${
+                    parseFloat(estimatedSeconds.toPrecision(1)) !== 1 ? 's' : ''
+                  }`
+                : `${parseFloat(estimatedSeconds.toPrecision(1))} second${
+                    parseFloat(estimatedSeconds.toPrecision(1)) !== 1 ? 's' : ''
+                  }`}
           </span>
         </div>
       </div>

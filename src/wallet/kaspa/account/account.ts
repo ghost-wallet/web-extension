@@ -135,12 +135,19 @@ export default class Account extends EventEmitter {
     console.log('[Account] Scan started')
     console.log('[Account] Scan: current receive addresses', this.addresses.receiveAddresses)
     console.log('[Account] Scan: current change addresses', this.addresses.changeAddresses)
-    
 
-
-    const receive = await this.scanAddresses(true, this.addresses.receiveAddresses.length, quick ? 8 : 128, quick ? 8 : 128)
-    const change = await this.scanAddresses(false, this.addresses.changeAddresses.length, quick ? 128 : 1024, 128)
-
+    const receive = await this.scanAddresses(
+      true,
+      this.addresses.receiveAddresses.length,
+      quick ? 8 : 128,
+      quick ? 8 : 128,
+    )
+    const change = await this.scanAddresses(
+      false,
+      this.addresses.changeAddresses.length,
+      quick ? 128 : 1024,
+      128,
+    )
 
     console.log('[Account] Scan complete')
     console.log('[Account] Scan: current receive addresses', this.addresses.receiveAddresses)
@@ -150,7 +157,9 @@ export default class Account extends EventEmitter {
   }
 
   private async scanAddresses(isReceive: boolean, start: number, maxEmpty: number, windowSize = 8) {
-    console.log(`[Account] Starting Scan for ${isReceive ? 'recieve' : 'change'} addresses. Starting at ${start}.`)
+    console.log(
+      `[Account] Starting Scan for ${isReceive ? 'recieve' : 'change'} addresses. Starting at ${start}.`,
+    )
     let index = start
     let foundIndex = start
     do {
@@ -167,10 +176,10 @@ export default class Account extends EventEmitter {
         foundIndex = index + entryIndex
       }
       index += windowSize
-    } while(index - foundIndex < maxEmpty)
+    } while (index - foundIndex < maxEmpty)
     const numToIncrement = foundIndex - start
     console.log('numToIncrement', numToIncrement)
-    if(numToIncrement > 0) {
+    if (numToIncrement > 0) {
       await this.addresses.increment(isReceive ? numToIncrement : 0, isReceive ? 0 : numToIncrement)
     }
     console.log(`[Account] Scan done. Found ${numToIncrement} addresses. Address counter now ${foundIndex}.`)

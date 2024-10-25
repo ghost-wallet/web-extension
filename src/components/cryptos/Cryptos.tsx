@@ -41,20 +41,32 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetchTokensOnMount = async () => {
+    const loadTokens = async () => {
+      const cacheKey = `tokens_${kaspa.addresses[0][0]}`
+      const cachedTokens = localStorage.getItem(cacheKey)
+
+      if (cachedTokens) {
+        // Load cached tokens immediately
+        try {
+          setTokens(JSON.parse(cachedTokens))
+          setInitialLoading(false) // Show cached data immediately
+        } catch (error) {
+          console.error('Error parsing cached tokens:', error)
+        }
+      }
+
+      // Fetch new tokens in the background
       try {
-        setInitialLoading(true)
         const fetchedTokens = await fetchKrc20Tokens(settings.selectedNode, kaspa.addresses[0][0], price)
-        setTokens(fetchedTokens)
+        setTokens(fetchedTokens) // Update with newly fetched tokens
         setError(null)
       } catch (error) {
         setError('Error loading tokens')
-      } finally {
-        setInitialLoading(false)
       }
     }
-    fetchTokensOnMount()
-  }, [kaspa.addresses, price])
+
+    loadTokens()
+  }, [kaspa.addresses, price, settings.selectedNode])
 
   useTotalValueCalculation(tokens, price, onTotalValueChange)
 
