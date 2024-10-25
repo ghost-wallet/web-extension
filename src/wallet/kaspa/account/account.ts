@@ -138,7 +138,7 @@ export default class Account extends EventEmitter {
     
 
 
-    const receive = await this.scanAddresses(true, this.addresses.receiveAddresses.length, quick ? 8 : 64)
+    const receive = await this.scanAddresses(true, this.addresses.receiveAddresses.length, quick ? 8 : 128, quick ? 8 : 128)
     const change = await this.scanAddresses(false, this.addresses.changeAddresses.length, quick ? 128 : 1024, 128)
 
 
