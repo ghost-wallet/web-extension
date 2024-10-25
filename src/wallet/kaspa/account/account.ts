@@ -92,17 +92,14 @@ export default class Account extends EventEmitter {
   }
 
   private async scanAddresses(isReceive: boolean, start: number, maxEmpty: number, windowSize = 8) {
-    console.log(
-      `[Account] Starting Scan for ${isReceive ? 'receive' : 'change'} addresses. Starting at ${start}.`,
-    )
     let index = start
     let foundIndex = start
     do {
-      console.log('current index', index)
-      console.log('current foundIndex', foundIndex)
       const addresses = await this.addresses.derive(isReceive, index, index + windowSize)
+
+      // TODO: Make sure you're connected to node BEFORE trying to scan
       const { entries } = await this.processor.rpc.getUtxosByAddresses(addresses)
-      console.log('entries', entries)
+
       const entryIndex = addresses.findLastIndex((address) =>
         entries.some((entry) => entry.address?.toString() === address),
       )

@@ -7,7 +7,7 @@ import usePromise from '../hooks/usePromise'
 
 export default function Landing() {
   const settings = useSettings()
-  const { kaspa, load } = useKaspa()
+  const { kaspa, load, request } = useKaspa()
   const navigate = useNavigate()
 
   const [loadedSettings] = usePromise(() => {
@@ -19,7 +19,21 @@ export default function Landing() {
   }, [])
 
   useEffect(() => {
+    const connectNode = async () => {
+      if (!kaspa.connected) {
+        try {
+          await request('node:connect', [settings.settings.nodes[settings.settings.selectedNode].address])
+          console.log('Successfully connected to the node.')
+        } catch (error) {
+          console.error('Error connecting to node:', error)
+        }
+      }
+    }
+
     if (loadedSettings && loadedKaspa) {
+      // Perform node:connect after loading settings and kaspa
+      connectNode()
+
       switch (kaspa.status) {
         case Status.Uninitialized:
           navigate('/create')
@@ -33,7 +47,16 @@ export default function Landing() {
         default:
       }
     }
-  }, [loadedSettings, loadedKaspa])
+  }, [
+    loadedSettings,
+    loadedKaspa,
+    kaspa.connected,
+    kaspa.status,
+    request,
+    settings.settings.nodes,
+    settings.settings.selectedNode,
+    navigate,
+  ])
 
   return null
 }

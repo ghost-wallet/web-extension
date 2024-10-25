@@ -31,12 +31,12 @@ export default function Login() {
       if (decryptedKey) {
         console.log('Login successful')
 
-        // Start account scan in the background
+        // TODO perform account scan in background or earlier? Do it when component is mounted?
+        // TODO edge case: if not connected to node, account scan will fail and not be retried
         request('account:scan', [])
           .then(() => console.log('Account scan completed'))
           .catch((err) => console.error('Account scan error:', err))
 
-        // Navigate to wallet immediately after successful wallet unlock
         navigate('/')
       } else {
         setError('Failed to retrieve decrypted key')

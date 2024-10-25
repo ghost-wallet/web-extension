@@ -19,6 +19,7 @@ export interface Transactions {
   result: Transaction[]
 }
 
+//TODO cache transaction history
 export const fetchKRC20TransactionHistory = async (
   selectedNode: number,
   address: string,
