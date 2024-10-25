@@ -18,9 +18,11 @@ export default class Account extends EventEmitter {
   addresses: Addresses
   context: UtxoContext
   transactions: Transactions
+  node: Node
 
   constructor(node: Node) {
     super()
+    this.node = node
     console.log('[Account] Setting up this.processor', node.rpcClient, node.networkId)
     this.processor = new UtxoProcessor({
       rpc: node.rpcClient,
@@ -67,6 +69,9 @@ export default class Account extends EventEmitter {
   }
 
   async scan(quick = false): Promise<[number, number]> {
+    if (!this.node.connected) {
+      await this.node.waitUntilConnected()
+    }
     console.log('[Account] Scan started')
     console.log('[Account] Scan: current receive addresses', this.addresses.receiveAddresses)
     console.log('[Account] Scan: current change addresses', this.addresses.changeAddresses)
@@ -92,12 +97,12 @@ export default class Account extends EventEmitter {
   }
 
   private async scanAddresses(isReceive: boolean, start: number, maxEmpty: number, windowSize = 8) {
+    console.log(`[Account] Starting Scan for ${isReceive ? 'recieve' : 'change'} addresses. Starting at ${start}.`)
     let index = start
     let foundIndex = start
     do {
       const addresses = await this.addresses.derive(isReceive, index, index + windowSize)
 
-      // TODO: Make sure you're connected to node BEFORE trying to scan
       const { entries } = await this.processor.rpc.getUtxosByAddresses(addresses)
 
       const entryIndex = addresses.findLastIndex((address) =>
