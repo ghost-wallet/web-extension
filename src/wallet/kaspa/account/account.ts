@@ -103,7 +103,6 @@ export default class Account extends EventEmitter {
     do {
       const addresses = await this.addresses.derive(isReceive, index, index + windowSize)
 
-      // TODO: Make sure you're connected to node BEFORE trying to scan
       const { entries } = await this.processor.rpc.getUtxosByAddresses(addresses)
 
       const entryIndex = addresses.findLastIndex((address) =>
