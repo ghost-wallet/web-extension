@@ -25,19 +25,26 @@ export default function Login() {
     }
   }, [password, error])
 
-  const login = useCallback(() => {
-    request('wallet:unlock', [password])
-      .then((decryptedKey: string) => {
-        if (decryptedKey) {
-          navigate('/')
-        } else {
-          setError('Failed to retrieve decrypted key')
-        }
-      })
-      .catch((err) => {
-        console.log('[Login] Password login error', err)
-        setError('Incorrect password')
-      })
+  const login = useCallback(async () => {
+    try {
+      const decryptedKey = await request('wallet:unlock', [password])
+      if (decryptedKey) {
+        console.log('Login successful')
+
+        // Start account scan in the background
+        request('account:scan', [])
+          .then(() => console.log('Account scan completed'))
+          .catch((err) => console.error('Account scan error:', err))
+
+        // Navigate to wallet immediately after successful wallet unlock
+        navigate('/')
+      } else {
+        setError('Failed to retrieve decrypted key')
+      }
+    } catch (err) {
+      console.log('[Login] Password login error', err)
+      setError('Incorrect password')
+    }
   }, [password, request, navigate])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

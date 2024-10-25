@@ -39,6 +39,7 @@ export default function Landing({
           onClick={() => {
             forward(Tabs.Password, 'create')
           }}
+          disabled={!enable}
           className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] transition-colors duration-300 ${
             enable
               ? 'bg-primary text-secondarytext hover:bg-hoverprimary cursor-pointer'
@@ -51,7 +52,8 @@ export default function Landing({
           onClick={() => {
             forward(Tabs.Password, 'import')
           }}
-          className={`w-full h-[52px] text-base font-lato font-semibold border-primary border rounded-[25px] ${
+          disabled={!enable}
+          className={`w-full h-[52px] text-base font-lato font-semibold border-primary border rounded-[25px] transition-colors duration-300 ${
             enable
               ? 'text-primary cursor-pointer hover:border-hover'
               : 'border-secondary text-secondary cursor-default'

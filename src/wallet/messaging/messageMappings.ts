@@ -2,7 +2,7 @@ import { Status } from '../kaspa/wallet'
 import { UTXO } from '../kaspa/account/account'
 import { CustomInput } from '../kaspa/account/transactions'
 import { PriorityBuckets } from '../kaspa/node'
-import { Token } from '@/contexts/kasplex/kasplexReducer'
+import { Token } from '../kaspa/krc20/Transact'
 import { KRC20Info } from '../kaspa/krc20/Transact'
 
 export interface RequestMappings {
@@ -26,7 +26,6 @@ export interface RequestMappings {
   'account:sign': [string[]]
   'account:submitContextful': [string[]]
   'account:submitKaspaTransaction': [string[]]
-  'account:compoundUtxos': []
   'account:scan': [boolean?]
   'account:getKRC20Info': [string, Token, string]
   'account:submitKRC20Transaction': [KRC20Info, number]
@@ -63,7 +62,6 @@ export interface ResponseMappings {
   'account:sign': string[]
   'account:submitContextful': string[]
   'account:submitKaspaTransaction': string[]
-  'account:compoundUtxos': void
   'account:scan': [number, number]
   'account:getKRC20Info': KRC20Info
   'account:submitKRC20Transaction': [string, string]

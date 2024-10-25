@@ -47,7 +47,14 @@ export default function CreateWallet() {
     try {
       setLoading(true)
       await request('wallet:import', [mnemonic, password])
-      // TODO do an account:scan here?
+
+      // Imported wallets must be scanned in order to retrieve all the user's addresses and UTXOs
+      // It shows their total Kaspa balance.
+      // Newly created wallets do not have a transaction history to be scanned.
+      if (flowType === 'import') {
+        await request('account:scan', [])
+      }
+
       navigate('/wallet')
     } catch (error) {
       console.error('Error setting up wallet:', error)
@@ -63,7 +70,7 @@ export default function CreateWallet() {
   return (
     <AnimatedMain showConnectingMessage={false}>
       {loading ? (
-        <SpinnerPage displayText="Initializing wallet and connecting to Kaspa network. This process could take a few minutes." />
+        <SpinnerPage displayText="Initializing wallet and connecting to Kaspa network..." />
       ) : (
         {
           [Tabs.Landing]: <Landing forward={handleForward} />,

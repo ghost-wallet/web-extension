@@ -66,71 +66,6 @@ export default class Account extends EventEmitter {
     return [...pendingUTXOs, ...matureUTXOs]
   }
 
-  async compoundUtxos() {
-    console.log('[Account] Consolidating UTXOs across all addresses...')
-    const allAddresses = [...this.addresses.receiveAddresses, ...this.addresses.changeAddresses]
-
-    const { entries } = await this.processor.rpc.getUtxosByAddresses(allAddresses)
-    console.log('[Account] UTXOs:', entries)
-    if (!entries || entries.length === 0) {
-      console.log('[Account] No UTXOs available for consolidation.')
-      return
-    }
-
-    const utxoEntrySource = entries.map((utxo) => ({
-      outpoint: {
-        transactionId: utxo.outpoint.transactionId,
-        index: utxo.outpoint.index,
-      },
-      amount: BigInt(utxo.amount), // UTXO amount as BigInt
-      scriptPublicKey: {
-        version: utxo.scriptPublicKey.version,
-        script: utxo.scriptPublicKey.script,
-      },
-      blockDaaScore: BigInt(utxo.blockDaaScore),
-      isCoinbase: utxo.isCoinbase,
-    }))
-
-    const receiveAddress = this.addresses.receiveAddresses[0]
-    const totalAmount = utxoEntrySource.reduce((sum, utxo) => sum + utxo.amount, BigInt(0))
-
-    const fee = BigInt(10000) // Fee as a BigInt (0.0001 KAS in sompis)
-    const amountToSend = totalAmount - fee
-
-    if (amountToSend <= BigInt(0)) {
-      console.error(
-        'Insufficient funds to cover the fee. Available:',
-        totalAmount.toString(),
-        'Required (including fee):',
-        fee.toString(),
-      )
-      return
-    }
-
-    const outputs: [string, string][] = [[receiveAddress, (amountToSend / BigInt(1e8)).toString()]]
-
-    const feeRate = 1 // Example fee rate
-
-    try {
-      const serializedPendingTransactions = await this.transactions.create(
-        outputs,
-        feeRate,
-        (fee / BigInt(1e8)).toString(),
-      )
-
-      const signedConsolidationTransaction = await this.transactions.sign(serializedPendingTransactions)
-      const consolidationTransactionId = await this.transactions.submitContextful(
-        signedConsolidationTransaction,
-      )
-      console.log('[Account] Consolidation transaction submitted:', consolidationTransactionId)
-
-      return consolidationTransactionId
-    } catch (error) {
-      console.error('[Account] Error consolidating UTXOs:', error)
-      throw error
-    }
-  }
-
   async scan(quick = false): Promise<[number, number]> {
     console.log('[Account] Scan started')
     console.log('[Account] Scan: current receive addresses', this.addresses.receiveAddresses)
@@ -158,7 +93,7 @@ export default class Account extends EventEmitter {
 
   private async scanAddresses(isReceive: boolean, start: number, maxEmpty: number, windowSize = 8) {
     console.log(
-      `[Account] Starting Scan for ${isReceive ? 'recieve' : 'change'} addresses. Starting at ${start}.`,
+      `[Account] Starting Scan for ${isReceive ? 'receive' : 'change'} addresses. Starting at ${start}.`,
     )
     let index = start
     let foundIndex = start
