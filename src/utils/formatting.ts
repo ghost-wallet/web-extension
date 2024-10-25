@@ -47,3 +47,27 @@ export const formatBalanceWithAbbreviation = (number: number): string => {
 export const truncateAddress = (address: string) => {
   return `${address.slice(0, 12)}.....${address.slice(-8)}`
 }
+
+export const formatSupplyWithAbbreviation = (supply: number, dec: number): string => {
+  // Adjust supply by dividing by 10^dec
+  const adjustedSupply = supply / Math.pow(10, dec)
+
+  // Helper function to format the number, keeping decimal places only if they are non-zero
+  const formatNumber = (num: number): string => {
+    return num % 1 === 0 ? num.toFixed(0) : num.toFixed(1)
+  }
+
+  if (adjustedSupply >= 1_000_000_000_000_000_000) {
+    return `${formatNumber(adjustedSupply / 1_000_000_000_000_000_000)}Qn` // Quintillions
+  } else if (adjustedSupply >= 1_000_000_000_000_000) {
+    return `${formatNumber(adjustedSupply / 1_000_000_000_000_000)}Qd` // Quadrillions
+  } else if (adjustedSupply >= 1_000_000_000_000) {
+    return `${formatNumber(adjustedSupply / 1_000_000_000_000)}T` // Trillions
+  } else if (adjustedSupply >= 1_000_000_000) {
+    return `${formatNumber(adjustedSupply / 1_000_000_000)}B` // Billions
+  } else if (adjustedSupply >= 1_000_000) {
+    return `${formatNumber(adjustedSupply / 1_000_000)}M` // Millions
+  } else {
+    return adjustedSupply.toFixed(1) // Less than a million, no abbreviation
+  }
+}

@@ -1,4 +1,4 @@
-import { ArrowDownIcon, PaperAirplaneIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
+import { ArrowDownIcon, PaperAirplaneIcon, ArrowsRightLeftIcon, BoltIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
 import ActionButton from '@/components/buttons/ActionButton'
 
@@ -22,6 +22,7 @@ export default function WalletActionButtons() {
         label="Swap"
         onClick={() => navigate('/swap')}
       />
+      <ActionButton icon={<BoltIcon strokeWidth={2} />} label="Mint" onClick={() => navigate('/mint')} />
     </div>
   )
 }
