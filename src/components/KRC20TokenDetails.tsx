@@ -15,13 +15,13 @@ const KRC20TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ tokenInfo }) => {
   const preMintedPercentage = tokenInfo.max ? ((tokenInfo.pre / tokenInfo.max) * 100).toFixed(2) : '0'
 
   return (
-    <div className="bg-bgdarker rounded-md p-4">
-      <div className="flex flex-row items-center justify-center mb-4">
+    <div className="bg-bgdarker rounded-md p-3">
+      <div className="flex flex-row items-center justify-center mb-3">
         <CryptoImage ticker={tokenInfo.tick} size="large" />
         <h1 className="text-primarytext font-lato font-bold text-4xl pl-4">{tokenInfo.tick}</h1>
       </div>
 
-      <div className="space-y-1">
+      <div className="space-y-0.5">
         <div className="flex justify-between">
           <span className="text-mutedtext font-lato text-lg">Max Supply</span>
           <span className="text-primarytext font-lato text-lg">
