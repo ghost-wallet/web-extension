@@ -185,26 +185,26 @@ export default class Account extends EventEmitter {
       await this.context.trackAddresses(this.addresses.allAddresses)
     })
 
-    this.processor.addEventListener('pending', async (event) => {
-      //console.log('[Account] TODO - Use this data to fix data?.utxoEntires ??:', event.data)
+    // this.processor.addEventListener('pending', async (event) => {
+    //   //console.log('[Account] TODO - Use this data to fix data?.utxoEntires ??:', event.data)
 
-      console.log('[Account] UTXO processor pending event:', event.data)
+    //   console.log('[Account] UTXO processor pending event:', event.data)
 
-      // Adjust based on the actual structure of event.data TODO
-      // @ts-ignore
-      const utxos = event.data?.utxoEntries ?? []
+    //   // Adjust based on the actual structure of event.data TODO
+    //   // @ts-ignore
+    //   const utxos = event.data?.utxoEntries ?? []
 
-      if (
-        utxos.some(
-          (utxo: UtxoEntryReference) =>
-            utxo.address?.toString() ===
-            this.addresses.receiveAddresses[this.addresses.receiveAddresses.length - 1],
-        )
-      ) {
-        console.log('[Account] Found matching address in UTXO, incrementing recieve address?')
-        await this.addresses.increment(1, 0)
-      }
-    })
+    //   if (
+    //     utxos.some(
+    //       (utxo: UtxoEntryReference) =>
+    //         utxo.address?.toString() ===
+    //         this.addresses.receiveAddresses[this.addresses.receiveAddresses.length - 1],
+    //     )
+    //   ) {
+    //     console.log('[Account] Found matching address in UTXO, incrementing recieve address?')
+    //     await this.addresses.increment(1, 0)
+    //   }
+    // })
 
     this.processor.addEventListener('balance', () => {
       this.emit('balance', this.balance)
