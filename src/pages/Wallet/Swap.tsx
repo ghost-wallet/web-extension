@@ -1,90 +1,107 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import BottomNav from '@/components/BottomNav'
-import CryptoImage from '@/components/cryptos/CryptoImage'
-
-const tokens = [
-  { ticker: 'KASPA', image: 'path_to_kaspa_image' }, // Update with actual image path
-  { ticker: 'NACHO', image: 'path_to_nacho_image' }, // Update with actual image path
-]
+import { fetchChaingeTokens, ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import SwapTokenSelect from '@/components/swap/SwapTokenSelect'
+import ChaingeTokenDropdown from '@/components/swap/ChaingeTokenDropdown'
+import SwitchChaingeTokens from '@/components/swap/SwitchChaingeTokens'
+import { useLocation } from 'react-router-dom'
 
 export default function Swap() {
+  const [tokens, setTokens] = useState<ChaingeToken[]>([])
   const [kaspaAmount, setKaspaAmount] = useState('')
-  const [nachoAmount, setNachoAmount] = useState('')
-  const [selectedToken, setSelectedToken] = useState(tokens[0])
+  const [receiveAmount, setReceiveAmount] = useState('')
+  const location = useLocation()
+  const { token: locationToken } = location.state || {}
+  console.log('location token', locationToken)
+  const [payToken, setPayToken] = useState<ChaingeToken | null>(null)
+  const [receiveToken, setReceiveToken] = useState<ChaingeToken | null>(null)
+  const [isPayTokenSelectOpen, setIsPayTokenSelectOpen] = useState(false)
+  const [isReceiveTokenSelectOpen, setIsReceiveTokenSelectOpen] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const loadTokens = async () => {
+      try {
+        const fetchedTokens = await fetchChaingeTokens()
+
+        // Set the payToken based on location token or default to KAS
+        const defaultPayToken = fetchedTokens.find((token) =>
+          locationToken ? token.symbol === locationToken.tick : token.symbol === 'KAS',
+        )
+        const defaultReceiveToken = fetchedTokens.find((token) => token.symbol === 'USDT')
+
+        setTokens(fetchedTokens)
+        setPayToken(defaultPayToken || fetchedTokens[0]) // Fallback to first token if no match
+        setReceiveToken(defaultReceiveToken || fetchedTokens[1]) // Fallback to second token
+        setError(null)
+      } catch (err) {
+        setError('Error fetching tokens')
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadTokens()
+  }, [locationToken])
 
   const handleKaspaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKaspaAmount(e.target.value)
   }
 
-  const handleMaxKaspa = () => {
-    // Logic to set maximum Kaspa value
-    setKaspaAmount('MAX')
+  const handleSwitch = () => {
+    const tempAmount = kaspaAmount
+    setKaspaAmount(receiveAmount)
+    setReceiveAmount(tempAmount)
+
+    const tempToken = payToken
+    setPayToken(receiveToken)
+    setReceiveToken(tempToken)
   }
 
-  const handleSwap = () => {
-    // Logic for swapping tokens
+  const openPayTokenSelect = () => setIsPayTokenSelectOpen(true)
+  const openReceiveTokenSelect = () => setIsReceiveTokenSelectOpen(true)
+  const closePayTokenSelect = () => setIsPayTokenSelectOpen(false)
+  const closeReceiveTokenSelect = () => setIsReceiveTokenSelectOpen(false)
+
+  const selectToken = (token: ChaingeToken) => {
+    setPayToken(token)
+    closePayTokenSelect()
   }
 
-  const handleTokenChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = tokens.find((token) => token.ticker === e.target.value)
-    setSelectedToken(selected || tokens[0])
+  const selectReceiveToken = (token: ChaingeToken) => {
+    setReceiveToken(token)
+    closeReceiveTokenSelect()
   }
 
   return (
     <>
       <AnimatedMain>
         <Header title="Swap" showBackButton={true} />
-        <div className="p-6">
+        <div className="p-4">
           {/* You Pay Section */}
-          <div className="bg-darkmuted rounded-lg p-4 mb-4">
-            <h2 className="text-primarytext text-lg font-lato mb-2">You Pay</h2>
+          <div className="bg-darkmuted rounded-lg p-4">
+            <h2 className="text-mutedtext text-lg font-lato mb-2">You Pay</h2>
             <div className="flex items-center justify-between">
-              {/* Token Amount Input */}
               <input
                 type="text"
                 value={kaspaAmount}
                 onChange={handleKaspaChange}
                 placeholder="0"
-                className="bg-transparent text-primarytext text-3xl font-semibold w-24" // Set a width to make it narrower
+                className="bg-transparent text-primarytext text-3xl font-semibold w-24"
               />
-
-              <div className="flex items-center">
-                <CryptoImage ticker={selectedToken.ticker} size="small" /> {/* Using size='small' */}
-                <select
-                  value={selectedToken.ticker}
-                  onChange={handleTokenChange}
-                  className="bg-darkmuted text-primarytext font-semibold ml-2" // Adjust margin for better alignment
-                >
-                  {tokens.map((token) => (
-                    <option key={token.ticker} value={token.ticker}>
-                      {token.ticker}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <ChaingeTokenDropdown selectedToken={payToken} openTokenSelect={openPayTokenSelect} />
             </div>
 
-            {/* Token Value and Max/Percentage Options */}
             <div className="flex justify-between mt-2">
-              <span className="text-mutedtext">$0.00</span> {/* Placeholder for USD value */}
               <div className="flex items-center space-x-2">
-                <span className="text-mutedtext">2.23</span> {/* Placeholder for token balance */}
-                <button className="text-mutedtext font-semibold hover:underline">50%</button>
-                <button className="text-primary font-semibold hover:underline" onClick={handleMaxKaspa}>
-                  Max
-                </button>
+                <span className="text-mutedtext">Available: (insert balance)</span>
               </div>
             </div>
           </div>
 
-          {/* Swap Button */}
-          <div className="flex justify-center my-4">
-            <button className="bg-primary rounded-full p-3 hover:bg-secondary" onClick={handleSwap}>
-              <span className="material-icons text-secondarytext">swap_horiz</span>
-            </button>
-          </div>
+          <SwitchChaingeTokens onSwitch={handleSwitch} />
 
           {/* You Receive Section */}
           <div className="bg-darkmuted rounded-lg p-4">
@@ -92,25 +109,42 @@ export default function Swap() {
             <div className="flex items-center justify-between">
               <input
                 type="text"
-                value={nachoAmount}
+                value={receiveAmount}
                 placeholder="0"
                 readOnly
-                className="bg-transparent text-primarytext text-3xl font-semibold w-24" // Narrow the width here as well
+                className="bg-transparent text-primarytext text-3xl font-semibold w-24"
               />
-              <div className="flex items-center">
-                <img src={'path_to_nacho_image'} alt="NACHO" className="w-8 h-8 mr-2" />
-                <span className="text-primarytext font-semibold">NACHO</span>
-              </div>
+              <ChaingeTokenDropdown selectedToken={receiveToken} openTokenSelect={openReceiveTokenSelect} />
             </div>
-
             <div className="flex justify-between mt-2">
-              <span className="text-mutedtext">$0.00</span> {/* Placeholder for USD value */}
-              <span className="text-mutedtext">0</span> {/* Placeholder for token balance */}
+              <span className="text-mutedtext">$0.00</span>
             </div>
           </div>
         </div>
       </AnimatedMain>
       <BottomNav />
+
+      {/* Token Select Modal */}
+      {isPayTokenSelectOpen && (
+        <SwapTokenSelect
+          tokens={tokens}
+          onSelectToken={selectToken}
+          onClose={closePayTokenSelect}
+          loading={loading}
+          error={error}
+        />
+      )}
+
+      {/* Receive Token Select Modal */}
+      {isReceiveTokenSelectOpen && (
+        <SwapTokenSelect
+          tokens={tokens}
+          onSelectToken={selectReceiveToken}
+          onClose={closeReceiveTokenSelect}
+          loading={loading}
+          error={error}
+        />
+      )}
     </>
   )
 }

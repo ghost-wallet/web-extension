@@ -42,6 +42,7 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
 
   useEffect(() => {
     const loadTokens = async () => {
+      // TODO Fix remove caching? It's already cached in the hook
       const cacheKey = `tokens_${kaspa.addresses[0][0]}`
       const cachedTokens = localStorage.getItem(cacheKey)
 
