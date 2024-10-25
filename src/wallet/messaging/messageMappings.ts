@@ -27,7 +27,7 @@ export interface RequestMappings {
   'account:submitContextful': [string[]]
   'account:submitKaspaTransaction': [string[]]
   'account:compoundUtxos': []
-  'account:scan': []
+  'account:scan': [boolean?]
   'account:getKRC20Info': [string, Token, string]
   'account:submitKRC20Transaction': [KRC20Info, number]
   'account:estimateKRC20TransactionFee': [KRC20Info, number]
@@ -64,7 +64,7 @@ export interface ResponseMappings {
   'account:submitContextful': string[]
   'account:submitKaspaTransaction': string[]
   'account:compoundUtxos': void
-  'account:scan': void
+  'account:scan': [number, number]
   'account:getKRC20Info': KRC20Info
   'account:submitKRC20Transaction': [string, string]
   'account:estimateKRC20TransactionFee': string

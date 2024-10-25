@@ -131,35 +131,50 @@ export default class Account extends EventEmitter {
     }
   }
 
-  async scan(steps = 50, count = 10) {
+  async scan(quick = false): Promise<[number, number]> {
     console.log('[Account] Scan started')
     console.log('[Account] Scan: current receive addresses', this.addresses.receiveAddresses)
     console.log('[Account] Scan: current change addresses', this.addresses.changeAddresses)
-    const scanAddresses = async (isReceive: boolean, startIndex: number) => {
-      let foundIndex = 0
+    
 
-      for (let index = 0; index < steps; index++) {
-        const addresses = await this.addresses.derive(isReceive, startIndex, startIndex + count)
-        startIndex += count
 
-        const { entries } = await this.processor.rpc.getUtxosByAddresses(addresses)
-        const entryIndex = addresses.findIndex((address) =>
-          entries.some((entry) => entry.address?.toString() === address),
-        )
+    const receive = await this.scanAddresses(true, this.addresses.receiveAddresses.length, quick ? 8 : 64)
+    const change = await this.scanAddresses(false, this.addresses.changeAddresses.length, quick ? 128 : 1024, 128)
 
-        if (entryIndex !== -1) {
-          foundIndex = startIndex - count + entryIndex
-        }
-      }
 
-      await this.addresses.increment(isReceive ? foundIndex : 0, isReceive ? 0 : foundIndex)
-    }
-
-    await scanAddresses(true, this.addresses.receiveAddresses.length)
-    await scanAddresses(false, this.addresses.changeAddresses.length)
     console.log('[Account] Scan complete')
     console.log('[Account] Scan: current receive addresses', this.addresses.receiveAddresses)
     console.log('[Account] Scan: current change addresses', this.addresses.changeAddresses)
+
+    return [receive, change]
+  }
+
+  private async scanAddresses(isReceive: boolean, start: number, maxEmpty: number, windowSize = 8) {
+    console.log(`[Account] Starting Scan for ${isReceive ? 'recieve' : 'change'} addresses. Starting at ${start}.`)
+    let index = start
+    let foundIndex = start
+    do {
+      console.log('current index', index)
+      console.log('current foundIndex', foundIndex)
+      const addresses = await this.addresses.derive(isReceive, index, index + windowSize)
+      const { entries } = await this.processor.rpc.getUtxosByAddresses(addresses)
+      console.log('entries', entries)
+      const entryIndex = addresses.findLastIndex((address) =>
+        entries.some((entry) => entry.address?.toString() === address),
+      )
+      console.log('last entry index', entryIndex)
+      if (entryIndex !== -1) {
+        foundIndex = index + entryIndex
+      }
+      index += windowSize
+    } while(index - foundIndex < maxEmpty)
+    const numToIncrement = foundIndex - start
+    console.log('numToIncrement', numToIncrement)
+    if(numToIncrement > 0) {
+      await this.addresses.increment(isReceive ? numToIncrement : 0, isReceive ? 0 : numToIncrement)
+    }
+    console.log(`[Account] Scan done. Found ${numToIncrement} addresses. Address counter now ${foundIndex}.`)
+    return numToIncrement
   }
 
   private registerProcessor() {

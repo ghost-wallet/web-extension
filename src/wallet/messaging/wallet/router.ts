@@ -48,7 +48,7 @@ export default class Router {
       'account:submitKaspaTransaction': (transactions) =>
         account.transactions.submitKaspaTransaction(transactions),
       'account:compoundUtxos': () => account.compoundUtxos(),
-      'account:scan': () => account.scan(),
+      'account:scan': (quick) => account.scan(quick),
       'account:getKRC20Info': (recipient, token, amount) =>
         account.transactions.getKRC20Info(recipient, token, amount),
       'account:submitKRC20Transaction': (info, feeRate) =>
