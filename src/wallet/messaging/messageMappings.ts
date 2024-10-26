@@ -30,6 +30,8 @@ export interface RequestMappings {
   'account:getKRC20Info': [string, Token, string]
   'account:submitKRC20Transaction': [KRC20Info, number]
   'account:estimateKRC20TransactionFee': [KRC20Info, number]
+  'account:doKRC20Mint': [Token, number, number]
+  'account:estimateKRC20MintFees': [Token, number, number]
   'provider:connect': [string]
   'provider:connection': []
   'provider:disconnect': []
@@ -66,6 +68,8 @@ export interface ResponseMappings {
   'account:getKRC20Info': KRC20Info
   'account:submitKRC20Transaction': [string, string]
   'account:estimateKRC20TransactionFee': string
+  'account:doKRC20Mint': [string, string[]]
+  'account:estimateKRC20MintFees': [string, string, string]
   'provider:connect': void
   'provider:connection': string
   'provider:disconnect': void

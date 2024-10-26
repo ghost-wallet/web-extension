@@ -27,7 +27,7 @@ import Addresses from './addresses'
 import EventEmitter from 'events'
 import KeyManager from '@/wallet/kaspa/KeyManager'
 import Account from '@/wallet/kaspa/account/account'
-import { KRC20Info, setupkrc20Transaction, Token } from '../krc20/Transact'
+import { KRC20Info, setupkrc20Mint, setupkrc20Transaction, Token } from '../krc20/Transact'
 import { KRC20_COMMIT_AMOUNT } from '@/utils/constants'
 
 export interface CustomInput {
@@ -123,9 +123,10 @@ export default class Transactions extends EventEmitter {
 
   async create(
     outputs: [string, string][],
-    feeRate: number,
+    feeRate: number | undefined,
     fee: string,
     customs?: CustomInput[],
+    changeAddress?: string
   ): Promise<[string[], string]> {
     let priorityEntries: IUtxoEntry[] = []
 
@@ -140,7 +141,7 @@ export default class Transactions extends EventEmitter {
         address: output[0],
         amount: kaspaToSompi(output[1])!,
       })),
-      changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
+      changeAddress: changeAddress ?? this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
       feeRate,
       priorityFee: kaspaToSompi(fee)!,
     }
@@ -427,8 +428,8 @@ export default class Transactions extends EventEmitter {
     })
   }
 
-  async submitKRC20Commit({ scriptAddress }: KRC20Info, feeRate: number) {
-    const [commit1] = await this.create([[scriptAddress.toString(), KRC20_COMMIT_AMOUNT]], feeRate, '0')
+  async submitKRC20Commit(scriptAddress: string, feeRate: number, amount: string = KRC20_COMMIT_AMOUNT) {
+    const [commit1] = await this.create([[scriptAddress, amount]], feeRate, '0')
     console.log('[Transactions] Created commit transaction:', commit1)
 
     // - sign
@@ -470,7 +471,7 @@ export default class Transactions extends EventEmitter {
   }
 
   async submitKRC20Transaction(info: KRC20Info, feeRate: number) {
-    const commit = await this.submitKRC20Commit(info, feeRate)
+    const commit = await this.submitKRC20Commit(info.scriptAddress, feeRate)
 
     const commitId = commit[commit.length - 1]
 
@@ -483,6 +484,89 @@ export default class Transactions extends EventEmitter {
     await this.addresses.increment(0, 1)
 
     return [commitId, revealId]
+  }
+
+  async submitKRC20MintReveal(commitId: string, scriptAddress: string, sender: string, script: string, fee: string, backToScript: boolean) {
+    // - prepare the reveal txn input
+    const input = {
+      address: scriptAddress,
+      outpoint: commitId,
+      index: 0,
+      signer: sender,
+      script: script,
+    }
+    console.log('[Transactions] Reveal transaction input:', input)
+
+
+    // - create
+    const [reveal1] = await this.create([], undefined, fee, [input], backToScript ? scriptAddress : undefined)
+    console.log('[Transactions] Created reveal transaction:', reveal1)
+
+    // - sign
+    const reveal2 = await this.sign(reveal1, [input])
+    console.log('[Transactions] Signed reveal transaction:', reveal2)
+
+    // - submit (gives us the ID)
+    const reveal3 = await this.submitContextful(reveal2)
+    console.log('[Transactions] Submitted reveal transaction:', reveal3)
+
+    return reveal3
+  }
+
+
+  async estimateKRC20MintFees(token: Token, feeRate: number, timesToMint = 1) {
+    const sender = this.addresses.receiveAddresses[0]
+    const mintSetup = setupkrc20Mint(sender, token)
+    const scriptAddress = mintSetup.scriptAddress.toString()
+    const kaspaToLoad = (timesToMint + 10).toString()
+
+    const commitSettings: IGeneratorSettingsObject = {
+      priorityEntries: [],
+      entries: this.context,
+      outputs: [
+        {
+          address: scriptAddress,
+          amount: kaspaToSompi(kaspaToLoad)!,
+        },
+      ],
+      changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
+      feeRate,
+      priorityFee: kaspaToSompi('0')!,
+    }
+
+    const commitResult = await estimateTransactions(commitSettings)
+
+    const totalFee = timesToMint + Number(sompiToKaspaString(commitResult.fees))
+
+    return [totalFee.toString(), sompiToKaspaString(commitResult.fees), sompiToKaspaString(commitResult.finalAmount!)]
+  }
+
+  async doKRC20Mint(token: Token, feeRate: number, timesToMint = 1): Promise<[string, string[]]> {
+    const sender = this.addresses.receiveAddresses[0]
+    const mintSetup = setupkrc20Mint(sender, token)
+    const script = mintSetup.script.toString()
+    const scriptAddress = mintSetup.scriptAddress.toString()
+    const kaspaToLoad = (timesToMint + 10).toString()
+
+    const commit = await this.submitKRC20Commit(scriptAddress, feeRate, kaspaToLoad)
+
+    const commitId = commit[commit.length - 1]
+
+    await this.waitForUTXO(commitId)
+
+    let reveals = []
+
+    for(let i = 0; i < timesToMint; i++) {
+      const isLast = i === timesToMint - 1
+      const reveal = await this.submitKRC20MintReveal(commitId, scriptAddress, sender, script, '1', !isLast)
+
+      const revealId = reveal[reveal.length - 1]
+
+      reveals.push(revealId)
+    }
+
+    return [commitId, reveals]
+
   }
 
   reset() {
