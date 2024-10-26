@@ -5,14 +5,6 @@ import Addresses from './addresses'
 import SessionStorage from '@/storage/SessionStorage'
 import Transactions from './transactions'
 
-export interface UTXO {
-  amount: number
-  transaction: string
-  mature: boolean
-}
-
-console.log('Initializing Account, which uses Node')
-
 export default class Account extends EventEmitter {
   processor: UtxoProcessor
   addresses: Addresses

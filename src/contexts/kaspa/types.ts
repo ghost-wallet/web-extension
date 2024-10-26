@@ -1,6 +1,6 @@
 import { Request, RequestMappings, ResponseMappings } from '@/wallet/messaging/messageMappings'
 import { Status } from '@/wallet/kaspa/wallet'
-import { UTXO } from '@/wallet/kaspa/account/account'
+import { UTXO } from '@/utils/interfaces'
 
 export interface IKaspa {
   status: Status

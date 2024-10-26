@@ -29,7 +29,7 @@ interface CryptoProps {
   ) => React.ReactElement
 }
 
-const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem }) => {
+const CryptoList: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem }) => {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
   const price = useKaspaPrice(settings.currency)
@@ -127,4 +127,4 @@ const Cryptos: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem })
   )
 }
 
-export default Cryptos
+export default CryptoList

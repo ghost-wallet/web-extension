@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import WalletActionButtons from '@/components/buttons/WalletActionButtons'
-import Cryptos from '@/components/cryptos/Cryptos'
+import CryptoList from '@/components/cryptos/CryptoList'
 import TotalWalletValue from '@/components/TotalWalletValue'
 
 export default function Wallet() {
@@ -14,7 +14,7 @@ export default function Wallet() {
         <div className="flex flex-col items-center pt-10">
           <TotalWalletValue totalValue={totalValue} />
           <WalletActionButtons />
-          <Cryptos onTotalValueChange={setTotalValue} />
+          <CryptoList onTotalValueChange={setTotalValue} />
         </div>
       </AnimatedMain>
       <BottomNav />

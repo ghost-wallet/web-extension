@@ -2,10 +2,10 @@ import React from 'react'
 import CryptoImage from '@/components/cryptos/CryptoImage'
 import { formatSupplyWithAbbreviation } from '@/utils/formatting'
 import { getMintedPercentage } from '@/utils/calculations'
-import { Krc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
+import { KRC20TokenResponse } from '@/utils/interfaces'
 
 interface KRC20TokenDetailsProps {
-  token: Krc20TokenInfo
+  token: KRC20TokenResponse
 }
 
 const KRC20TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {

@@ -32,7 +32,8 @@ const TransactionItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ opera
 
       <div className="ml-4">
         <p className="text-base font-light font-lato text-primarytext">
-          {operationType} {parseInt(operation.amt, 10) / 1e8} {operation.tick}
+          {operationType} {isNaN(parseInt(operation.amt, 10)) ? 0 : parseInt(operation.amt, 10) / 1e8}{' '}
+          {operation.tick}
         </p>
         <a
           href={`https://explorer.kaspa.org/txs/${operation.hashRev}`}

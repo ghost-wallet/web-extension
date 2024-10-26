@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
-import Cryptos from '@/components/cryptos/Cryptos' // Updated import for Cryptos
+import CryptoList from '@/components/cryptos/CryptoList' // Updated import for CryptoList
 import Header from '@/components/Header'
 
 export default function Send() {
@@ -11,7 +11,7 @@ export default function Send() {
     <>
       <AnimatedMain>
         <Header title="Send" showBackButton={true} />
-        <Cryptos onTotalValueChange={setTotalValue} />
+        <CryptoList onTotalValueChange={setTotalValue} />
       </AnimatedMain>
       <BottomNav />
     </>

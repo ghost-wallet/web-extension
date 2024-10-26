@@ -6,14 +6,14 @@ import TransactionList from '@/pages/Wallet/Transactions/TransactionList'
 import Spinner from '@/components/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import { fetchKRC20TransactionHistory } from '@/hooks/kasplex/fetchKrc20TransactionHistory'
-import { Transaction } from '@/hooks/kasplex/fetchKrc20TransactionHistory'
+import { KRC20Transaction } from '@/utils/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import useSettings from '@/hooks/contexts/useSettings'
 
 export default function Transactions() {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
-  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [transactions, setTransactions] = useState<KRC20Transaction[]>([])
   const [initialLoading, setInitialLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)

@@ -28,31 +28,14 @@ import EventEmitter from 'events'
 import KeyManager from '@/wallet/kaspa/KeyManager'
 import Account from '@/wallet/kaspa/account/account'
 import { setupkrc20Mint, setupkrc20Transaction, Token } from '../krc20/Transact'
-import { KRC20Info } from '@/utils/interfaces'
+import { CustomInput, CustomSignature, KRC20TokenRequest } from '@/utils/interfaces'
 import { KRC20_COMMIT_AMOUNT } from '@/utils/constants'
 import browser from 'webextension-polyfill'
 import ghostIcon from '../../../../assets/ghost-512.png'
 
-export interface CustomInput {
-  address: string
-  outpoint: string
-  index: number
-}
-
-export interface CustomSignature {
-  outpoint: string
-  index: number
-  signer: string
-  script?: string
-}
-
 function calculateScriptExtraFee(script: HexString, feeRate: number) {
   const scriptBytes = ScriptBuilder.canonicalDataSize(script)
-  const scriptExtraFee = BigInt(Math.ceil((scriptBytes + 1) * feeRate))
-  console.log('scriptBytes', scriptBytes)
-  console.log('scriptExtraFee', scriptExtraFee)
-  console.log('scriptExtraFee kaspa', sompiToKaspaString(scriptExtraFee))
-  return scriptExtraFee
+  return BigInt(Math.ceil((scriptBytes + 1) * feeRate))
 }
 
 export default class Transactions extends EventEmitter {
@@ -157,9 +140,6 @@ export default class Transactions extends EventEmitter {
     console.log('create transactions', transactions)
     console.log('create summary', summary)
 
-    // TODO: Move this to later?
-    //await this.addresses.increment(0, 1)
-
     for (const transaction of transactions) {
       this.transactions.set(transaction.id, transaction)
     }
@@ -226,64 +206,6 @@ export default class Transactions extends EventEmitter {
     return signedTransactions.map((transaction) => transaction.serializeToSafeJSON())
   }
 
-  async signTransactions(transactions: Transaction[], customs: CustomSignature[] = []) {
-    if (!this.encryptedKey) {
-      console.error('[Transactions] No imported account available for signing.')
-      throw Error('No imported account')
-    }
-
-    const decryptedKey = KeyManager.getKey()
-    if (!decryptedKey) {
-      console.error('[Transactions] No decrypted key available in KeyManager.')
-      throw Error('No decrypted key available in KeyManager.')
-    }
-
-    const mnemonic = new Mnemonic(decryptedKey)
-    const seed = mnemonic.toSeed() // This should be a 64-byte buffer
-    const xprv = new XPrv(seed)
-    const keyGenerator = new PrivateKeyGenerator(xprv, false, BigInt(this.accountId!))
-    const signedTransactions: Transaction[] = []
-
-    for (const transaction of transactions) {
-      const parsedTransaction = transaction
-      const privateKeys = []
-      for (let address of parsedTransaction.addresses(this.addresses.networkId)) {
-        if (address.version === 'ScriptHash') {
-          continue
-        }
-        const [isReceive, index] = this.addresses.findIndexes(address.toString())
-        privateKeys.push(isReceive ? keyGenerator.receiveKey(index) : keyGenerator.changeKey(index))
-      }
-
-      const signedTransaction = signTransaction(parsedTransaction, privateKeys, false)
-
-      for (const custom of customs) {
-        const inputIndex = signedTransaction.inputs.findIndex(
-          ({ previousOutpoint }) =>
-            previousOutpoint.transactionId === custom.outpoint && previousOutpoint.index === custom.index,
-        )
-
-        if (Address.validate(custom.signer)) {
-          if (!custom.script) throw Error('Script is required when signer address is supplied')
-
-          const [isReceive, index] = this.addresses.findIndexes(custom.signer)
-          const privateKey = isReceive ? keyGenerator.receiveKey(index) : keyGenerator.changeKey(index)
-
-          signedTransaction.inputs[inputIndex].signatureScript = ScriptBuilder.fromScript(
-            custom.script,
-          ).encodePayToScriptHashSignatureScript(
-            createInputSignature(signedTransaction, inputIndex, privateKey),
-          )
-        } else {
-          signedTransaction.inputs[inputIndex].signatureScript = custom.signer
-        }
-      }
-
-      signedTransactions.push(signedTransaction)
-    }
-    return signedTransactions
-  }
-
   async submitContextful(transactions: string[]) {
     const submittedIds: string[] = []
 
@@ -312,28 +234,7 @@ export default class Transactions extends EventEmitter {
     return transactionIds
   }
 
-  logFee(txn: Transaction) {
-    const inputValue = txn.inputs.reduce((acc: bigint, input: any) => {
-      return acc + BigInt(input.utxo!.amount)
-    }, 0n)
-
-    const outputValue = txn.outputs.reduce((acc: bigint, output: any) => {
-      return acc + BigInt(output.value)
-    }, 0n)
-
-    console.log('inputValue', sompiToKaspaString(inputValue))
-    console.log('outputValue', sompiToKaspaString(outputValue))
-    console.log('fee', sompiToKaspaString(inputValue - outputValue))
-
-    return inputValue - outputValue
-  }
-
-  logFeeFromJsonArray(input: string[]) {
-    const transaction = Transaction.deserializeFromSafeJSON(input[input.length - 1])
-    return this.logFee(transaction)
-  }
-
-  async estimateKRC20TransactionFee(info: KRC20Info, feeRate: number) {
+  async estimateKRC20TransactionFee(info: KRC20TokenRequest, feeRate: number) {
     const { scriptAddress, script } = info
 
     const commitSettings: IGeneratorSettingsObject = {
@@ -379,36 +280,13 @@ export default class Transactions extends EventEmitter {
       priorityFee: scriptExtraFee,
     }
 
-    console.log('[Transaction] estimateKRC20Transaction revealSettings: ', revealSettings)
-
     const revealEstimateResult = await estimateTransactions(revealSettings)
-
-    console.log('[Transaction] estimateKRC20Transaction revealEstimateResult: ', revealEstimateResult)
-
     const totalFee = commitSummary.fees + revealEstimateResult.fees
-    const totalAmount = commitSummary.finalAmount! + revealEstimateResult.finalAmount!
-
-    console.log(
-      '[Transaction] estimateKRC20Transaction commitSummary.fees',
-      sompiToKaspaString(commitSummary.fees),
-    )
-
-    console.log(
-      '[Transaction] estimateKRC20Transaction revealEstimateResult.fees',
-      sompiToKaspaString(revealEstimateResult.fees),
-    )
-    console.log(
-      '[Transaction] estimateKRC20Transaction revealEstimateResult.finalAmount',
-      sompiToKaspaString(revealEstimateResult.finalAmount!),
-    )
-
-    console.log('[Transaction] estimateKRC20Transaction totalFee', sompiToKaspaString(totalFee))
-    console.log('[Transaction] estimateKRC20Transaction totalAmount', sompiToKaspaString(totalAmount))
 
     return sompiToKaspaString(totalFee)
   }
 
-  async getKRC20Info(recipient: string, token: Token, amount: string): Promise<KRC20Info> {
+  async getKRC20Info(recipient: string, token: Token, amount: string): Promise<KRC20TokenRequest> {
     const sender = this.addresses.receiveAddresses[0]
     const { script, scriptAddress } = setupkrc20Transaction(sender, recipient, amount, token)
     return {
@@ -449,7 +327,11 @@ export default class Transactions extends EventEmitter {
     return commit3
   }
 
-  async submitKRC20Reveal(commitId: string, { scriptAddress, sender, script }: KRC20Info, feeRate: number) {
+  async submitKRC20Reveal(
+    commitId: string,
+    { scriptAddress, sender, script }: KRC20TokenRequest,
+    feeRate: number,
+  ) {
     // - prepare the reveal txn input
     const input = {
       address: scriptAddress.toString(),
@@ -477,18 +359,16 @@ export default class Transactions extends EventEmitter {
     return reveal3
   }
 
-  async submitKRC20Transaction(info: KRC20Info, feeRate: number) {
+  async submitKRC20Transaction(info: KRC20TokenRequest, feeRate: number) {
     const transactionContext = new UtxoContext({ processor: this.processor })
     transactionContext.trackAddresses([info.scriptAddress])
 
     const commit = await this.submitKRC20Commit(info.scriptAddress, feeRate)
-
     const commitId = commit[commit.length - 1]
 
     await this.waitForUTXO(commitId)
 
     const reveal = await this.submitKRC20Reveal(commitId, info, feeRate)
-
     const revealId = reveal[reveal.length - 1]
 
     transactionContext.clear()
@@ -525,9 +405,6 @@ export default class Transactions extends EventEmitter {
 
     console.log('create transactions', transactions)
     console.log('create summary', summary)
-
-    // TODO: Move this to later?
-    //await this.addresses.increment(0, 1)
 
     for (const transaction of transactions) {
       this.transactions.set(transaction.id, transaction)
@@ -599,12 +476,9 @@ export default class Transactions extends EventEmitter {
     const commitResult = await estimateTransactions(commitSettings)
 
     const totalFee = timesToMint + Number(sompiToKaspaString(commitResult.fees))
+    console.log('commitResult.fees', commitResult.fees)
 
-    return [
-      totalFee.toString(),
-      sompiToKaspaString(commitResult.fees),
-      sompiToKaspaString(commitResult.finalAmount!),
-    ]
+    return [totalFee, sompiToKaspaString(commitResult.fees), sompiToKaspaString(commitResult.finalAmount!)]
   }
 
   async doKRC20Mint(ticker: string, feeRate: number, timesToMint = 1) {

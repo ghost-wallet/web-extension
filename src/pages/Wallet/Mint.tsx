@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
-import { fetchKrc20TokenInfo, Krc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
+import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
+import { KRC20TokenResponse } from '@/utils/interfaces'
 import { getMintedPercentage } from '@/utils/calculations'
 import KRC20TokenDetails from '@/components/KRC20TokenDetails'
 import KRC20TokenSearch from '@/components/KRC20TokenSearch'
@@ -11,7 +12,7 @@ import ErrorMessage from '@/components/ErrorMessage'
 import Spinner from '@/components/Spinner'
 
 export default function Mint() {
-  const [token, setToken] = useState<Krc20TokenInfo | null>(null)
+  const [token, setToken] = useState<KRC20TokenResponse | null>(null)
   const [error, setError] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()

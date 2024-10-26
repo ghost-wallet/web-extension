@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
-import { Krc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
+import { KRC20TokenResponse } from '@/utils/interfaces'
 import { formatBalance } from '@/utils/formatting'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import ErrorMessage from '@/components/ErrorMessage'
@@ -13,7 +13,7 @@ export default function CreateMint() {
   const navigate = useNavigate()
   const { kaspa } = useKaspa()
   const location = useLocation()
-  const token = location.state?.token as Krc20TokenInfo
+  const token = location.state?.token as KRC20TokenResponse
 
   const [mintAmount, setMintAmount] = useState<number | null>(null)
   const [error, setError] = useState<string>('')
@@ -32,7 +32,7 @@ export default function CreateMint() {
   }
 
   const totalMintCost = mintAmount
-    ? (parseFloat(String(formatBalance(token.lim, token.dec))) * mintAmount).toLocaleString()
+    ? parseFloat(String(formatBalance(token.lim, token.dec))) * mintAmount
     : '0'
 
   const isMintAmountValid = mintAmount !== null && mintAmount >= 1 && mintAmount <= 10000
@@ -80,34 +80,32 @@ export default function CreateMint() {
               max="10000"
               value={mintAmount !== null ? mintAmount : ''}
               onChange={handleInputChange}
-              className="w-26 bg-darkmuted p-2 border border-muted rounded-lg font-lato text-base text-primarytext text-center"
+              className="w-30 bg-darkmuted p-2 border border-muted rounded-lg font-lato text-lg text-primarytext text-center"
               placeholder="KAS"
             />
           </div>
           <div className="w-full max-w-md space-y-2 mt-6">
             <div className="flex justify-between">
-              <span className="text-mutedtext font-lato text-base">You Receive</span>
-              <span className="text-primarytext font-lato text-base">
-                {totalMintCost} {token.tick}
+              <span className="text-mutedtext font-lato text-lg">Receive amount</span>
+              <span className="text-primarytext font-lato text-lg">
+                {totalMintCost.toLocaleString()} {token.tick}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-mutedtext font-lato text-base">Mint Cost</span>
-              <span className="text-primarytext font-lato text-base">
+              <span className="text-mutedtext font-lato text-lg">Mint cost</span>
+              <span className="text-primarytext font-lato text-lg">
                 {mintAmount?.toLocaleString() || '0'} KAS
               </span>
             </div>
           </div>
-          <div className="rounded-base text-mutedtext text-base font-lato text-center mt-4">
-            Mint rate: {formatBalance(token.lim, token.dec).toLocaleString()} {token.tick} per 1 KAS
+          <div className="rounded-base text-mutedtext text-sm font-lato text-left mt-4">
+            Mint rate ~ 1 KAS = {formatBalance(token.lim, token.dec).toLocaleString()} {token.tick}
           </div>
         </div>
-        {showError && (
-          <div className="px-4 mt-4">
-            <ErrorMessage message={error} />
-          </div>
-        )}
-        <div className="px-4 py-4">
+        <div className="px-4 mt-4" style={{ height: '24px' }}>
+          {showError && <ErrorMessage message={error} />}
+        </div>
+        <div className="px-4 pt-16">
           <button
             onClick={handleReview}
             disabled={!isMintAmountValid || showError}

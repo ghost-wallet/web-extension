@@ -1,9 +1,9 @@
 import { Status } from '../kaspa/wallet'
-import { UTXO } from '../kaspa/account/account'
-import { CustomInput } from '../kaspa/account/transactions'
+import { UTXO } from '@/utils/interfaces'
+import { CustomInput } from '@/utils/interfaces'
 import { PriorityBuckets } from '../kaspa/node'
 import { Token } from '../kaspa/krc20/Transact'
-import { KRC20Info } from '@/utils/interfaces'
+import { KRC20TokenRequest } from '@/utils/interfaces'
 
 export interface RequestMappings {
   'wallet:status': []
@@ -28,8 +28,8 @@ export interface RequestMappings {
   'account:submitKaspaTransaction': [string[]]
   'account:scan': [boolean?]
   'account:getKRC20Info': [string, Token, string]
-  'account:submitKRC20Transaction': [KRC20Info, number]
-  'account:estimateKRC20TransactionFee': [KRC20Info, number]
+  'account:submitKRC20Transaction': [KRC20TokenRequest, number]
+  'account:estimateKRC20TransactionFee': [KRC20TokenRequest, number]
   'account:doKRC20Mint': [string, number, number]
   'account:estimateKRC20MintFees': [string, number, number]
   'provider:connect': [string]
@@ -65,11 +65,11 @@ export interface ResponseMappings {
   'account:submitContextful': string[]
   'account:submitKaspaTransaction': string[]
   'account:scan': [number, number]
-  'account:getKRC20Info': KRC20Info
+  'account:getKRC20Info': KRC20TokenRequest
   'account:submitKRC20Transaction': [string, string]
   'account:estimateKRC20TransactionFee': string
   'account:doKRC20Mint': string[]
-  'account:estimateKRC20MintFees': [string, string, string]
+  'account:estimateKRC20MintFees': [number, number, number]
   'provider:connect': void
   'provider:connection': string
   'provider:disconnect': void

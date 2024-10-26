@@ -1,33 +1,16 @@
 import axios from 'axios'
 import { getApiBase } from './fetchHelper'
-
-export interface Krc20TokenInfo {
-  tick: string
-  max: number
-  lim: string
-  pre: number
-  to: string
-  dec: number
-  minted: number
-  opScoreAdd: string
-  opScoreMod: string
-  state: string
-  hashRev: string
-  mtsAdd: string
-  holderTotal: number
-  transferTotal: number
-  mintTotal: number
-}
+import { KRC20TokenResponse } from '@/utils/interfaces'
 
 interface Krc20TokenApiResponse {
   message: string
-  result: Krc20TokenInfo[]
+  result: KRC20TokenResponse[]
 }
 
 export const fetchKrc20TokenInfo = async (
   selectedNode: number,
   ticker: string,
-): Promise<Krc20TokenInfo | null> => {
+): Promise<KRC20TokenResponse | null> => {
   const apiBase = getApiBase(selectedNode)
   try {
     const response = await axios.get<Krc20TokenApiResponse>(

@@ -2,7 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline'
 import ActionButton from '@/components/buttons/ActionButton'
-import MintButtonOnCryptoPage from '@/components/buttons/MintButtonOnCryptoPage'
+import CryptoMintButton from '@/pages/Wallet/Crypto/CryptoMintButton'
 import SwapButtonOnCryptoPage from '@/components/buttons/SwapButtonOnCryptoPage'
 import ReceiveButton from '@/components/buttons/ReceiveButton'
 
@@ -32,7 +32,7 @@ const CryptoActionButtons: React.FC<CryptoActionButtonsProps> = ({ token }) => {
       </div>
       {token.tick.toUpperCase() !== 'KASPA' && (
         <div className="px-2">
-          <MintButtonOnCryptoPage tokenTick={token.tick} />
+          <CryptoMintButton tokenTick={token.tick} />
         </div>
       )}
     </div>

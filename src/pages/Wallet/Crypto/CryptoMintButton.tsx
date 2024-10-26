@@ -5,22 +5,25 @@ import ActionButton from '@/components/buttons/ActionButton'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 import PopupMessageDialog from '@/components/PopupMessageDialog'
 import { getMintedPercentage } from '@/utils/calculations'
+import { KRC20TokenResponse } from '@/utils/interfaces'
 
 interface MintButtonProps {
   tokenTick: string
 }
 
-const MintButtonOnCryptoPage: React.FC<MintButtonProps> = ({ tokenTick }) => {
+const CryptoMintButton: React.FC<MintButtonProps> = ({ tokenTick }) => {
   const navigate = useNavigate()
   const [showMintDialog, setShowMintDialog] = useState(false)
   const [mintedPercentage, setMintedPercentage] = useState<string>('0')
+  const [tokenInfo, setTokenInfo] = useState<KRC20TokenResponse | null>(null)
 
   useEffect(() => {
     const getTokenMintingInfo = async () => {
       try {
-        const tokenInfo = await fetchKrc20TokenInfo(0, tokenTick) // Replace 0 with actual selectedNode if available
-        if (tokenInfo) {
-          const percentage = getMintedPercentage(tokenInfo.minted, tokenInfo.max)
+        const _tokenInfo = await fetchKrc20TokenInfo(0, tokenTick)
+        if (_tokenInfo) {
+          setTokenInfo(_tokenInfo)
+          const percentage = getMintedPercentage(_tokenInfo.minted, _tokenInfo.max)
           setMintedPercentage(percentage)
         }
       } catch (error) {
@@ -34,7 +37,7 @@ const MintButtonOnCryptoPage: React.FC<MintButtonProps> = ({ tokenTick }) => {
     if (tokenTick.toUpperCase() === 'KASPA' || mintedPercentage === '100.00') {
       setShowMintDialog(true)
     } else {
-      navigate(`/mint/${tokenTick}`, { state: { token: { tick: tokenTick } } })
+      navigate(`/mint/${tokenTick}`, { state: { token: tokenInfo } })
     }
   }
 
@@ -52,4 +55,4 @@ const MintButtonOnCryptoPage: React.FC<MintButtonProps> = ({ tokenTick }) => {
   )
 }
 
-export default MintButtonOnCryptoPage
+export default CryptoMintButton

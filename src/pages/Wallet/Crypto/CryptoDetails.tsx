@@ -13,7 +13,7 @@ interface CryptoDetailsTableProps {
   }
 }
 
-const CryptoDetailsTable: React.FC<CryptoDetailsTableProps> = ({ token }) => {
+const CryptoDetails: React.FC<CryptoDetailsTableProps> = ({ token }) => {
   const { floorPrice, tick } = token
   const { settings } = useSettings()
   const price = useKaspaPrice(settings.currency)
@@ -72,4 +72,4 @@ const CryptoDetailsTable: React.FC<CryptoDetailsTableProps> = ({ token }) => {
   )
 }
 
-export default CryptoDetailsTable
+export default CryptoDetails
