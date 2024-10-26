@@ -29,6 +29,8 @@ import KeyManager from '@/wallet/kaspa/KeyManager'
 import Account from '@/wallet/kaspa/account/account'
 import { KRC20Info, setupkrc20Mint, setupkrc20Transaction, Token } from '../krc20/Transact'
 import { KRC20_COMMIT_AMOUNT } from '@/utils/constants'
+import browser from 'webextension-polyfill'
+import ghostIcon from '../../../../assets/ghost-512.png'
 
 export interface CustomInput {
   address: string
@@ -150,6 +152,9 @@ export default class Transactions extends EventEmitter {
     console.log(preparedTxn)
 
     const { transactions, summary } = await createTransactions(preparedTxn)
+
+    console.log('create transactions', transactions)
+    console.log('create summary', summary)
 
     // TODO: Move this to later?
     //await this.addresses.increment(0, 1)
@@ -415,6 +420,7 @@ export default class Transactions extends EventEmitter {
 
   async waitForUTXO(transactionID: string) {
     return new Promise<void>((resolve) => {
+
       const listener = (event: UtxoProcessorEvent<'maturity'>) => {
         console.log(event)
 
@@ -428,6 +434,7 @@ export default class Transactions extends EventEmitter {
       this.processor.addEventListener('maturity', listener)
     })
   }
+
 
   async submitKRC20Commit(scriptAddress: string, feeRate: number, amount: string = KRC20_COMMIT_AMOUNT) {
     const [commit1] = await this.create([[scriptAddress, amount]], feeRate, '0')
@@ -472,6 +479,9 @@ export default class Transactions extends EventEmitter {
   }
 
   async submitKRC20Transaction(info: KRC20Info, feeRate: number) {
+    const transactionContext = new UtxoContext({processor: this.processor})
+    transactionContext.trackAddresses([info.scriptAddress])
+
     const commit = await this.submitKRC20Commit(info.scriptAddress, feeRate)
 
     const commitId = commit[commit.length - 1]
@@ -482,12 +492,54 @@ export default class Transactions extends EventEmitter {
 
     const revealId = reveal[reveal.length - 1]
 
+    transactionContext.clear()
+
     await this.addresses.increment(0, 1)
 
     return [commitId, revealId]
   }
 
+  async createForKRC20Mint(
+    context: UtxoContext,
+    fee: string,
+    customs?: CustomInput[],
+    changeAddress?: string,
+  ): Promise<[string[], string]> {
+    let priorityEntries: IUtxoEntry[] = []
+
+    if (customs && customs.length > 0) {
+      priorityEntries = await this.findCustomEntries(customs)
+    }
+
+    const preparedTxn = {
+      priorityEntries,
+      entries: context,
+      outputs: [],
+      changeAddress:
+        changeAddress ?? this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
+      priorityFee: kaspaToSompi(fee)!,
+    }
+    console.log('Creating transaction with:')
+    console.log(preparedTxn)
+
+    const { transactions, summary } = await createTransactions(preparedTxn)
+
+    console.log('create transactions', transactions)
+    console.log('create summary', summary)
+
+    // TODO: Move this to later?
+    //await this.addresses.increment(0, 1)
+
+    for (const transaction of transactions) {
+      this.transactions.set(transaction.id, transaction)
+    }
+
+    const transactionStrings = transactions.map((transaction) => transaction.serializeToSafeJSON())
+    return [transactionStrings, sompiToKaspaString(summary.fees)]
+  }
+
   async submitKRC20MintReveal(
+    context: UtxoContext,
     commitId: string,
     scriptAddress: string,
     sender: string,
@@ -506,7 +558,7 @@ export default class Transactions extends EventEmitter {
     console.log('[Transactions] Reveal transaction input:', input)
 
     // - create
-    const [reveal1] = await this.create([], undefined, fee, [input], backToScript ? scriptAddress : undefined)
+    const [reveal1] = await this.createForKRC20Mint(context, fee, [input], backToScript ? scriptAddress : undefined)
     console.log('[Transactions] Created reveal transaction:', reveal1)
 
     // - sign
@@ -551,12 +603,17 @@ export default class Transactions extends EventEmitter {
     ]
   }
 
-  async doKRC20Mint(ticker: string, feeRate: number, timesToMint = 1): Promise<[string, string[]]> {
+  async doKRC20Mint(ticker: string, feeRate: number, timesToMint = 1) {
+    console.log(`[Transactions] Mint started for ${ticker}. Minting ${timesToMint} time(s).`)
+
     const sender = this.addresses.receiveAddresses[0]
     const mintSetup = setupkrc20Mint(sender, ticker)
     const script = mintSetup.script.toString()
     const scriptAddress = mintSetup.scriptAddress.toString()
     const kaspaToLoad = (timesToMint + 10).toString()
+
+    const mintContext = new UtxoContext({processor: this.processor})
+    mintContext.trackAddresses([mintSetup.scriptAddress])
 
     const commit = await this.submitKRC20Commit(scriptAddress, feeRate, kaspaToLoad)
 
@@ -564,18 +621,34 @@ export default class Transactions extends EventEmitter {
 
     await this.waitForUTXO(commitId)
 
-    let reveals = []
+    let transactionIds = [commitId]
 
     for (let i = 0; i < timesToMint; i++) {
+      console.log(`[Transactions] Mint Reveal index ${i}`)
       const isLast = i === timesToMint - 1
-      const reveal = await this.submitKRC20MintReveal(commitId, scriptAddress, sender, script, '1', !isLast)
+      const reveal = await this.submitKRC20MintReveal(mintContext, transactionIds[i], scriptAddress, sender, script, '1', !isLast)
 
       const revealId = reveal[reveal.length - 1]
 
-      reveals.push(revealId)
+      await this.waitForUTXO(revealId)
+
+      transactionIds.push(revealId)
     }
 
-    return [commitId, reveals]
+    await this.addresses.increment(0, 1)
+
+    mintContext.clear()
+
+    console.log('[Transactions] Mint complete', transactionIds)
+
+    browser.notifications.create({
+      type: 'basic',
+      title: 'Mint Completed',
+      message: `Done minting ${timesToMint} ${ticker}`,
+      iconUrl: ghostIcon
+    })
+
+    return transactionIds
   }
 
   reset() {
