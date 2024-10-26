@@ -28,7 +28,25 @@ export function setupkrc20Transaction(
   const inscription = new Inscription('transfer', {
     tick: token.tick,
     amt: BigInt(+amount * 10 ** +token.dec).toString(),
-    to: recipient.toString(),
+    to: recipient,
+  })
+
+  inscription.write(script, XOnlyPublicKey.fromAddress(new Address(address!)).toString())
+
+  const scriptAddress = addressFromScriptPublicKey(script.createPayToScriptHashScript(), networkId!)!
+
+  return { script, scriptAddress }
+}
+
+export function setupkrc20Mint(
+  address: string,
+  token: Token,
+  networkId = 'MAINNET',
+) {
+  const script = new ScriptBuilder()
+  const inscription = new Inscription('mint', {
+    tick: token.tick,
+    //to: address,
   })
 
   inscription.write(script, XOnlyPublicKey.fromAddress(new Address(address!)).toString())
