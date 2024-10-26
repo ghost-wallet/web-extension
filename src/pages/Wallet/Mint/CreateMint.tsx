@@ -7,6 +7,7 @@ import { Krc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 import { formatBalance } from '@/utils/formatting'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import ErrorMessage from '@/components/ErrorMessage'
+import CryptoImage from '@/components/cryptos/CryptoImage'
 
 export default function CreateMint() {
   const navigate = useNavigate()
@@ -62,8 +63,9 @@ export default function CreateMint() {
     <>
       <AnimatedMain>
         <Header title={`Mint ${token.tick}`} showBackButton={true} />
-        <div className="p-4">
-          <div className="flex items-center space-x-4">
+        <div className="px-4">
+          <CryptoImage ticker={token.tick} size={'large'} />
+          <div className="flex items-center space-x-4 pt-4">
             <input
               type="range"
               min="0"

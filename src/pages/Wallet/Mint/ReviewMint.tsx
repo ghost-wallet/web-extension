@@ -5,6 +5,7 @@ import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import { Krc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 import useKaspa from '@/hooks/contexts/useKaspa'
+import CryptoImage from '@/components/cryptos/CryptoImage'
 
 export default function ReviewMint() {
   const location = useLocation()
@@ -39,8 +40,9 @@ export default function ReviewMint() {
     <>
       <AnimatedMain>
         <Header title="Review Mint" showBackButton={true} />
-        <div className="p-4">
-          <div className="w-full max-w-md space-y-2 mt-6">
+        <div className="px-4">
+          <CryptoImage ticker={token.tick} size={'large'} />
+          <div className="w-full max-w-md space-y-2 pt-2">
             <div className="flex justify-between">
               <span className="text-mutedtext font-lato text-base">You receive</span>
               <span className="text-primarytext font-lato text-base">
