@@ -62,10 +62,7 @@ export default function Mint() {
     <>
       <AnimatedMain>
         <Header title="Mint" showBackButton={true} />
-        <p className="px-6 mb-2 font-lato text-base text-mutedtext text-center -mt-4">
-          Lookup the KRC20 token you want to mint
-        </p>
-        <div className="px-6 pt-2 -mb-6">
+        <div className="px-4 -mb-6">
           <SearchBar onSearch={handleSearch} />
           {loading ? (
             <div className="mt-10">
@@ -75,9 +72,9 @@ export default function Mint() {
             <ErrorMessage message={error} />
           )}
         </div>
-        <div className="px-6">{token && <KRC20TokenDetails token={token} />}</div>
+        <div className="px-4">{token && <KRC20TokenDetails token={token} />}</div>
         {token && (
-          <div className="px-6 pt-3">
+          <div className="px-4 pt-3">
             <button
               onClick={handleContinue}
               disabled={!isMintable() || token.state === 'unused'}

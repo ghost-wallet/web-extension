@@ -1,3 +1,10 @@
+export const formatValue = (value: string | number | null | undefined): string => {
+  if (value === '0' || value === 0 || value === null || value === undefined) {
+    return '0'
+  }
+  return value.toString()
+}
+
 export const formatBalance = (balance: string, decimals: string | number): number => {
   const dec = typeof decimals === 'string' ? parseInt(decimals, 10) : decimals
   if (dec === 0) return parseFloat(balance)
