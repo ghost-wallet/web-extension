@@ -5,6 +5,7 @@ import ErrorMessage from '@/components/ErrorMessage'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import ghostIcon from '../../assets/ghost.svg'
 import AnimatedMain from '@/components/AnimatedMain'
+import SpinnerPage from '@/components/SpinnerPage'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -13,6 +14,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isValid, setIsValid] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (password.length >= 8) {
@@ -26,20 +28,25 @@ export default function Login() {
   }, [password, error])
 
   const login = useCallback(async () => {
+    setLoading(true)
     try {
       const decryptedKey = await request('wallet:unlock', [password])
       if (decryptedKey) {
-        request('account:scan', [true])
-          .then(() => console.log('Account scan completed'))
-          .catch((err) => console.error('Account scan error:', err))
-
-        navigate('/')
+        try {
+          await request('account:scan', [true])
+          navigate('/')
+        } catch (err) {
+          console.error('Account scan error:', err)
+          setError('Account scan failed')
+        }
       } else {
         setError('Failed to retrieve decrypted key')
       }
     } catch (err) {
       console.log('[Login] Password login error', err)
       setError('Incorrect password')
+    } finally {
+      setLoading(false)
     }
   }, [password, request, navigate])
 
@@ -52,6 +59,10 @@ export default function Login() {
 
   const handleForgotPassword = () => {
     navigate('/unlock/forgotpassword')
+  }
+
+  if (loading) {
+    return <SpinnerPage displayText="Logging in..." />
   }
 
   return (

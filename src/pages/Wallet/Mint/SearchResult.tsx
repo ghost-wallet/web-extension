@@ -8,9 +8,20 @@ interface KRC20TokenDetailsProps {
   token: KRC20TokenResponse
 }
 
-const KRC20TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
-  const mintedPercentage = getMintedPercentage(token.minted, token.max)
-  const preMintedPercentage = getMintedPercentage(token.pre, token.max)
+const SearchResult: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
+  const mintedPercentage = isNaN(parseFloat(getMintedPercentage(token.minted, token.max)))
+    ? '0'
+    : getMintedPercentage(token.minted, token.max)
+  const preMintedPercentage = isNaN(parseFloat(getMintedPercentage(token.pre, token.max)))
+    ? '0'
+    : getMintedPercentage(token.pre, token.max)
+
+  const formatValue = (value: string | number | null | undefined) => {
+    if (value === '0' || value === 0 || value === null || value === undefined) {
+      return '0'
+    }
+    return value.toString()
+  }
 
   return (
     <div className="bg-bgdarker rounded-md p-3">
@@ -23,28 +34,34 @@ const KRC20TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
         <div className="flex justify-between">
           <span className="text-mutedtext font-lato text-lg">Max Supply</span>
           <span className="text-primarytext font-lato text-lg">
-            {formatSupplyWithAbbreviation(token.max, token.dec)}
+            {formatSupplyWithAbbreviation(Number(formatValue(token.max)), token.dec)}
           </span>
         </div>
         <div className="flex justify-between">
           <span className="text-mutedtext font-lato text-lg">Minted</span>
-          <span className="text-primarytext font-lato text-lg">{mintedPercentage}%</span>
+          <span className="text-primarytext font-lato text-lg">
+            {mintedPercentage === '0' ? '0%' : `${mintedPercentage}%`}
+          </span>
         </div>
         <div className="flex justify-between">
           <span className="text-mutedtext font-lato text-lg">Pre-minted</span>
-          <span className="text-primarytext font-lato text-lg">{preMintedPercentage}%</span>
+          <span className="text-primarytext font-lato text-lg">
+            {preMintedPercentage === '0' ? '0%' : `${preMintedPercentage}%`}
+          </span>
         </div>
         <div className="flex justify-between">
           <span className="text-mutedtext font-lato text-lg">Total mints</span>
-          <span className="text-primarytext font-lato text-lg">{token.mintTotal}</span>
+          <span className="text-primarytext font-lato text-lg">{formatValue(token.mintTotal) || 'N/A'}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-mutedtext font-lato text-lg">Holders</span>
-          <span className="text-primarytext font-lato text-lg">{token.holderTotal}</span>
+          <span className="text-primarytext font-lato text-lg">
+            {formatValue(token.holderTotal) || 'N/A'}
+          </span>
         </div>
       </div>
     </div>
   )
 }
 
-export default KRC20TokenDetails
+export default SearchResult

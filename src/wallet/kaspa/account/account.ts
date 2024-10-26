@@ -64,6 +64,7 @@ export default class Account extends EventEmitter {
     if (!this.node.connected) {
       await this.node.waitUntilConnected()
     }
+    // TODO: make scan wait for addresses to be loaded. Sometimes an error says no public key found in SessionStorage from derive()
     console.log('[Account] Scan started')
     console.log('[Account] Scan: current receive addresses', this.addresses.receiveAddresses)
     console.log('[Account] Scan: current change addresses', this.addresses.changeAddresses)

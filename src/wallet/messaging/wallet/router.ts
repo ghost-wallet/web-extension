@@ -56,8 +56,8 @@ export default class Router {
         account.transactions.estimateKRC20TransactionFee(info, feeRate),
       'account:doKRC20Mint': (ticker, feeRate, timesToMint) =>
         account.transactions.doKRC20Mint(ticker, feeRate, timesToMint),
-      'account:estimateKRC20MintFees': (token, feeRate, timesToMint) =>
-        account.transactions.estimateKRC20MintFees(token, feeRate, timesToMint),
+      'account:estimateKRC20MintFees': (ticker, feeRate, timesToMint) =>
+        account.transactions.estimateKRC20MintFees(ticker, feeRate, timesToMint),
       'provider:connect': (url) => provider.connect(url),
       'provider:connection': () => provider.connectedURL,
       'provider:disconnect': () => provider.disconnect(),

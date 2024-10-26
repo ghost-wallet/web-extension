@@ -15,7 +15,7 @@ export function setupkrc20Transaction(
   recipient: string,
   amount: string,
   token: Token,
-  networkId = 'MAINNET',
+  networkId = 'mainnet',
 ) {
   const script = new ScriptBuilder()
   const inscription = new Inscription('transfer', {
@@ -31,7 +31,7 @@ export function setupkrc20Transaction(
   return { script, scriptAddress }
 }
 
-export function setupkrc20Mint(address: string, ticker: string, networkId = 'MAINNET') {
+export function setupkrc20Mint(address: string, ticker: string, networkId = 'mainnet') {
   const script = new ScriptBuilder()
   const inscription = new Inscription('mint', {
     tick: ticker,

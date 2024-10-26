@@ -31,7 +31,7 @@ export default function Landing() {
     }
 
     if (loadedSettings && loadedKaspa) {
-      // Perform node:connect after loading settings and kaspa
+      console.log('Start Node Connection from Landing')
       connectNode()
 
       switch (kaspa.status) {
@@ -47,16 +47,7 @@ export default function Landing() {
         default:
       }
     }
-  }, [
-    loadedSettings,
-    loadedKaspa,
-    kaspa.connected,
-    kaspa.status,
-    request,
-    settings.settings.nodes,
-    settings.settings.selectedNode,
-    navigate,
-  ])
+  }, [loadedKaspa])
 
   return null
 }

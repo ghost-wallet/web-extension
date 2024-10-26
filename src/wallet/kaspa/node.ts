@@ -5,7 +5,7 @@ export type PriorityBuckets = Record<'slow' | 'standard' | 'fast', { feeRate: nu
 
 export default class Node extends EventEmitter {
   rpcClient: RpcClient
-  networkId: string = 'MAINNET'
+  networkId: string = 'mainnet'
 
   constructor() {
     super()
@@ -18,14 +18,12 @@ export default class Node extends EventEmitter {
     return this.rpcClient.isConnected
   }
 
-  waitUntilConnected(/* timeoutMs: number */) {
-    return new Promise<void>((resolve, reject) => {
+  waitUntilConnected() {
+    return new Promise<void>((resolve) => {
       if (this.connected) {
         resolve()
       }
-      //const timeout = setTimeout(() => reject('Connection timed out'), timeoutMs)
       const listener = () => {
-        //clearTimeout(timeout)
         this.rpcClient.removeEventListener('connect', listener)
         resolve()
       }
@@ -107,8 +105,6 @@ export default class Node extends EventEmitter {
                 console.log(`[Node] Network ID changed from ${this.networkId} to ${networkId}`)
                 this.emit('network', networkId)
                 this.networkId = networkId
-              } else {
-                console.log('[Node] Network ID remains unchanged:', this.networkId)
               }
             })
             .catch((error) => {

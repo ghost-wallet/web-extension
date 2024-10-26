@@ -6,8 +6,8 @@ import Header from '@/components/Header'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 import { KRC20TokenResponse } from '@/utils/interfaces'
 import { getMintedPercentage } from '@/utils/calculations'
-import KRC20TokenDetails from '@/components/KRC20TokenDetails'
-import KRC20TokenSearch from '@/components/KRC20TokenSearch'
+import SearchResult from '@/pages/Wallet/Mint/SearchResult'
+import SearchBar from '@/pages/Wallet/Mint/SearchBar'
 import ErrorMessage from '@/components/ErrorMessage'
 import Spinner from '@/components/Spinner'
 
@@ -38,13 +38,22 @@ export default function Mint() {
 
   const isMintable = () => {
     if (!token) return false
+    if (token.state === 'unused') return false
+
     const maxSupply = token.max
-    const mintedPercentage = parseFloat(getMintedPercentage(token.minted, maxSupply)) // Convert to number
+    const mintedPercentage = parseFloat(getMintedPercentage(token.minted, maxSupply))
     return maxSupply !== 0 && mintedPercentage < 100
   }
 
+  const getButtonLabel = () => {
+    if (!token) return 'Continue To Mint'
+    if (token.state === 'unused') return 'Token Not Deployed'
+    if (!isMintable()) return 'Supply Is Already Minted'
+    return 'Continue To Mint'
+  }
+
   const handleContinue = () => {
-    if (token) {
+    if (token && isMintable()) {
       navigate(`/mint/${token.tick}`, { state: { token } })
     }
   }
@@ -57,7 +66,7 @@ export default function Mint() {
           Lookup the KRC20 token you want to mint
         </p>
         <div className="px-6 pt-2 -mb-6">
-          <KRC20TokenSearch onSearch={handleSearch} />
+          <SearchBar onSearch={handleSearch} />
           {loading ? (
             <div className="mt-10">
               <Spinner />
@@ -66,19 +75,19 @@ export default function Mint() {
             <ErrorMessage message={error} />
           )}
         </div>
-        <div className="px-6">{token && <KRC20TokenDetails token={token} />}</div>
+        <div className="px-6">{token && <SearchResult token={token} />}</div>
         {token && (
           <div className="px-6 pt-3">
             <button
               onClick={handleContinue}
-              disabled={!isMintable()}
+              disabled={!isMintable() || token.state === 'unused'}
               className={`w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] ${
-                isMintable()
+                isMintable() && token.state !== 'unused'
                   ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
                   : 'bg-muted text-mutedtext cursor-not-allowed'
               }`}
             >
-              {isMintable() ? 'Continue To Mint' : 'Supply Is Already Minted'}
+              {getButtonLabel()}
             </button>
           </div>
         )}

@@ -475,7 +475,7 @@ export default class Transactions extends EventEmitter {
 
     const commitResult = await estimateTransactions(commitSettings)
 
-    const totalFee = timesToMint + Number(sompiToKaspaString(commitResult.fees))
+    const totalFee = timesToMint + sompiToKaspaString(commitResult.fees)
     console.log('commitResult.fees', commitResult.fees)
 
     return [totalFee, sompiToKaspaString(commitResult.fees), sompiToKaspaString(commitResult.finalAmount!)]

@@ -5,7 +5,7 @@ interface KRC20TokenSearchProps {
   onSearch: (ticker: string) => void
 }
 
-const KRC20TokenSearch: React.FC<KRC20TokenSearchProps> = ({ onSearch }) => {
+const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch }) => {
   const [ticker, setTicker] = useState('')
 
   const handleSearch = () => {
@@ -45,4 +45,4 @@ const KRC20TokenSearch: React.FC<KRC20TokenSearchProps> = ({ onSearch }) => {
   )
 }
 
-export default KRC20TokenSearch
+export default SearchBar
