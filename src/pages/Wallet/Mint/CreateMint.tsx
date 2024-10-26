@@ -1,112 +1,121 @@
 import React, { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import { Krc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 import { formatBalance } from '@/utils/formatting'
-import useKaspa from '@/hooks/contexts/useKaspa' // Assuming you have a hook to use Kaspa's request function
+import useKaspa from '@/hooks/contexts/useKaspa'
+import ErrorMessage from '@/components/ErrorMessage'
 
 export default function CreateMint() {
+  const navigate = useNavigate()
+  const { kaspa } = useKaspa()
   const location = useLocation()
   const token = location.state?.token as Krc20TokenInfo
-  const { request } = useKaspa() // To make API calls through request
 
-  const [mintAmount, setMintAmount] = useState(1)
-  const [estimatedFee, setEstimatedFee] = useState<string | null>(null)
+  const [mintAmount, setMintAmount] = useState<number | null>(null)
+  const [error, setError] = useState<string>('')
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMintAmount(Number(e.target.value))
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Math.min(10000, Math.max(1, Number(e.target.value) || 0))
-    setMintAmount(value)
+    const value = e.target.value
+    if (value === '') {
+      setMintAmount(null)
+    } else if (/^\d+$/.test(value) && Number(value) <= 10000) {
+      setMintAmount(Number(value))
+    }
   }
 
-  // Fetch estimated fees whenever mint amount changes
+  const totalMintCost = mintAmount
+    ? (parseFloat(String(formatBalance(token.lim, token.dec))) * mintAmount).toLocaleString()
+    : '0'
+
+  const isMintAmountValid = mintAmount !== null && mintAmount >= 1 && mintAmount <= 10000
+  const exceedsBalance = mintAmount !== null && mintAmount > kaspa.balance
+  const showError = exceedsBalance
+
   useEffect(() => {
-    const estimateFees = async () => {
-      try {
-        const fees = await request('account:estimateKRC20MintFees', [token.tick, 1, mintAmount])
-        setEstimatedFee(fees[0]) // Assume first fee in array as requested
-      } catch (error) {
-        console.error('Error estimating mint fees:', error)
-        setEstimatedFee(null)
-      }
+    if (exceedsBalance) {
+      setError(`${mintAmount} exceeds your available balance: ${kaspa.balance} KAS`)
+    } else {
+      setError('')
     }
+  }, [mintAmount, kaspa.balance, exceedsBalance])
 
-    estimateFees()
-  }, [mintAmount, token, request])
-
-  const handleMint = async () => {
-    try {
-      const result = await request('account:doKRC20Mint', [token.tick, 1, mintAmount])
-      console.log('Mint result:', result)
-    } catch (error) {
-      console.error('Error during minting:', error)
+  const handleReview = () => {
+    if (isMintAmountValid && !showError) {
+      navigate(`/mint/${token.tick}/review`, {
+        state: {
+          token,
+          payAmount: mintAmount,
+          receiveAmount: totalMintCost,
+        },
+      })
     }
   }
-
-  // Calculate the total mint cost
-  const totalMintCost = (
-    parseFloat(String(formatBalance(token.lim, token.dec))) * mintAmount
-  ).toLocaleString()
-
-  const isMintAmountValid = mintAmount >= 1 && mintAmount <= 10000
 
   return (
     <>
       <AnimatedMain>
-        <Header title="Create Mint" showBackButton={true} />
+        <Header title={`Mint ${token.tick}`} showBackButton={true} />
         <div className="p-4">
-          <div className="rounded-base text-mutedtext text-base font-lato text-center mb-6">
-            Mint rate: {formatBalance(token.lim, token.dec).toLocaleString()} {token.tick} per 1 KAS
-          </div>
-          <div className="flex flex-col items-center space-y-4">
-            {/* Slider */}
+          <div className="flex items-center space-x-4">
             <input
               type="range"
-              min="1"
+              min="0"
               max="10000"
-              value={mintAmount}
+              value={mintAmount || 0}
               onChange={handleSliderChange}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-primary h-2"
             />
-            {/* Input with KAS label */}
-            <div className="flex items-center space-x-2">
-              <input
-                type="number"
-                min="1"
-                max="10000"
-                value={mintAmount}
-                onChange={handleInputChange}
-                className="w-24 bg-darkmuted p-2 border border-muted rounded-lg text-primarytext text-center"
-                placeholder="Enter amount"
-              />
-              <span className="font-lato text-primarytext text-base">KAS</span>
+            <input
+              type="number"
+              min="0"
+              max="10000"
+              value={mintAmount !== null ? mintAmount : ''}
+              onChange={handleInputChange}
+              className="w-26 bg-darkmuted p-2 border border-muted rounded-lg font-lato text-base text-primarytext text-center"
+              placeholder="KAS"
+            />
+          </div>
+          <div className="w-full max-w-md space-y-2 mt-6">
+            <div className="flex justify-between">
+              <span className="text-mutedtext font-lato text-base">You Receive</span>
+              <span className="text-primarytext font-lato text-base">
+                {totalMintCost} {token.tick}
+              </span>
             </div>
-            {/* Total Mint Cost Display */}
-            <div className="text-primarytext font-lato text-base">
-              {totalMintCost} {token.tick}
+            <div className="flex justify-between">
+              <span className="text-mutedtext font-lato text-base">Mint Cost</span>
+              <span className="text-primarytext font-lato text-base">
+                {mintAmount?.toLocaleString() || '0'} KAS
+              </span>
             </div>
-            {/* Estimated Fee Display */}
-            {estimatedFee && (
-              <p className="text-mutedtext font-lato text-sm">Estimated Fee: {estimatedFee} KAS</p>
-            )}
+          </div>
+          <div className="rounded-base text-mutedtext text-base font-lato text-center mt-4">
+            Mint rate: {formatBalance(token.lim, token.dec).toLocaleString()} {token.tick} per 1 KAS
           </div>
         </div>
+        {showError && (
+          <div className="px-4 mt-4">
+            <ErrorMessage message={error} />
+          </div>
+        )}
         <div className="px-4 py-4">
           <button
-            onClick={handleMint}
-            disabled={!isMintAmountValid}
-            className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] ${
-              isMintAmountValid
+            onClick={handleReview}
+            disabled={!isMintAmountValid || showError}
+            className={`w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] ${
+              isMintAmountValid && !showError
                 ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
                 : 'bg-muted text-mutedtext cursor-not-allowed'
             }`}
           >
-            Mint
+            Review Mint
           </button>
         </div>
       </AnimatedMain>

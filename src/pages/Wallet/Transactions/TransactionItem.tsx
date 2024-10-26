@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react'
 import CryptoImage from '@/components/cryptos/CryptoImage'
-import { PaperAirplaneIcon, ArrowDownIcon } from '@heroicons/react/24/outline'
+import { PaperAirplaneIcon, ArrowDownIcon, BoltIcon } from '@heroicons/react/24/outline'
 import useKaspa from '@/hooks/contexts/useKaspa'
 
 interface TransactionItemProps {
@@ -14,24 +14,19 @@ const TransactionItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ opera
   const address = kaspa.addresses[0][0] // Your address
 
   const isReceived = operation.op === 'transfer' && operation.to === address
+  const isMint = operation.op === 'mint' // Check if operation is 'mint'
 
-  // TODO: if you send tokens to yourself, show both operations
-  const operationType = isReceived ? 'Received' : 'Sent'
+  const operationType = isMint ? 'Mint' : isReceived ? 'Received' : 'Sent'
+  const Icon = isMint ? BoltIcon : isReceived ? ArrowDownIcon : PaperAirplaneIcon
 
   return (
     <li ref={ref} className="flex items-center p-4 bg-darkmuted rounded-lg shadow-md">
       <div className="relative">
-        <CryptoImage ticker={operation.tick} size={'small'} />
+        <CryptoImage ticker={operation.tick} size="small" />
         <div className="absolute -bottom-1 -right-1">
-          {isReceived ? (
-            <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center border border-darkmuted">
-              <ArrowDownIcon className="w-4 h-4 text-black" strokeWidth={2} />
-            </div>
-          ) : (
-            <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center border border-darkmuted">
-              <PaperAirplaneIcon className="w-4 h-4 text-black" strokeWidth={2} />
-            </div>
-          )}
+          <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center border border-darkmuted">
+            <Icon className="w-4 h-4 text-black" strokeWidth={2} />
+          </div>
         </div>
       </div>
 

@@ -7,15 +7,18 @@ import { fetchKrc20TokenInfo, Krc20TokenInfo } from '@/hooks/kasplex/fetchKrc20T
 import KRC20TokenDetails from '@/components/KRC20TokenDetails'
 import KRC20TokenSearch from '@/components/KRC20TokenSearch'
 import ErrorMessage from '@/components/ErrorMessage'
+import Spinner from '@/components/Spinner' // Import the Spinner component
 
 export default function Mint() {
   const [token, setToken] = useState<Krc20TokenInfo | null>(null)
   const [error, setError] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false) // New loading state
   const navigate = useNavigate()
 
   const handleSearch = async (ticker: string) => {
     setError('')
     setToken(null)
+    setLoading(true) // Start loading when search is clicked
 
     try {
       const result = await fetchKrc20TokenInfo(0, ticker)
@@ -26,6 +29,8 @@ export default function Mint() {
       }
     } catch (err) {
       setError('An error occurred while fetching token info.')
+    } finally {
+      setLoading(false) // Stop loading when search completes
     }
   }
 
@@ -53,7 +58,13 @@ export default function Mint() {
         </p>
         <div className="px-6 pt-2 -mb-6">
           <KRC20TokenSearch onSearch={handleSearch} />
-          <ErrorMessage message={error} />
+          {loading ? (
+            <div className="mt-10">
+              <Spinner />
+            </div>
+          ) : (
+            <ErrorMessage message={error} />
+          )}
         </div>
         <div className="px-6">{token && <KRC20TokenDetails token={token} />}</div>
         {token && (
@@ -61,13 +72,13 @@ export default function Mint() {
             <button
               onClick={handleContinue}
               disabled={!isTokenValid()}
-              className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] ${
+              className={`w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] ${
                 isTokenValid()
                   ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
                   : 'bg-muted text-mutedtext cursor-not-allowed'
               }`}
             >
-              {isTokenValid() ? 'Continue To Mint' : 'Supply Has Been 100% Minted'}
+              {isTokenValid() ? 'Continue To Mint' : 'Supply Is Already Minted'}
             </button>
           </div>
         )}

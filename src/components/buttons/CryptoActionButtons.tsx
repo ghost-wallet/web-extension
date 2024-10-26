@@ -50,6 +50,11 @@ const CryptoActionButtons: React.FC<CryptoActionButtonsProps> = ({ token }) => {
         disabled={!isTokenAvailable}
         className={!isTokenAvailable ? 'opacity-50 cursor-not-allowed' : ''}
       />
+      <ActionButton
+        icon={<ArrowsRightLeftIcon strokeWidth={2} />}
+        label="Mint"
+        onClick={() => navigate(`/mint/${token.tick}`, { state: { token } })}
+      />
     </div>
   )
 }
