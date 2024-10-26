@@ -97,7 +97,9 @@ export default class Account extends EventEmitter {
   }
 
   private async scanAddresses(isReceive: boolean, start: number, maxEmpty: number, windowSize = 8) {
-    console.log(`[Account] Starting Scan for ${isReceive ? 'recieve' : 'change'} addresses. Starting at ${start}.`)
+    console.log(
+      `[Account] Starting Scan for ${isReceive ? 'recieve' : 'change'} addresses. Starting at ${start}.`,
+    )
     let index = start
     let foundIndex = start
     do {
