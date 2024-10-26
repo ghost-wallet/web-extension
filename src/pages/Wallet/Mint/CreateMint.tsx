@@ -11,6 +11,7 @@ export default function CreateMint() {
   const location = useLocation()
   const token = location.state?.token as Krc20TokenInfo
   const { request } = useKaspa() // To make API calls through request
+
   const [mintAmount, setMintAmount] = useState(1)
   const [estimatedFee, setEstimatedFee] = useState<string | null>(null)
 
@@ -23,13 +24,12 @@ export default function CreateMint() {
     setMintAmount(value)
   }
 
+  // Fetch estimated fees whenever mint amount changes
   useEffect(() => {
     const estimateFees = async () => {
       try {
-        console.log('Estimating mint fee...')
-        const fee = await request('account:estimateKRC20MintFees', [token.tick, 1, mintAmount])
-        console.log('Estimated Fee:', fee)
-        // setEstimatedFee(fee)
+        const fees = await request('account:estimateKRC20MintFees', [token.tick, 1, mintAmount])
+        setEstimatedFee(fees[0]) // Assume first fee in array as requested
       } catch (error) {
         console.error('Error estimating mint fees:', error)
         setEstimatedFee(null)
@@ -39,9 +39,21 @@ export default function CreateMint() {
     estimateFees()
   }, [mintAmount, token, request])
 
+  const handleMint = async () => {
+    try {
+      const result = await request('account:doKRC20Mint', [token.tick, 1, mintAmount])
+      console.log('Mint result:', result)
+    } catch (error) {
+      console.error('Error during minting:', error)
+    }
+  }
+
+  // Calculate the total mint cost
   const totalMintCost = (
     parseFloat(String(formatBalance(token.lim, token.dec))) * mintAmount
   ).toLocaleString()
+
+  const isMintAmountValid = mintAmount >= 1 && mintAmount <= 10000
 
   return (
     <>
@@ -52,6 +64,7 @@ export default function CreateMint() {
             Mint rate: {formatBalance(token.lim, token.dec).toLocaleString()} {token.tick} per 1 KAS
           </div>
           <div className="flex flex-col items-center space-y-4">
+            {/* Slider */}
             <input
               type="range"
               min="1"
@@ -60,6 +73,7 @@ export default function CreateMint() {
               onChange={handleSliderChange}
               className="w-full cursor-pointer"
             />
+            {/* Input with KAS label */}
             <div className="flex items-center space-x-2">
               <input
                 type="number"
@@ -72,16 +86,26 @@ export default function CreateMint() {
               />
               <span className="font-lato text-primarytext text-base">KAS</span>
             </div>
+            {/* Total Mint Cost Display */}
             <div className="text-primarytext font-lato text-base">
               {totalMintCost} {token.tick}
             </div>
+            {/* Estimated Fee Display */}
             {estimatedFee && (
               <p className="text-mutedtext font-lato text-sm">Estimated Fee: {estimatedFee} KAS</p>
             )}
           </div>
         </div>
         <div className="px-4 py-4">
-          <button className="w-full h-[52px] text-base font-lato font-semibold rounded-[25px] bg-primary text-secondarytext cursor-pointer hover:bg-hover">
+          <button
+            onClick={handleMint}
+            disabled={!isMintAmountValid}
+            className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] ${
+              isMintAmountValid
+                ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
+                : 'bg-muted text-mutedtext cursor-not-allowed'
+            }`}
+          >
             Mint
           </button>
         </div>
