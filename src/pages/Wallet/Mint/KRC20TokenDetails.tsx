@@ -8,7 +8,7 @@ interface KRC20TokenDetailsProps {
   token: KRC20TokenResponse
 }
 
-const SearchResult: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
+const KRC20TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
   const mintedPercentage = isNaN(parseFloat(getMintedPercentage(token.minted, token.max)))
     ? '0'
     : getMintedPercentage(token.minted, token.max)
@@ -64,4 +64,4 @@ const SearchResult: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
   )
 }
 
-export default SearchResult
+export default KRC20TokenDetails

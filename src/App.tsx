@@ -20,6 +20,7 @@ import Crypto from '@/pages/Wallet/Crypto'
 import Mint from '@/pages/Wallet/Mint'
 import CreateMint from '@/pages/Wallet/Mint/CreateMint'
 import ReviewMint from '@/pages/Wallet/Mint/ReviewMint'
+import Minted from '@/pages/Wallet/Mint/Minted'
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
             <Route path="/mint" element={<Mint />} />
             <Route path="/mint/:tick" element={<CreateMint />} />
             <Route path="/mint/:tick/review" element={<ReviewMint />} />
+            <Route path="/mint/:tick/review/minted" element={<Minted />} />
           </Routes>
         </MemoryRouter>
       </KaspaProvider>

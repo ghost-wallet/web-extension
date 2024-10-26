@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
@@ -7,15 +7,17 @@ import { formatBalanceWithAbbreviation } from '@/utils/formatting'
 import { KRC20TokenResponse } from '@/utils/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import CryptoImage from '@/components/cryptos/CryptoImage'
+import SpinnerPage from '@/components/SpinnerPage'
 
-//TODO fix Total. the estimated fee + payamount is not handling int & bigint properly
 export default function ReviewMint() {
   const location = useLocation()
+  const navigate = useNavigate()
   const { request } = useKaspa()
   const token = location.state?.token as KRC20TokenResponse
   const payAmount = location.state?.payAmount as number
   const receiveAmount = location.state?.receiveAmount as number
-  const [estimatedFee, setEstimatedFee] = useState<number | null>(null)
+  const [estimatedFee, setEstimatedFee] = useState<string | null>(null)
+  const [isMinting, setIsMinting] = useState(false)
 
   useEffect(() => {
     const fetchEstimatedFees = async () => {
@@ -30,12 +32,24 @@ export default function ReviewMint() {
   }, [payAmount, token, request])
 
   const handleMint = async () => {
+    setIsMinting(true)
     try {
-      const result = await request('account:doKRC20Mint', [token.tick, 1, payAmount])
-      console.log('Mint result:', result)
+      const transactionIds = await request('account:doKRC20Mint', [token.tick, 1, payAmount])
+      console.log('Minted txn ids:', transactionIds)
+      // const txnId = result.txnId
+      // Navigate to the Minted page with necessary state
+      navigate(`/mint/${token.tick}/review/minted`, {
+        state: { token, receiveAmount, transactionIds },
+      })
     } catch (error) {
       console.error('Error during minting:', error)
+    } finally {
+      setIsMinting(false)
     }
+  }
+
+  if (isMinting) {
+    return <SpinnerPage displayText={`Minting ${receiveAmount.toLocaleString()} ${token.tick}...`} />
   }
 
   return (
@@ -43,11 +57,9 @@ export default function ReviewMint() {
       <AnimatedMain>
         <Header title="Review Mint" showBackButton={true} />
         <div className="px-4">
-          <CryptoImage ticker={token.tick} size={'large'} />
+          <CryptoImage ticker={token.tick} size="large" />
           <div className="w-full max-w-md space-y-1 pt-2">
             <div className="flex justify-between mb-6 mt-6">
-              {' '}
-              {/* Add margin-bottom to create separation */}
               <span className="text-mutedtext font-lato text-lg">Receive amount</span>
               <span className="text-primarytext font-lato text-lg">
                 {receiveAmount.toLocaleString()} {token.tick}

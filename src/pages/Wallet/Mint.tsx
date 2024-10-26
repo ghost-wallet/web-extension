@@ -6,7 +6,7 @@ import Header from '@/components/Header'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 import { KRC20TokenResponse } from '@/utils/interfaces'
 import { getMintedPercentage } from '@/utils/calculations'
-import SearchResult from '@/pages/Wallet/Mint/SearchResult'
+import KRC20TokenDetails from '@/pages/Wallet/Mint/KRC20TokenDetails'
 import SearchBar from '@/pages/Wallet/Mint/SearchBar'
 import ErrorMessage from '@/components/ErrorMessage'
 import Spinner from '@/components/Spinner'
@@ -75,7 +75,7 @@ export default function Mint() {
             <ErrorMessage message={error} />
           )}
         </div>
-        <div className="px-6">{token && <SearchResult token={token} />}</div>
+        <div className="px-6">{token && <KRC20TokenDetails token={token} />}</div>
         {token && (
           <div className="px-6 pt-3">
             <button
