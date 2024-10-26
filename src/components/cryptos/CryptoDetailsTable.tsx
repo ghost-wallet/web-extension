@@ -15,7 +15,6 @@ interface CryptoDetailsTableProps {
 
 const CryptoDetailsTable: React.FC<CryptoDetailsTableProps> = ({ token }) => {
   const { floorPrice, tick } = token
-  console.log('token', token)
   const { settings } = useSettings()
   const price = useKaspaPrice(settings.currency)
   const currencySymbol = getCurrencySymbol(settings.currency)

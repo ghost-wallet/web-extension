@@ -1,17 +1,14 @@
-import { ArrowDownIcon, PaperAirplaneIcon, ArrowsRightLeftIcon, BoltIcon } from '@heroicons/react/24/outline'
+import { PaperAirplaneIcon, ArrowsRightLeftIcon, BoltIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
 import ActionButton from '@/components/buttons/ActionButton'
+import ReceiveButton from '@/components/buttons/ReceiveButton'
 
 export default function WalletActionButtons() {
   const navigate = useNavigate()
 
   return (
     <div className="my-4 flex justify-between gap-4">
-      <ActionButton
-        icon={<ArrowDownIcon strokeWidth={2} />}
-        label="Receive"
-        onClick={() => navigate('/receive')}
-      />
+      <ReceiveButton />
       <ActionButton
         icon={<PaperAirplaneIcon strokeWidth={2} />}
         label="Send"

@@ -110,14 +110,12 @@ export default class Account extends EventEmitter {
       const entryIndex = addresses.findLastIndex((address) =>
         entries.some((entry) => entry.address?.toString() === address),
       )
-      console.log('last entry index', entryIndex)
       if (entryIndex !== -1) {
         foundIndex = index + entryIndex
       }
       index += windowSize
     } while (index - foundIndex < maxEmpty)
     const numToIncrement = foundIndex - start
-    console.log('numToIncrement', numToIncrement)
     if (numToIncrement > 0) {
       await this.addresses.increment(isReceive ? numToIncrement : 0, isReceive ? 0 : numToIncrement)
     }

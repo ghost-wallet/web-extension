@@ -4,15 +4,16 @@ import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import { fetchKrc20TokenInfo, Krc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
+import { getMintedPercentage } from '@/utils/calculations'
 import KRC20TokenDetails from '@/components/KRC20TokenDetails'
 import KRC20TokenSearch from '@/components/KRC20TokenSearch'
 import ErrorMessage from '@/components/ErrorMessage'
-import Spinner from '@/components/Spinner' // Import the Spinner component
+import Spinner from '@/components/Spinner'
 
 export default function Mint() {
   const [token, setToken] = useState<Krc20TokenInfo | null>(null)
   const [error, setError] = useState<string>('')
-  const [loading, setLoading] = useState<boolean>(false) // New loading state
+  const [loading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
 
   const handleSearch = async (ticker: string) => {
@@ -34,12 +35,10 @@ export default function Mint() {
     }
   }
 
-  const isTokenValid = () => {
+  const isMintable = () => {
     if (!token) return false
-
     const maxSupply = token.max
-    const mintedPercentage = (token.minted / maxSupply) * 100
-
+    const mintedPercentage = parseFloat(getMintedPercentage(token.minted, maxSupply)) // Convert to number
     return maxSupply !== 0 && mintedPercentage < 100
   }
 
@@ -71,14 +70,14 @@ export default function Mint() {
           <div className="px-6 pt-3">
             <button
               onClick={handleContinue}
-              disabled={!isTokenValid()}
+              disabled={!isMintable()}
               className={`w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] ${
-                isTokenValid()
+                isMintable()
                   ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
                   : 'bg-muted text-mutedtext cursor-not-allowed'
               }`}
             >
-              {isTokenValid() ? 'Continue To Mint' : 'Supply Is Already Minted'}
+              {isMintable() ? 'Continue To Mint' : 'Supply Is Already Minted'}
             </button>
           </div>
         )}

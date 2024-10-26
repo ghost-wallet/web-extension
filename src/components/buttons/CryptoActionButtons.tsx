@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PaperAirplaneIcon, ArrowDownIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
+import { PaperAirplaneIcon } from '@heroicons/react/24/outline'
 import ActionButton from '@/components/buttons/ActionButton'
-import { fetchChaingeTokens, ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import MintButtonOnCryptoPage from '@/components/buttons/MintButtonOnCryptoPage'
+import SwapButtonOnCryptoPage from '@/components/buttons/SwapButtonOnCryptoPage'
+import ReceiveButton from '@/components/buttons/ReceiveButton'
 
 interface CryptoActionButtonsProps {
   token: {
@@ -12,49 +14,27 @@ interface CryptoActionButtonsProps {
 
 const CryptoActionButtons: React.FC<CryptoActionButtonsProps> = ({ token }) => {
   const navigate = useNavigate()
-  const [isTokenAvailable, setIsTokenAvailable] = useState(false)
-
-  useEffect(() => {
-    const checkTokenAvailability = async () => {
-      try {
-        const fetchedTokens: ChaingeToken[] = await fetchChaingeTokens()
-        const tokenExists = fetchedTokens.some(
-          (t) =>
-            t.symbol.toLowerCase() === token.tick.toLowerCase() ||
-            t.name.toLowerCase() === token.tick.toLowerCase(),
-        )
-        setIsTokenAvailable(tokenExists)
-      } catch (error) {
-        console.error('Error checking token availability:', error)
-      }
-    }
-    checkTokenAvailability()
-  }, [token.tick])
 
   return (
-    <div className="flex justify-center space-x-4 mt-4">
-      <ActionButton
-        icon={<ArrowDownIcon strokeWidth={2} />}
-        label="Receive"
-        onClick={() => navigate('/receive')}
-      />
-      <ActionButton
-        icon={<PaperAirplaneIcon strokeWidth={2} />}
-        label="Send"
-        onClick={() => navigate(`/send/${token.tick}`, { state: { token } })}
-      />
-      <ActionButton
-        icon={<ArrowsRightLeftIcon strokeWidth={2} />}
-        label="Swap"
-        onClick={() => isTokenAvailable && navigate('/swap', { state: { token } })}
-        disabled={!isTokenAvailable}
-        className={!isTokenAvailable ? 'opacity-50 cursor-not-allowed' : ''}
-      />
-      <ActionButton
-        icon={<ArrowsRightLeftIcon strokeWidth={2} />}
-        label="Mint"
-        onClick={() => navigate(`/mint/${token.tick}`, { state: { token } })}
-      />
+    <div className="flex justify-center mt-4 relative">
+      <div className="px-2">
+        <ReceiveButton />
+      </div>
+      <div className="px-2">
+        <ActionButton
+          icon={<PaperAirplaneIcon strokeWidth={2} />}
+          label="Send"
+          onClick={() => navigate(`/send/${token.tick}`, { state: { token } })}
+        />
+      </div>
+      <div className="px-2">
+        <SwapButtonOnCryptoPage token={token} />
+      </div>
+      {token.tick.toUpperCase() !== 'KASPA' && (
+        <div className="px-2">
+          <MintButtonOnCryptoPage tokenTick={token.tick} />
+        </div>
+      )}
     </div>
   )
 }

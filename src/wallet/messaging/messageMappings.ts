@@ -3,7 +3,7 @@ import { UTXO } from '../kaspa/account/account'
 import { CustomInput } from '../kaspa/account/transactions'
 import { PriorityBuckets } from '../kaspa/node'
 import { Token } from '../kaspa/krc20/Transact'
-import { KRC20Info } from '../kaspa/krc20/Transact'
+import { KRC20Info } from '@/utils/interfaces'
 
 export interface RequestMappings {
   'wallet:status': []

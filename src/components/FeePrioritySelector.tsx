@@ -18,7 +18,6 @@ const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
   onFeeTypeClick,
 }) => {
   const feeTypeText = FEE_TYPES[currentFeeTypeIndex]
-  console.log('Fee priority:', feeTypeText)
 
   return (
     <>

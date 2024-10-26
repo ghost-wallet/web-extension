@@ -10,13 +10,6 @@ export interface Token {
   floorPrice?: number
 }
 
-export interface KRC20Info {
-  sender: string
-  recipient: string
-  scriptAddress: string
-  script: string
-}
-
 export function setupkrc20Transaction(
   address: string,
   recipient: string,

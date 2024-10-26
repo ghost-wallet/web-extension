@@ -9,7 +9,6 @@ export const useBuckets = () => {
     fast: { feeRate: 1, seconds: 1 },
   })
   const [error, setError] = useState<string | null>(null)
-  console.log('useFeerate buckets', buckets)
 
   const updateBuckets = () => {
     request('node:priorityBuckets', [])

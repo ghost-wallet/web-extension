@@ -1,6 +1,7 @@
 import React from 'react'
 import CryptoImage from '@/components/cryptos/CryptoImage'
 import { formatSupplyWithAbbreviation } from '@/utils/formatting'
+import { getMintedPercentage } from '@/utils/calculations'
 import { Krc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 
 interface KRC20TokenDetailsProps {
@@ -8,8 +9,8 @@ interface KRC20TokenDetailsProps {
 }
 
 const KRC20TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
-  const mintedPercentage = token.max ? ((token.minted / token.max) * 100).toFixed(2) : '0'
-  const preMintedPercentage = token.max ? ((token.pre / token.max) * 100).toFixed(2) : '0'
+  const mintedPercentage = getMintedPercentage(token.minted, token.max)
+  const preMintedPercentage = getMintedPercentage(token.pre, token.max)
 
   return (
     <div className="bg-bgdarker rounded-md p-3">
