@@ -126,7 +126,7 @@ export default class Transactions extends EventEmitter {
     feeRate: number | undefined,
     fee: string,
     customs?: CustomInput[],
-    changeAddress?: string
+    changeAddress?: string,
   ): Promise<[string[], string]> {
     let priorityEntries: IUtxoEntry[] = []
 
@@ -141,7 +141,8 @@ export default class Transactions extends EventEmitter {
         address: output[0],
         amount: kaspaToSompi(output[1])!,
       })),
-      changeAddress: changeAddress ?? this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
+      changeAddress:
+        changeAddress ?? this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
       feeRate,
       priorityFee: kaspaToSompi(fee)!,
     }
@@ -486,7 +487,14 @@ export default class Transactions extends EventEmitter {
     return [commitId, revealId]
   }
 
-  async submitKRC20MintReveal(commitId: string, scriptAddress: string, sender: string, script: string, fee: string, backToScript: boolean) {
+  async submitKRC20MintReveal(
+    commitId: string,
+    scriptAddress: string,
+    sender: string,
+    script: string,
+    fee: string,
+    backToScript: boolean,
+  ) {
     // - prepare the reveal txn input
     const input = {
       address: scriptAddress,
@@ -496,7 +504,6 @@ export default class Transactions extends EventEmitter {
       script: script,
     }
     console.log('[Transactions] Reveal transaction input:', input)
-
 
     // - create
     const [reveal1] = await this.create([], undefined, fee, [input], backToScript ? scriptAddress : undefined)
@@ -513,10 +520,9 @@ export default class Transactions extends EventEmitter {
     return reveal3
   }
 
-
-  async estimateKRC20MintFees(token: Token, feeRate: number, timesToMint = 1) {
+  async estimateKRC20MintFees(ticker: string, feeRate: number, timesToMint = 1) {
     const sender = this.addresses.receiveAddresses[0]
-    const mintSetup = setupkrc20Mint(sender, token)
+    const mintSetup = setupkrc20Mint(sender, ticker)
     const scriptAddress = mintSetup.scriptAddress.toString()
     const kaspaToLoad = (timesToMint + 10).toString()
 
@@ -538,12 +544,16 @@ export default class Transactions extends EventEmitter {
 
     const totalFee = timesToMint + Number(sompiToKaspaString(commitResult.fees))
 
-    return [totalFee.toString(), sompiToKaspaString(commitResult.fees), sompiToKaspaString(commitResult.finalAmount!)]
+    return [
+      totalFee.toString(),
+      sompiToKaspaString(commitResult.fees),
+      sompiToKaspaString(commitResult.finalAmount!),
+    ]
   }
 
-  async doKRC20Mint(token: Token, feeRate: number, timesToMint = 1): Promise<[string, string[]]> {
+  async doKRC20Mint(ticker: string, feeRate: number, timesToMint = 1): Promise<[string, string[]]> {
     const sender = this.addresses.receiveAddresses[0]
-    const mintSetup = setupkrc20Mint(sender, token)
+    const mintSetup = setupkrc20Mint(sender, ticker)
     const script = mintSetup.script.toString()
     const scriptAddress = mintSetup.scriptAddress.toString()
     const kaspaToLoad = (timesToMint + 10).toString()
@@ -556,7 +566,7 @@ export default class Transactions extends EventEmitter {
 
     let reveals = []
 
-    for(let i = 0; i < timesToMint; i++) {
+    for (let i = 0; i < timesToMint; i++) {
       const isLast = i === timesToMint - 1
       const reveal = await this.submitKRC20MintReveal(commitId, scriptAddress, sender, script, '1', !isLast)
 
@@ -566,7 +576,6 @@ export default class Transactions extends EventEmitter {
     }
 
     return [commitId, reveals]
-
   }
 
   reset() {

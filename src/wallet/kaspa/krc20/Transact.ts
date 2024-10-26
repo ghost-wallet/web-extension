@@ -38,15 +38,10 @@ export function setupkrc20Transaction(
   return { script, scriptAddress }
 }
 
-export function setupkrc20Mint(
-  address: string,
-  token: Token,
-  networkId = 'MAINNET',
-) {
+export function setupkrc20Mint(address: string, ticker: string, networkId = 'MAINNET') {
   const script = new ScriptBuilder()
   const inscription = new Inscription('mint', {
-    tick: token.tick,
-    //to: address,
+    tick: ticker,
   })
 
   inscription.write(script, XOnlyPublicKey.fromAddress(new Address(address!)).toString())
