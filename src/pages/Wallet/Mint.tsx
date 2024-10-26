@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
@@ -8,17 +9,18 @@ import KRC20TokenSearch from '@/components/KRC20TokenSearch'
 import ErrorMessage from '@/components/ErrorMessage'
 
 export default function Mint() {
-  const [tokenInfo, setTokenInfo] = useState<Krc20TokenInfo | null>(null)
+  const [token, setToken] = useState<Krc20TokenInfo | null>(null)
   const [error, setError] = useState<string>('')
+  const navigate = useNavigate()
 
   const handleSearch = async (ticker: string) => {
     setError('')
-    setTokenInfo(null)
+    setToken(null)
 
     try {
       const result = await fetchKrc20TokenInfo(0, ticker)
       if (result) {
-        setTokenInfo(result)
+        setToken(result)
       } else {
         setError('No token found.')
       }
@@ -28,16 +30,18 @@ export default function Mint() {
   }
 
   const isTokenValid = () => {
-    if (!tokenInfo) return false
+    if (!token) return false
 
-    const maxSupply = tokenInfo.max
-    const mintedPercentage = (tokenInfo.minted / maxSupply) * 100
+    const maxSupply = token.max
+    const mintedPercentage = (token.minted / maxSupply) * 100
 
-    // If max supply is 0, it's a non-token (invalid) or if minted percentage is 100%
-    if (maxSupply === 0 || mintedPercentage >= 100) return false
+    return maxSupply !== 0 && mintedPercentage < 100
+  }
 
-    // Valid if minted percentage is less than 100%
-    return mintedPercentage < 100
+  const handleContinue = () => {
+    if (token) {
+      navigate(`/mint/${token.tick}`, { state: { token } })
+    }
   }
 
   return (
@@ -51,10 +55,11 @@ export default function Mint() {
           <KRC20TokenSearch onSearch={handleSearch} />
           <ErrorMessage message={error} />
         </div>
-        <div className="px-6">{tokenInfo && <KRC20TokenDetails tokenInfo={tokenInfo} />}</div>
-        {tokenInfo && (
+        <div className="px-6">{token && <KRC20TokenDetails token={token} />}</div>
+        {token && (
           <div className="px-6 pt-3">
             <button
+              onClick={handleContinue}
               disabled={!isTokenValid()}
               className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] ${
                 isTokenValid()

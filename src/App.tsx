@@ -18,6 +18,7 @@ import ConfirmReset from '@/pages/Wallet/Settings/Reset/ConfirmReset'
 import ForgotPassword from '@/pages/Login/ForgotPassword'
 import Crypto from '@/pages/Wallet/Crypto'
 import Mint from '@/pages/Wallet/Mint'
+import CreateMint from '@/pages/Wallet/Mint/CreateMint'
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             <Route path="/receive" element={<Receive />} />
             <Route path="/swap" element={<Swap />} />
             <Route path="/mint" element={<Mint />} />
+            <Route path="/mint/:tick" element={<CreateMint />} />
           </Routes>
         </MemoryRouter>
       </KaspaProvider>
