@@ -28,8 +28,8 @@ import EventEmitter from 'events'
 import KeyManager from '@/wallet/kaspa/KeyManager'
 import Account from '@/wallet/kaspa/account/account'
 import { setupkrc20Mint, setupkrc20Transaction, Token } from '../krc20/Transact'
-import { CustomInput, CustomSignature, KRC20TokenRequest } from '@/utils/interfaces'
-import { KRC20_COMMIT_AMOUNT } from '@/utils/constants'
+import { CustomInput, CustomSignature, KRC20MintEstimateResult, KRC20TokenRequest } from '@/utils/interfaces'
+import { KRC20_COMMIT_AMOUNT, KRC20_MINT_EXTRA_KAS, SOMPI_PER_KAS } from '@/utils/constants'
 import { createNotification } from '@/utils/notifications'
 
 
@@ -434,11 +434,15 @@ export default class Transactions extends EventEmitter {
     return reveal3
   }
 
-  async estimateKRC20MintFees(ticker: string, feeRate: number, timesToMint: number) {
+  async estimateKRC20MintFees(ticker: string, feeRate: number, timesToMint: number): Promise<KRC20MintEstimateResult> {
     const sender = this.addresses.receiveAddresses[0]
     const mintSetup = setupkrc20Mint(sender, ticker)
     const scriptAddress = mintSetup.scriptAddress.toString()
-    const kaspaToLoad = (timesToMint + 10).toString()
+
+    const mintSompi = BigInt(timesToMint) * SOMPI_PER_KAS
+    const sompiToLoad = mintSompi + (KRC20_MINT_EXTRA_KAS * SOMPI_PER_KAS)
+
+    //const kaspaToLoad = (timesToMint + 10).toString()
 
     const commitSettings: IGeneratorSettingsObject = {
       priorityEntries: [],
@@ -446,20 +450,28 @@ export default class Transactions extends EventEmitter {
       outputs: [
         {
           address: scriptAddress,
-          amount: kaspaToSompi(kaspaToLoad)!,
+          amount: sompiToLoad!,
         },
       ],
       changeAddress: this.addresses.receiveAddresses[0],
       feeRate,
-      priorityFee: kaspaToSompi('0')!,
+      priorityFee: 0n!,
     }
 
     const commitResult = await estimateTransactions(commitSettings)
 
-    const totalFee = timesToMint + sompiToKaspaString(commitResult.fees)
+    const serviceFee = mintSompi / 10n
+
+    const totalFeeSompi = mintSompi + serviceFee + commitResult.fees
     console.log('commitResult.fees', commitResult.fees)
 
-    return [totalFee, sompiToKaspaString(commitResult.fees), sompiToKaspaString(commitResult.finalAmount!)]
+    return {
+      totalFees: sompiToKaspaString(totalFeeSompi),
+      mintFees: sompiToKaspaString(mintSompi),
+      extraNetworkFees: sompiToKaspaString(commitResult.fees),
+      serviceFee: sompiToKaspaString(serviceFee),
+      commitTotal: sompiToKaspaString(commitResult.finalAmount!)
+    }
   }
 
   async doKRC20Mint(ticker: string, feeRate: number, timesToMint = 1) {
@@ -513,6 +525,5 @@ export default class Transactions extends EventEmitter {
 
   reset() {
     delete this.encryptedKey
-    delete this.accountId
   }
 }

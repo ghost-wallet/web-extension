@@ -1,5 +1,5 @@
 import { Status } from '../kaspa/wallet'
-import { UTXO } from '@/utils/interfaces'
+import { KRC20MintEstimateResult, UTXO } from '@/utils/interfaces'
 import { CustomInput } from '@/utils/interfaces'
 import { PriorityBuckets } from '../kaspa/node'
 import { Token } from '../kaspa/krc20/Transact'
@@ -69,7 +69,7 @@ export interface ResponseMappings {
   'account:submitKRC20Transaction': [string, string]
   'account:estimateKRC20TransactionFee': string
   'account:doKRC20Mint': string[]
-  'account:estimateKRC20MintFees': [string, string, string]
+  'account:estimateKRC20MintFees':KRC20MintEstimateResult
   'provider:connect': void
   'provider:connection': string
   'provider:disconnect': void

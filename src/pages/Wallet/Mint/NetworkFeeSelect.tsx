@@ -30,7 +30,7 @@ const NetworkFeeSelect: React.FC = () => {
     request('account:estimateKRC20MintFees', [token.tick, feeRate, payAmount])
       .then((response) => {
         console.log('response fees:', response)
-        setNetworkFee(Number(response[1]))
+        setNetworkFee(Number(response.extraNetworkFees))
         setEstimatedSeconds(estimatedTime)
         setError(null)
       })

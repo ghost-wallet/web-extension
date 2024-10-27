@@ -86,3 +86,10 @@ export interface KasFyiToken {
     floorPrice?: number
   }
 }
+
+export interface KRC20MintEstimateResult {
+  totalFees: string,
+  mintFees: string,
+  extraNetworkFees: string,
+  serviceFee: string,
+}
