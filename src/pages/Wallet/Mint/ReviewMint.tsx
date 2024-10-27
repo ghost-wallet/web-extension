@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
-import { formatBalanceWithAbbreviation } from '@/utils/formatting'
+import { formatNumberWithAbbreviation } from '@/utils/formatting'
 import { KRC20TokenResponse } from '@/utils/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import CryptoImage from '@/components/cryptos/CryptoImage'
@@ -36,8 +36,6 @@ export default function ReviewMint() {
     try {
       const transactionIds = await request('account:doKRC20Mint', [token.tick, 1, payAmount])
       console.log('Minted txn ids:', transactionIds)
-      // const txnId = result.txnId
-      // Navigate to the Minted page with necessary state
       navigate(`/mint/${token.tick}/review/minted`, {
         state: { token, receiveAmount, transactionIds },
       })
@@ -88,7 +86,7 @@ export default function ReviewMint() {
             onClick={handleMint}
             className="w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] bg-primary text-secondarytext cursor-pointer hover:bg-hover"
           >
-            {`Mint ${formatBalanceWithAbbreviation(receiveAmount)} ${token.tick}`}
+            {`Mint ${formatNumberWithAbbreviation(receiveAmount)} ${token.tick}`}
           </button>
         </div>
       </AnimatedMain>

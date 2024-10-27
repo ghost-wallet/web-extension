@@ -1,5 +1,5 @@
 import React from 'react'
-import SwapTokenListItem from '@/components/swap/SwapTokenListItem'
+import SwapTokenListItem from '@/pages/Wallet/Swap/SwapTokenListItem'
 import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
 import Spinner from '@/components/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'

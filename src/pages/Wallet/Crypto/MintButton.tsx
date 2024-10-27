@@ -11,10 +11,10 @@ interface MintButtonProps {
   tokenTick: string
 }
 
-const CryptoMintButton: React.FC<MintButtonProps> = ({ tokenTick }) => {
+const MintButton: React.FC<MintButtonProps> = ({ tokenTick }) => {
   const navigate = useNavigate()
   const [showMintDialog, setShowMintDialog] = useState(false)
-  const [mintedPercentage, setMintedPercentage] = useState<string>('0')
+  const [mintedPercentage, setMintedPercentage] = useState<number>(0)
   const [tokenInfo, setTokenInfo] = useState<KRC20TokenResponse | null>(null)
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const CryptoMintButton: React.FC<MintButtonProps> = ({ tokenTick }) => {
   }, [tokenTick])
 
   const handleMintClick = () => {
-    if (tokenTick.toUpperCase() === 'KASPA' || mintedPercentage === '100.00') {
+    if (tokenTick.toUpperCase() === 'KASPA' || mintedPercentage === 100) {
       setShowMintDialog(true)
     } else {
       navigate(`/mint/${tokenTick}`, { state: { token: tokenInfo } })
@@ -55,4 +55,4 @@ const CryptoMintButton: React.FC<MintButtonProps> = ({ tokenTick }) => {
   )
 }
 
-export default CryptoMintButton
+export default MintButton

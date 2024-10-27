@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { fetchFromCoinGecko } from './apis/fetchFromCoinGecko'
-import { fetchFromKaspaApi } from './apis/fetchFromKaspaApi'
+import { fetchFromCoinGecko } from './coingecko/fetchFromCoinGecko'
+import { fetchFromKaspaApi } from './kaspa/fetchFromKaspaApi'
 
 export default function useKaspaPrice(currency: string) {
   const [price, setPrice] = useState(0)

@@ -31,7 +31,7 @@ const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
         >
           <ArrowUturnRightIcon className="h-5 w-5 mr-1" />
           <span className="font-bold">
-            {feeTypeText.charAt(0).toUpperCase() + feeTypeText.slice(1)} ~{' '}
+            {feeTypeText.charAt(0).toUpperCase() + feeTypeText.slice(1)}: less than{' '}
             {estimatedSeconds >= 60
               ? `${parseFloat((estimatedSeconds / 60).toPrecision(2))} minute${
                   parseFloat((estimatedSeconds / 60).toPrecision(2)) !== 1 ? 's' : ''
@@ -46,7 +46,7 @@ const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
           </span>
         </div>
       </div>
-      <div className="w-full text-left text-mutedtext font-lato font-light text-base px-4 pb-4">
+      <div className="w-full text-left text-mutedtext font-lato text-base px-4 pb-4 pt-1">
         Fee: {estimatedFee ? `${estimatedFee} KAS` : <span className="invisible">Fee Placeholder</span>}
       </div>
     </>

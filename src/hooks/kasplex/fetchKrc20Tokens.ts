@@ -1,24 +1,7 @@
 import axios from 'axios'
 import { getApiBase } from '@/hooks/kasplex/fetchHelper'
-
-export interface Token {
-  tick: string
-  balance: string
-  opScoreMod: string
-  dec: string
-  floorPrice?: number
-}
-
-interface Tokens {
-  result: Token[]
-  next: string | null
-}
-
-interface TokenInfoResponse {
-  price?: {
-    floorPrice?: number
-  }
-}
+import { Token, KRC20TokenList } from '@/utils/interfaces'
+import { fetchKasFyiToken } from '@/hooks/kasfyi/fetchKasFyiToken'
 
 export const fetchKrc20Tokens = async (
   selectedNode: number,
@@ -32,7 +15,7 @@ export const fetchKrc20Tokens = async (
   const currentTime = Date.now()
   const apiBase = getApiBase(selectedNode)
 
-  if (cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 30000) {
+  if (cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 60000) {
     try {
       const parsedTokens = JSON.parse(cachedTokens)
       return parsedTokens as Token[]
@@ -51,25 +34,17 @@ export const fetchKrc20Tokens = async (
         params.append('next', nextPage)
       }
 
-      const response = await axios.get<Tokens>(
+      const response = await axios.get<KRC20TokenList>(
         `https://${apiBase}.kasplex.org/v1/krc20/address/${address}/tokenlist?${params.toString()}`,
       )
 
       if (response.data && response.data.result) {
         const tokens = await Promise.all(
           response.data.result.map(async (token: Token) => {
-            try {
-              const tokenInfoResponse = await axios.get<TokenInfoResponse>(
-                `https://api-v2-do.kas.fyi/token/krc20/${token.tick}/info`,
-              )
-              const tokenData = tokenInfoResponse.data
-              const floorPrice = ((tokenData?.price?.floorPrice || 0) * price).toFixed(8)
+            const tokenData = await fetchKasFyiToken(token.tick)
+            const floorPrice = tokenData?.price?.floorPrice ? tokenData.price.floorPrice * price : 0
 
-              return { ...token, floorPrice: parseFloat(floorPrice) }
-            } catch (err) {
-              console.error(`Error fetching info for ${token.tick}:`, err)
-              return { ...token, floorPrice: 0 }
-            }
+            return { ...token, floorPrice }
           }),
         )
 

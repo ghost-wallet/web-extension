@@ -1,22 +1,24 @@
 import React from 'react'
 import CryptoImage from '@/components/cryptos/CryptoImage'
 import TableSection from '@/components/table/TableSection'
-import { formatSupplyWithAbbreviation } from '@/utils/formatting'
+import { formatNumberWithDecimal, formatNumberWithAbbreviation } from '@/utils/formatting'
 import { getMintedPercentage } from '@/utils/calculations'
-import { formatValue } from '@/utils/formatting'
 import { KRC20TokenResponse } from '@/utils/interfaces'
 
 interface KRC20TokenDetailsProps {
   token: KRC20TokenResponse
 }
 
-const KRC20TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
+const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
   const mintedPercentage =
     !isNaN(token.minted) && !isNaN(token.max) && token.max > 0
       ? getMintedPercentage(token.minted, token.max)
       : '0'
   const preMintedPercentage =
     !isNaN(token.pre) && !isNaN(token.max) && token.max > 0 ? getMintedPercentage(token.pre, token.max) : '0'
+
+  const value: any = token.mintTotal
+  console.log(`The value is a ${typeof value}:`, value)
 
   return (
     <div className="rounded-md pb-2">
@@ -29,7 +31,7 @@ const KRC20TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
         rows={[
           {
             label: 'Total supply',
-            value: formatSupplyWithAbbreviation(Number(formatValue(token.max)), token.dec),
+            value: formatNumberWithAbbreviation(formatNumberWithDecimal(token.max, token.dec)),
           },
           {
             label: 'Total minted',
@@ -41,11 +43,11 @@ const KRC20TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
           },
           {
             label: 'Mints',
-            value: formatValue(token.mintTotal) || 'N/A',
+            value: token.mintTotal.toLocaleString() || '0',
           },
           {
             label: 'Holders',
-            value: formatValue(token.holderTotal) || 'N/A',
+            value: token.holderTotal.toLocaleString() || '0',
           },
         ]}
       />
@@ -53,4 +55,4 @@ const KRC20TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
   )
 }
 
-export default KRC20TokenDetails
+export default TokenDetails

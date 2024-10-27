@@ -10,29 +10,16 @@ import useKaspaPrice from '@/hooks/useKaspaPrice'
 import CryptoListItem from '@/components/cryptos/CryptoListItem'
 import ErrorMessage from '@/components/ErrorMessage'
 import { fetchKrc20Tokens } from '@/hooks/kasplex/fetchKrc20Tokens'
+import { Token } from '@/utils/interfaces'
 
-interface Token {
-  tick: string
-  balance: string
-  dec: string
-  opScoreMod: string
-  floorPrice?: number
-}
-
-interface CryptoProps {
+interface CryptoListProps {
   onTotalValueChange: (value: number) => void
-  renderTokenItem?: (
-    token: Token,
-    isKaspa: boolean,
-    currencySymbol: string,
-    kaspaBalance: number,
-  ) => React.ReactElement
 }
 
-const CryptoList: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem }) => {
+const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
-  const price = useKaspaPrice(settings.currency)
+  const kaspaPrice = useKaspaPrice(settings.currency)
   const navigate = useNavigate()
   const location = useLocation()
   const [tokens, setTokens] = useState<Token[]>([])
@@ -41,7 +28,6 @@ const CryptoList: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem
 
   useEffect(() => {
     const loadTokens = async () => {
-      // TODO fix show cached tokens and not the loading spinner
       const cacheKey = `tokens_${kaspa.addresses[0]}`
       const cachedTokens = localStorage.getItem(cacheKey)
 
@@ -54,21 +40,21 @@ const CryptoList: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem
       }
 
       try {
-        const fetchedTokens = await fetchKrc20Tokens(settings.selectedNode, kaspa.addresses[0], price)
+        const fetchedTokens = await fetchKrc20Tokens(settings.selectedNode, kaspa.addresses[0], kaspaPrice)
         setTokens(fetchedTokens)
         localStorage.setItem(cacheKey, JSON.stringify(fetchedTokens)) // Update cache
         setError(null)
       } catch (error) {
         setError('Error loading tokens')
       } finally {
-        setInitialLoading(false) // Ensure this runs even if an error occurs
+        setInitialLoading(false)
       }
     }
 
     loadTokens()
-  }, [kaspa.addresses, price, settings.selectedNode])
+  }, [kaspa.addresses, kaspaPrice, settings.selectedNode])
 
-  useTotalValueCalculation(tokens, price, onTotalValueChange)
+  useTotalValueCalculation(tokens, kaspaPrice, onTotalValueChange)
 
   if (initialLoading) {
     return (
@@ -84,10 +70,10 @@ const CryptoList: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem
 
   const kaspaCrypto: Token = {
     tick: 'KASPA',
-    balance: kaspa.balance.toString(),
-    dec: '8',
+    balance: kaspa.balance,
+    dec: 8,
     opScoreMod: 'kaspa-unique',
-    floorPrice: price,
+    floorPrice: kaspaPrice,
   }
 
   const cryptos = [...tokens, kaspaCrypto]
@@ -108,19 +94,15 @@ const CryptoList: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem
         <p className="text-base text-mutedtext font-lato">None</p>
       ) : (
         <ul className="space-y-3">
-          {sortedCryptos.map((token) =>
-            renderTokenItem ? (
-              renderTokenItem(token, token.tick === 'KASPA', currencySymbol, kaspa.balance)
-            ) : (
-              <li
-                key={token.opScoreMod}
-                onClick={() => handleTokenClick(token)}
-                className="w-full text-left transition-colors hover:cursor-pointer rounded-lg"
-              >
-                <CryptoListItem token={token} currencySymbol={currencySymbol} kaspaBalance={kaspa.balance} />
-              </li>
-            ),
-          )}
+          {sortedCryptos.map((token) => (
+            <li
+              key={token.opScoreMod}
+              onClick={() => handleTokenClick(token)}
+              className="w-full text-left transition-colors hover:cursor-pointer rounded-lg"
+            >
+              <CryptoListItem token={token} currencySymbol={currencySymbol} kaspaBalance={kaspa.balance} />
+            </li>
+          ))}
         </ul>
       )}
     </div>

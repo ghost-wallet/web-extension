@@ -4,8 +4,8 @@ import Header from '@/components/Header'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import CryptoImage from '@/components/cryptos/CryptoImage'
-import CryptoActionButtons from '@/pages/Wallet/Crypto/CryptoActionButtons'
-import CryptoDetails from '@/pages/Wallet/Crypto/CryptoDetails'
+import ActionButtons from '@/pages/Wallet/Crypto/ActionButtons'
+import Details from '@/pages/Wallet/Crypto/Details'
 
 const Crypto: React.FC = () => {
   const location = useLocation()
@@ -16,8 +16,8 @@ const Crypto: React.FC = () => {
       <AnimatedMain>
         <Header title={token.tick} showBackButton={true} />
         <CryptoImage ticker={token.tick} size={'large'} />
-        <CryptoActionButtons token={token} />
-        <CryptoDetails token={token} />
+        <ActionButtons token={token} />
+        <Details token={token} />
       </AnimatedMain>
 
       <BottomNav />

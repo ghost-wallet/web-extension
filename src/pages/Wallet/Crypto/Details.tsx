@@ -3,26 +3,26 @@ import useKaspaPrice from '@/hooks/useKaspaPrice'
 import useSettings from '@/hooks/contexts/useSettings'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 import { getCurrencySymbol } from '@/utils/currencies'
-import { formatTokenPrice, formatSupplyWithAbbreviation } from '@/utils/formatting'
+import {
+  formatNumberWithDecimal,
+  formatNumberWithAbbreviation,
+  tokenPriceFormatter,
+} from '@/utils/formatting'
 import { getMintedPercentage } from '@/utils/calculations'
 import { formatValue } from '@/utils/formatting'
 import { calculateTotalValue } from '@/utils/calculations'
 import TableSection from '@/components/table/TableSection'
 import Spinner from '@/components/Spinner'
+import { Token } from '@/utils/interfaces'
 
 interface CryptoDetailsTableProps {
-  token: {
-    tick: string
-    balance: number
-    floorPrice: number
-    dec: number
-  }
+  token: Token
 }
 
-const CryptoDetails: React.FC<CryptoDetailsTableProps> = ({ token }) => {
+const Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
   const { floorPrice, tick } = token
   const { settings } = useSettings()
-  const price = useKaspaPrice(settings.currency)
+  const kaspaPrice = useKaspaPrice(settings.currency)
   const currencySymbol = getCurrencySymbol(settings.currency)
 
   const [krc20Token, setKrc20Token] = useState<any>(null)
@@ -45,15 +45,17 @@ const CryptoDetails: React.FC<CryptoDetailsTableProps> = ({ token }) => {
     }
   }, [tick])
 
-  const tokenPrice = floorPrice * price
-  const formattedTokenPrice = formatTokenPrice(tokenPrice)
+  const tokenPrice = floorPrice * kaspaPrice
+  const formattedTokenPrice = tokenPriceFormatter(tokenPrice)
 
-  const mintedPercentage = isNaN(parseFloat(getMintedPercentage(krc20Token?.minted, krc20Token?.max)))
-    ? '0'
-    : getMintedPercentage(krc20Token.minted, krc20Token.max)
-  const preMintedPercentage = isNaN(parseFloat(getMintedPercentage(krc20Token?.pre, krc20Token?.max)))
-    ? '0'
-    : getMintedPercentage(krc20Token.pre, krc20Token.max)
+  const mintedPercentage =
+    krc20Token?.minted && krc20Token?.max
+      ? getMintedPercentage(formatValue(krc20Token.minted), formatValue(krc20Token.max))
+      : '0'
+  const preMintedPercentage =
+    krc20Token?.pre && krc20Token?.max
+      ? getMintedPercentage(formatValue(krc20Token.pre), formatValue(krc20Token.max))
+      : '0'
 
   const totalValue = calculateTotalValue(token.balance, floorPrice, tick, token.dec)
 
@@ -65,7 +67,10 @@ const CryptoDetails: React.FC<CryptoDetailsTableProps> = ({ token }) => {
           { label: settings.currency, value: `${currencySymbol}${totalValue}` },
           {
             label: tick,
-            value: tick === 'KASPA' ? token.balance : formatValue(token.balance),
+            value:
+              tick === 'KASPA'
+                ? token.balance
+                : formatNumberWithDecimal(token.balance, token.dec).toLocaleString(),
           },
         ]}
       />
@@ -75,7 +80,7 @@ const CryptoDetails: React.FC<CryptoDetailsTableProps> = ({ token }) => {
         rows={[
           {
             label: `${settings.currency} Price`,
-            value: `${currencySymbol}${tick === 'KASPA' ? price : formattedTokenPrice}`,
+            value: `${currencySymbol}${tick === 'KASPA' ? kaspaPrice : formattedTokenPrice}`,
           },
         ]}
         className="mt-6 mb-2"
@@ -87,13 +92,25 @@ const CryptoDetails: React.FC<CryptoDetailsTableProps> = ({ token }) => {
             title="Token Details"
             rows={[
               {
-                label: 'Max Supply',
-                value: formatSupplyWithAbbreviation(Number(formatValue(krc20Token.max)), token.dec),
+                label: 'Total supply',
+                value: formatNumberWithAbbreviation(formatNumberWithDecimal(krc20Token.max, krc20Token.dec)),
               },
-              { label: 'Minted', value: mintedPercentage === '0' ? '0%' : `${mintedPercentage}%` },
-              { label: 'Pre-minted', value: preMintedPercentage === '0' ? '0%' : `${preMintedPercentage}%` },
-              { label: 'Total mints', value: formatValue(krc20Token.mintTotal) || 'N/A' },
-              { label: 'Holders', value: formatValue(krc20Token.holderTotal) || 'N/A' },
+              {
+                label: 'Total minted',
+                value: `${mintedPercentage}%`,
+              },
+              {
+                label: 'Pre-minted',
+                value: `${preMintedPercentage}%`,
+              },
+              {
+                label: 'Mints',
+                value: krc20Token.mintTotal.toLocaleString() || '0',
+              },
+              {
+                label: 'Holders',
+                value: krc20Token.holderTotal.toLocaleString() || '0',
+              },
             ]}
             className="mt-6 mb-16"
           />
@@ -104,4 +121,4 @@ const CryptoDetails: React.FC<CryptoDetailsTableProps> = ({ token }) => {
   )
 }
 
-export default CryptoDetails
+export default Details

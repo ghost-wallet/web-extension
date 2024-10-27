@@ -4,14 +4,13 @@ import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
 import ActionButton from '@/components/buttons/ActionButton'
 import { fetchChaingeTokens, ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
 import PopupMessageDialog from '@/components/PopupMessageDialog'
+import { Token } from '@/utils/interfaces'
 
 interface SwapButtonProps {
-  token: {
-    tick: string
-  }
+  token: Token
 }
 
-const SwapButtonOnCryptoPage: React.FC<SwapButtonProps> = ({ token }) => {
+const SwapButton: React.FC<SwapButtonProps> = ({ token }) => {
   const navigate = useNavigate()
   const [isTokenAvailable, setIsTokenAvailable] = useState(false)
   const [showDialog, setShowDialog] = useState(false)
@@ -55,4 +54,4 @@ const SwapButtonOnCryptoPage: React.FC<SwapButtonProps> = ({ token }) => {
   )
 }
 
-export default SwapButtonOnCryptoPage
+export default SwapButton

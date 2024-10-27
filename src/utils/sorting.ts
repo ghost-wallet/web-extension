@@ -1,25 +1,17 @@
-import { formatBalance } from '@/utils/formatting'
+import { formatNumberWithDecimal } from '@/utils/formatting'
 import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import { Token } from '@/utils/interfaces'
 
-export const sortTokensByValue = (
-  tokens: Array<{
-    tick: string
-    balance: string
-    floorPrice?: number
-    dec: string
-    opScoreMod: string
-  }>,
-) => {
+export const sortTokensByValue = (tokens: Token[]): Token[] => {
   return tokens
     .map(({ tick, balance, floorPrice = 0, dec, opScoreMod }) => {
-      let formattedBalance
+      let formattedBalance: number
 
       // Skip formatting for KASPA, because Kas already has decimals inserted
-      // TODO see where decimals were already inserted in previous sections?
       if (tick === 'KASPA') {
-        formattedBalance = parseFloat(balance)
+        formattedBalance = balance
       } else {
-        formattedBalance = parseFloat(String(formatBalance(balance, dec)))
+        formattedBalance = formatNumberWithDecimal(balance, dec)
       }
 
       const totalValue = floorPrice * formattedBalance

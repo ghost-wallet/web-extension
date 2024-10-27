@@ -2,17 +2,16 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline'
 import ActionButton from '@/components/buttons/ActionButton'
-import CryptoMintButton from '@/pages/Wallet/Crypto/CryptoMintButton'
-import SwapButtonOnCryptoPage from '@/components/buttons/SwapButtonOnCryptoPage'
+import MintButton from '@/pages/Wallet/Crypto/MintButton'
+import SwapButton from '@/pages/Wallet/Crypto/SwapButton'
 import ReceiveButton from '@/components/buttons/ReceiveButton'
+import { Token } from '@/utils/interfaces'
 
 interface CryptoActionButtonsProps {
-  token: {
-    tick: string
-  }
+  token: Token
 }
 
-const CryptoActionButtons: React.FC<CryptoActionButtonsProps> = ({ token }) => {
+const ActionButtons: React.FC<CryptoActionButtonsProps> = ({ token }) => {
   const navigate = useNavigate()
 
   return (
@@ -28,15 +27,15 @@ const CryptoActionButtons: React.FC<CryptoActionButtonsProps> = ({ token }) => {
         />
       </div>
       <div className="px-2">
-        <SwapButtonOnCryptoPage token={token} />
+        <SwapButton token={token} />
       </div>
       {token.tick.toUpperCase() !== 'KASPA' && (
         <div className="px-2">
-          <CryptoMintButton tokenTick={token.tick} />
+          <MintButton tokenTick={token.tick} />
         </div>
       )}
     </div>
   )
 }
 
-export default CryptoActionButtons
+export default ActionButtons

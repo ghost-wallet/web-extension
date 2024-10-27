@@ -1,4 +1,4 @@
-// Kaspa
+// Kaspa WASM Requests & Responses
 export interface UTXO {
   amount: number
   transaction: string
@@ -18,7 +18,21 @@ export interface CustomSignature {
   script?: string
 }
 
-// KRC20 and Kasplex
+// Cryptos: Combines Kaspa with KRC20 Tokens
+export interface Token {
+  tick: string
+  opScoreMod: string
+  balance: number
+  dec: number
+  floorPrice: number
+}
+
+// Kasplex & KRC20
+export interface KRC20TokenList {
+  result: Token[]
+  next: string | null
+}
+
 export interface KRC20Transaction {
   op: string
   tick: string
@@ -44,10 +58,14 @@ export interface KRC20TokenRequest {
   script: string
 }
 
+/**
+ * KRC-20 token response from the Kasplex Indexer API. Official documentation:
+ * https://docs.kasplex.org/tools-and-reference/kasplex-indexer-api/krc-20/get-krc-20-info
+ */
 export interface KRC20TokenResponse {
   tick: string
   max: number
-  lim: string
+  lim: number
   pre: number
   to: string
   dec: number
@@ -60,4 +78,11 @@ export interface KRC20TokenResponse {
   holderTotal: number
   transferTotal: number
   mintTotal: number
+}
+
+// KAS.FYI
+export interface KasFyiToken {
+  price?: {
+    floorPrice?: number
+  }
 }

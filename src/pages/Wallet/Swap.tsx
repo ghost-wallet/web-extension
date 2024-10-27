@@ -3,9 +3,9 @@ import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import BottomNav from '@/components/BottomNav'
 import { fetchChaingeTokens, ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
-import SwapTokenSelect from '@/components/swap/SwapTokenSelect'
-import ChaingeTokenDropdown from '@/components/swap/ChaingeTokenDropdown'
-import SwitchChaingeTokens from '@/components/swap/SwitchChaingeTokens'
+import SwapTokenSelect from '@/pages/Wallet/Swap/SwapTokenSelect'
+import ChaingeTokenDropdown from '@/pages/Wallet/Swap/ChaingeTokenDropdown'
+import SwitchChaingeTokens from '@/pages/Wallet/Swap/SwitchChaingeTokens'
 import { useLocation } from 'react-router-dom'
 
 export default function Swap() {

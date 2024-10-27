@@ -6,7 +6,7 @@ import Header from '@/components/Header'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 import { KRC20TokenResponse } from '@/utils/interfaces'
 import { getMintedPercentage } from '@/utils/calculations'
-import KRC20TokenDetails from '@/pages/Wallet/Mint/KRC20TokenDetails'
+import TokenDetails from '@/pages/Wallet/Mint/TokenDetails'
 import SearchBar from '@/pages/Wallet/Mint/SearchBar'
 import ErrorMessage from '@/components/ErrorMessage'
 import Spinner from '@/components/Spinner'
@@ -20,7 +20,7 @@ export default function Mint() {
   const handleSearch = async (ticker: string) => {
     setError('')
     setToken(null)
-    setLoading(true) // Start loading when search is clicked
+    setLoading(true)
 
     try {
       const result = await fetchKrc20TokenInfo(0, ticker)
@@ -32,7 +32,7 @@ export default function Mint() {
     } catch (err) {
       setError('An error occurred while fetching token info.')
     } finally {
-      setLoading(false) // Stop loading when search completes
+      setLoading(false)
     }
   }
 
@@ -41,7 +41,7 @@ export default function Mint() {
     if (token.state === 'unused') return false
 
     const maxSupply = token.max
-    const mintedPercentage = parseFloat(getMintedPercentage(token.minted, maxSupply))
+    const mintedPercentage = getMintedPercentage(token.minted, maxSupply)
     return maxSupply !== 0 && mintedPercentage < 100
   }
 
@@ -72,9 +72,9 @@ export default function Mint() {
             <ErrorMessage message={error} />
           )}
         </div>
-        <div className="px-4">{token && <KRC20TokenDetails token={token} />}</div>
+        <div className="px-4">{token && <TokenDetails token={token} />}</div>
         {token && (
-          <div className="px-4 pt-3">
+          <div className="px-4 pt-2">
             <button
               onClick={handleContinue}
               disabled={!isMintable() || token.state === 'unused'}

@@ -68,7 +68,7 @@ const ConfirmSendKRC20: React.FC = () => {
     <>
       <AnimatedMain>
         {loading ? (
-          <SpinnerPage displayText={`Transferring ${amount} ${token.tick}...`} />
+          <SpinnerPage displayText={`Transferring ${amount.toLocaleString()} ${token.tick}...`} />
         ) : (
           <ConfirmSendDetails
             token={token}

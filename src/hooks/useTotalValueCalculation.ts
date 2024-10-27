@@ -1,12 +1,7 @@
 import { useEffect } from 'react'
-import { formatBalance } from '@/utils/formatting'
+import { formatNumberWithDecimal } from '@/utils/formatting'
 import useKaspa from '@/hooks/contexts/useKaspa'
-
-interface Token {
-  balance: string
-  dec: string
-  floorPrice?: number
-}
+import { Token } from '@/utils/interfaces'
 
 type TotalValueChangeCallback = (value: number) => void
 
@@ -21,7 +16,7 @@ export const useTotalValueCalculation = (
     const kaspaValue = (kaspa.balance ?? 0) * price
 
     const totalValue = tokens.reduce((acc: number, token: Token) => {
-      const tokenBalance = formatBalance(token.balance, token.dec)
+      const tokenBalance = formatNumberWithDecimal(token.balance, token.dec)
       const tokenValue = (token.floorPrice ?? 0) * tokenBalance
       return acc + tokenValue
     }, kaspaValue)

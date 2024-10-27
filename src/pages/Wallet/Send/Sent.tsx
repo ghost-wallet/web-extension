@@ -27,7 +27,7 @@ const Sent: React.FC = () => {
       <Title title="Sent!" />
 
       <p className="text-base font-lato text-mutedtext mt-4 p-6 text-center">
-        {amount} {token.tick} was successfully sent to
+        {amount.toLocaleString()} {token.tick} was successfully sent to
       </p>
 
       <div className="flex flex-col items-center justify-center relative w-full">

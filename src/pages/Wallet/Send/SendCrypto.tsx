@@ -12,7 +12,7 @@ import FeePrioritySelector from '@/components/FeePrioritySelector'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import { useTransactionInputs } from '@/hooks/useTransactionInputs'
 import { useBuckets } from '@/hooks/useBuckets'
-import { formatBalance, formatTokenBalance } from '@/utils/formatting'
+import { formatNumberWithDecimal, formatTokenBalance } from '@/utils/formatting'
 import { FEE_TYPES } from '@/utils/constants'
 
 const SendCrypto: React.FC = () => {
@@ -24,7 +24,7 @@ const SendCrypto: React.FC = () => {
   const [estimatedFee, setEstimatedFee] = useState<string>('')
   const { token } = location.state || {}
 
-  const maxAmount = token.tick === 'KASPA' ? token.balance : formatBalance(token.balance, token.dec)
+  const maxAmount = token.tick === 'KASPA' ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
   const { outputs, recipientError, amountError, handleRecipientChange, handleAmountChange, handleMaxClick } =
     useTransactionInputs(token, maxAmount)
 
@@ -103,7 +103,7 @@ const SendCrypto: React.FC = () => {
 
   const isButtonEnabled =
     outputs[0][0].length > 0 && outputs[0][1].length > 0 && !recipientError && !amountError
-  const formattedBalance = formatTokenBalance(token.balance, token.tick, token.dec)
+  const formattedBalance = formatTokenBalance(token.balance, token.tick, token.dec).toLocaleString()
 
   return (
     <>
@@ -128,7 +128,7 @@ const SendCrypto: React.FC = () => {
         <FeePrioritySelector
           currentFeeTypeIndex={currentFeeTypeIndex}
           estimatedFee={estimatedFee}
-          estimatedSeconds={estimatedSeconds} // Pass estimated seconds to FeePrioritySelector
+          estimatedSeconds={estimatedSeconds}
           isButtonEnabled={isButtonEnabled}
           onFeeTypeClick={handleFeeTypeClick}
         />

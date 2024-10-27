@@ -1,22 +1,56 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import { KRC20TokenResponse } from '@/utils/interfaces'
-import { formatBalance } from '@/utils/formatting'
+import { formatNumberWithDecimal } from '@/utils/formatting'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import ErrorMessage from '@/components/ErrorMessage'
 import CryptoImage from '@/components/cryptos/CryptoImage'
+import MintAmountInput from '@/pages/Wallet/Mint/CreateMint/MintAmountInput'
+import MintSummary from '@/pages/Wallet/Mint/CreateMint/MintSummary'
+import MintRateInfo from '@/pages/Wallet/Mint/CreateMint/MintRateInfo'
+import ReviewMintButton from '@/pages/Wallet/Mint/CreateMint/ReviewMintButton'
+import useMintErrorHandling from '@/pages/Wallet/Mint/CreateMint/hooks/useMintErrorHandling'
+import useMintValidation from '@/pages/Wallet/Mint/CreateMint/hooks/useMintValidation'
 
 export default function CreateMint() {
-  const navigate = useNavigate()
   const { kaspa } = useKaspa()
+  const navigate = useNavigate()
   const location = useLocation()
   const token = location.state?.token as KRC20TokenResponse
 
   const [mintAmount, setMintAmount] = useState<number | null>(null)
-  const [error, setError] = useState<string>('')
+  const totalMintCost = mintAmount ? formatNumberWithDecimal(token.lim, token.dec) * mintAmount : 0
+
+  const mintRate = formatNumberWithDecimal(token.lim, token.dec)
+  const totalSupply = formatNumberWithDecimal(token.max, token.dec)
+  const availableSupply = formatNumberWithDecimal(token.max - token.minted, token.dec)
+
+  const { isMintAmountValid } = useMintValidation(mintAmount, totalMintCost, availableSupply, totalSupply)
+  const exceedsBalance = mintAmount !== null && mintAmount > kaspa.balance
+  const exceedsSupply = mintAmount !== null && totalMintCost > availableSupply
+  const error = useMintErrorHandling(
+    mintAmount,
+    kaspa.balance,
+    exceedsBalance,
+    exceedsSupply,
+    availableSupply,
+  )
+  const showError = !!error
+
+  const handleReview = () => {
+    if (isMintAmountValid && !showError) {
+      navigate(`/mint/${token.tick}/review`, {
+        state: {
+          token,
+          payAmount: mintAmount,
+          receiveAmount: totalMintCost,
+        },
+      })
+    }
+  }
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMintAmount(Number(e.target.value))
@@ -31,92 +65,29 @@ export default function CreateMint() {
     }
   }
 
-  const totalMintCost = mintAmount
-    ? parseFloat(String(formatBalance(token.lim, token.dec))) * mintAmount
-    : '0'
-
-  const isMintAmountValid = mintAmount !== null && mintAmount >= 1 && mintAmount <= 10000
-  const exceedsBalance = mintAmount !== null && mintAmount > kaspa.balance
-  const showError = exceedsBalance
-
-  useEffect(() => {
-    if (exceedsBalance) {
-      setError(`${mintAmount} exceeds your available balance: ${kaspa.balance} KAS`)
-    } else {
-      setError('')
-    }
-  }, [mintAmount, kaspa.balance, exceedsBalance])
-
-  const handleReview = () => {
-    if (isMintAmountValid && !showError) {
-      navigate(`/mint/${token.tick}/review`, {
-        state: {
-          token,
-          payAmount: mintAmount,
-          receiveAmount: totalMintCost,
-        },
-      })
-    }
-  }
-
   return (
     <>
       <AnimatedMain>
         <Header title={`Mint ${token.tick}`} showBackButton={true} />
         <div className="px-4">
           <CryptoImage ticker={token.tick} size={'large'} />
-          <div className="flex items-center space-x-4 pt-4">
-            <input
-              type="range"
-              min="0"
-              max="10000"
-              value={mintAmount || 0}
-              onChange={handleSliderChange}
-              className="w-full cursor-pointer accent-primary h-2"
-            />
-            <input
-              type="number"
-              min="0"
-              max="10000"
-              value={mintAmount !== null ? mintAmount : ''}
-              onChange={handleInputChange}
-              className="w-30 bg-darkmuted p-2 border border-muted rounded-lg font-lato text-lg text-primarytext text-center"
-              placeholder="KAS"
-            />
-          </div>
-          <div className="w-full max-w-md space-y-2 mt-6">
-            <div className="flex justify-between">
-              <span className="text-mutedtext font-lato text-lg">Receive amount</span>
-              <span className="text-primarytext font-lato text-lg">
-                {totalMintCost.toLocaleString()} {token.tick}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-mutedtext font-lato text-lg">Mint cost</span>
-              <span className="text-primarytext font-lato text-lg">
-                {mintAmount?.toLocaleString() || '0'} KAS
-              </span>
-            </div>
-          </div>
-          <div className="rounded-base text-mutedtext text-sm font-lato text-left mt-4">
-            Mint rate ~ 1 KAS = {formatBalance(token.lim, token.dec).toLocaleString()} {token.tick}
-          </div>
+          <MintAmountInput
+            mintAmount={mintAmount}
+            onSliderChange={handleSliderChange}
+            onInputChange={handleInputChange}
+          />
+          <MintSummary totalMintCost={totalMintCost} mintAmount={mintAmount} tokenTick={token.tick} />
+          <MintRateInfo mintRate={mintRate} tokenTick={token.tick} />
         </div>
         <div className="px-4 mt-4" style={{ height: '24px' }}>
           {showError && <ErrorMessage message={error} />}
         </div>
         <div className="px-4 pt-16">
-          <button
+          <ReviewMintButton
+            isMintAmountValid={isMintAmountValid}
+            showError={showError}
             onClick={handleReview}
-            disabled={!isMintAmountValid || showError}
-            className={`w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] ${
-              isMintAmountValid && !showError
-                ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
-                : 'bg-muted text-mutedtext cursor-not-allowed'
-            }`}
-          >
-            Review Mint
-          </button>
+          />
         </div>
       </AnimatedMain>
       <BottomNav />

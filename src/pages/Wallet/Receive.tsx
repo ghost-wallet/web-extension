@@ -15,17 +15,14 @@ export default function Receive() {
         <Header title="Receive Address" showBackButton={true} />
         <div className="pt-6 flex flex-col items-center justify-center relative w-full">
           <div className="p-2 bg-white rounded-lg">
-            <QRCode
-              style={{ height: '150px', width: '150px' }}
-              value={kaspa.addresses[0][kaspa.addresses[0].length - 1]}
-            />
+            <QRCode style={{ height: '150px', width: '150px' }} value={kaspa.addresses[0]} />
           </div>
 
           <h1 className="pt-4 font-lato font-semibold text-base text-primarytext text-center">
             Your Kaspa Address
           </h1>
           <div className="py-6 w-full flex justify-center">
-            <KaspaAddress address={kaspa.addresses[0][kaspa.addresses[0].length - 1]} />
+            <KaspaAddress address={kaspa.addresses[0]} />
           </div>
 
           <p className="px-6 font-lato text-base text-mutedtext text-center">
