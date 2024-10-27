@@ -125,6 +125,7 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
           )}
         </div>
 
+        {/* TODO: make button always enabled -> implement popup message dialog if seed phrase invalid */}
         <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
           <button
             type="button"

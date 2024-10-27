@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { sortTokensByValue } from '@/utils/sorting'
 import { useTotalValueCalculation } from '@/hooks/useTotalValueCalculation'
@@ -41,13 +41,13 @@ const CryptoList: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem
 
   useEffect(() => {
     const loadTokens = async () => {
+      // TODO fix show cached tokens and not the loading spinner
       const cacheKey = `tokens_${kaspa.addresses[0]}`
       const cachedTokens = localStorage.getItem(cacheKey)
 
       if (cachedTokens) {
         try {
           setTokens(JSON.parse(cachedTokens))
-          setInitialLoading(false) // Show cached data immediately
         } catch (error) {
           console.error('Error parsing cached tokens:', error)
         }
@@ -56,9 +56,12 @@ const CryptoList: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem
       try {
         const fetchedTokens = await fetchKrc20Tokens(settings.selectedNode, kaspa.addresses[0], price)
         setTokens(fetchedTokens)
+        localStorage.setItem(cacheKey, JSON.stringify(fetchedTokens)) // Update cache
         setError(null)
       } catch (error) {
         setError('Error loading tokens')
+      } finally {
+        setInitialLoading(false) // Ensure this runs even if an error occurs
       }
     }
 
