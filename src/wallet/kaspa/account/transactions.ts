@@ -32,7 +32,6 @@ import { CustomInput, CustomSignature, KRC20TokenRequest } from '@/utils/interfa
 import { KRC20_COMMIT_AMOUNT } from '@/utils/constants'
 import { createNotification } from '@/utils/notifications'
 
-
 function calculateScriptExtraFee(script: HexString, feeRate: number) {
   const scriptBytes = ScriptBuilder.canonicalDataSize(script)
   return BigInt(Math.ceil((scriptBytes + 1) * feeRate))
