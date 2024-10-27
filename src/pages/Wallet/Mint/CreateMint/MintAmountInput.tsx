@@ -11,7 +11,7 @@ const MintAmountInput: React.FC<MintAmountInputProps> = ({ mintAmount, onSliderC
     <input
       type="range"
       min="0"
-      max="10000"
+      max="1000"
       value={mintAmount || 0}
       onChange={onSliderChange}
       className="w-full cursor-pointer accent-primary h-2"
@@ -19,7 +19,7 @@ const MintAmountInput: React.FC<MintAmountInputProps> = ({ mintAmount, onSliderC
     <input
       type="number"
       min="0"
-      max="10000"
+      max="1000"
       value={mintAmount !== null ? mintAmount : ''}
       onChange={onInputChange}
       className="w-30 bg-darkmuted p-2 border border-muted rounded-lg font-lato text-lg text-primarytext text-center"
