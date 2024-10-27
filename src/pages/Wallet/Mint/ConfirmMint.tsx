@@ -9,34 +9,24 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 import CryptoImage from '@/components/CryptoImage'
 import SpinnerPage from '@/components/SpinnerPage'
 
-export default function ReviewMint() {
+export default function ConfirmMint() {
   const location = useLocation()
   const navigate = useNavigate()
   const { request } = useKaspa()
   const token = location.state?.token as KRC20TokenResponse
   const payAmount = location.state?.payAmount as number
   const receiveAmount = location.state?.receiveAmount as number
-  const [estimatedFee, setEstimatedFee] = useState<string | null>(null)
+  const feeRate = location.state?.feeRate as number
+  const networkFee = location.state?.networkFee as number
+  const serviceFee = payAmount * 0.1
   const [isMinting, setIsMinting] = useState(false)
-
-  useEffect(() => {
-    const fetchEstimatedFees = async () => {
-      try {
-        const fees = await request('account:estimateKRC20MintFees', [token.tick, 1, payAmount])
-        setEstimatedFee(fees[1])
-      } catch (error) {
-        console.error('Error fetching estimated fees:', error)
-      }
-    }
-    fetchEstimatedFees()
-  }, [payAmount, token, request])
 
   const handleMint = async () => {
     setIsMinting(true)
     try {
-      const transactionIds = await request('account:doKRC20Mint', [token.tick, 1, payAmount])
+      const transactionIds = await request('account:doKRC20Mint', [token.tick, feeRate, payAmount])
       console.log('Minted txn ids:', transactionIds)
-      navigate(`/mint/${token.tick}/review/minted`, {
+      navigate(`/mint/${token.tick}/network-fee/review/minted`, {
         state: { token, receiveAmount, transactionIds },
       })
     } catch (error) {
@@ -53,13 +43,13 @@ export default function ReviewMint() {
   return (
     <>
       <AnimatedMain>
-        <Header title="Review Mint" showBackButton={true} />
-        <div className="px-4">
+        <Header title="Confirm Mint" showBackButton={true} />
+        <div className="px-6">
           <CryptoImage ticker={token.tick} size="large" />
           <div className="w-full max-w-md space-y-1 pt-2">
-            <div className="flex justify-between mb-6 mt-6">
-              <span className="text-mutedtext font-lato text-lg">Receive amount</span>
-              <span className="text-primarytext font-lato text-lg">
+            <div className="flex justify-between mt-10">
+              <span className="text-mutedtext font-lato text-base">Receive amount</span>
+              <span className="text-mutedtext font-lato text-base">
                 {receiveAmount.toLocaleString()} {token.tick}
               </span>
             </div>
@@ -68,20 +58,24 @@ export default function ReviewMint() {
               <span className="text-mutedtext font-lato text-base">{payAmount?.toLocaleString()} KAS</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-mutedtext font-lato text-base">Fees</span>
+              <span className="text-mutedtext font-lato text-base">Network fee</span>
               <span className="text-mutedtext font-lato text-base">
-                {estimatedFee ? `${estimatedFee} KAS` : 'Calculating...'}
+                {networkFee ? `${networkFee} KAS` : 'Calculating...'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-mutedtext font-lato text-base">Total</span>
-              <span className="text-mutedtext font-lato text-base">
-                {estimatedFee ? `TODO KAS` : 'Calculating...'}
+              <span className="text-mutedtext font-lato text-base">Service fee</span>
+              <span className="text-mutedtext font-lato text-base">{serviceFee.toFixed(1)} KAS</span>
+            </div>
+            <div className="flex justify-between pt-8">
+              <span className="text-mutedtext font-lato text-xl">Total</span>
+              <span className="text-primarytext font-lato text-xl">
+                {payAmount + serviceFee + networkFee} KAS
               </span>
             </div>
           </div>
         </div>
-        <div className="px-4 pt-32">
+        <div className="px-4 pt-16">
           <button
             onClick={handleMint}
             className="w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] bg-primary text-secondarytext cursor-pointer hover:bg-hover"

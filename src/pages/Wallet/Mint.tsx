@@ -46,10 +46,9 @@ export default function Mint() {
   }
 
   const getButtonLabel = () => {
-    if (!token) return 'Continue To Mint'
-    if (token.state === 'unused') return 'Token Not Deployed'
+    if (!token || token.state === 'unused') return 'Token Not Deployed'
     if (!isMintable()) return 'Supply Is Already Minted'
-    return 'Continue To Mint'
+    return 'Next'
   }
 
   const handleContinue = () => {

@@ -16,7 +16,7 @@ const ReviewMintButton: React.FC<MintButtonProps> = ({ isMintAmountValid, showEr
         : 'bg-muted text-mutedtext cursor-not-allowed'
     }`}
   >
-    Review Mint
+    Next
   </button>
 )
 

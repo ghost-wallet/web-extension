@@ -40,9 +40,9 @@ export default function CreateMint() {
   )
   const showError = !!error
 
-  const handleReview = () => {
+  const handleNext = () => {
     if (isMintAmountValid && !showError) {
-      navigate(`/mint/${token.tick}/review`, {
+      navigate(`/mint/${token.tick}/network-fee`, {
         state: {
           token,
           payAmount: mintAmount,
@@ -86,7 +86,7 @@ export default function CreateMint() {
           <ReviewMintButton
             isMintAmountValid={isMintAmountValid}
             showError={showError}
-            onClick={handleReview}
+            onClick={handleNext}
           />
         </div>
       </AnimatedMain>

@@ -70,8 +70,6 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     return <ErrorMessage message={error} />
   }
 
-  console.log('kaspa in CryptoList:', kaspa)
-
   const kaspaCrypto: Token = {
     tick: 'KASPA',
     balance: kaspa.balance,
@@ -79,7 +77,6 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     opScoreMod: 'kaspa-unique',
     floorPrice: kaspaPrice,
   }
-  console.log('kaspaCrypto in CryptoList:', kaspaCrypto)
   // Only proceed if there are valid tokens or the kaspa balance is non-zero
   const cryptos = [...tokens, kaspaCrypto].filter((token) => token && token.balance !== 0)
   const sortedCryptos = sortTokensByValue(cryptos)

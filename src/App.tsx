@@ -19,7 +19,8 @@ import ForgotPassword from '@/pages/Login/ForgotPassword'
 import Crypto from '@/pages/Wallet/CryptoList/Crypto'
 import Mint from '@/pages/Wallet/Mint'
 import CreateMint from '@/pages/Wallet/Mint/CreateMint'
-import ReviewMint from '@/pages/Wallet/Mint/ReviewMint'
+import NetworkFeeSelect from '@/pages/Wallet/Mint/NetworkFeeSelect'
+import ConfirmMint from '@/pages/Wallet/Mint/ConfirmMint'
 import Minted from '@/pages/Wallet/Mint/Minted'
 
 function App() {
@@ -46,8 +47,9 @@ function App() {
             <Route path="/swap" element={<Swap />} />
             <Route path="/mint" element={<Mint />} />
             <Route path="/mint/:tick" element={<CreateMint />} />
-            <Route path="/mint/:tick/review" element={<ReviewMint />} />
-            <Route path="/mint/:tick/review/minted" element={<Minted />} />
+            <Route path="/mint/:tick/network-fee" element={<NetworkFeeSelect />} />
+            <Route path="/mint/:tick/network-fee/review" element={<ConfirmMint />} />
+            <Route path="/mint/:tick/network-fee/review/minted" element={<Minted />} />
           </Routes>
         </MemoryRouter>
       </KaspaProvider>

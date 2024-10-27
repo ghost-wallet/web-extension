@@ -437,7 +437,7 @@ export default class Transactions extends EventEmitter {
     return reveal3
   }
 
-  async estimateKRC20MintFees(ticker: string, feeRate: number, timesToMint = 1) {
+  async estimateKRC20MintFees(ticker: string, feeRate: number, timesToMint: number) {
     const sender = this.addresses.receiveAddresses[0]
     const mintSetup = setupkrc20Mint(sender, ticker)
     const scriptAddress = mintSetup.scriptAddress.toString()
