@@ -433,13 +433,17 @@ export default class Transactions extends EventEmitter {
     return reveal3
   }
 
-  async estimateKRC20MintFees(ticker: string, feeRate: number, timesToMint: number): Promise<KRC20MintEstimateResult> {
+  async estimateKRC20MintFees(
+    ticker: string,
+    feeRate: number,
+    timesToMint: number,
+  ): Promise<KRC20MintEstimateResult> {
     const sender = this.addresses.receiveAddresses[0]
     const mintSetup = setupkrc20Mint(sender, ticker)
     const scriptAddress = mintSetup.scriptAddress.toString()
 
     const mintSompi = BigInt(timesToMint) * SOMPI_PER_KAS
-    const sompiToLoad = mintSompi + (KRC20_MINT_EXTRA_KAS * SOMPI_PER_KAS)
+    const sompiToLoad = mintSompi + KRC20_MINT_EXTRA_KAS * SOMPI_PER_KAS
 
     //const kaspaToLoad = (timesToMint + 10).toString()
 
@@ -469,7 +473,7 @@ export default class Transactions extends EventEmitter {
       mintFees: sompiToKaspaString(mintSompi),
       extraNetworkFees: sompiToKaspaString(commitResult.fees),
       serviceFee: sompiToKaspaString(serviceFee),
-      commitTotal: sompiToKaspaString(commitResult.finalAmount!)
+      commitTotal: sompiToKaspaString(commitResult.finalAmount!),
     }
   }
 

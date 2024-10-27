@@ -6,7 +6,6 @@ export interface IWallet {
   encryptedKey: string
 }
 
-
 export interface ILocalStorage {
   settings: ISettings
   wallet: IWallet | undefined

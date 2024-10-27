@@ -88,9 +88,9 @@ export interface KasFyiToken {
 }
 
 export interface KRC20MintEstimateResult {
-  totalFees: string,
-  mintFees: string,
-  extraNetworkFees: string,
-  serviceFee: string,
+  totalFees: string
+  mintFees: string
+  extraNetworkFees: string
+  serviceFee: string
   commitTotal: string
 }

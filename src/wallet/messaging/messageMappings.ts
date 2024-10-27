@@ -69,7 +69,7 @@ export interface ResponseMappings {
   'account:submitKRC20Transaction': [string, string]
   'account:estimateKRC20TransactionFee': string
   'account:doKRC20Mint': string[]
-  'account:estimateKRC20MintFees':KRC20MintEstimateResult
+  'account:estimateKRC20MintFees': KRC20MintEstimateResult
   'provider:connect': void
   'provider:connection': string
   'provider:disconnect': void
