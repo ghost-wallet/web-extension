@@ -30,8 +30,8 @@ import Account from '@/wallet/kaspa/account/account'
 import { setupkrc20Mint, setupkrc20Transaction, Token } from '../krc20/Transact'
 import { CustomInput, CustomSignature, KRC20TokenRequest } from '@/utils/interfaces'
 import { KRC20_COMMIT_AMOUNT } from '@/utils/constants'
-import browser from 'webextension-polyfill'
-import ghostIcon from '../../../../assets/ghost-512.png'
+import { createNotification } from '@/utils/notifications'
+
 
 function calculateScriptExtraFee(script: HexString, feeRate: number) {
   const scriptBytes = ScriptBuilder.canonicalDataSize(script)
@@ -107,7 +107,6 @@ export default class Transactions extends EventEmitter {
     return sompiToKaspaString(estimate.fees)
   }
 
-  //TODO remove optional changeAddress. Always use receive address for change
   async create(
     outputs: [string, string][],
     feeRate: number | undefined,
@@ -509,12 +508,7 @@ export default class Transactions extends EventEmitter {
 
     console.log('[Transactions] Mint complete', transactionIds)
 
-    browser.notifications.create({
-      type: 'basic',
-      title: 'Mint Completed',
-      message: `Done minting ${timesToMint} ${ticker}`,
-      iconUrl: ghostIcon,
-    })
+    createNotification('Mint Completed', `Done minting ${timesToMint} ${ticker}`)
 
     return transactionIds
   }
