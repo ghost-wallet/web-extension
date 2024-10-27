@@ -29,7 +29,12 @@ import KeyManager from '@/wallet/kaspa/KeyManager'
 import Account from '@/wallet/kaspa/account/account'
 import { setupkrc20Mint, setupkrc20Transaction, Token } from '../krc20/Transact'
 import { CustomInput, CustomSignature, KRC20MintEstimateResult, KRC20TokenRequest } from '@/utils/interfaces'
-import { KRC20_COMMIT_AMOUNT, KRC20_MINT_EXTRA_KAS, SOMPI_PER_KAS } from '@/utils/constants'
+import {
+  KRC20_COMMIT_AMOUNT,
+  KRC20_MINT_EXTRA_KAS,
+  KRC20_SERVICE_FEE_ADDRESS,
+  SOMPI_PER_KAS,
+} from '@/utils/constants'
 import { createNotification } from '@/utils/notifications'
 
 function calculateScriptExtraFee(script: HexString, feeRate: number) {
@@ -307,8 +312,13 @@ export default class Transactions extends EventEmitter {
     })
   }
 
-  async submitKRC20Commit(scriptAddress: string, feeRate: number, amount: string = KRC20_COMMIT_AMOUNT) {
-    const [commit1] = await this.create([[scriptAddress, amount]], feeRate, '0')
+  async submitKRC20Commit(
+    scriptAddress: string,
+    feeRate: number,
+    amount: string = KRC20_COMMIT_AMOUNT,
+    additionalOutputs: [string, string][] = [],
+  ) {
+    const [commit1] = await this.create([[scriptAddress, amount], ...additionalOutputs], feeRate, '0')
     console.log('[Transactions] Created commit transaction:', commit1)
 
     const commit2 = await this.sign(commit1)
@@ -436,13 +446,16 @@ export default class Transactions extends EventEmitter {
   async estimateKRC20MintFees(
     ticker: string,
     feeRate: number,
-    timesToMint: number,
+    timesToMint = 1,
   ): Promise<KRC20MintEstimateResult> {
     const sender = this.addresses.receiveAddresses[0]
     const mintSetup = setupkrc20Mint(sender, ticker)
     const scriptAddress = mintSetup.scriptAddress.toString()
 
     const mintSompi = BigInt(timesToMint) * SOMPI_PER_KAS
+
+    const serviceFee = mintSompi / 10n
+
     const sompiToLoad = mintSompi + KRC20_MINT_EXTRA_KAS * SOMPI_PER_KAS
 
     //const kaspaToLoad = (timesToMint + 10).toString()
@@ -455,6 +468,10 @@ export default class Transactions extends EventEmitter {
           address: scriptAddress,
           amount: sompiToLoad!,
         },
+        {
+          address: KRC20_SERVICE_FEE_ADDRESS,
+          amount: serviceFee,
+        },
       ],
       changeAddress: this.addresses.receiveAddresses[0],
       feeRate,
@@ -462,8 +479,6 @@ export default class Transactions extends EventEmitter {
     }
 
     const commitResult = await estimateTransactions(commitSettings)
-
-    const serviceFee = mintSompi / 10n
 
     const totalFeeSompi = mintSompi + serviceFee + commitResult.fees
     console.log('commitResult.fees', commitResult.fees)
@@ -484,12 +499,19 @@ export default class Transactions extends EventEmitter {
     const mintSetup = setupkrc20Mint(sender, ticker)
     const script = mintSetup.script.toString()
     const scriptAddress = mintSetup.scriptAddress.toString()
-    const kaspaToLoad = (timesToMint + 10).toString()
+
+    const mintSompi = BigInt(timesToMint) * SOMPI_PER_KAS
+
+    const serviceFee = mintSompi / 10n
+
+    const sompiToLoad = mintSompi + KRC20_MINT_EXTRA_KAS * SOMPI_PER_KAS
 
     const mintContext = new UtxoContext({ processor: this.processor })
     mintContext.trackAddresses([mintSetup.scriptAddress])
 
-    const commit = await this.submitKRC20Commit(scriptAddress, feeRate, kaspaToLoad)
+    const commit = await this.submitKRC20Commit(scriptAddress, feeRate, sompiToKaspaString(sompiToLoad), [
+      [KRC20_SERVICE_FEE_ADDRESS, sompiToKaspaString(serviceFee)],
+    ])
 
     const commitId = commit[commit.length - 1]
 
