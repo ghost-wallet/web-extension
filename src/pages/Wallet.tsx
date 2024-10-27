@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import WalletActionButtons from '@/components/buttons/WalletActionButtons'
-import CryptoList from '@/components/cryptos/CryptoList'
+import CryptoList from '@/pages/Wallet/CryptoList'
 import TotalWalletValue from '@/components/TotalWalletValue'
 
 export default function Wallet() {

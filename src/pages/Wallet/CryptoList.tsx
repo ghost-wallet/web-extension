@@ -7,7 +7,7 @@ import useSettings from '@/hooks/contexts/useSettings'
 import Spinner from '@/components/Spinner'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import useKaspaPrice from '@/hooks/useKaspaPrice'
-import CryptoListItem from '@/components/cryptos/CryptoListItem'
+import CryptoListItem from '@/pages/Wallet/CryptoList/CryptoListItem'
 import ErrorMessage from '@/components/ErrorMessage'
 import { fetchKrc20Tokens } from '@/hooks/kasplex/fetchKrc20Tokens'
 import { Token } from '@/utils/interfaces'
@@ -23,7 +23,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const [tokens, setTokens] = useState<Token[]>([])
-  const [initialLoading, setInitialLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -37,6 +37,8 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
         } catch (error) {
           console.error('Error parsing cached tokens:', error)
         }
+      } else {
+        setIsLoading(true)
       }
 
       try {
@@ -47,7 +49,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
       } catch (error) {
         setError('Error loading tokens')
       } finally {
-        setInitialLoading(false)
+        setIsLoading(false)
       }
     }
 
@@ -56,7 +58,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
 
   useTotalValueCalculation(tokens, kaspaPrice, onTotalValueChange)
 
-  if (initialLoading) {
+  if (isLoading && tokens.length === 0) {
     return (
       <div className="mt-6">
         <Spinner />
@@ -68,6 +70,8 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     return <ErrorMessage message={error} />
   }
 
+  console.log('kaspa in CryptoList:', kaspa)
+
   const kaspaCrypto: Token = {
     tick: 'KASPA',
     balance: kaspa.balance,
@@ -75,8 +79,9 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     opScoreMod: 'kaspa-unique',
     floorPrice: kaspaPrice,
   }
-
-  const cryptos = [...tokens, kaspaCrypto]
+  console.log('kaspaCrypto in CryptoList:', kaspaCrypto)
+  // Only proceed if there are valid tokens or the kaspa balance is non-zero
+  const cryptos = [...tokens, kaspaCrypto].filter((token) => token && token.balance !== 0)
   const sortedCryptos = sortTokensByValue(cryptos)
   const currencySymbol = getCurrencySymbol(settings.currency)
 
@@ -100,7 +105,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
               onClick={() => handleTokenClick(token)}
               className="w-full text-left transition-colors hover:cursor-pointer rounded-lg"
             >
-              <CryptoListItem token={token} currencySymbol={currencySymbol} kaspaBalance={kaspa.balance} />
+              <CryptoListItem token={token} currencySymbol={currencySymbol} />
             </li>
           ))}
         </ul>

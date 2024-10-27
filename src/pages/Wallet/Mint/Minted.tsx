@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
 import Title from '@/components/Header'
-import CryptoImage from '@/components/cryptos/CryptoImage'
+import CryptoImage from '@/components/CryptoImage'
 
 const Minted: React.FC = () => {
   const location = useLocation()

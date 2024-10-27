@@ -1,22 +1,24 @@
 import React from 'react'
 import { formatNumberWithDecimal, formatNumberWithAbbreviation } from '@/utils/formatting'
-import CryptoImage from '@/components/cryptos/CryptoImage'
+import CryptoImage from '@/components/CryptoImage'
 import { Token } from '@/utils/interfaces'
+import useKaspa from '@/hooks/contexts/useKaspa'
 
 interface CryptoListItemProps {
   token: Token
   currencySymbol: string
-  kaspaBalance: number
 }
 
-const CryptoListItem: React.FC<CryptoListItemProps> = ({ token, currencySymbol, kaspaBalance }) => {
+const CryptoListItem: React.FC<CryptoListItemProps> = ({ token, currencySymbol }) => {
+  const { kaspa } = useKaspa()
   const numericalBalance =
-    token.tick === 'KASPA' ? kaspaBalance : formatNumberWithDecimal(token.balance, token.dec)
+    token.tick === 'KASPA' ? kaspa.balance : formatNumberWithDecimal(token.balance, token.dec)
+
   const formattedBalance = formatNumberWithAbbreviation(numericalBalance)
 
   const totalValue = (
     token.tick === 'KASPA'
-      ? kaspaBalance * (token.floorPrice ?? 0)
+      ? kaspa.balance * (token.floorPrice ?? 0)
       : formatNumberWithDecimal(token.balance, token.dec) * (token.floorPrice ?? 0)
   ).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 

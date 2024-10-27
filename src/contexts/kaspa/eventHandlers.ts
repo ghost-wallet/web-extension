@@ -30,12 +30,7 @@ export const handleAccountBalanceEvent = async (
   }
 }
 
-export const handleAccountAddressesEvent = async (
-  dispatch: Dispatch<Action<any>>,
-  message: Event,
-  request: any,
-) => {
-  dispatch({ type: 'balance', payload: message.data })
+export const handleAccountAddressesEvent = async (dispatch: Dispatch<Action<any>>, request: any) => {
   try {
     const addresses = await request('account:addresses', [])
     console.log('eventHandlers handleAccountAddressesEvent addresses', addresses)

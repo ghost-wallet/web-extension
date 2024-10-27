@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import kaspaSvg from '../../../assets/crypto-logos/kaspa-kas-logo.svg'
-import bitcoinSvg from '../../../assets/crypto-logos/bitcoin-btc-logo.svg'
-import ethSvg from '../../../assets/crypto-logos/ethereum-eth-logo.svg'
-import usdtSvg from '../../../assets/crypto-logos/tether-usdt-logo.svg'
-import usdcSvg from '../../../assets/crypto-logos/usd-coin-usdc-logo.svg'
-import krc20Default from '../../../assets/crypto-logos/KRC20Default.png'
+import kaspaSvg from '../../assets/crypto-logos/kaspa-kas-logo.svg'
+import bitcoinSvg from '../../assets/crypto-logos/bitcoin-btc-logo.svg'
+import ethSvg from '../../assets/crypto-logos/ethereum-eth-logo.svg'
+import usdtSvg from '../../assets/crypto-logos/tether-usdt-logo.svg'
+import usdcSvg from '../../assets/crypto-logos/usd-coin-usdc-logo.svg'
+import krc20Default from '../../assets/crypto-logos/KRC20Default.png'
 
 interface CryptoImageProps {
   ticker: string

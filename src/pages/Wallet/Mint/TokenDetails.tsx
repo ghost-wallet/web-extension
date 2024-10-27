@@ -1,5 +1,5 @@
 import React from 'react'
-import CryptoImage from '@/components/cryptos/CryptoImage'
+import CryptoImage from '@/components/CryptoImage'
 import TableSection from '@/components/table/TableSection'
 import { formatNumberWithDecimal, formatNumberWithAbbreviation } from '@/utils/formatting'
 import { getMintedPercentage } from '@/utils/calculations'

@@ -73,7 +73,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
         await handleAccountBalanceEvent(dispatch, message, request)
         break
       case 'account:addresses':
-        await handleAccountAddressesEvent(dispatch, message, request)
+        await handleAccountAddressesEvent(dispatch, message)
         break
       case 'provider:connection':
         dispatch({ type: 'provider', payload: message.data })

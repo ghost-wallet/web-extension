@@ -6,7 +6,7 @@ import Header from '@/components/Header'
 import { formatNumberWithAbbreviation } from '@/utils/formatting'
 import { KRC20TokenResponse } from '@/utils/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import CryptoImage from '@/components/cryptos/CryptoImage'
+import CryptoImage from '@/components/CryptoImage'
 import SpinnerPage from '@/components/SpinnerPage'
 
 export default function ReviewMint() {

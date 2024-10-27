@@ -1,5 +1,5 @@
 import React from 'react'
-import CryptoImage from '@/components/cryptos/CryptoImage'
+import CryptoImage from '@/components/CryptoImage'
 import RecipientAddress from '@/components/RecipientAddress'
 import Header from '@/components/Header'
 import ErrorMessage from '@/components/ErrorMessage'

@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react'
-import CryptoImage from '@/components/cryptos/CryptoImage'
+import CryptoImage from '@/components/CryptoImage'
 import { PaperAirplaneIcon, ArrowDownIcon, BoltIcon } from '@heroicons/react/24/outline'
 import useKaspa from '@/hooks/contexts/useKaspa'
 
