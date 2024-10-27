@@ -10,7 +10,6 @@ export interface IWallet {
 export interface IAccount {
   name: string
   receiveCount: number
-  changeCount: number
 }
 
 export interface ILocalStorage {

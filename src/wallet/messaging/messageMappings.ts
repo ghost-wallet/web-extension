@@ -8,9 +8,9 @@ import { KRC20TokenRequest } from '@/utils/interfaces'
 export interface RequestMappings {
   'wallet:status': []
   'wallet:createMnemonic': []
-  'wallet:import': [string, string] // Mnemo, Password
-  'wallet:unlock': [string] // Password
-  'wallet:export': [string] // Password
+  'wallet:import': [string, string]
+  'wallet:unlock': [string]
+  'wallet:export': [string]
   'wallet:lock': []
   'wallet:reset': []
   'wallet:validate': [string] // Address
@@ -26,7 +26,7 @@ export interface RequestMappings {
   'account:sign': [string[]]
   'account:submitContextful': [string[]]
   'account:submitKaspaTransaction': [string[]]
-  'account:scan': [boolean?]
+  'account:scan': []
   'account:getKRC20Info': [string, Token, string]
   'account:submitKRC20Transaction': [KRC20TokenRequest, number]
   'account:estimateKRC20TransactionFee': [KRC20TokenRequest, number]
@@ -56,7 +56,7 @@ export interface ResponseMappings {
   'node:connection': boolean
   'node:priorityBuckets': PriorityBuckets
   'node:submit': string[]
-  'account:addresses': [string[], string[]]
+  'account:addresses': string[]
   'account:balance': number
   'account:utxos': UTXO[]
   'account:estimateKaspaTransactionFee': string
@@ -64,7 +64,7 @@ export interface ResponseMappings {
   'account:sign': string[]
   'account:submitContextful': string[]
   'account:submitKaspaTransaction': string[]
-  'account:scan': [number, number]
+  'account:scan': [number]
   'account:getKRC20Info': KRC20TokenRequest
   'account:submitKRC20Transaction': [string, string]
   'account:estimateKRC20TransactionFee': string
@@ -86,7 +86,7 @@ export interface EventMappings {
   'node:connection': boolean
   'node:network': string
   'account:balance': number
-  'account:addresses': [string[], string[]]
+  'account:addresses': string[]
   'provider:connection': string
 }
 

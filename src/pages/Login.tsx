@@ -33,7 +33,8 @@ export default function Login() {
       const decryptedKey = await request('wallet:unlock', [password])
       if (decryptedKey) {
         try {
-          await request('account:scan', [true])
+          // TODO is scan necessary on Login?
+          // await request('account:scan', [])
           navigate('/')
         } catch (err) {
           console.error('Account scan error:', err)
@@ -62,7 +63,7 @@ export default function Login() {
   }
 
   if (loading) {
-    return <SpinnerPage displayText="Logging in..." />
+    return <SpinnerPage />
   }
 
   return (

@@ -97,7 +97,7 @@ export default class Transactions extends EventEmitter {
         address: output[0],
         amount: kaspaToSompi(output[1])!,
       })),
-      changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
+      changeAddress: this.addresses.receiveAddresses[0],
       feeRate,
       priorityFee: kaspaToSompi(fee)!,
     }
@@ -107,6 +107,7 @@ export default class Transactions extends EventEmitter {
     return sompiToKaspaString(estimate.fees)
   }
 
+  //TODO remove optional changeAddress. Always use receive address for change
   async create(
     outputs: [string, string][],
     feeRate: number | undefined,
@@ -127,8 +128,7 @@ export default class Transactions extends EventEmitter {
         address: output[0],
         amount: kaspaToSompi(output[1])!,
       })),
-      changeAddress:
-        changeAddress ?? this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
+      changeAddress: changeAddress ?? this.addresses.receiveAddresses[0],
       feeRate,
       priorityFee: kaspaToSompi(fee)!,
     }
@@ -229,9 +229,7 @@ export default class Transactions extends EventEmitter {
 
   async submitKaspaTransaction(transactions: string[], customs: CustomSignature[] = []) {
     const signed = await this.sign(transactions, customs)
-    const transactionIds = await this.submitContextful(signed)
-    await this.addresses.increment(0, 1)
-    return transactionIds
+    return await this.submitContextful(signed)
   }
 
   async estimateKRC20TransactionFee(info: KRC20TokenRequest, feeRate: number) {
@@ -246,7 +244,7 @@ export default class Transactions extends EventEmitter {
           amount: kaspaToSompi(KRC20_COMMIT_AMOUNT)!,
         },
       ],
-      changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
+      changeAddress: this.addresses.receiveAddresses[0],
       feeRate,
       priorityFee: kaspaToSompi('0')!,
     }
@@ -275,7 +273,7 @@ export default class Transactions extends EventEmitter {
       priorityEntries: [commitUTXO],
       entries: this.context,
       outputs: [],
-      changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
+      changeAddress: this.addresses.receiveAddresses[0],
       feeRate,
       priorityFee: scriptExtraFee,
     }
@@ -317,11 +315,9 @@ export default class Transactions extends EventEmitter {
     const [commit1] = await this.create([[scriptAddress, amount]], feeRate, '0')
     console.log('[Transactions] Created commit transaction:', commit1)
 
-    // - sign
     const commit2 = await this.sign(commit1)
     console.log('[Transactions] Signed commit transaction:', commit2)
 
-    // - submit (gives us the ID)
     const commit3 = await this.submitContextful(commit2)
     console.log('[Transactions] Submitted commit transaction:', commit3)
     return commit3
@@ -332,7 +328,6 @@ export default class Transactions extends EventEmitter {
     { scriptAddress, sender, script }: KRC20TokenRequest,
     feeRate: number,
   ) {
-    // - prepare the reveal txn input
     const input = {
       address: scriptAddress.toString(),
       outpoint: commitId,
@@ -344,18 +339,14 @@ export default class Transactions extends EventEmitter {
 
     const scriptExtraFee = calculateScriptExtraFee(script, feeRate)
 
-    // - create
     const [reveal1] = await this.create([], feeRate, sompiToKaspaString(scriptExtraFee), [input])
     console.log('[Transactions] Created reveal transaction:', reveal1)
 
-    // - sign
     const reveal2 = await this.sign(reveal1, [input])
     console.log('[Transactions] Signed reveal transaction:', reveal2)
 
-    // - submit (gives us the ID)
     const reveal3 = await this.submitContextful(reveal2)
     console.log('[Transactions] Submitted reveal transaction:', reveal3)
-
     return reveal3
   }
 
@@ -372,12 +363,10 @@ export default class Transactions extends EventEmitter {
     const revealId = reveal[reveal.length - 1]
 
     transactionContext.clear()
-
-    await this.addresses.increment(0, 1)
-
     return [commitId, revealId]
   }
 
+  //TODO remove optional changeAddress. Always use receive address for change
   async createForKRC20Mint(
     context: UtxoContext,
     fee: string,
@@ -394,8 +383,7 @@ export default class Transactions extends EventEmitter {
       priorityEntries,
       entries: context,
       outputs: [],
-      changeAddress:
-        changeAddress ?? this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
+      changeAddress: changeAddress ?? this.addresses.receiveAddresses[0],
       priorityFee: kaspaToSompi(fee)!,
     }
     console.log('Creating transaction with:')
@@ -433,7 +421,6 @@ export default class Transactions extends EventEmitter {
     }
     console.log('[Transactions] Reveal transaction input:', input)
 
-    // - create
     const [reveal1] = await this.createForKRC20Mint(
       context,
       fee,
@@ -442,14 +429,11 @@ export default class Transactions extends EventEmitter {
     )
     console.log('[Transactions] Created reveal transaction:', reveal1)
 
-    // - sign
     const reveal2 = await this.sign(reveal1, [input])
     console.log('[Transactions] Signed reveal transaction:', reveal2)
 
-    // - submit (gives us the ID)
     const reveal3 = await this.submitContextful(reveal2)
     console.log('[Transactions] Submitted reveal transaction:', reveal3)
-
     return reveal3
   }
 
@@ -468,7 +452,7 @@ export default class Transactions extends EventEmitter {
           amount: kaspaToSompi(kaspaToLoad)!,
         },
       ],
-      changeAddress: this.addresses.changeAddresses[this.addresses.changeAddresses.length - 1],
+      changeAddress: this.addresses.receiveAddresses[0],
       feeRate,
       priorityFee: kaspaToSompi('0')!,
     }
@@ -520,8 +504,6 @@ export default class Transactions extends EventEmitter {
 
       transactionIds.push(revealId)
     }
-
-    await this.addresses.increment(0, 1)
 
     mintContext.clear()
 

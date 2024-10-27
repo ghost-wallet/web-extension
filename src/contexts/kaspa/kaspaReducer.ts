@@ -1,4 +1,3 @@
-// kaspaReducer.ts
 import { IKaspa, Action } from './types'
 
 export function kaspaReducer(state: IKaspa, action: Action<keyof IKaspa>): IKaspa {

@@ -24,7 +24,7 @@ export default class Account extends EventEmitter {
     this.addresses = new Addresses(this.context, node.networkId)
     this.transactions = new Transactions(node.rpcClient, this.context, this.processor, this.addresses)
     this.transactions.setAccount(this)
-    console.log('[Account] Initial context data:', this.context)
+
     node.on('network', async (networkId: string) => {
       await this.addresses.changeNetwork(networkId)
 
@@ -60,60 +60,24 @@ export default class Account extends EventEmitter {
     return [...pendingUTXOs, ...matureUTXOs]
   }
 
-  async scan(quick = false): Promise<[number, number]> {
+  async scan(): Promise<number> {
     if (!this.node.connected) {
       await this.node.waitUntilConnected()
     }
-    // TODO: make scan wait for addresses to be loaded. Sometimes an error says no public key found in SessionStorage from derive()
-    console.log('[Account] Scan started')
-    console.log('[Account] Scan: current receive addresses', this.addresses.receiveAddresses)
-    console.log('[Account] Scan: current change addresses', this.addresses.changeAddresses)
+    console.log('[Account] Starting scan for addresses:', this.addresses.allAddresses)
 
-    const receive = await this.scanAddresses(
-      true,
-      this.addresses.receiveAddresses.length,
-      quick ? 8 : 128,
-      quick ? 8 : 128,
-    )
-    const change = await this.scanAddresses(
-      false,
-      this.addresses.changeAddresses.length,
-      quick ? 128 : 1024,
-      128,
-    )
-
-    console.log('[Account] Scan complete')
-    console.log('[Account] Scan: current receive addresses', this.addresses.receiveAddresses)
-    console.log('[Account] Scan: current change addresses', this.addresses.changeAddresses)
-
-    return [receive, change]
+    const foundUtxos = await this.scanSingleAddress()
+    console.log('[Account] Scan complete and found utxos:', foundUtxos)
+    return foundUtxos
   }
 
-  private async scanAddresses(isReceive: boolean, start: number, maxEmpty: number, windowSize = 8) {
-    console.log(
-      `[Account] Starting Scan for ${isReceive ? 'recieve' : 'change'} addresses. Starting at ${start}.`,
-    )
-    let index = start
-    let foundIndex = start
-    do {
-      const addresses = await this.addresses.derive(isReceive, index, index + windowSize)
+  private async scanSingleAddress(): Promise<number> {
+    const address = this.addresses.receiveAddresses[0]
+    const { entries } = await this.processor.rpc.getUtxosByAddresses([address])
 
-      const { entries } = await this.processor.rpc.getUtxosByAddresses(addresses)
-
-      const entryIndex = addresses.findLastIndex((address) =>
-        entries.some((entry) => entry.address?.toString() === address),
-      )
-      if (entryIndex !== -1) {
-        foundIndex = index + entryIndex
-      }
-      index += windowSize
-    } while (index - foundIndex < maxEmpty)
-    const numToIncrement = foundIndex - start
-    if (numToIncrement > 0) {
-      await this.addresses.increment(isReceive ? numToIncrement : 0, isReceive ? 0 : numToIncrement)
-    }
-    console.log(`[Account] Scan done. Found ${numToIncrement} addresses. Address counter now ${foundIndex}.`)
-    return numToIncrement
+    const numUtxosFound = entries.length
+    console.log(`[Account] Scan done. Found ${numUtxosFound} UTXOs for the receive address.`)
+    return numUtxosFound
   }
 
   private registerProcessor() {
@@ -123,28 +87,6 @@ export default class Account extends EventEmitter {
       await this.context.clear()
       await this.context.trackAddresses(this.addresses.allAddresses)
     })
-
-    // this.processor.addEventListener('pending', async (event) => {
-    //   //console.log('[Account] TODO - Use this data to fix data?.utxoEntires ??:', event.data)
-
-    //   console.log('[Account] UTXO processor pending event:', event.data)
-
-    //   // Adjust based on the actual structure of event.data TODO
-    //   // @ts-ignore
-    //   const utxos = event.data?.utxoEntries ?? []
-
-    //   if (
-    //     utxos.some(
-    //       (utxo: UtxoEntryReference) =>
-    //         utxo.address?.toString() ===
-    //         this.addresses.receiveAddresses[this.addresses.receiveAddresses.length - 1],
-    //     )
-    //   ) {
-    //     console.log('[Account] Found matching address in UTXO, incrementing recieve address?')
-    //     await this.addresses.increment(1, 0)
-    //   }
-    // })
-
     this.processor.addEventListener('balance', () => {
       this.emit('balance', this.balance)
     })

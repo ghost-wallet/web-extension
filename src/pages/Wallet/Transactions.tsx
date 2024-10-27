@@ -25,7 +25,7 @@ export default function Transactions() {
         setInitialLoading(true)
         const response = await fetchKRC20TransactionHistory(
           settings.selectedNode,
-          kaspa.addresses[0][0],
+          kaspa.addresses[0],
           nextCursor,
         )
         setTransactions(response.result)
@@ -48,7 +48,7 @@ export default function Transactions() {
       setLoadingMore(true)
       const response = await fetchKRC20TransactionHistory(
         settings.selectedNode,
-        kaspa.addresses[0][0],
+        kaspa.addresses[0],
         nextCursor,
       )
       setTransactions((prev) => [...prev, ...response.result])

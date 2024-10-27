@@ -38,17 +38,15 @@ export default class Wallet extends EventEmitter {
   }
 
   private async sync() {
-    console.log('[Wallet] Syncing wallet state...')
     const wallet = await LocalStorage.get('wallet', undefined)
 
     if (!wallet) {
       console.log('[Wallet] No wallet found, setting status to Uninitialized.')
       this.status = Status.Uninitialized
     } else {
-      this.encryptedKey = wallet.encryptedKey // Set the encryptedKey from the stored wallet
+      this.encryptedKey = wallet.encryptedKey
       const session = await SessionStorage.get('session', undefined)
 
-      console.log('[Wallet] Session data retrieved:', session)
       const hasKey = KeyManager.hasKey()
       this.status = session && hasKey ? Status.Unlocked : Status.Locked
       if (this.status === Status.Locked && hasKey) {
@@ -56,7 +54,6 @@ export default class Wallet extends EventEmitter {
       }
     }
 
-    console.log('[Wallet] Emitting status update:', this.status)
     this.emit('status', this.status)
   }
 
@@ -66,6 +63,7 @@ export default class Wallet extends EventEmitter {
   }
 
   async import(mnemonics: string, password: string) {
+    console.log('importing wallet .... ')
     if (!Mnemonic.validate(mnemonics)) {
       console.error('[Wallet] Invalid mnemonic provided.')
       throw Error('[Wallet] Invalid mnemonic')
@@ -73,6 +71,7 @@ export default class Wallet extends EventEmitter {
 
     const encryptedKey = encryptXChaCha20Poly1305(mnemonics, password)
     this.encryptedKey = encryptedKey // Set the encryptedKey
+    console.log('set encrypted key...', this.encryptedKey)
 
     await LocalStorage.set('wallet', {
       encryptedKey: encryptedKey,
@@ -80,7 +79,6 @@ export default class Wallet extends EventEmitter {
         {
           name: 'Wallet',
           receiveCount: 1,
-          changeCount: 1,
         },
       ],
     })
@@ -90,6 +88,7 @@ export default class Wallet extends EventEmitter {
   }
 
   async unlock(id: number, password: string): Promise<string> {
+    console.log('unlocking wallet...')
     if (!this.encryptedKey) {
       console.error('[Wallet] No encrypted key available.')
       throw new Error('No encrypted key available.')
@@ -100,8 +99,10 @@ export default class Wallet extends EventEmitter {
     const publicKey = PublicKeyGenerator.fromMasterXPrv(xPrv, false, BigInt(id))
     const decryptedKey = decryptXChaCha20Poly1305(this.encryptedKey, password)
 
+    console.log('setting decrypted key...', decryptedKey)
     KeyManager.setKey(decryptedKey)
 
+    console.log('setting SessionStorage...', id, publicKey.toString(), this.encryptedKey)
     await SessionStorage.set('session', {
       activeAccount: id,
       publicKey: publicKey.toString(),

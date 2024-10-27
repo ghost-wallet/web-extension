@@ -1,7 +1,7 @@
 import { PublicKeyGenerator, UtxoContext } from '@/wasm'
-import LocalStorage from '@/storage/LocalStorage'
 import { EventEmitter } from 'events'
 import SessionStorage from '@/storage/SessionStorage'
+import LocalStorage from '@/storage/LocalStorage'
 
 export default class Addresses extends EventEmitter {
   context: UtxoContext
@@ -9,7 +9,6 @@ export default class Addresses extends EventEmitter {
   accountId: number | undefined
   networkId: string
   receiveAddresses: string[] = []
-  changeAddresses: string[] = []
 
   constructor(context: UtxoContext, networkId: string) {
     super()
@@ -18,7 +17,7 @@ export default class Addresses extends EventEmitter {
   }
 
   get allAddresses() {
-    return [...this.receiveAddresses, ...this.changeAddresses]
+    return this.receiveAddresses
   }
 
   async import(publicKey: PublicKeyGenerator, accountId: number) {
@@ -27,56 +26,39 @@ export default class Addresses extends EventEmitter {
 
     const accounts = (await LocalStorage.get('wallet', undefined))!.accounts
     const account = accounts[accountId]
-    await this.increment(account.receiveCount, account.changeCount, false)
+    await this.increment(account.receiveCount, false)
   }
 
-  async derive(isReceive: boolean, start: number, end: number) {
+  async derive(start: number, end: number) {
     const session = await SessionStorage.get('session', undefined)
 
     if (!session?.publicKey) {
       throw Error('[Addresses] No publicKey in SessionStorage')
     }
     this.publicKey = PublicKeyGenerator.fromXPub(session.publicKey)
-
-    if (isReceive) {
-      return this.publicKey.receiveAddressAsStrings(this.networkId, start, end)
-    } else {
-      return this.publicKey.changeAddressAsStrings(this.networkId, start, end)
-    }
+    return this.publicKey.receiveAddressAsStrings(this.networkId, start, end)
   }
 
-  async increment(receiveCount: number, changeCount: number, commit = true) {
+  async increment(receiveCount: number, commit = true) {
     const addresses = await Promise.all([
-      this.derive(true, this.receiveAddresses.length, this.receiveAddresses.length + receiveCount),
-      this.derive(false, this.changeAddresses.length, this.changeAddresses.length + changeCount),
+      this.derive(this.receiveAddresses.length, this.receiveAddresses.length + receiveCount),
     ])
 
     this.receiveAddresses.push(...addresses[0])
-    this.changeAddresses.push(...addresses[1])
 
     if (this.context.isActive) await this.context.trackAddresses(addresses.flat())
-    if (commit) await this.commit()
 
     this.emit('addresses', addresses)
   }
 
   findIndexes(address: string): [boolean, number] {
     const receiveIndex = this.receiveAddresses.indexOf(address)
-    const changeIndex = this.changeAddresses.indexOf(address)
-
-    if (receiveIndex !== -1) {
-      return [true, receiveIndex]
-    } else if (changeIndex !== -1) {
-      return [false, changeIndex]
-    } else {
-      throw Error('Failed to find index of address over HD wallet')
-    }
+    return [true, receiveIndex]
   }
 
   async changeNetwork(networkId: string) {
     this.networkId = networkId
-    this.receiveAddresses = await this.derive(true, 0, this.receiveAddresses.length)
-    this.changeAddresses = await this.derive(false, 0, this.changeAddresses.length)
+    this.receiveAddresses = await this.derive(0, this.receiveAddresses.length)
   }
 
   reset() {
@@ -84,16 +66,5 @@ export default class Addresses extends EventEmitter {
     delete this.accountId
 
     this.receiveAddresses = []
-    this.changeAddresses = []
-  }
-
-  private async commit() {
-    const wallet = (await LocalStorage.get('wallet', undefined))!
-    const account = wallet.accounts[this.accountId!]
-
-    account.receiveCount = this.receiveAddresses.length
-    account.changeCount = this.changeAddresses.length
-
-    await LocalStorage.set('wallet', wallet)
   }
 }

@@ -11,7 +11,7 @@ interface TransactionItemProps {
 
 const TransactionItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ operation }, ref) => {
   const { kaspa } = useKaspa()
-  const address = kaspa.addresses[0][0] // Your address
+  const address = kaspa.addresses[0]
 
   const isReceived = operation.op === 'transfer' && operation.to === address
   const isMint = operation.op === 'mint' // Check if operation is 'mint'

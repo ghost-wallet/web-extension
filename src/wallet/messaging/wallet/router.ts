@@ -35,7 +35,7 @@ export default class Router {
       'node:connect': (address) => node.reconnect(address),
       'node:priorityBuckets': () => node.getPriorityBuckets(),
       'node:submit': (transactions) => node.submit(transactions),
-      'account:addresses': () => [account.addresses.receiveAddresses, account.addresses.changeAddresses],
+      'account:addresses': () => account.addresses.receiveAddresses,
       'account:balance': () => account.balance,
       'account:utxos': () => account.UTXOs,
       'account:estimateKaspaTransactionFee': (outputs, feeRate, fee) =>
@@ -47,7 +47,7 @@ export default class Router {
       'account:submitContextful': (transactions) => account.transactions.submitContextful(transactions),
       'account:submitKaspaTransaction': (transactions) =>
         account.transactions.submitKaspaTransaction(transactions),
-      'account:scan': (quick) => account.scan(quick),
+      'account:scan': () => account.scan(),
       'account:getKRC20Info': (recipient, token, amount) =>
         account.transactions.getKRC20Info(recipient, token, amount),
       'account:submitKRC20Transaction': (info, feeRate) =>

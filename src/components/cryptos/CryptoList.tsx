@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { sortTokensByValue } from '@/utils/sorting'
 import { useTotalValueCalculation } from '@/hooks/useTotalValueCalculation'
@@ -35,18 +35,16 @@ const CryptoList: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem
   const price = useKaspaPrice(settings.currency)
   const navigate = useNavigate()
   const location = useLocation()
-
   const [tokens, setTokens] = useState<Token[]>([])
   const [initialLoading, setInitialLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const loadTokens = async () => {
-      const cacheKey = `tokens_${kaspa.addresses[0][0]}`
+      const cacheKey = `tokens_${kaspa.addresses[0]}`
       const cachedTokens = localStorage.getItem(cacheKey)
 
       if (cachedTokens) {
-        // Load cached tokens immediately
         try {
           setTokens(JSON.parse(cachedTokens))
           setInitialLoading(false) // Show cached data immediately
@@ -55,10 +53,9 @@ const CryptoList: React.FC<CryptoProps> = ({ onTotalValueChange, renderTokenItem
         }
       }
 
-      // Fetch new tokens in the background
       try {
-        const fetchedTokens = await fetchKrc20Tokens(settings.selectedNode, kaspa.addresses[0][0], price)
-        setTokens(fetchedTokens) // Update with newly fetched tokens
+        const fetchedTokens = await fetchKrc20Tokens(settings.selectedNode, kaspa.addresses[0], price)
+        setTokens(fetchedTokens)
         setError(null)
       } catch (error) {
         setError('Error loading tokens')

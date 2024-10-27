@@ -2,7 +2,7 @@ import React from 'react'
 import Spinner from '@/components/Spinner'
 
 interface SpinnerPageProps {
-  displayText: string
+  displayText?: string
 }
 
 const SpinnerPage: React.FC<SpinnerPageProps> = ({ displayText }) => {

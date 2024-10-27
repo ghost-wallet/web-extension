@@ -48,8 +48,6 @@ export default function CreateWallet() {
       setLoading(true)
       await request('wallet:import', [mnemonic, password])
 
-      // If importing a wallet, attempt to scan for addresses and UTXOs
-      // TODO handle possible failure if not connected to node
       if (flowType === 'import') {
         await request('account:scan', [])
       }

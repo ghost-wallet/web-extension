@@ -6,7 +6,7 @@ import { Status } from '@/wallet/kaspa/wallet'
 export const defaultState: IKaspa = {
   status: Status.Uninitialized,
   connected: false,
-  addresses: [[], []],
+  addresses: [],
   balance: 0,
   utxos: [],
   provider: '',

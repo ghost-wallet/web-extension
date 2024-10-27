@@ -5,7 +5,7 @@ import { UTXO } from '@/utils/interfaces'
 export interface IKaspa {
   status: Status
   connected: boolean
-  addresses: [string[], string[]]
+  addresses: string[]
   balance: number
   utxos: UTXO[]
   provider: string
