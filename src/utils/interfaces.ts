@@ -92,4 +92,5 @@ export interface KRC20MintEstimateResult {
   mintFees: string,
   extraNetworkFees: string,
   serviceFee: string,
+  commitTotal: string
 }
