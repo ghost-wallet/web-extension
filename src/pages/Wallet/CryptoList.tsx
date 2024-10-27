@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { sortTokensByValue } from '@/utils/sorting'
 import { useTotalValueCalculation } from '@/hooks/useTotalValueCalculation'
@@ -26,35 +26,60 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const loadTokens = async () => {
-      const cacheKey = `tokens_${kaspa.addresses[0]}`
-      const cachedTokens = localStorage.getItem(cacheKey)
+  const loadTokens = useCallback(async () => {
+    const cacheKey = `tokens_${kaspa.addresses[0]}`
+    const cachedTokens = localStorage.getItem(cacheKey)
 
-      if (cachedTokens) {
-        try {
-          setTokens(JSON.parse(cachedTokens))
-        } catch (error) {
-          console.error('Error parsing cached tokens:', error)
-        }
-      } else {
-        setIsLoading(true)
-      }
-
-      try {
-        const fetchedTokens = await fetchKrc20Tokens(settings.selectedNode, kaspa.addresses[0], kaspaPrice)
-        setTokens(fetchedTokens)
-        localStorage.setItem(cacheKey, JSON.stringify(fetchedTokens)) // Update cache
-        setError(null)
-      } catch (error) {
-        setError('Error loading tokens')
-      } finally {
-        setIsLoading(false)
-      }
+    const kaspaCrypto: Token = {
+      tick: 'KASPA',
+      balance: kaspa.balance,
+      dec: 8,
+      opScoreMod: 'kaspa-unique',
+      floorPrice: kaspaPrice,
     }
 
+    if (cachedTokens) {
+      try {
+        // Parse the cached tokens and add kaspaCrypto
+        const parsedTokens = JSON.parse(cachedTokens) as Token[]
+        setTokens([...parsedTokens, kaspaCrypto])
+      } catch (error) {
+        console.error('Error parsing cached tokens:', error)
+        setTokens([kaspaCrypto])
+      }
+    } else {
+      setTokens([kaspaCrypto])
+      setIsLoading(true)
+    }
+
+    if (!kaspa.connected) {
+      setIsLoading(false)
+      return // Exit early if not connected
+    }
+
+    try {
+      const fetchedTokens = await fetchKrc20Tokens(settings.selectedNode, kaspa.addresses[0], kaspaPrice)
+      const updatedTokens = [...fetchedTokens, kaspaCrypto]
+      setTokens(updatedTokens)
+      localStorage.setItem(cacheKey, JSON.stringify(fetchedTokens)) // Update cache without kaspaCrypto
+      setError(null)
+    } catch (error) {
+      setError('Error loading tokens')
+    } finally {
+      setIsLoading(false)
+    }
+  }, [kaspa.addresses, kaspa.connected, kaspa.balance, kaspaPrice, settings.selectedNode])
+
+  useEffect(() => {
     loadTokens()
-  }, [kaspa.addresses, kaspaPrice, settings.selectedNode])
+  }, [loadTokens])
+
+  // Listen for changes in kaspa.connected and re-fetch tokens if it becomes true
+  useEffect(() => {
+    if (kaspa.connected) {
+      loadTokens()
+    }
+  }, [kaspa.connected, loadTokens])
 
   useTotalValueCalculation(tokens, kaspaPrice, onTotalValueChange)
 
@@ -70,16 +95,9 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     return <ErrorMessage message={error} />
   }
 
-  const kaspaCrypto: Token = {
-    tick: 'KASPA',
-    balance: kaspa.balance,
-    dec: 8,
-    opScoreMod: 'kaspa-unique',
-    floorPrice: kaspaPrice,
-  }
   // Only proceed if there are valid tokens or the kaspa balance is non-zero
-  const cryptos = [...tokens, kaspaCrypto].filter((token) => token && token.balance !== 0)
-  const sortedCryptos = sortTokensByValue(cryptos)
+  const filteredCryptos = tokens.filter((token) => token && token.balance !== 0)
+  const sortedCryptos = sortTokensByValue(filteredCryptos)
   const currencySymbol = getCurrencySymbol(settings.currency)
 
   const handleTokenClick = (token: Token) => {

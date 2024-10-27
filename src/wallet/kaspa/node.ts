@@ -68,17 +68,13 @@ export default class Node extends EventEmitter {
   }
 
   async reconnect(nodeAddress: string) {
-    console.log(`[Node] Reconnecting to: ${nodeAddress}`)
-
     try {
       await this.rpcClient.disconnect()
       console.log('[Node] Disconnected from current node')
 
       if (!this.rpcClient.resolver) {
-        console.log('[Node] Setting new resolver')
         this.rpcClient.setResolver(new Resolver())
       }
-      console.log('[Node] Setting network ID for:', nodeAddress)
       this.rpcClient.setNetworkId(new NetworkId(nodeAddress))
 
       console.log('[Node] Attempting to connect to:', nodeAddress)
@@ -91,8 +87,6 @@ export default class Node extends EventEmitter {
           this.rpcClient
             .getServerInfo()
             .then(({ isSynced, hasUtxoIndex, networkId }) => {
-              console.log('[Node] Server info:', { isSynced, hasUtxoIndex, networkId })
-
               if (!isSynced || !hasUtxoIndex) {
                 console.error('[Node] Node is not synchronized or lacks UTXO index. Disconnecting...')
                 this.rpcClient.disconnect().catch((disconnectError) => {
@@ -123,7 +117,6 @@ export default class Node extends EventEmitter {
 
   private registerEvents() {
     this.rpcClient.addEventListener('connect', () => {
-      console.log('[Node] Connected to the node')
       this.emit('connection', true)
     })
 

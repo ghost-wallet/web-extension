@@ -23,7 +23,6 @@ export default function Landing() {
       if (!kaspa.connected) {
         try {
           await request('node:connect', [settings.settings.nodes[settings.settings.selectedNode].address])
-          console.log('Successfully connected to the node.')
         } catch (error) {
           console.error('Error connecting to node:', error)
         }
@@ -31,7 +30,6 @@ export default function Landing() {
     }
 
     if (loadedSettings && loadedKaspa) {
-      console.log('Start Node Connection from Landing')
       connectNode()
 
       switch (kaspa.status) {

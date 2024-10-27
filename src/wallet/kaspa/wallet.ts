@@ -23,11 +23,9 @@ export default class Wallet extends EventEmitter {
 
   constructor(readyCallback: () => void) {
     super()
-    console.log('[Wallet] Wallet constructor called.')
 
     this.sync()
       .then(() => {
-        console.log('[Wallet] Sync complete. Calling ready callback.')
         readyCallback()
       })
       .catch((error) => {
@@ -88,7 +86,6 @@ export default class Wallet extends EventEmitter {
   }
 
   async unlock(id: number, password: string): Promise<string> {
-    console.log('unlocking wallet...')
     if (!this.encryptedKey) {
       console.error('[Wallet] No encrypted key available.')
       throw new Error('No encrypted key available.')
@@ -99,10 +96,8 @@ export default class Wallet extends EventEmitter {
     const publicKey = PublicKeyGenerator.fromMasterXPrv(xPrv, false, BigInt(id))
     const decryptedKey = decryptXChaCha20Poly1305(this.encryptedKey, password)
 
-    console.log('setting decrypted key...', decryptedKey)
     KeyManager.setKey(decryptedKey)
 
-    console.log('setting SessionStorage...', id, publicKey.toString(), this.encryptedKey)
     await SessionStorage.set('session', {
       activeAccount: id,
       publicKey: publicKey.toString(),

@@ -94,16 +94,13 @@ export default class Account extends EventEmitter {
 
   private listenSession() {
     SessionStorage.subscribeChanges(async (key, newValue) => {
-      console.log('[Account] listenSession() subscribe changes')
       if (key !== 'session') return
 
       if (newValue) {
-        console.log('[Account] newValue')
         await this.addresses.import(PublicKeyGenerator.fromXPub(newValue.publicKey), newValue.activeAccount)
         await this.transactions.import(newValue.encryptedKey, newValue.activeAccount)
         await this.processor.start()
       } else {
-        console.log('[Account] Resetting everything')
         this.addresses.reset()
         this.transactions.reset()
         await this.processor.stop()
