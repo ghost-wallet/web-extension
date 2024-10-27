@@ -73,12 +73,6 @@ export default class Wallet extends EventEmitter {
 
     await LocalStorage.set('wallet', {
       encryptedKey: encryptedKey,
-      accounts: [
-        {
-          name: 'Wallet',
-          receiveCount: 1,
-        },
-      ],
     })
 
     await this.unlock(0, password) // Unlock wallet and send user to wallet page
@@ -99,7 +93,6 @@ export default class Wallet extends EventEmitter {
     KeyManager.setKey(decryptedKey)
 
     await SessionStorage.set('session', {
-      activeAccount: id,
       publicKey: publicKey.toString(),
       encryptedKey: this.encryptedKey,
     })

@@ -97,8 +97,8 @@ export default class Account extends EventEmitter {
       if (key !== 'session') return
 
       if (newValue) {
-        await this.addresses.import(PublicKeyGenerator.fromXPub(newValue.publicKey), newValue.activeAccount)
-        await this.transactions.import(newValue.encryptedKey, newValue.activeAccount)
+        await this.addresses.import(PublicKeyGenerator.fromXPub(newValue.publicKey))
+        await this.transactions.import(newValue.encryptedKey)
         await this.processor.start()
       } else {
         this.addresses.reset()

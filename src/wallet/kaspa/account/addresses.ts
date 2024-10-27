@@ -6,7 +6,6 @@ import LocalStorage from '@/storage/LocalStorage'
 export default class Addresses extends EventEmitter {
   context: UtxoContext
   publicKey: PublicKeyGenerator | undefined
-  accountId: number | undefined
   networkId: string
   receiveAddresses: string[] = []
 
@@ -20,35 +19,28 @@ export default class Addresses extends EventEmitter {
     return this.receiveAddresses
   }
 
-  async import(publicKey: PublicKeyGenerator, accountId: number) {
+  async import(publicKey: PublicKeyGenerator) {
     this.publicKey = publicKey
-    this.accountId = accountId
 
-    const accounts = (await LocalStorage.get('wallet', undefined))!.accounts
-    const account = accounts[accountId]
-    await this.increment(account.receiveCount, false)
+    await this.registerReceiveAddress()
   }
 
-  async derive(start: number, end: number) {
+  async derive() {
     const session = await SessionStorage.get('session', undefined)
 
     if (!session?.publicKey) {
       throw Error('[Addresses] No publicKey in SessionStorage')
     }
     this.publicKey = PublicKeyGenerator.fromXPub(session.publicKey)
-    return this.publicKey.receiveAddressAsStrings(this.networkId, start, end)
+    return this.publicKey.receiveAddressAsString(this.networkId, 0)
   }
 
-  async increment(receiveCount: number, commit = true) {
-    const addresses = await Promise.all([
-      this.derive(this.receiveAddresses.length, this.receiveAddresses.length + receiveCount),
-    ])
-
-    this.receiveAddresses.push(...addresses[0])
-
-    if (this.context.isActive) await this.context.trackAddresses(addresses.flat())
-
-    this.emit('addresses', addresses)
+  async registerReceiveAddress() {
+    this.receiveAddresses = [await this.derive()]
+    if (this.context.isActive) {
+      await this.context.trackAddresses(this.receiveAddresses)
+    }
+    this.emit('addresses', this.receiveAddresses)
   }
 
   findIndexes(address: string): [boolean, number] {
@@ -58,12 +50,11 @@ export default class Addresses extends EventEmitter {
 
   async changeNetwork(networkId: string) {
     this.networkId = networkId
-    this.receiveAddresses = await this.derive(0, this.receiveAddresses.length)
+    this.receiveAddresses = [await this.derive()]
   }
 
   reset() {
     delete this.publicKey
-    delete this.accountId
 
     this.receiveAddresses = []
   }

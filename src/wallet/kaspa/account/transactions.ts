@@ -45,7 +45,6 @@ export default class Transactions extends EventEmitter {
   addresses: Addresses
   account: Account | null = null
   encryptedKey: string | undefined
-  accountId: number | undefined
 
   private transactions: Map<string, PendingTransaction> = new Map()
 
@@ -62,9 +61,8 @@ export default class Transactions extends EventEmitter {
     this.account = account
   }
 
-  async import(encryptedKey: string, accountId: number) {
+  async import(encryptedKey: string) {
     this.encryptedKey = encryptedKey
-    this.accountId = accountId
   }
 
   async findCustomEntries(customs: CustomInput[]) {
@@ -162,7 +160,7 @@ export default class Transactions extends EventEmitter {
     const mnemonic = new Mnemonic(decryptedKey)
     const seed = mnemonic.toSeed() // This should be a 64-byte buffer
     const xprv = new XPrv(seed)
-    const keyGenerator = new PrivateKeyGenerator(xprv, false, BigInt(this.accountId!))
+    const keyGenerator = new PrivateKeyGenerator(xprv, false, 0n)
     const signedTransactions: Transaction[] = []
 
     for (const transaction of transactions) {

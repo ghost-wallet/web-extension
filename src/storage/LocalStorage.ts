@@ -4,13 +4,8 @@ import Storage from './Storage'
 
 export interface IWallet {
   encryptedKey: string
-  accounts: IAccount[]
 }
 
-export interface IAccount {
-  name: string
-  receiveCount: number
-}
 
 export interface ILocalStorage {
   settings: ISettings
