@@ -7,6 +7,8 @@ import { KRC20TokenResponse } from '@/utils/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import CryptoImage from '@/components/CryptoImage'
 import SpinnerPage from '@/components/SpinnerPage'
+import NextButton from '@/components/buttons/NextButton'
+import TotalCostToMint from '@/pages/Wallet/Mint/TotalCostToMint'
 
 export default function ConfirmMint() {
   const location = useLocation()
@@ -27,7 +29,6 @@ export default function ConfirmMint() {
     setIsMinting(true)
     try {
       const transactionIds = await request('account:doKRC20Mint', [token.tick, feeRate, payAmount])
-      console.log('Minted txn ids:', transactionIds)
       navigate(`/mint/${token.tick}/network-fee/review/minted`, {
         state: { token, receiveAmount, transactionIds },
       })
@@ -42,7 +43,7 @@ export default function ConfirmMint() {
     return (
       <SpinnerPage
         displayText={`Minting ${receiveAmount.toLocaleString()} ${token.tick}. You can close your Ghost extension and 
-    it'll keep minting in the background. Do not close your web browser, or minting will stop.`}
+        it'll keep minting in the background. Do not close your web browser, or minting will stop.`}
       />
     )
   }
@@ -74,19 +75,12 @@ export default function ConfirmMint() {
                 {networkFee ? `${networkFee} KAS` : 'Calculating...'}
               </span>
             </div>
-            <div className="flex justify-between pt-8">
-              <span className="text-mutedtext font-lato text-xl">Total</span>
-              <span className="text-primarytext font-lato text-xl">{totalFees} KAS</span>
-            </div>
+
+            <TotalCostToMint totalFees={totalFees} />
           </div>
         </div>
-        <div className="px-4 pt-16">
-          <button
-            onClick={handleMint}
-            className="w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] bg-primary text-secondarytext cursor-pointer hover:bg-hover"
-          >
-            Confirm Mint
-          </button>
+        <div className="px-4 pt-12">
+          <NextButton onClick={handleMint} text="Confirm Mint" />
         </div>
       </AnimatedMain>
       <BottomNav />

@@ -39,7 +39,7 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
       value: network,
     },
     {
-      label: 'Fee',
+      label: 'Network fee',
       value: <KRC20NetworkFee fee={fee} />,
     },
   ]

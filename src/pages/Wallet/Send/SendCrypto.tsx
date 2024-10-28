@@ -19,8 +19,9 @@ const SendCrypto: React.FC = () => {
   const navigate = useNavigate()
   const { request } = useKaspa()
   const { buckets, updateBuckets } = useBuckets()
-  const [currentFeeTypeIndex, setCurrentFeeTypeIndex] = useState(1) // Start with 'standard'
+  const [currentFeeTypeIndex, setCurrentFeeTypeIndex] = useState(1)
   const [estimatedFee, setEstimatedFee] = useState<string>('')
+  const [error, setError] = useState<string | null>(null)
   const { token } = location.state || {}
 
   const maxAmount = token.tick === 'KASPA' ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
@@ -31,7 +32,6 @@ const SendCrypto: React.FC = () => {
   const selectedFeeRate = selectedBucket.feeRate || 1
   const estimatedSeconds = selectedBucket.seconds || 0
 
-  // Function to fetch the estimated fee for Kaspa or KRC20 tokens
   const fetchEstimatedFee = useCallback(() => {
     if (outputs[0][0].length > 0 && outputs[0][1].length > 0 && !recipientError && !amountError) {
       if (token.tick === 'KASPA') {
@@ -67,6 +67,7 @@ const SendCrypto: React.FC = () => {
   }, [fetchEstimatedFee, updateBuckets])
 
   const initiateSend = useCallback(() => {
+    setError(null)
     if (token.tick === 'KASPA') {
       request('account:create', [outputs, selectedFeeRate, estimatedFee])
         .then(([transactions]) => {
@@ -82,6 +83,7 @@ const SendCrypto: React.FC = () => {
         })
         .catch((err) => {
           console.error(`Error occurred: ${err}`)
+          setError(err)
         })
     } else {
       navigate(`/send/${token.tick}/confirmkrc20`, {
@@ -106,32 +108,34 @@ const SendCrypto: React.FC = () => {
     <>
       <AnimatedMain>
         <Header title={`Send ${token.tick}`} showBackButton={true} />
-        <div className="flex flex-col items-center space-y-4 px-4 pt-4">
-          <RecipientInput
-            value={outputs[0][0]}
-            onChange={(e) => handleRecipientChange(e.target.value, request)}
+        <div className="flex flex-col justify-between h-screen">
+          <div className="flex flex-col items-center space-y-4 px-4 pt-4">
+            <RecipientInput
+              value={outputs[0][0]}
+              onChange={(e) => handleRecipientChange(e.target.value, request)}
+            />
+            <AmountInput
+              value={outputs[0][1]}
+              onChange={(e) => handleAmountChange(e.target.value)}
+              onMaxClick={handleMaxClick}
+            />
+          </div>
+          <div className="w-full text-right text-mutedtext font-lato font-light text-base px-4 pt-1 pb-1">
+            Available {formattedBalance} {token.tick}
+          </div>
+          <FeePrioritySelector
+            currentFeeTypeIndex={currentFeeTypeIndex}
+            estimatedFee={estimatedFee}
+            estimatedSeconds={estimatedSeconds}
+            isButtonEnabled={isButtonEnabled}
+            onFeeTypeClick={handleFeeTypeClick}
           />
-          <AmountInput
-            value={outputs[0][1]}
-            onChange={(e) => handleAmountChange(e.target.value)}
-            onMaxClick={handleMaxClick}
-          />
-        </div>
-        <div className="w-full text-right text-mutedtext font-lato font-light text-base px-4 pt-1 pb-1">
-          Available {formattedBalance} {token.tick}
-        </div>
-        <FeePrioritySelector
-          currentFeeTypeIndex={currentFeeTypeIndex}
-          estimatedFee={estimatedFee}
-          estimatedSeconds={estimatedSeconds}
-          isButtonEnabled={isButtonEnabled}
-          onFeeTypeClick={handleFeeTypeClick}
-        />
 
-        <ErrorMessage message={recipientError || amountError || ''} />
+          <ErrorMessage message={recipientError || amountError || error || ''} />
 
-        <div className="px-4 pt-4">
-          <NextButton onClick={handleContinue} buttonEnabled={isButtonEnabled} />
+          <div className="px-4 pb-20">
+            <NextButton onClick={handleContinue} buttonEnabled={isButtonEnabled} />
+          </div>
         </div>
       </AnimatedMain>
       <BottomNav />
