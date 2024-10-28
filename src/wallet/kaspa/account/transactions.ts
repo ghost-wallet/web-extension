@@ -372,7 +372,6 @@ export default class Transactions extends EventEmitter {
     return [commitId, revealId]
   }
 
-  //TODO remove optional changeAddress. Always use receive address for change
   async createForKRC20Mint(
     context: UtxoContext,
     fee: string,
@@ -385,17 +384,41 @@ export default class Transactions extends EventEmitter {
       priorityEntries = await this.findCustomEntries(customs)
     }
 
-    const preparedTxn = {
+    const feeSompi = kaspaToSompi(fee)!
+
+    const estimatePreparedTxn: IGeneratorSettingsObject = {
       priorityEntries,
       entries: context,
       outputs: [],
       changeAddress: changeAddress ?? this.addresses.receiveAddresses[0],
-      priorityFee: kaspaToSompi(fee)!,
+      priorityFee: feeSompi,
+      feeRate: 1
     }
-    console.log('Creating transaction with:')
-    console.log(preparedTxn)
+    console.log('Creating estimatePreparedTxn with:', estimatePreparedTxn)
+
+    const estimateSummary = await estimateTransactions(estimatePreparedTxn)
+
+    console.log('estimateSummary', estimateSummary)
+
+    const newPriorityFeeSompi = feeSompi - estimateSummary.mass
+
+    console.log('estimateSummary.fees', estimateSummary.fees)
+    console.log('estimateSummary.mass', estimateSummary.mass)
+    console.log('newPriorityFeeSompi', newPriorityFeeSompi)
+
+    const preparedTxn: IGeneratorSettingsObject = {
+      priorityEntries,
+      entries: context,
+      outputs: [],
+      changeAddress: changeAddress ?? this.addresses.receiveAddresses[0],
+      priorityFee: newPriorityFeeSompi,
+      feeRate:1
+    }
+    console.log('Creating transaction with:', preparedTxn)
 
     const { transactions, summary } = await createTransactions(preparedTxn)
+
+
 
     console.log('create transactions', transactions)
     console.log('create summary', summary)
@@ -543,7 +566,7 @@ export default class Transactions extends EventEmitter {
 
     console.log('[Transactions] Mint complete', transactionIds)
 
-    createNotification('Mint Completed', `Done minting ${timesToMint} ${ticker}`)
+    createNotification('Mint Completed', `Done minting ${ticker}`)
 
     return transactionIds
   }
