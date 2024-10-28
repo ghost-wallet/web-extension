@@ -16,10 +16,12 @@ const MintButton: React.FC<MintButtonProps> = ({ tokenTick }) => {
   const [showMintDialog, setShowMintDialog] = useState(false)
   const [mintedPercentage, setMintedPercentage] = useState<number>(0)
   const [tokenInfo, setTokenInfo] = useState<KRC20TokenResponse | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const getTokenMintingInfo = async () => {
       try {
+        setLoading(true)
         const _tokenInfo = await fetchKrc20TokenInfo(0, tokenTick)
         if (_tokenInfo) {
           setTokenInfo(_tokenInfo)
@@ -28,12 +30,19 @@ const MintButton: React.FC<MintButtonProps> = ({ tokenTick }) => {
         }
       } catch (error) {
         console.error('Error fetching token minting info:', error)
+      } finally {
+        setLoading(false)
       }
     }
     getTokenMintingInfo()
   }, [tokenTick])
 
   const handleMintClick = () => {
+    if (loading) {
+      // If still loading, do nothing
+      return
+    }
+
     if (tokenTick.toUpperCase() === 'KASPA' || mintedPercentage === 100) {
       setShowMintDialog(true)
     } else {

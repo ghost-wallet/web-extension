@@ -11,8 +11,8 @@ export const calculateTotalValue = (
   floorPrice: number,
   tick: string,
   dec: number,
-): number => {
+): string => {
   const value = tick === 'KASPA' ? balance * floorPrice : formatNumberWithDecimal(balance, dec) * floorPrice
 
-  return parseFloat(value.toFixed(2))
+  return value.toFixed(2)
 }
