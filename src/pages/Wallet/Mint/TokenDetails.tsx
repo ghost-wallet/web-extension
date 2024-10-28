@@ -17,9 +17,6 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
   const preMintedPercentage =
     !isNaN(token.pre) && !isNaN(token.max) && token.max > 0 ? getMintedPercentage(token.pre, token.max) : '0'
 
-  const value: any = token.mintTotal
-  console.log(`The value is a ${typeof value}:`, value)
-
   return (
     <div className="rounded-md pb-2">
       <div className="flex flex-row items-center justify-center pb-1 -mt-3">

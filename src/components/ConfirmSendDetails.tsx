@@ -5,6 +5,7 @@ import Header from '@/components/Header'
 import ErrorMessage from '@/components/ErrorMessage'
 import KRC20NetworkFee from '@/pages/Wallet/Send/KRC20NetworkFee'
 import TableSection from '@/components/table/TableSection'
+import NextButton from '@/components/buttons/NextButton'
 
 interface ConfirmSendDetailsProps {
   token: any
@@ -24,7 +25,6 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
   fee,
   network,
   onConfirm,
-  loading,
   error,
 }) => {
   // Create rows for the TableSection
@@ -60,14 +60,8 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
 
         <ErrorMessage message={error || ''} />
 
-        <div className="flex mt-6">
-          <button
-            onClick={onConfirm}
-            disabled={loading}
-            className="flex-1 bg-primary text-secondarytext text-lg font-lato font-semibold rounded-[10px] cursor-pointer py-2 px-6 hover:bg-secondary"
-          >
-            {loading ? 'Processing...' : 'Confirm Send'}
-          </button>
+        <div className="flex pt-12">
+          <NextButton onClick={onConfirm} text={'Confirm Send'} />
         </div>
       </div>
     </>

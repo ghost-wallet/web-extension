@@ -13,6 +13,7 @@ import { formatValue } from '@/utils/formatting'
 import { calculateTotalValue } from '@/utils/calculations'
 import TableSection from '@/components/table/TableSection'
 import Spinner from '@/components/Spinner'
+import TokenPrice from '@/components/TokenPrice'
 import { Token } from '@/utils/interfaces'
 
 interface CryptoDetailsTableProps {
@@ -80,7 +81,9 @@ const Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
         rows={[
           {
             label: `${settings.currency} Price`,
-            value: `${currencySymbol}${tick === 'KASPA' ? kaspaPrice : formattedTokenPrice}`,
+            value: (
+              <TokenPrice value={`${currencySymbol}${tick === 'KASPA' ? kaspaPrice : formattedTokenPrice}`} />
+            ),
           },
         ]}
         className="mt-6 mb-2"

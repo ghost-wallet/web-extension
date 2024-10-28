@@ -8,7 +8,7 @@ import FeePrioritySelector from '@/components/FeePrioritySelector'
 import { FEE_TYPES } from '@/utils/constants'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import { useBuckets } from '@/hooks/useBuckets'
-import ReviewMintButton from '@/pages/Wallet/Mint/CreateMint/ReviewMintButton'
+import NextButton from '@/components/buttons/NextButton'
 
 const MintNetworkFee: React.FC = () => {
   const navigate = useNavigate()
@@ -83,14 +83,14 @@ const MintNetworkFee: React.FC = () => {
             estimatedFee={networkFee.toString()}
             estimatedSeconds={estimatedSeconds}
             isButtonEnabled={true}
-            onFeeTypeClick={handleFeeTypeClick} // Pass the index to handleFeeTypeClick
+            onFeeTypeClick={handleFeeTypeClick}
           />
         </div>
         <div className="w-full flex flex-col items-center justify-center flex-grow space-y-2 px-4">
           {error && <ErrorMessage message={error} />}
         </div>
         <div className="flex items-center justify-center w-full px-4 pb-20">
-          <ReviewMintButton isMintAmountValid={true} onClick={handleNext} showError={false} />
+          <NextButton onClick={handleNext} showError={false} />
         </div>
       </AnimatedMain>
       <BottomNav />

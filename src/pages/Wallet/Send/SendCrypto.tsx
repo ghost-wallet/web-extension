@@ -6,13 +6,13 @@ import Header from '@/components/Header'
 import ErrorMessage from '@/components/ErrorMessage'
 import RecipientInput from '@/components/inputs/RecipientInput'
 import AmountInput from '@/components/inputs/AmountInput'
-import ContinueToConfirmTxnButton from '@/components/buttons/ContinueToConfirmTxnButton'
 import FeePrioritySelector from '@/components/FeePrioritySelector'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import { useTransactionInputs } from '@/hooks/useTransactionInputs'
 import { useBuckets } from '@/hooks/useBuckets'
 import { formatNumberWithDecimal, formatTokenBalance } from '@/utils/formatting'
 import { FEE_TYPES } from '@/utils/constants'
+import NextButton from '@/components/buttons/NextButton'
 
 const SendCrypto: React.FC = () => {
   const location = useLocation()
@@ -29,7 +29,7 @@ const SendCrypto: React.FC = () => {
 
   const selectedBucket = buckets[FEE_TYPES[currentFeeTypeIndex]]
   const selectedFeeRate = selectedBucket.feeRate || 1
-  const estimatedSeconds = selectedBucket.seconds || 1
+  const estimatedSeconds = selectedBucket.seconds || 0
 
   // Function to fetch the estimated fee for Kaspa or KRC20 tokens
   const fetchEstimatedFee = useCallback(() => {
@@ -130,8 +130,8 @@ const SendCrypto: React.FC = () => {
 
         <ErrorMessage message={recipientError || amountError || ''} />
 
-        <div className="px-4 pt-1">
-          <ContinueToConfirmTxnButton onClick={handleContinue} disabled={!isButtonEnabled} />
+        <div className="px-4 pt-4">
+          <NextButton onClick={handleContinue} buttonEnabled={isButtonEnabled} />
         </div>
       </AnimatedMain>
       <BottomNav />

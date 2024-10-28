@@ -33,24 +33,26 @@ const Network: React.FC = () => {
             kaspa.connected ? 'text-success text-base font-lato' : 'text-mutedtext text-base font-lato'
           }`}
         >
-          {kaspa.connected ? 'Connected to Mainnet' : 'Connecting...'}
+          {kaspa.connected
+            ? `Connected to ${settings.nodes[settings.selectedNode].address}`
+            : 'Connecting...'}
         </span>
       </div>
 
-      <div className="flex flex-col gap-2">
-        {/*<div className="flex gap-1 mx-1">*/}
-        {/*  <select*/}
-        {/*    value={settings.selectedNode.toString()}*/}
-        {/*    onChange={handleNodeChange}*/}
-        {/*    className="w-full py-2 px-2 border rounded border-muted bg-bgdarker text-base text-primarytext cursor-pointer"*/}
-        {/*  >*/}
-        {/*    {settings.nodes.map((node, id) => (*/}
-        {/*      <option key={id} value={id.toString()}>*/}
-        {/*        {node.address}*/}
-        {/*      </option>*/}
-        {/*    ))}*/}
-        {/*  </select>*/}
-        {/*</div>*/}
+      <div className="flex flex-col gap-2 px-4 pb-2">
+        <div className="flex gap-1 mx-1">
+          <select
+            value={settings.selectedNode.toString()}
+            onChange={handleNodeChange}
+            className="w-full py-2 px-2 border rounded border-muted bg-bgdarker text-base text-primarytext cursor-pointer"
+          >
+            {settings.nodes.map((node, id) => (
+              <option key={id} value={id.toString()}>
+                {node.address}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
     </>
   )

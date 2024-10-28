@@ -11,7 +11,7 @@ import CryptoImage from '@/components/CryptoImage'
 import MintAmountInput from '@/pages/Wallet/Mint/CreateMint/MintAmountInput'
 import MintSummary from '@/pages/Wallet/Mint/CreateMint/MintSummary'
 import MintRateInfo from '@/pages/Wallet/Mint/CreateMint/MintRateInfo'
-import ReviewMintButton from '@/pages/Wallet/Mint/CreateMint/ReviewMintButton'
+import NextButton from '@/components/buttons/NextButton'
 import useMintErrorHandling from '@/pages/Wallet/Mint/CreateMint/hooks/useMintErrorHandling'
 import useMintValidation from '@/pages/Wallet/Mint/CreateMint/hooks/useMintValidation'
 
@@ -83,11 +83,7 @@ export default function CreateMint() {
           {showError && <ErrorMessage message={error} />}
         </div>
         <div className="px-4 pt-6">
-          <ReviewMintButton
-            isMintAmountValid={isMintAmountValid}
-            showError={showError}
-            onClick={handleNext}
-          />
+          <NextButton buttonEnabled={isMintAmountValid} showError={showError} onClick={handleNext} />
         </div>
       </AnimatedMain>
       <BottomNav />

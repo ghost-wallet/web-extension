@@ -60,10 +60,6 @@ const ConfirmSendKRC20: React.FC = () => {
     })
   }, [request, recipient, token, amount, feeRate])
 
-  const handleCancelClick = () => {
-    navigate('/wallet')
-  }
-
   return (
     <>
       <AnimatedMain>
@@ -77,7 +73,6 @@ const ConfirmSendKRC20: React.FC = () => {
             fee={estimatedFee || 'Calculating...'}
             network="Mainnet"
             onConfirm={handleConfirmClick}
-            onCancel={handleCancelClick}
             loading={loading}
             error={error}
           />

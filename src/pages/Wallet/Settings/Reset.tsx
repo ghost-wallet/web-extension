@@ -1,21 +1,18 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import SettingsButton from '@/pages/Wallet/Settings/SettingsButton'
+import { MinusCircleIcon } from '@heroicons/react/24/outline'
 
 export default function Reset() {
   const navigate = useNavigate()
 
   const handleResetClick = () => {
-    navigate('/settings/reset') // Navigate to the reset confirmation page
+    navigate('/settings/reset')
   }
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <button
-        className="bg-error hover:bg-errormuted text-secondarytext text-base font-semibold font-lato w-[240px] py-3 rounded-[25px]"
-        onClick={handleResetClick}
-      >
-        Reset wallet
-      </button>
+    <div className="flex flex-col py-1 px-4">
+      <SettingsButton onClick={handleResetClick} text={'Reset wallet'} Icon={MinusCircleIcon} />
     </div>
   )
 }

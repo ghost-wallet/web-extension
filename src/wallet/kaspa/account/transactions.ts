@@ -392,7 +392,7 @@ export default class Transactions extends EventEmitter {
       outputs: [],
       changeAddress: changeAddress ?? this.addresses.receiveAddresses[0],
       priorityFee: feeSompi,
-      feeRate: 1
+      feeRate: 1,
     }
     console.log('Creating estimatePreparedTxn with:', estimatePreparedTxn)
 
@@ -412,13 +412,11 @@ export default class Transactions extends EventEmitter {
       outputs: [],
       changeAddress: changeAddress ?? this.addresses.receiveAddresses[0],
       priorityFee: newPriorityFeeSompi,
-      feeRate:1
+      feeRate: 1,
     }
     console.log('Creating transaction with:', preparedTxn)
 
     const { transactions, summary } = await createTransactions(preparedTxn)
-
-
 
     console.log('create transactions', transactions)
     console.log('create summary', summary)

@@ -56,7 +56,7 @@ const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
       <TableSection
         title=""
         rows={[
-          { label: 'Network fee', value: estimatedFee ? `${estimatedFee} KAS` : '0' },
+          { label: 'Network fee', value: estimatedFee ? `${estimatedFee} KAS` : '' },
           { label: 'Transfer speed', value: transferSpeedText },
         ]}
         className={`px-4 py-1 ${animate ? 'fade-animation' : ''}`}

@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import { Status } from '@/wallet/kaspa/wallet'
 import { useNavigate } from 'react-router-dom'
 import useKaspa from '@/hooks/contexts/useKaspa'
+import SettingsButton from '@/pages/Wallet/Settings/SettingsButton'
+import { ArrowRightEndOnRectangleIcon } from '@heroicons/react/24/outline'
 
 const LogOut: React.FC = () => {
   const { kaspa, request } = useKaspa()
@@ -18,13 +20,8 @@ const LogOut: React.FC = () => {
   }, [kaspa.status])
 
   return (
-    <div className="flex flex-col items-center gap-2 mb-2">
-      <button
-        onClick={handleLogOut}
-        className="bg-primary hover:bg-secondary text-secondarytext text-base font-semibold font-lato w-[240px] px-8 py-3 rounded-[25px]"
-      >
-        Log out
-      </button>
+    <div className="flex flex-col py-1 px-4">
+      <SettingsButton onClick={handleLogOut} text={'Log out'} Icon={ArrowRightEndOnRectangleIcon} />
     </div>
   )
 }
