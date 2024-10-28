@@ -39,7 +39,12 @@ export default function ConfirmMint() {
   }
 
   if (isMinting) {
-    return <SpinnerPage displayText={`Minting ${receiveAmount.toLocaleString()} ${token.tick}...`} />
+    return (
+      <SpinnerPage
+        displayText={`Minting ${receiveAmount.toLocaleString()} ${token.tick}. You can close your Ghost extension and 
+    it'll keep minting in the background. Do not close your web browser, or minting will stop.`}
+      />
+    )
   }
 
   return (

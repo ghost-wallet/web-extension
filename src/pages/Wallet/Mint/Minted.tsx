@@ -4,6 +4,7 @@ import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
 import Title from '@/components/Header'
 import CryptoImage from '@/components/CryptoImage'
+import CloseButton from '@/components/buttons/CloseButton'
 
 const Minted: React.FC = () => {
   const location = useLocation()
@@ -37,13 +38,7 @@ const Minted: React.FC = () => {
         </div>
       </div>
 
-      {/* Close button at the bottom */}
-      <button
-        className="w-full h-[60px] text-lg font-lato font-semibold rounded-[10px] bg-muted text-primarytext cursor-pointer py-3 px-6 hover:bg-slightmuted mb-6"
-        onClick={() => navigate('/wallet')}
-      >
-        Close
-      </button>
+      <CloseButton onClick={() => navigate('/wallet')} />
     </div>
   )
 }

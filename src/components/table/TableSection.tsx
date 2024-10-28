@@ -10,7 +10,7 @@ interface TableSectionProps {
 const TableSection: React.FC<TableSectionProps> = ({ title, rows, className }) => {
   return (
     <div className={className}>
-      {title && <h1 className="text-lg font-lato text-primarytext mb-2">{title}</h1>}
+      {title && <h1 className="text-lg font-lato text-mutedtext mb-2">{title}</h1>}
       <div className="bg-bgdarker rounded-md py-1 px-4">
         <table className="w-full">
           <tbody>

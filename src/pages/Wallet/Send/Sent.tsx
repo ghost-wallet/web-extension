@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
 import KaspaAddress from '@/components/KaspaAddress'
-import Title from '@/components/Header' // Import the new KaspaAddress component
+import Title from '@/components/Header'
+import CloseButton from '@/components/buttons/CloseButton'
 
 const Sent: React.FC = () => {
   const location = useLocation()
@@ -20,35 +21,32 @@ const Sent: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-dark p-4 mb-6">
-      <motion.div initial="hidden" animate="visible" variants={checkmarkVariants}>
-        <CheckCircleIcon className="w-24 h-24 text-green-500" />
-      </motion.div>
-      <Title title="Sent!" />
+    <div className="flex flex-col min-h-screen bg-dark p-4">
+      <div className="flex flex-col items-center">
+        <Title title="Sent!" />
+        <motion.div initial="hidden" animate="visible" variants={checkmarkVariants}>
+          <CheckCircleIcon className="w-24 h-24 text-success" />
+        </motion.div>
+      </div>
 
-      <p className="text-base font-lato text-mutedtext mt-4 p-6 text-center">
-        {amount.toLocaleString()} {token.tick} was successfully sent to
-      </p>
-
-      <div className="flex flex-col items-center justify-center relative w-full">
+      <div className="flex-1 flex flex-col items-center justify-center">
+        <a
+          href={`https://explorer.kaspa.org/txs/${txnId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary font-lato font-bold text-lg hover:underline"
+        >
+          View transaction
+        </a>
+        <p className="text-base font-lato text-mutedtext p-4 text-center">
+          {amount.toLocaleString()} {token.tick} was successfully sent to
+        </p>
         <KaspaAddress address={recipient} />
       </div>
 
-      <a
-        href={`https://explorer.kaspa.org/txs/${txnId}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-primary font-lato font-bold text-lg mt-6 hover:underline"
-      >
-        View transaction
-      </a>
-
-      <button
-        className="mt-20 w-full bg-muted text-primarytext text-lg font-lato font-semibold rounded-[10px] cursor-pointer py-2 px-6 hover:bg-slightmuted"
-        onClick={() => navigate('/wallet')}
-      >
-        Close
-      </button>
+      <div className="mt-auto">
+        <CloseButton onClick={() => navigate('/wallet')} />
+      </div>
     </div>
   )
 }

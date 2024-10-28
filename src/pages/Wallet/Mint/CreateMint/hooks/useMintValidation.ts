@@ -6,7 +6,7 @@ const useMintValidation = (
 ) => {
   const isMintAmountValid =
     mintAmount !== null &&
-    mintAmount >= 1 &&
+    mintAmount >= 2 &&
     mintAmount <= 10000 &&
     totalMintCost + availableSupply <= totalSupply
 
