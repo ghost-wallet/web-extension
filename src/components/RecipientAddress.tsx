@@ -17,34 +17,17 @@ const RecipientAddress: React.FC<RecipientAddressProps> = ({ address }) => {
   }
 
   return (
-    <div className="flex items-center gap-2 bg-bgdarker rounded-md cursor-pointer" onClick={handleCopy}>
+    <div className="flex cursor-pointer" onClick={handleCopy}>
       {copied ? (
         <>
           <span className="text-base font-lato text-primary">Copied</span>
-          <CheckIcon className="h-5 w-5 text-base font-lato text-primary" />
+          <CheckIcon className="h-5 w-5 text-primary" />
         </>
       ) : (
-        <div
-          className="flex items-center gap-2 bg-bgdarker rounded-md cursor-pointer group"
-          onClick={handleCopy}
-        >
-          {copied ? (
-            <>
-              <span className="text-success">Copied</span>
-              <CheckIcon className="h-5 w-5 text-success" />
-            </>
-          ) : (
-            <>
-              <span
-                className="text-base font-lato text-primarytext group-hover:text-primary"
-                style={{ maxWidth: 'calc(100% - 30px)' }} // Ensures space for icon
-              >
-                {truncateAddress(address)}
-              </span>
-              <DocumentDuplicateIcon className="h-5 w-5 text-primarytext group-hover:text-primary transition" />
-            </>
-          )}
-        </div>
+        <>
+          <span className="text-base font-lato text-primarytext">{truncateAddress(address)}</span>
+          <DocumentDuplicateIcon className="h-5 w-5 text-primarytext transition" />
+        </>
       )}
     </div>
   )

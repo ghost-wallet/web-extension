@@ -10,7 +10,7 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 import { useBuckets } from '@/hooks/useBuckets'
 import ReviewMintButton from '@/pages/Wallet/Mint/CreateMint/ReviewMintButton'
 
-const NetworkFeeSelect: React.FC = () => {
+const MintNetworkFee: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { request } = useKaspa()
@@ -18,7 +18,9 @@ const NetworkFeeSelect: React.FC = () => {
 
   const { buckets, updateBuckets } = useBuckets()
   const [currentFeeTypeIndex, setCurrentFeeTypeIndex] = useState(1) // Start with 'standard'
-  const [networkFee, setNetworkFee] = useState<number>(1)
+  const [networkFee, setNetworkFee] = useState<string>('0')
+  const [serviceFee, setServiceFee] = useState<string>('0')
+  const [totalFees, setTotalFees] = useState<string>('0')
   const [estimatedSeconds, setEstimatedSeconds] = useState<number>(0)
   const [error, setError] = useState<string | null>(null)
 
@@ -30,7 +32,10 @@ const NetworkFeeSelect: React.FC = () => {
     request('account:estimateKRC20MintFees', [token.tick, feeRate, payAmount])
       .then((response) => {
         console.log('response fees:', response)
-        setNetworkFee(Number(response.extraNetworkFees))
+        const { extraNetworkFees, mintFees, serviceFee, totalFees } = response
+        setNetworkFee(extraNetworkFees)
+        setServiceFee(serviceFee)
+        setTotalFees(totalFees)
         setEstimatedSeconds(estimatedTime)
         setError(null)
       })
@@ -49,9 +54,9 @@ const NetworkFeeSelect: React.FC = () => {
     return () => clearInterval(intervalId)
   }, [fetchEstimatedFee, updateBuckets])
 
-  const handleFeeTypeClick = () => {
-    const nextIndex = (currentFeeTypeIndex + 1) % FEE_TYPES.length
-    setCurrentFeeTypeIndex(nextIndex)
+  // Update the function to set the clicked fee type index directly
+  const handleFeeTypeClick = (index: number) => {
+    setCurrentFeeTypeIndex(index)
   }
 
   const handleNext = () => {
@@ -61,6 +66,8 @@ const NetworkFeeSelect: React.FC = () => {
         payAmount,
         receiveAmount,
         networkFee,
+        serviceFee,
+        totalFees,
         feeRate,
       },
     })
@@ -70,18 +77,19 @@ const NetworkFeeSelect: React.FC = () => {
     <>
       <AnimatedMain>
         <Header title="Network Fee" showBackButton={true} />
-        <div className="flex flex-col items-center space-y-4 px-4 pt-4">
+        <div className="pt-24">
           <FeePrioritySelector
             currentFeeTypeIndex={currentFeeTypeIndex}
-            // TODO change estimatedFee to be number in FeePrioritySelector component
             estimatedFee={networkFee.toString()}
             estimatedSeconds={estimatedSeconds}
             isButtonEnabled={true}
-            onFeeTypeClick={handleFeeTypeClick}
+            onFeeTypeClick={handleFeeTypeClick} // Pass the index to handleFeeTypeClick
           />
+        </div>
+        <div className="w-full flex flex-col items-center justify-center flex-grow space-y-2 px-4">
           {error && <ErrorMessage message={error} />}
         </div>
-        <div className="px-4 pt-32">
+        <div className="flex items-center justify-center w-full px-4 pb-20">
           <ReviewMintButton isMintAmountValid={true} onClick={handleNext} showError={false} />
         </div>
       </AnimatedMain>
@@ -90,4 +98,4 @@ const NetworkFeeSelect: React.FC = () => {
   )
 }
 
-export default NetworkFeeSelect
+export default MintNetworkFee

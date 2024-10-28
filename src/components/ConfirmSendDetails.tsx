@@ -4,6 +4,7 @@ import RecipientAddress from '@/components/RecipientAddress'
 import Header from '@/components/Header'
 import ErrorMessage from '@/components/ErrorMessage'
 import KRC20NetworkFee from '@/pages/Wallet/Send/KRC20NetworkFee'
+import TableSection from '@/components/table/TableSection'
 
 interface ConfirmSendDetailsProps {
   token: any
@@ -12,7 +13,6 @@ interface ConfirmSendDetailsProps {
   fee: string | number
   network: string
   onConfirm: () => void
-  onCancel: () => void
   loading: boolean
   error?: string
 }
@@ -24,10 +24,26 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
   fee,
   network,
   onConfirm,
-  onCancel,
   loading,
   error,
 }) => {
+  // Create rows for the TableSection
+  const tableRows = [
+    {
+      label: 'To',
+      // TODO: why is Recipient Address centered on the table?
+      value: <RecipientAddress address={recipient} />,
+    },
+    {
+      label: 'Network',
+      value: network,
+    },
+    {
+      label: 'Fee',
+      value: <KRC20NetworkFee fee={fee} />,
+    },
+  ]
+
   return (
     <>
       <Header title="Confirm Send" showBackButton={true} />
@@ -39,43 +55,18 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
         </p>
       </div>
 
-      <div className="p-6">
-        <div className="bg-bgdarker rounded-md p-4">
-          <div className="flex justify-between">
-            <span className="text-base font-lato text-mutedtext">To</span>
-            <RecipientAddress address={recipient} />
-          </div>
-        </div>
-
-        <div className="bg-bgdarker rounded-md p-4">
-          <div className="flex justify-between">
-            <span className="text-base font-lato text-mutedtext">Network</span>
-            <span className="text-base font-lato text-primarytext">{network}</span>
-          </div>
-        </div>
-
-        <div className="bg-bgdarker rounded-md p-4">
-          <div className="flex justify-between">
-            <span className="text-base font-lato text-mutedtext">Gas Fee</span>
-            <KRC20NetworkFee fee={fee} />
-          </div>
-        </div>
+      <div className="p-4">
+        <TableSection rows={tableRows} className="mb-4" />
 
         <ErrorMessage message={error || ''} />
 
-        <div className="flex gap-[6px] mt-6">
-          <button
-            onClick={onCancel}
-            className="flex-1 bg-muted text-primarytext text-lg font-lato font-semibold rounded-[10px] cursor-pointer py-2 px-6 hover:bg-slightmuted"
-          >
-            Cancel
-          </button>
+        <div className="flex mt-6">
           <button
             onClick={onConfirm}
             disabled={loading}
             className="flex-1 bg-primary text-secondarytext text-lg font-lato font-semibold rounded-[10px] cursor-pointer py-2 px-6 hover:bg-secondary"
           >
-            {loading ? 'Processing...' : 'Send'}
+            {loading ? 'Processing...' : 'Confirm Send'}
           </button>
         </div>
       </div>

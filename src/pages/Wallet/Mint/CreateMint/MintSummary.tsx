@@ -1,4 +1,7 @@
 import React from 'react'
+import { getCurrencySymbol } from '@/utils/currencies'
+import useSettings from '@/hooks/contexts/useSettings'
+import useKaspaPrice from '@/hooks/useKaspaPrice'
 
 interface MintSummaryProps {
   totalMintCost: number
@@ -6,19 +9,33 @@ interface MintSummaryProps {
   tokenTick: string
 }
 
-const MintSummary: React.FC<MintSummaryProps> = ({ totalMintCost, mintAmount, tokenTick }) => (
-  <div className="w-full max-w-md space-y-2 mt-6">
-    <div className="flex justify-between">
-      <span className="text-mutedtext font-lato text-lg">Receive amount</span>
-      <span className="text-primarytext font-lato text-lg">
-        {totalMintCost.toLocaleString()} {tokenTick}
-      </span>
+const MintSummary: React.FC<MintSummaryProps> = ({ totalMintCost, mintAmount, tokenTick }) => {
+  const { settings } = useSettings()
+  const kaspaPrice = useKaspaPrice(settings.currency)
+  const currencySymbol = getCurrencySymbol(settings.currency)
+
+  return (
+    <div className="w-full max-w-md space-y-2 mt-6">
+      <div className="flex flex-col justify-between">
+        <div className="flex justify-between">
+          <span className="text-mutedtext font-lato text-lg">Mint cost</span>
+          <span className="text-primarytext font-lato text-lg">
+            {mintAmount?.toLocaleString() || '0'} KAS
+          </span>
+        </div>
+        <span className="text-mutedtext font-lato text-base text-right">
+          {currencySymbol}
+          {Number(mintAmount ? mintAmount * kaspaPrice : '0').toFixed(2)}
+        </span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-mutedtext font-lato text-lg">Receive amount</span>
+        <span className="text-primarytext font-lato text-lg">
+          {totalMintCost.toLocaleString()} {tokenTick}
+        </span>
+      </div>
     </div>
-    <div className="flex justify-between">
-      <span className="text-mutedtext font-lato text-lg">Mint cost</span>
-      <span className="text-primarytext font-lato text-lg">{mintAmount?.toLocaleString() || '0'} KAS</span>
-    </div>
-  </div>
-)
+  )
+}
 
 export default MintSummary

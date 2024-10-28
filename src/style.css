@@ -62,3 +62,19 @@ main {
 .font-lato {
   font-family: 'Lato', sans-serif;
 }
+
+.fade-animation {
+  animation: fadeEffect 0.2s ease-in-out;
+}
+
+@keyframes fadeEffect {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}

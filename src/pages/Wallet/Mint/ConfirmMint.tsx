@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
-import { formatNumberWithAbbreviation } from '@/utils/formatting'
 import { KRC20TokenResponse } from '@/utils/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import CryptoImage from '@/components/CryptoImage'
@@ -13,12 +12,15 @@ export default function ConfirmMint() {
   const location = useLocation()
   const navigate = useNavigate()
   const { request } = useKaspa()
-  const token = location.state?.token as KRC20TokenResponse
-  const payAmount = location.state?.payAmount as number
-  const receiveAmount = location.state?.receiveAmount as number
-  const feeRate = location.state?.feeRate as number
-  const networkFee = location.state?.networkFee as number
-  const serviceFee = payAmount * 0.1
+  const { token, payAmount, receiveAmount, feeRate, networkFee, serviceFee, totalFees } = location.state as {
+    token: KRC20TokenResponse
+    payAmount: number
+    receiveAmount: number
+    feeRate: number
+    networkFee: string
+    serviceFee: string
+    totalFees: string
+  }
   const [isMinting, setIsMinting] = useState(false)
 
   const handleMint = async () => {
@@ -58,20 +60,18 @@ export default function ConfirmMint() {
               <span className="text-mutedtext font-lato text-base">{payAmount?.toLocaleString()} KAS</span>
             </div>
             <div className="flex justify-between">
+              <span className="text-mutedtext font-lato text-base">Service fee</span>
+              <span className="text-mutedtext font-lato text-base">{serviceFee} KAS</span>
+            </div>
+            <div className="flex justify-between">
               <span className="text-mutedtext font-lato text-base">Network fee</span>
               <span className="text-mutedtext font-lato text-base">
                 {networkFee ? `${networkFee} KAS` : 'Calculating...'}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-mutedtext font-lato text-base">Service fee</span>
-              <span className="text-mutedtext font-lato text-base">{serviceFee.toFixed(1)} KAS</span>
-            </div>
             <div className="flex justify-between pt-8">
               <span className="text-mutedtext font-lato text-xl">Total</span>
-              <span className="text-primarytext font-lato text-xl">
-                {payAmount + serviceFee + networkFee} KAS
-              </span>
+              <span className="text-primarytext font-lato text-xl">{totalFees} KAS</span>
             </div>
           </div>
         </div>
@@ -80,7 +80,7 @@ export default function ConfirmMint() {
             onClick={handleMint}
             className="w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] bg-primary text-secondarytext cursor-pointer hover:bg-hover"
           >
-            {`Mint ${formatNumberWithAbbreviation(receiveAmount)} ${token.tick}`}
+            Confirm Mint
           </button>
         </div>
       </AnimatedMain>

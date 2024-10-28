@@ -2,7 +2,7 @@ import React from 'react'
 
 interface TableRowProps {
   label: string
-  value: string | number
+  value: React.ReactNode
 }
 
 const TableRow: React.FC<TableRowProps> = ({ label, value }) => {

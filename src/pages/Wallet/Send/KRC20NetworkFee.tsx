@@ -5,7 +5,7 @@ interface NetworkFeeProps {
   fee: string | number
 }
 
-const KRC20NetworkFee: React.FC<NetworkFeeProps> = ({ fee }) => {
+const NetworkFee: React.FC<NetworkFeeProps> = ({ fee }) => {
   return (
     <motion.div
       key={fee} // Trigger animation when the fee changes
@@ -20,4 +20,4 @@ const KRC20NetworkFee: React.FC<NetworkFeeProps> = ({ fee }) => {
   )
 }
 
-export default React.memo(KRC20NetworkFee)
+export default React.memo(NetworkFee)

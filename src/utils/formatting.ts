@@ -74,6 +74,19 @@ export const formatNumberWithAbbreviation = (balance: number): string => {
   }
 }
 
+export const formatTime = (time: number): string => {
+  if (time < 1) {
+    return '<1'
+  }
+  if (time % 1 === 0) {
+    return time.toFixed(0)
+  }
+  if (time % 1 !== 0 && time.toFixed(1).endsWith('.0')) {
+    return Math.round(time).toString()
+  }
+  return time.toFixed(1)
+}
+
 export const truncateAddress = (address: string): string => {
   return `${address.slice(0, 12)}.....${address.slice(-8)}`
 }

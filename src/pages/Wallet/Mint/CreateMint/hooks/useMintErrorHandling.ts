@@ -13,7 +13,7 @@ const useMintErrorHandling = (
     if (exceedsSupply) {
       setError(`Cannot mint more tokens than the remaining unminted supply: ${availableSupply}`)
     } else if (exceedsBalance) {
-      setError(`${mintAmount} exceeds your available balance: ${kaspaBalance} KAS`)
+      setError(`Not enough Kaspa in wallet.`)
     } else {
       setError('')
     }

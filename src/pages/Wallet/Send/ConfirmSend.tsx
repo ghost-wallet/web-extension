@@ -43,10 +43,6 @@ const ConfirmSend: React.FC = () => {
     }
   }, [request, transactions, navigate, token, amount, recipient])
 
-  const handleCancelClick = () => {
-    navigate('/wallet')
-  }
-
   return (
     <>
       <AnimatedMain>
@@ -62,7 +58,6 @@ const ConfirmSend: React.FC = () => {
             fee={fee}
             network="Mainnet"
             onConfirm={handleConfirmClick}
-            onCancel={handleCancelClick}
             loading={loading}
             error={error}
           />

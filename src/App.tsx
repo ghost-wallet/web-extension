@@ -19,7 +19,7 @@ import ForgotPassword from '@/pages/Login/ForgotPassword'
 import Crypto from '@/pages/Wallet/CryptoList/Crypto'
 import Mint from '@/pages/Wallet/Mint'
 import CreateMint from '@/pages/Wallet/Mint/CreateMint'
-import NetworkFeeSelect from '@/pages/Wallet/Mint/NetworkFeeSelect'
+import MintNetworkFee from '@/pages/Wallet/Mint/MintNetworkFee'
 import ConfirmMint from '@/pages/Wallet/Mint/ConfirmMint'
 import Minted from '@/pages/Wallet/Mint/Minted'
 
@@ -47,7 +47,7 @@ function App() {
             <Route path="/swap" element={<Swap />} />
             <Route path="/mint" element={<Mint />} />
             <Route path="/mint/:tick" element={<CreateMint />} />
-            <Route path="/mint/:tick/network-fee" element={<NetworkFeeSelect />} />
+            <Route path="/mint/:tick/network-fee" element={<MintNetworkFee />} />
             <Route path="/mint/:tick/network-fee/review" element={<ConfirmMint />} />
             <Route path="/mint/:tick/network-fee/review/minted" element={<Minted />} />
           </Routes>

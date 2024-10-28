@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
-import CryptoImage from '@/components/CryptoImage'
 import Header from '@/components/Header'
 import ErrorMessage from '@/components/ErrorMessage'
 import RecipientInput from '@/components/inputs/RecipientInput'
@@ -58,7 +57,6 @@ const SendCrypto: React.FC = () => {
     }
   }, [outputs, selectedFeeRate, request, recipientError, amountError, token])
 
-  // Automatically refresh the fee rate and the estimated fee every 5 seconds
   useEffect(() => {
     fetchEstimatedFee()
     const intervalId = setInterval(() => {
@@ -96,9 +94,8 @@ const SendCrypto: React.FC = () => {
     initiateSend()
   }
 
-  const handleFeeTypeClick = () => {
-    const nextIndex = (currentFeeTypeIndex + 1) % FEE_TYPES.length
-    setCurrentFeeTypeIndex(nextIndex)
+  const handleFeeTypeClick = (index: number) => {
+    setCurrentFeeTypeIndex(index)
   }
 
   const isButtonEnabled =
@@ -109,8 +106,6 @@ const SendCrypto: React.FC = () => {
     <>
       <AnimatedMain>
         <Header title={`Send ${token.tick}`} showBackButton={true} />
-        <CryptoImage ticker={token.tick} size="large" />
-
         <div className="flex flex-col items-center space-y-4 px-4 pt-4">
           <RecipientInput
             value={outputs[0][0]}

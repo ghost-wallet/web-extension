@@ -29,7 +29,7 @@ export default function CreateMint() {
   const availableSupply = formatNumberWithDecimal(token.max - token.minted, token.dec)
 
   const { isMintAmountValid } = useMintValidation(mintAmount, totalMintCost, availableSupply, totalSupply)
-  const exceedsBalance = mintAmount !== null && mintAmount > kaspa.balance
+  const exceedsBalance = mintAmount !== null && mintAmount + kaspa.balance * 0.1 + 25 > kaspa.balance
   const exceedsSupply = mintAmount !== null && totalMintCost > availableSupply
   const error = useMintErrorHandling(
     mintAmount,
@@ -60,7 +60,7 @@ export default function CreateMint() {
     const value = e.target.value
     if (value === '') {
       setMintAmount(null)
-    } else if (/^\d+$/.test(value) && Number(value) <= 10000) {
+    } else if (/^\d+$/.test(value) && Number(value) <= 1000) {
       setMintAmount(Number(value))
     }
   }
@@ -82,7 +82,7 @@ export default function CreateMint() {
         <div className="px-4 mt-4" style={{ height: '24px' }}>
           {showError && <ErrorMessage message={error} />}
         </div>
-        <div className="px-4 pt-16">
+        <div className="px-4 pt-6">
           <ReviewMintButton
             isMintAmountValid={isMintAmountValid}
             showError={showError}

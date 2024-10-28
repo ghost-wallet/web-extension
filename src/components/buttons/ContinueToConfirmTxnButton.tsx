@@ -15,7 +15,7 @@ const ContinueToConfirmTxnButton: React.FC<ContinueToConfirmTxnButtonProps> = ({
         disabled ? 'bg-secondary cursor-not-allowed' : 'bg-primary cursor-pointer hover:bg-hover'
       } text-secondarytext`}
     >
-      Continue
+      Next
     </button>
   )
 }
