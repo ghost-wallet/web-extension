@@ -15,7 +15,7 @@ export const fetchKrc20Tokens = async (
   const currentTime = Date.now()
   const apiBase = getApiBase(selectedNode)
 
-  if (cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 60000) {
+  if (cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 5000) {
     try {
       const parsedTokens = JSON.parse(cachedTokens)
       return parsedTokens as Token[]

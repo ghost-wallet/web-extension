@@ -16,14 +16,6 @@ const Network: React.FC = () => {
     }
   }
 
-  useEffect(() => {
-    if (!kaspa.connected) {
-      request('node:connect', [settings.nodes[settings.selectedNode].address]).catch((error) =>
-        console.error('WebSocket connection error:', error),
-      )
-    }
-  }, [kaspa.connected, request, settings.nodes, settings.selectedNode])
-
   return (
     <>
       <div className="flex items-center justify-center gap-2 mb-2">

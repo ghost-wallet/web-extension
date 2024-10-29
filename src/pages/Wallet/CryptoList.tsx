@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { sortTokensByValue } from '@/utils/sorting'
 import { useTotalValueCalculation } from '@/hooks/useTotalValueCalculation'
@@ -26,7 +26,15 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Ref to track ongoing fetch to prevent concurrent calls
+  const fetchPromiseRef = useRef<Promise<Token[]> | null>(null)
+
   const loadTokens = useCallback(async () => {
+    if (!kaspa.connected) {
+      setIsLoading(false)
+      return
+    }
+
     const cacheKey = `tokens_${kaspa.addresses[0]}`
     const cachedTokens = localStorage.getItem(cacheKey)
 
@@ -40,7 +48,6 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
 
     if (cachedTokens) {
       try {
-        // Parse the cached tokens and add kaspaCrypto
         const parsedTokens = JSON.parse(cachedTokens) as Token[]
         setTokens([...parsedTokens, kaspaCrypto])
       } catch (error) {
@@ -52,34 +59,33 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
       setIsLoading(true)
     }
 
-    if (!kaspa.connected) {
-      setIsLoading(false)
-      return // Exit early if not connected
+    // If a fetch is already in progress, avoid re-triggering
+    if (fetchPromiseRef.current) {
+      console.log('[loadTokens] Fetch already in progress, skipping')
+      return
     }
 
+    // Store fetch promise to prevent concurrent fetches
+    fetchPromiseRef.current = fetchKrc20Tokens(settings.selectedNode, kaspa.addresses[0], kaspaPrice)
+
     try {
-      const fetchedTokens = await fetchKrc20Tokens(settings.selectedNode, kaspa.addresses[0], kaspaPrice)
+      const fetchedTokens = await fetchPromiseRef.current
       const updatedTokens = [...fetchedTokens, kaspaCrypto]
       setTokens(updatedTokens)
-      localStorage.setItem(cacheKey, JSON.stringify(fetchedTokens)) // Update cache without kaspaCrypto
+      localStorage.setItem(cacheKey, JSON.stringify(fetchedTokens))
       setError(null)
     } catch (error) {
+      console.error('[loadTokens] Error loading tokens:', error)
       setError('Error loading tokens')
     } finally {
       setIsLoading(false)
+      fetchPromiseRef.current = null // Reset fetchPromiseRef after completion
     }
-  }, [kaspa.addresses, kaspa.connected, kaspa.balance, kaspaPrice, settings.selectedNode])
+  }, [kaspa.connected, kaspa.addresses, kaspa.balance, kaspaPrice, settings.selectedNode])
 
   useEffect(() => {
     loadTokens()
   }, [loadTokens])
-
-  // Listen for changes in kaspa.connected and re-fetch tokens if it becomes true
-  useEffect(() => {
-    if (kaspa.connected) {
-      loadTokens()
-    }
-  }, [kaspa.connected, loadTokens])
 
   useTotalValueCalculation(tokens, kaspaPrice, onTotalValueChange)
 
@@ -95,7 +101,6 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     return <ErrorMessage message={error} />
   }
 
-  // Only proceed if there are valid tokens or the kaspa balance is non-zero
   const filteredCryptos = tokens.filter((token) => token && token.balance !== 0)
   const sortedCryptos = sortTokensByValue(filteredCryptos)
   const currencySymbol = getCurrencySymbol(settings.currency)
