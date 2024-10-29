@@ -26,7 +26,8 @@ export default class Account extends EventEmitter {
     this.transactions.setAccount(this)
 
     node.on('network', async (networkId: string) => {
-      await this.addresses.changeNetwork(networkId)
+      console.log('[Account] network event', networkId)
+      //await this.addresses.changeNetwork(networkId)
 
       if (this.processor.isActive) {
         await this.processor.stop()
@@ -35,6 +36,8 @@ export default class Account extends EventEmitter {
       } else {
         this.processor.setNetworkId(networkId)
       }
+
+      await this.addresses.changeNetwork(networkId)
     })
 
     this.registerProcessor()
@@ -84,6 +87,7 @@ export default class Account extends EventEmitter {
     console.log('[Account] Context data when processor is registered:', this.context)
 
     this.processor.addEventListener('utxo-proc-start', async () => {
+      console.log('[Account] utxo-proc-start event')
       await this.context.clear()
       await this.context.trackAddresses(this.addresses.allAddresses)
     })
@@ -94,6 +98,7 @@ export default class Account extends EventEmitter {
 
   private listenSession() {
     SessionStorage.subscribeChanges(async (key, newValue) => {
+      console.log('[Account] session event', key, newValue)
       if (key !== 'session') return
 
       if (newValue) {

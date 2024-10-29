@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { RpcClient, Transaction, Resolver, NetworkId, IFeerateBucket } from '@/wasm'
+import { RpcClient, Transaction, Resolver, NetworkId, IFeerateBucket, ConnectStrategy } from '@/wasm'
 
 export type PriorityBuckets = Record<'slow' | 'standard' | 'fast', { feeRate: number; seconds: number }>
 
@@ -68,58 +68,46 @@ export default class Node extends EventEmitter {
   }
 
   async reconnect(nodeAddress: string) {
-    try {
-      await this.rpcClient.disconnect()
-      console.log('[Node] Disconnected from current node')
+    await this.rpcClient.disconnect()
 
-      if (!this.rpcClient.resolver) {
-        this.rpcClient.setResolver(new Resolver())
-      }
+    console.log('[Node] Attempting to connect to:', nodeAddress)
+
+    if (!nodeAddress.startsWith('ws')) {
+      if (!this.rpcClient.resolver) this.rpcClient.setResolver(new Resolver())
       this.rpcClient.setNetworkId(new NetworkId(nodeAddress))
+    }
 
-      console.log('[Node] Attempting to connect to:', nodeAddress)
+    await this.rpcClient.connect({
+      blockAsyncConnect: true,
+      url: nodeAddress.startsWith('ws') ? nodeAddress : undefined,
+      strategy: ConnectStrategy.Retry,
+      timeoutDuration: 2000,
+      retryInterval: 1000,
+    })
 
-      // Run connect in a long-running, independent process
-      this.rpcClient
-        .connect({
-          timeoutDuration: 2000,
-          retryInterval: 1000,
-        })
-        .then(() => {
-          console.log('[Node] Successfully connected to:', nodeAddress)
-          this.rpcClient
-            .getServerInfo()
-            .then(({ isSynced, hasUtxoIndex, networkId }) => {
-              if (!isSynced || !hasUtxoIndex) {
-                console.error('[Node] Node is not synchronized or lacks UTXO index. Disconnecting...')
-                this.rpcClient.disconnect().catch((disconnectError) => {
-                  console.error('[Node] Error during disconnect:', disconnectError)
-                })
-                throw Error('Node is not synchronized or lacks UTXO index.')
-              }
+    console.log('[Node] Successfully connected to:', nodeAddress)
 
-              if (this.networkId !== networkId) {
-                console.log(`[Node] Network ID changed from ${this.networkId} to ${networkId}`)
-                this.emit('network', networkId)
-                this.networkId = networkId
-              }
-            })
-            .catch((error) => {
-              console.error('[Node] Error fetching server info:', error)
-            })
-        })
-        .catch((connectError) => {
-          console.error('[Node] Connection attempt failed:', connectError)
-          // Optionally, you could implement retry logic here if needed
-        })
-    } catch (error) {
-      console.error('[Node] Reconnection process encountered an error:', error)
-      throw error
+    const { isSynced, hasUtxoIndex, networkId, serverVersion, rpcApiVersion } =
+      await this.rpcClient.getServerInfo()
+
+    console.log(`[Node] Connected to node with server version ${serverVersion} and RPC API version ${rpcApiVersion}`)
+
+    if (!isSynced || !hasUtxoIndex) {
+      await this.rpcClient.disconnect()
+      console.error('Node is not synchronized or lacks UTXO index.')
+      throw Error('Node is not synchronized or lacks UTXO index.')
+    }
+
+    if (this.networkId !== networkId) {
+      console.log(`[Node] Network ID changed from ${this.networkId} to ${networkId}`)
+      this.emit('network', networkId)
+      this.networkId = networkId
     }
   }
 
   private registerEvents() {
     this.rpcClient.addEventListener('connect', () => {
+      console.log('[Node] Connected to the node')
       this.emit('connection', true)
     })
 
