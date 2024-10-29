@@ -21,16 +21,16 @@ const localSvgMap: { [key: string]: string } = {
 }
 
 const CryptoImage: React.FC<CryptoImageProps> = ({ ticker, size }) => {
-  const [imgSrc, setImgSrc] = useState<string>(
-    localSvgMap[ticker] || `https://krc20-assets.kas.fyi/icons/${ticker}.jpg`,
-  )
+  const [hasFailed, setHasFailed] = useState<boolean>(false)
 
-  useEffect(() => {
-    setImgSrc(localSvgMap[ticker] || `https://krc20-assets.kas.fyi/icons/${ticker}.jpg`)
-  }, [ticker])
+  const imgSrc = hasFailed
+    ? krc20Default
+    : ticker in localSvgMap
+      ? localSvgMap[ticker]
+      : `https://krc20-assets.kas.fyi/icons/${ticker}.jpg`
 
   const dimensions = size === 'large' ? 'w-20 h-20' : size === 'small' ? 'w-12 h-12' : 'w-8 h-8'
-  const isRounded = localSvgMap[ticker] !== usdtSvg // Only omit rounding for USDT logo
+  const isRounded = ticker !== 'USDT' // Only omit rounding for USDT logo
 
   return (
     <div className="flex flex-col items-center">
@@ -38,7 +38,7 @@ const CryptoImage: React.FC<CryptoImageProps> = ({ ticker, size }) => {
         src={imgSrc}
         alt={`${ticker} logo`}
         className={`${dimensions} ${isRounded ? 'rounded-full' : ''} object-cover`}
-        onError={() => setImgSrc(krc20Default)}
+        onError={() => setHasFailed(true)}
       />
     </div>
   )
