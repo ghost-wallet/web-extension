@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PasswordInput from '@/components/inputs/PasswordInput'
 import ErrorMessage from '@/components/ErrorMessage'
@@ -12,7 +12,6 @@ export default function Login() {
 
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [isValid, setIsValid] = useState(true)
 
   const login = useCallback(async () => {
     try {
@@ -21,14 +20,12 @@ export default function Login() {
         navigate('/')
       } else {
         setError('Failed to get decrypted key')
-        setIsValid(false)
       }
     } catch (err) {
       console.log('[Login] Password login error', err)
       setError('Incorrect password')
-      setIsValid(false)
     }
-  }, [password, request, navigate, isValid])
+  }, [password, request, navigate])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -52,7 +49,6 @@ export default function Login() {
           placeholder="Password"
           id="password"
           value={password}
-          isValid={isValid}
           onChange={(e) => {
             if (error) setError('')
             setPassword(e.target.value)
