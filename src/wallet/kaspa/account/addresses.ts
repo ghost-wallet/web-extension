@@ -26,12 +26,15 @@ export default class Addresses extends EventEmitter {
   }
 
   async derive() {
-    const session = await SessionStorage.get('session', undefined)
+    // const session = await SessionStorage.get('session', undefined)
 
-    if (!session?.publicKey) {
-      throw Error('[Addresses] No publicKey in SessionStorage')
+    // if (!session?.publicKey) {
+    //   throw Error('[Addresses] No publicKey in SessionStorage')
+    // }
+    // this.publicKey = PublicKeyGenerator.fromXPub(session.publicKey)
+    if (!this.publicKey) {
+      throw Error('[Addresses] No publicKey')
     }
-    this.publicKey = PublicKeyGenerator.fromXPub(session.publicKey)
     return this.publicKey.receiveAddressAsString(this.networkId, 0)
   }
 
