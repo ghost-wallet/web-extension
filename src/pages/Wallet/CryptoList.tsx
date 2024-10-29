@@ -30,7 +30,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const fetchPromiseRef = useRef<Promise<Token[]> | null>(null)
 
   const loadTokens = useCallback(async () => {
-    if (!kaspa.connected) {
+    if (!kaspa.connected || kaspaPrice === 0) {
       setIsLoading(false)
       return
     }
@@ -116,7 +116,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   return (
     <div className="w-full p-4 mb-20 h-full overflow-auto">
       {sortedCryptos.length === 0 ? (
-        <p className="text-base text-mutedtext font-lato">None</p>
+        <p className="text-base text-mutedtext font-lato">Loading...</p>
       ) : (
         <ul className="space-y-3">
           {sortedCryptos.map((token) => (

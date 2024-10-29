@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import CryptoImage from '@/components/CryptoImage'
 import Header from '@/components/Header'
@@ -6,22 +6,23 @@ import AnimatedMain from '@/components/AnimatedMain'
 import TransactionIcon from '@/pages/Wallet/Transactions/TransactionIcon'
 import TransactionAmountDisplay from '@/pages/Wallet/Transactions/TransactionAmountDisplay'
 import { KRC20Transaction } from '@/utils/interfaces'
+import { getOperationDetails } from '@/utils/transactions'
 
 export default function TransactionDetails() {
   const location = useLocation()
-  const { groupedOperations } = location.state || { groupedOperations: [] }
-  const address = location.state?.address
+  const { groupedOperations, address } = location.state || { groupedOperations: [] }
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   return (
     <AnimatedMain>
       <Header title="Transaction Details" showBackButton={true} />
       <ul className="space-y-3 px-4 pb-4">
         {groupedOperations.map((operation: KRC20Transaction, index: number) => {
-          const { op, amt, tick, hashRev, to } = operation
-
-          const isMint = op === 'mint'
-          const isReceived = op === 'transfer' && to === address
-          const operationType = isMint ? 'Minted' : isReceived ? 'Received' : 'Sent'
+          const { amt, tick, hashRev } = operation
+          const { operationType, isMint, isReceived } = getOperationDetails(operation, address)
 
           return (
             <li
@@ -33,7 +34,7 @@ export default function TransactionDetails() {
                   <CryptoImage ticker={tick} size="small" />
                   <div className="absolute -bottom-1 -right-1">
                     <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center border border-darkmuted">
-                      <TransactionIcon operationType={op} />
+                      <TransactionIcon operationType={operationType} />
                     </div>
                   </div>
                 </div>

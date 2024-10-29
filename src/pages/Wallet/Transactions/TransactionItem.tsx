@@ -5,6 +5,7 @@ import TransactionIcon from '@/pages/Wallet/Transactions/TransactionIcon'
 import TransactionAmountDisplay from '@/pages/Wallet/Transactions/TransactionAmountDisplay'
 import { KRC20Transaction } from '@/utils/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
+import { getOperationDetails } from '@/utils/transactions'
 
 interface TransactionItemProps {
   operation: KRC20Transaction
@@ -16,15 +17,11 @@ const TransactionItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ opera
   const navigate = useNavigate()
   const { kaspa } = useKaspa()
   const address = kaspa.addresses[0]
-  const { op, to, amt, tick, groupedOperations } = operation
+  const { amt, tick, groupedOperations } = operation
+  const { operationType, isMint, isReceived } = getOperationDetails(operation, address)
 
-  const isReceived = op === 'transfer' && to === address
-  const isMint = op === 'mint'
-  const operationType = isMint ? 'Minted' : isReceived ? 'Received' : 'Sent'
-
-  // Handle click to navigate to Details page with grouped operations
   const handleClick = () => {
-    navigate(`/transactions/txn-item`, { state: { groupedOperations } })
+    navigate(`/transactions/txn-item`, { state: { groupedOperations, address } })
   }
 
   return (
@@ -38,7 +35,7 @@ const TransactionItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ opera
           <CryptoImage ticker={tick} size="small" />
           <div className="absolute -bottom-1 -right-1">
             <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center border border-darkmuted">
-              <TransactionIcon operationType={op} />
+              <TransactionIcon operationType={operationType} />
             </div>
           </div>
         </div>
