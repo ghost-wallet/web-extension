@@ -42,6 +42,7 @@ export interface KRC20Transaction {
   opScore: string
   hashRev: string
   mtsAdd: string
+  groupedOperations: KRC20Transaction[]
 }
 
 export interface KRC20TransactionList {

@@ -1,49 +1,52 @@
 import React, { forwardRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import CryptoImage from '@/components/CryptoImage'
-import { PaperAirplaneIcon, ArrowDownIcon, BoltIcon } from '@heroicons/react/24/outline'
+import TransactionIcon from '@/pages/Wallet/Transactions/TransactionIcon'
+import TransactionAmountDisplay from '@/pages/Wallet/Transactions/TransactionAmountDisplay'
+import { KRC20Transaction } from '@/utils/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
 
 interface TransactionItemProps {
-  operation: any
+  operation: KRC20Transaction
   isLast: boolean
   ref?: React.Ref<HTMLLIElement>
 }
 
 const TransactionItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ operation }, ref) => {
+  const navigate = useNavigate()
   const { kaspa } = useKaspa()
   const address = kaspa.addresses[0]
+  const { op, to, amt, tick, groupedOperations } = operation
 
-  const isReceived = operation.op === 'transfer' && operation.to === address
-  const isMint = operation.op === 'mint' // Check if operation is 'mint'
+  const isReceived = op === 'transfer' && to === address
+  const isMint = op === 'mint'
+  const operationType = isMint ? 'Minted' : isReceived ? 'Received' : 'Sent'
 
-  const operationType = isMint ? 'Mint' : isReceived ? 'Received' : 'Sent'
-  const Icon = isMint ? BoltIcon : isReceived ? ArrowDownIcon : PaperAirplaneIcon
+  // Handle click to navigate to Details page with grouped operations
+  const handleClick = () => {
+    navigate(`/transactions/txn-item`, { state: { groupedOperations } })
+  }
 
   return (
-    <li ref={ref} className="flex items-center p-4 bg-darkmuted rounded-lg shadow-md">
-      <div className="relative">
-        <CryptoImage ticker={operation.tick} size="small" />
-        <div className="absolute -bottom-1 -right-1">
-          <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center border border-darkmuted">
-            <Icon className="w-4 h-4 text-black" strokeWidth={2} />
+    <li
+      ref={ref}
+      className="flex items-center justify-between p-4 bg-darkmuted rounded-lg shadow-md cursor-pointer"
+      onClick={handleClick}
+    >
+      <div className="flex items-center">
+        <div className="relative">
+          <CryptoImage ticker={tick} size="small" />
+          <div className="absolute -bottom-1 -right-1">
+            <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center border border-darkmuted">
+              <TransactionIcon operationType={op} />
+            </div>
           </div>
         </div>
+        <div className="ml-4">
+          <p className="text-base font-lato text-mutedtext">{operationType}</p>
+        </div>
       </div>
-
-      <div className="ml-4">
-        <p className="text-base font-light font-lato text-primarytext">
-          {operationType} {isNaN(parseInt(operation.amt, 10)) ? 0 : parseInt(operation.amt, 10) / 1e8}{' '}
-          {operation.tick}
-        </p>
-        <a
-          href={`https://explorer.kaspa.org/txs/${operation.hashRev}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-primary font-light font-lato text-base hover:underline"
-        >
-          View Transaction
-        </a>
-      </div>
+      <TransactionAmountDisplay amt={amt} tick={tick} isMint={isMint} isReceived={isReceived} />
     </li>
   )
 })

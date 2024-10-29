@@ -22,6 +22,7 @@ import CreateMint from '@/pages/Wallet/Mint/CreateMint'
 import MintNetworkFee from '@/pages/Wallet/Mint/MintNetworkFee'
 import ConfirmMint from '@/pages/Wallet/Mint/ConfirmMint'
 import Minted from '@/pages/Wallet/Mint/Minted'
+import TransactionDetails from '@/pages/Wallet/Transactions/TransactionDetails'
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings/reset" element={<ConfirmReset />} />
             <Route path="/transactions" element={<Transactions />} />
+            <Route path="/transactions/txn-item" element={<TransactionDetails />} />
             <Route path="/send" element={<Send />} />
             <Route path="/send/:tick" element={<SendCrypto />} />
             <Route path="/send/:tick/confirm" element={<ConfirmSend />} />

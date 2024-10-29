@@ -1,44 +1,19 @@
 import React, { useEffect, useRef } from 'react'
 import TransactionItem from './TransactionItem'
 import Spinner from '@/components/Spinner'
-
-interface Operation {
-  mtsAdd: string
-  op: string
-  amt: string
-  tick: string
-  hashRev: string
-}
+import { KRC20Transaction } from '@/utils/interfaces'
+import { groupConsecutiveMints, groupTransactionsByDate } from '@/utils/grouping'
 
 interface TransactionListProps {
-  transactions: Operation[]
+  transactions: KRC20Transaction[]
   loadMore: () => void
   loadingMore: boolean
-}
-
-const groupTransactionsByDate = (transactions: Operation[]): { [date: string]: Operation[] } => {
-  return transactions.reduce(
-    (groups, transaction) => {
-      const date = new Date(parseInt(transaction.mtsAdd)).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      })
-
-      if (!groups[date]) {
-        groups[date] = []
-      }
-      groups[date].push(transaction)
-      return groups
-    },
-    {} as { [date: string]: Operation[] },
-  )
 }
 
 export default function TransactionList({ transactions, loadMore, loadingMore }: TransactionListProps) {
   const lastElementRef = useRef<HTMLLIElement | null>(null)
 
-  const groupedTransactions = groupTransactionsByDate(transactions)
+  const groupedTransactions = groupTransactionsByDate(groupConsecutiveMints(transactions))
 
   useEffect(() => {
     const observer = new IntersectionObserver(

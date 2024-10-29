@@ -45,9 +45,9 @@ main {
     --color-hover-primary: #8cffe0;
 
     /* Additional Colors */
-    --color-error: #ff4d4d;
+    --color-error: #f87171;
     --color-error-muted: #b33a3a;
-    --color-success: #4caf50;
+    --color-success: #34d399;
     --color-warning: #ffd166;
     --color-muted: #606060;
     --color-slight-muted: #393939;

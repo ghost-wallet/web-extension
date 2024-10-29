@@ -42,7 +42,6 @@ export const fetchKrc20Tokens = async (
         const tokens = await Promise.all(
           response.data.result.map(async (token: Token) => {
             const tokenData = await fetchKasFyiToken(token.tick)
-            console.log('fetched Kas FYI token. check the price and floorprice', tokenData)
             const floorPrice = tokenData?.price?.floorPrice ? tokenData.price.floorPrice * price : 0
 
             return { ...token, floorPrice }

@@ -83,7 +83,7 @@ export default class Node extends EventEmitter {
       this.rpcClient
         .connect({
           timeoutDuration: 2000,
-          retryInterval: 1000
+          retryInterval: 1000,
         })
         .then(() => {
           console.log('[Node] Successfully connected to:', nodeAddress)
