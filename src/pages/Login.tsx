@@ -5,7 +5,6 @@ import ErrorMessage from '@/components/ErrorMessage'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import ghostIcon from '../../assets/ghost.svg'
 import AnimatedMain from '@/components/AnimatedMain'
-import SpinnerPage from '@/components/SpinnerPage'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -13,46 +12,26 @@ export default function Login() {
 
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [isValid, setIsValid] = useState(false)
-  const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    if (password.length >= 8) {
-      setIsValid(true)
-    } else {
-      setIsValid(false)
-    }
-    if (password.length >= 8 && error === 'Must be at least 8 characters') {
-      setError('')
-    }
-  }, [password, error])
+  const [isValid, setIsValid] = useState(true)
 
   const login = useCallback(async () => {
-    setLoading(true)
     try {
       const decryptedKey = await request('wallet:unlock', [password])
       if (decryptedKey) {
-        try {
-          // TODO is scan necessary on Login?
-          // await request('account:scan', [])
-          navigate('/')
-        } catch (err) {
-          console.error('Account scan error:', err)
-          setError('Account scan failed')
-        }
+        navigate('/')
       } else {
-        setError('Failed to retrieve decrypted key')
+        setError('Failed to get decrypted key')
+        setIsValid(false)
       }
     } catch (err) {
       console.log('[Login] Password login error', err)
       setError('Incorrect password')
-    } finally {
-      setLoading(false)
+      setIsValid(false)
     }
-  }, [password, request, navigate])
+  }, [password, request, navigate, isValid])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && isValid) {
+    if (e.key === 'Enter') {
       e.preventDefault()
       login()
     }
@@ -62,21 +41,18 @@ export default function Login() {
     navigate('/unlock/forgotpassword')
   }
 
-  if (loading) {
-    return <SpinnerPage />
-  }
-
   return (
     <AnimatedMain showConnectingMessage={false}>
-      <div className="flex justify-center mt-10">
+      <div className="flex justify-center mt-24">
         <img className="w-[123px] h-[123px]" src={ghostIcon} alt="logo" />
       </div>
-      <h1 className="text-primarytext text-2xl font-rubik text-center mb-2 mt-14">Enter your password</h1>
-      <form className="flex flex-col items-center p-6" onKeyDown={handleKeyDown}>
+      <h1 className="text-primarytext text-3xl font-rubik text-center mb-6 mt-14">Enter your password</h1>
+      <form className="flex flex-col items-center px-6" onKeyDown={handleKeyDown}>
         <PasswordInput
           placeholder="Password"
           id="password"
           value={password}
+          isValid={isValid}
           onChange={(e) => {
             if (error) setError('')
             setPassword(e.target.value)
@@ -85,26 +61,21 @@ export default function Login() {
         <ErrorMessage message={error} />
       </form>
 
-      <div className="mt-2 text-center">
+      <div className="text-center">
         <button
           type="button"
           onClick={handleForgotPassword}
-          className="text-primarytext hover:text-mutedtext underline font-lato text-base"
+          className="text-mutedtext hover:underline font-lato text-lg font-light"
         >
-          Forgot Password?
+          Forgot Password
         </button>
       </div>
 
-      <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
+      <div className="fixed bottom-0 left-0 w-full px-6 pb-6">
         <button
           type="button"
-          disabled={!isValid}
           onClick={login}
-          className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] ${
-            isValid
-              ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
-              : 'bg-secondary text-secondarytext cursor-default'
-          }`}
+          className="w-full h-[52px] text-lg font-lato font-semibold rounded-[10px] bg-primary text-secondarytext cursor-pointer hover:bg-hover"
         >
           Login
         </button>
