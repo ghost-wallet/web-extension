@@ -6,23 +6,9 @@ import { fetchKasFyiToken } from '@/hooks/kasfyi/fetchKasFyiToken'
 export const fetchKrc20Tokens = async (
   selectedNode: number,
   address: string,
-  price: number,
+  //price: number,
 ): Promise<Token[]> => {
-  const cacheKey = `tokens_${address}`
-  const timestampKey = `tokens_timestamp_${address}`
-  const cachedTokens = localStorage.getItem(cacheKey)
-  const cachedTimestamp = localStorage.getItem(timestampKey)
-  const currentTime = Date.now()
   const apiBase = getApiBase(selectedNode)
-
-  if (cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < 5000) {
-    try {
-      const parsedTokens = JSON.parse(cachedTokens)
-      return parsedTokens as Token[]
-    } catch (error) {
-      console.error('Error parsing cached tokens:', error)
-    }
-  }
 
   try {
     let allTokens: Token[] = []
@@ -42,9 +28,7 @@ export const fetchKrc20Tokens = async (
         const tokens = await Promise.all(
           response.data.result.map(async (token: Token) => {
             const tokenData = await fetchKasFyiToken(token.tick)
-            const floorPrice = tokenData?.price?.floorPrice ? tokenData.price.floorPrice * price : 0
-
-            return { ...token, floorPrice }
+            return { ...token, floorPrice: tokenData?.price?.floorPrice ?? 0 }
           }),
         )
 
@@ -54,10 +38,7 @@ export const fetchKrc20Tokens = async (
         throw new Error('Error fetching KRC20 tokens. Invalid API response structure')
       }
     } while (nextPage)
-
-    localStorage.setItem(cacheKey, JSON.stringify(allTokens))
-    localStorage.setItem(timestampKey, currentTime.toString())
-
+      
     return allTokens
   } catch (error) {
     console.error('Error fetching tokens:', error)

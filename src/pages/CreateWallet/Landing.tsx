@@ -12,7 +12,7 @@ export default function Landing({
   return (
     <main className="pt-10 px-6">
       <h1 className="text-primarytext text-4xl rubik font-bold text-center">GHOST</h1>
-      <p className="text-mutedtext text-base font-lato text-center mt-2">
+      <p className="text-mutedtext text-base text-center mt-2">
         Secure Kaspa wallet for KRC20 tokens.
       </p>
       <div className="flex justify-center mt-7 mb-32">
@@ -24,9 +24,9 @@ export default function Landing({
           onClick={() => setEnable(!enable)}
           type="checkbox"
         />
-        <p className="text-primarytext text-base font-lato">
+        <p className="text-primarytext text-base">
           I agree to Ghost’s{' '}
-          <span className="text-primary text-base font-lato font-semibold">
+          <span className="text-primary text-base font-semibold">
             <a href="https://www.ghostapp.org/terms-of-service" target="_blank" rel="noopener noreferrer">
               Terms of Service
             </a>
@@ -40,7 +40,7 @@ export default function Landing({
             forward(Tabs.Password, 'create')
           }}
           disabled={!enable}
-          className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] transition-colors duration-300 ${
+          className={`w-full h-[52px] text-base font-semibold rounded-[25px] transition-colors duration-300 ${
             enable
               ? 'bg-primary text-secondarytext hover:bg-hoverprimary cursor-pointer'
               : 'bg-secondary text-secondarytext cursor-default'
@@ -53,7 +53,7 @@ export default function Landing({
             forward(Tabs.Password, 'import')
           }}
           disabled={!enable}
-          className={`w-full h-[52px] text-base font-lato font-semibold border-primary border rounded-[25px] transition-colors duration-300 ${
+          className={`w-full h-[52px] text-base font-semibold border-primary border rounded-[25px] transition-colors duration-300 ${
             enable
               ? 'text-primary cursor-pointer hover:border-hover'
               : 'border-secondary text-secondary cursor-default'

@@ -29,7 +29,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
     <AnimatedMain showConnectingMessage={false}>
       <Header title="Secret Phrase" showBackButton={false} />
       <div className="px-6">
-        <p className="text-warning text-base font-lato text-justify pt-4 mb-6">
+        <p className="text-warning text-base text-justify pt-4 mb-6">
           This secret recovery phrase is the only way to restore your wallet. Do not share it with anyone. Do
           not enter it into any app or site other than wallets from ghostapp.org. Beware of fake customer
           support scams.
@@ -66,7 +66,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
 
         <button
           onClick={handleCopyToClipboard}
-          className="flex items-center text-mutedtext text-base font-lato mb-4 cursor-pointer"
+          className="flex items-center text-mutedtext text-base mb-4 cursor-pointer"
         >
           <span className="mr-2">
             {isCopied ? (
@@ -86,7 +86,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
             checked={isConfirmed}
             onChange={handleCheckboxChange}
           />
-          <label htmlFor="confirmation" className="text-mutedtext text-base font-lato">
+          <label htmlFor="confirmation" className="text-mutedtext text-base">
             I saved my secret recovery phrase.
           </label>
         </div>
@@ -97,7 +97,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
           type="button"
           disabled={!isConfirmed}
           onClick={onSaved}
-          className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] ${
+          className={`w-full h-[52px] text-base font-semibold rounded-[25px] ${
             isConfirmed
               ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
               : 'bg-secondary text-secondarytext cursor-default'

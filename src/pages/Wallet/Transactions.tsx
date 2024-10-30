@@ -1,4 +1,3 @@
-import React from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import TransactionsHistory from '@/pages/Wallet/Transactions/TransactionsHistory'
@@ -8,7 +7,7 @@ interface TransactionsProps {
   tick?: string
 }
 
-export default function Transactions({ tick }: TransactionsProps) {
+const Transactions: React.FC<TransactionsProps> = ({ tick }: TransactionsProps) => {
   return (
     <AnimatedMain>
       <Header title="KRC20 Recent Activity" showBackButton={false} />
@@ -19,3 +18,5 @@ export default function Transactions({ tick }: TransactionsProps) {
     </AnimatedMain>
   )
 }
+
+export default Transactions

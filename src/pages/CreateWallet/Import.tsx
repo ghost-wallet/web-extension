@@ -76,13 +76,13 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
       <div className="flex flex-col items-center">
         <Header title="Import" showBackButton={false} />
         <div className="px-6">
-          <p className="text-mutedtext text-lg font-lato text-center mb-4">
+          <p className="text-mutedtext text-lg text-center mb-4">
             Import an existing wallet with your {is24Words ? '24-word' : '12-word'} secret recovery phrase.
           </p>
           <div className="flex justify-center mb-6">
             <button
               onClick={handleToggle}
-              className="text-center text-base font-semibold text-primary font-lato hover:underline"
+              className="text-center text-base font-semibold text-primary hover:underline"
             >
               {is24Words ? 'Switch to 12 words' : 'Switch to 24 words'}
             </button>
@@ -107,7 +107,7 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
                 value={textAreaInput}
                 onChange={(e) => setTextAreaInput(e.target.value)}
                 placeholder="Enter or paste your 24-word secret recovery phrase"
-                className={`w-full h-48 border border-muted rounded-lg p-4 bg-bgdarker text-mutedtext font-lato text-base resize-none`}
+                className={`w-full h-48 border border-muted rounded-lg p-4 bg-bgdarker text-mutedtext text-base resize-none`}
                 style={
                   {
                     WebkitTextSecurity: isTextVisible ? 'none' : 'disc',
@@ -131,7 +131,7 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
             type="button"
             disabled={!isValid}
             onClick={() => onMnemonicsSubmit(is24Words ? textAreaInput : userInputs.join(' '))}
-            className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] ${
+            className={`w-full h-[52px] text-base font-semibold rounded-[25px] ${
               isValid
                 ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
                 : 'bg-secondary text-secondarytext cursor-default'

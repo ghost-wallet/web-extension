@@ -20,7 +20,7 @@ export default function TransactionList({ transactions, loadMore, loadingMore }:
       async (entries) => {
         const lastEntry = entries[0]
         if (lastEntry.isIntersecting && !loadingMore) {
-          await loadMore()
+          loadMore()
         }
       },
       { threshold: 1.0 },
@@ -42,7 +42,7 @@ export default function TransactionList({ transactions, loadMore, loadingMore }:
       <ul className="space-y-6">
         {Object.entries(groupedTransactions).map(([date, transactions], groupIndex) => (
           <li key={date}>
-            <p className="text-lg font-lato text-mutedtext mb-2">{date}</p>
+            <p className="text-lg text-mutedtext mb-2">{date}</p>
             <ul className="space-y-3">
               {transactions.map((transaction, index) => {
                 const isLastElement =

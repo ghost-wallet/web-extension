@@ -37,6 +37,7 @@ const CryptoImage: React.FC<CryptoImageProps> = ({ ticker, size }) => {
       <img
         src={imgSrc}
         alt={`${ticker} logo`}
+        loading='lazy'
         className={`${dimensions} ${isRounded ? 'rounded-full' : ''} object-cover`}
         onError={() => setHasFailed(true)}
       />

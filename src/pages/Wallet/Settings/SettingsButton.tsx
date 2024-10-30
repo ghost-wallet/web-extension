@@ -16,7 +16,7 @@ const SettingsButton: React.FC<SettingsButtonProps> = ({
 }) => (
   <button
     onClick={onClick}
-    className="w-full h-[52px] rounded-[10px] text-base font-light font-lato text-left cursor-pointer bg-darkmuted hover:bg-slightmuted text-primarytext pl-4 flex items-center justify-start"
+    className="w-full h-[52px] rounded-[10px] text-base font-light text-left cursor-pointer bg-darkmuted hover:bg-slightmuted text-primarytext pl-4 flex items-center justify-start"
   >
     {LeftSideIcon ? <LeftSideIcon className="w-5 h-5 text-primary mr-2" /> : <div className="w-0"></div>}
     <span className="flex-1">{text}</span>

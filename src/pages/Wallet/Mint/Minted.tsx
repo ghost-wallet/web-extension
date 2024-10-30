@@ -32,7 +32,7 @@ const Minted: React.FC = () => {
         <div className="flex flex-col items-center mt-8 space-y-4">
           <Title title="Minted!" />
           <CryptoImage ticker={token.tick} size="large" />
-          <p className="text-base font-lato text-mutedtext text-center">
+          <p className="text-base text-mutedtext text-center">
             You minted {receiveAmount?.toLocaleString()} {token.tick}
           </p>
         </div>

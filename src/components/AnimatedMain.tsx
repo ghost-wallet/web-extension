@@ -17,7 +17,7 @@ const AnimatedMain: React.FC<AnimatedMainProps> = ({ children, className, showCo
   return (
     <>
       {!kaspa.connected && showConnectingMessage && (
-        <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center bg-slightmuted text-primarytext font-lato text-sm p-1">
+        <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center bg-slightmuted text-primarytext text-sm p-1">
           <p className="pl-4">{`Connecting to ${settings.nodes[settings.selectedNode].address}...`}</p>
           <div className="p-1">
             <Spinner size={'small'} />

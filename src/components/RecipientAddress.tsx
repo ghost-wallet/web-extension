@@ -20,12 +20,12 @@ const RecipientAddress: React.FC<RecipientAddressProps> = ({ address }) => {
     <div className="flex cursor-pointer" onClick={handleCopy}>
       {copied ? (
         <>
-          <span className="text-base font-lato text-primary">Copied</span>
+          <span className="text-base text-primary">Copied</span>
           <CheckIcon className="h-5 w-5 text-primary" />
         </>
       ) : (
         <>
-          <span className="text-base font-lato text-primarytext">{truncateAddress(address)}</span>
+          <span className="text-base text-primarytext">{truncateAddress(address)}</span>
           <DocumentDuplicateIcon className="h-5 w-5 text-primarytext transition" />
         </>
       )}

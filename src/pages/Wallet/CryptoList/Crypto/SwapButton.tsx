@@ -52,7 +52,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({ token, className }) => {
 
       {showDialog && (
         <PopupMessageDialog
-          message={`Chainge Finance's KRC20 DEX does not support ${token.tick}, yet. You can see if it's on Chainge's waiting list <a href="https://krc20.chainge.finance/" target="_blank" rel="noopener noreferrer" class="text-primary font-lato text-base underline">here</a>.`}
+          message={`Chainge Finance's KRC20 DEX does not support ${token.tick}, yet. You can see if it's on Chainge's waiting list <a href="https://krc20.chainge.finance/" target="_blank" rel="noopener noreferrer" class="text-primary text-base underline">here</a>.`}
           onClose={() => setShowDialog(false)}
         />
       )}

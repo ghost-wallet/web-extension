@@ -77,7 +77,7 @@ export default function Mint() {
             <button
               onClick={handleContinue}
               disabled={!isMintable() || token.state === 'unused'}
-              className={`w-full h-[52px] text-lg font-lato font-semibold rounded-[25px] ${
+              className={`w-full h-[52px] text-lg font-semibold rounded-[25px] ${
                 isMintable() && token.state !== 'unused'
                   ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
                   : 'bg-muted text-mutedtext cursor-not-allowed'

@@ -18,14 +18,14 @@ export default function Receive() {
             <QRCode style={{ height: '150px', width: '150px' }} value={kaspa.addresses[0]} />
           </div>
 
-          <h1 className="pt-4 font-lato font-semibold text-base text-primarytext text-center">
+          <h1 className="pt-4 font-semibold text-base text-primarytext text-center">
             Your Kaspa Address
           </h1>
           <div className="py-6 w-full flex justify-center">
             <KaspaAddress address={kaspa.addresses[0]} />
           </div>
 
-          <p className="px-6 font-lato text-base text-mutedtext text-center">
+          <p className="px-6 text-base text-mutedtext text-center">
             This address can be used to receive Kaspa and KRC20 tokens.
           </p>
         </div>

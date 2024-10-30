@@ -25,7 +25,7 @@ export function PopupMessageDialog({ message, onClose }: PopupMessageDialogProps
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
-          <h1 className="font-lato text-primarytext font-semibold text-xl">Not Available</h1>
+          <h1 className="text-primarytext font-semibold text-xl">Not Available</h1>
           <button
             className="text-primarytext p-2 hover:bg-slightmuted rounded-full transition-colors"
             onClick={onClose}
@@ -34,7 +34,7 @@ export function PopupMessageDialog({ message, onClose }: PopupMessageDialogProps
             <XMarkIcon className="w-7 h-7" />
           </button>
         </div>
-        <div className="text-base text-mutedtext font-lato" dangerouslySetInnerHTML={{ __html: message }} />
+        <div className="text-base text-mutedtext" dangerouslySetInnerHTML={{ __html: message }} />
       </div>
     </div>
   )

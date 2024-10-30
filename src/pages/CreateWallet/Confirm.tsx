@@ -46,7 +46,7 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
     <AnimatedMain showConnectingMessage={false}>
       <Header title="Confirm Secret Phrase" showBackButton={false} />
       <div className="px-6">
-        <p className="text-mutedtext text-lg font-lato text-center mb-6">Enter the missing words.</p>
+        <p className="text-mutedtext text-lg text-center mb-6">Enter the missing words.</p>
         <RecoveryPhraseGrid
           values={userInputs}
           onInputChange={(i, value) =>
@@ -66,14 +66,14 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
       <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
         <button
           onClick={handleClearClick}
-          className="mb-4 w-full h-[52px] text-base font-lato font-semibold text-primary hover:underline cursor-pointer"
+          className="mb-4 w-full h-[52px] text-base font-semibold text-primary hover:underline cursor-pointer"
         >
           Clear Entries
         </button>
 
         <button
           onClick={handleValidateEntries}
-          className="w-full h-[52px] text-base font-lato font-semibold rounded-[25px] bg-primary text-secondarytext cursor-pointer hover:bg-hover"
+          className="w-full h-[52px] text-base font-semibold rounded-[25px] bg-primary text-secondarytext cursor-pointer hover:bg-hover"
         >
           Continue
         </button>

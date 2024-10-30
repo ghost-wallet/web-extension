@@ -20,7 +20,7 @@ export default function AboutPage() {
             <img className="w-12 h-12 inline-block" src={ghostIcon} alt="logo" />
             <span>GHOST</span>
           </h1>
-          <p className="text-center text-base text-mutedtext font-lato pt-2 pb-6">
+          <p className="text-center text-base text-mutedtext pt-2 pb-6">
             Version {__APP_VERSION__}
           </p>
           <SettingsButton
