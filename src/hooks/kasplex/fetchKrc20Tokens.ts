@@ -7,7 +7,7 @@ export const fetchKrc20Tokens = async (
   selectedNode: number,
   address: string,
   //price: number,
-): Promise<Token[]> => {
+) => {
   const apiBase = getApiBase(selectedNode)
 
   try {
@@ -26,9 +26,9 @@ export const fetchKrc20Tokens = async (
 
       if (response.data && response.data.result) {
         const tokens = await Promise.all(
-          response.data.result.map(async (token: Token) => {
+          response.data.result.map(async (token) => {
             const tokenData = await fetchKasFyiToken(token.tick)
-            return { ...token, floorPrice: tokenData?.price?.floorPrice ?? 0 }
+            return { ...token, floorPrice: tokenData?.price?.floorPrice ?? 0}
           }),
         )
 

@@ -5,7 +5,6 @@ import { getCurrencySymbol } from '@/utils/currencies'
 import TableSection from '@/components/table/TableSection'
 import TokenPrice from '@/components/TokenPrice'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import { calculateTotalValue } from '@/utils/calculations'
 
 const KaspaDetails: React.FC = () => {
   const { settings } = useSettings()
@@ -22,7 +21,7 @@ const KaspaDetails: React.FC = () => {
             label: settings.currency,
             value: kaspaPrice.isPending
               ? 'Loading...'
-              : `${currencySymbol}${calculateTotalValue(kaspa.balance, kaspaPrice.data!, 'KASPA', 8)}`,
+              : `${currencySymbol}${(kaspa.balance *  kaspaPrice.data!).toFixed(2)}`,
           },
           {
             label: 'KASPA',
