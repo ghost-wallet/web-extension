@@ -3,6 +3,7 @@ import { KRC20Transaction } from '@/utils/interfaces'
 export function groupConsecutiveMints(transactions: KRC20Transaction[]): KRC20Transaction[] {
   const groupedTransactions: KRC20Transaction[] = []
   let currentGroup: KRC20Transaction[] = []
+  let currentDate = ''
 
   const addGroupedTransaction = () => {
     if (currentGroup.length > 0) {
@@ -16,11 +17,17 @@ export function groupConsecutiveMints(transactions: KRC20Transaction[]): KRC20Tr
   }
 
   transactions.forEach((transaction) => {
-    if (currentGroup.length > 0 && transaction.op === 'mint' && transaction.tick === currentGroup[0].tick) {
+    const transactionDate = formatTransactionDate(transaction.mtsAdd)
+    const isSameDate = transactionDate === currentDate
+    const isSameMintSequence =
+      currentGroup.length > 0 && transaction.op === 'mint' && transaction.tick === currentGroup[0].tick
+
+    if (isSameDate && isSameMintSequence) {
       currentGroup.push(transaction)
     } else {
-      addGroupedTransaction() // Add previous group if exists
+      addGroupedTransaction() // Save the previous group
       currentGroup = [transaction]
+      currentDate = transactionDate
     }
   })
 
@@ -35,11 +42,7 @@ export const groupTransactionsByDate = (
 ): { [date: string]: KRC20Transaction[] } => {
   return transactions.reduce(
     (groups, transaction) => {
-      const date = new Date(parseInt(transaction.mtsAdd)).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      })
+      const date = formatTransactionDate(transaction.mtsAdd)
 
       if (!groups[date]) {
         groups[date] = []
@@ -49,4 +52,12 @@ export const groupTransactionsByDate = (
     },
     {} as { [date: string]: KRC20Transaction[] },
   )
+}
+
+const formatTransactionDate = (timestamp: string): string => {
+  return new Date(parseInt(timestamp)).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  })
 }
