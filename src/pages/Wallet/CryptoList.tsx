@@ -22,6 +22,11 @@ interface FetchKRC20TokensParams {
   address: string
 }
 
+function krc20TokenqueryFn({ queryKey }: {queryKey: [string, FetchKRC20TokensParams]}) {
+  const [_key, { selectedNode, address }] = queryKey
+  return fetchKrc20Tokens(selectedNode, address)
+}
+
 const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
@@ -29,14 +34,9 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const queryFn = ({ queryKey }: {queryKey: [string, FetchKRC20TokensParams]}) => {
-    const [_key, { selectedNode, address }] = queryKey
-    return fetchKrc20Tokens(selectedNode, address)
-  }
-
   const krc20TokensQuery = useQuery({
     queryKey: ['krc20Tokens', {selectedNode: settings.selectedNode, address: kaspa.addresses[0]} ],
-    queryFn
+    queryFn: krc20TokenqueryFn
   })
 
   const isLoading = kaspaPrice.isPending || krc20TokensQuery.isPending
