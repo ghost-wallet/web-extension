@@ -20,7 +20,7 @@ const TotalCostToMint: React.FC<TotalCostToMintProps> = ({ totalFees }) => {
       </div>
       <span className="text-mutedtext font-lato text-base text-right">
         {currencySymbol}
-        {(totalFees ? Number(totalFees) * kaspaPrice : 0).toFixed(2)}
+        {kaspaPrice.isPending ? 'Loading' : (totalFees ? Number(totalFees) * kaspaPrice.data! : 0).toFixed(2)}
       </span>
     </div>
   )

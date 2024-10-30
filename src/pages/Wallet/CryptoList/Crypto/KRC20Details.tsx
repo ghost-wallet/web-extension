@@ -15,38 +15,56 @@ import TableSection from '@/components/table/TableSection'
 import Spinner from '@/components/Spinner'
 import TokenPrice from '@/components/TokenPrice'
 import { Token } from '@/utils/interfaces'
+import { useQuery } from '@tanstack/react-query'
 
 interface CryptoDetailsTableProps {
   token: Token
 }
 
-const Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
+interface FetchKRC20TokenInfoParams {
+  selectedNode: number
+  ticker: string
+}
+
+function krc20TokenInfoqueryFn({ queryKey }: { queryKey: [string, FetchKRC20TokenInfoParams] }) {
+  const [_key, { selectedNode, ticker }] = queryKey
+  return fetchKrc20TokenInfo(selectedNode, ticker)
+}
+
+const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
   const { floorPrice, tick } = token
   const { settings } = useSettings()
   const kaspaPrice = useKaspaPrice(settings.currency)
   const currencySymbol = getCurrencySymbol(settings.currency)
 
-  const [krc20Token, setKrc20Token] = useState<any>(null)
+  // const [krc20Token, setKrc20Token] = useState<any>(null)
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-    if (tick !== 'KASPA') {
-      const fetchTokenInfo = async () => {
-        try {
-          const tokenInfo = await fetchKrc20TokenInfo(0, tick)
-          if (tokenInfo) {
-            setKrc20Token(tokenInfo)
-          }
-        } catch (error) {
-          console.error('Error fetching KRC20 token info:', error)
-        }
-      }
+  // useEffect(() => {
+  //   window.scrollTo(0, 0)
+  //   if (tick !== 'KASPA') {
+  //     const fetchTokenInfo = async () => {
+  //       try {
+  //         const tokenInfo = await fetchKrc20TokenInfo(0, tick)
+  //         if (tokenInfo) {
+  //           setKrc20Token(tokenInfo)
+  //         }
+  //       } catch (error) {
+  //         console.error('Error fetching KRC20 token info:', error)
+  //       }
+  //     }
 
-      fetchTokenInfo()
-    }
-  }, [tick])
+  //     fetchTokenInfo()
+  //   }
+  // }, [tick])
 
-  const tokenPrice = floorPrice * kaspaPrice
+  const krc20TokenQuery = useQuery({
+    queryKey: ['krc20TokenInfo', { selectedNode: settings.selectedNode, ticker: token.tick}],
+    queryFn: krc20TokenInfoqueryFn
+  })
+
+  const krc20Token = krc20TokenQuery.data
+
+  const tokenPrice = floorPrice * kaspaPrice.data!
   const formattedTokenPrice = tokenPriceFormatter(tokenPrice)
 
   const mintedPercentage =
@@ -68,10 +86,7 @@ const Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
           { label: settings.currency, value: `${currencySymbol}${totalValue}` },
           {
             label: tick,
-            value:
-              tick === 'KASPA'
-                ? token.balance
-                : formatNumberWithDecimal(token.balance, token.dec).toLocaleString(),
+            value: formatNumberWithDecimal(token.balance, token.dec).toLocaleString(),
           },
         ]}
       />
@@ -82,15 +97,14 @@ const Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
           {
             label: `${settings.currency} Price`,
             value: (
-              <TokenPrice value={`${currencySymbol}${tick === 'KASPA' ? kaspaPrice : formattedTokenPrice}`} />
+              <TokenPrice value={`${currencySymbol}${formattedTokenPrice}`} />
             ),
           },
         ]}
         className="mt-6 mb-2"
       />
 
-      {tick !== 'KASPA' &&
-        (krc20Token ? (
+      {krc20Token ? (
           <TableSection
             title="Token Details"
             rows={[
@@ -119,9 +133,9 @@ const Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
           />
         ) : (
           <Spinner />
-        ))}
+        )}
     </div>
   )
 }
 
-export default Details
+export default KRC20Details
