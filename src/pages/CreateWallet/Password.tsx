@@ -3,6 +3,7 @@ import PasswordInput from '@/components/inputs/PasswordInput'
 import ErrorMessage from '@/components/ErrorMessage'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
+import NextButton from '@/components/buttons/NextButton'
 
 interface PasswordProps {
   onPasswordSet: (password: string) => void
@@ -67,18 +68,7 @@ export default function Password({ onPasswordSet }: PasswordProps) {
         {error && <ErrorMessage message={error} />}
       </form>
       <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
-        <button
-          type="button"
-          disabled={!isValid}
-          onClick={handleContinueClick}
-          className={`w-full h-[52px] text-base font-semibold rounded-[25px] ${
-            isValid
-              ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
-              : 'bg-secondary text-secondarytext cursor-default'
-          }`}
-        >
-          Continue
-        </button>
+        <NextButton onClick={handleContinueClick} buttonEnabled={isValid} />
       </div>
     </AnimatedMain>
   )

@@ -12,9 +12,7 @@ export default function Landing({
   return (
     <main className="pt-10 px-6">
       <h1 className="text-primarytext text-4xl rubik font-bold text-center">GHOST</h1>
-      <p className="text-mutedtext text-base text-center mt-2">
-        Secure Kaspa wallet for KRC20 tokens.
-      </p>
+      <p className="text-mutedtext text-base text-center mt-2">Secure Kaspa wallet for KRC20 tokens.</p>
       <div className="flex justify-center mt-7 mb-32">
         <img className="w-[123px] h-[123px]" src={ghostIcon} alt="logo" />
       </div>

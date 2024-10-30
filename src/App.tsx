@@ -24,10 +24,7 @@ import ConfirmMint from '@/pages/Wallet/Mint/ConfirmMint'
 import Minted from '@/pages/Wallet/Mint/Minted'
 import TransactionDetails from '@/pages/Wallet/Transactions/TransactionDetails'
 import AboutPage from '@/pages/Wallet/Settings/About/AboutPage'
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
+import { QueryClient } from '@tanstack/react-query'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
 

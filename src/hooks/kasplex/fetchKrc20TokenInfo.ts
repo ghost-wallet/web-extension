@@ -50,7 +50,7 @@ export const fetchKrc20TokenInfo = async (
         holderTotal: parseFloat(token.holderTotal),
         transferTotal: parseFloat(token.transferTotal),
         mintTotal: parseFloat(token.mintTotal),
-        dec: parseInt(token.dec)
+        dec: parseInt(token.dec),
       }
     }
 

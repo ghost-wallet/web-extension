@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import useKaspaPrice from '@/hooks/useKaspaPrice'
 import useSettings from '@/hooks/contexts/useSettings'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
@@ -129,7 +129,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
                 value: krc20Token.holderTotal.toLocaleString() || '0',
               },
             ]}
-            className="mt-6 mb-16"
+            className="mt-6 mb-6"
           />
           <TransactionsHistory tick={krc20Token.tick} />
         </>

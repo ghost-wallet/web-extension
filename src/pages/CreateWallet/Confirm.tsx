@@ -3,6 +3,7 @@ import RecoveryPhraseGrid from '@/components/RecoveryPhraseGrid'
 import ErrorMessage from '@/components/ErrorMessage'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
+import NextButton from '@/components/buttons/NextButton'
 
 export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; onConfirmed: () => void }) {
   const [userInputs, setUserInputs] = useState<string[]>(Array(12).fill(''))
@@ -42,6 +43,19 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
     setError('')
   }
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        handleValidateEntries()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [handleValidateEntries])
+
   return (
     <AnimatedMain showConnectingMessage={false}>
       <Header title="Confirm Secret Phrase" showBackButton={false} />
@@ -71,12 +85,7 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
           Clear Entries
         </button>
 
-        <button
-          onClick={handleValidateEntries}
-          className="w-full h-[52px] text-base font-semibold rounded-[25px] bg-primary text-secondarytext cursor-pointer hover:bg-hover"
-        >
-          Continue
-        </button>
+        <NextButton onClick={handleValidateEntries} />
       </div>
     </AnimatedMain>
   )

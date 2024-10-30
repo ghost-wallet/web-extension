@@ -9,16 +9,17 @@ interface CryptoListItemProps {
 }
 
 const CryptoListItem: React.FC<CryptoListItemProps> = ({ token, currencySymbol }) => {
-  
   console.log(token, currencySymbol)
 
-  const numericalBalance = token.tick === 'KASPA' ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
+  const numericalBalance =
+    token.tick === 'KASPA' ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
 
   const formattedBalance = formatNumberWithAbbreviation(numericalBalance)
 
-  const totalValue = (
-    numericalBalance * (token.floorPrice ?? 0)
-  ).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  const totalValue = (numericalBalance * (token.floorPrice ?? 0)).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
 
   return (
     <div className="flex items-center justify-between w-full p-3 bg-darkmuted hover:bg-slightmuted transition-colors rounded-[15px]">

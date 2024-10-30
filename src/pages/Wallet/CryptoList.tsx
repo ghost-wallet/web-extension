@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { sortTokensByValue } from '@/utils/sorting'
 import { useTotalValueCalculation } from '@/hooks/useTotalValueCalculation'
@@ -11,6 +11,7 @@ import CryptoListItem from '@/pages/Wallet/CryptoList/CryptoListItem'
 import { fetchKrc20Tokens } from '@/hooks/kasplex/fetchKrc20Tokens'
 import { Token } from '@/utils/interfaces'
 import { useQuery } from '@tanstack/react-query'
+import ErrorMessage from '@/components/ErrorMessage'
 
 interface CryptoListProps {
   onTotalValueChange: (value: number) => void
@@ -61,7 +62,6 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   )
 
   const tokens = useMemo(() => {
-    console.log('THING CALLED')
     return [
       kaspaCrypto,
       ...(krc20TokensQuery.data?.map((token) => ({
@@ -85,7 +85,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     return <ErrorMessage message={error.message} />
   }
 
-  const filteredCryptos = tokens.filter((token) => token && token.balance !== 0)
+  const filteredCryptos = tokens.filter((token) => token.tick === 'KASPA' || token.balance !== 0)
   const sortedCryptos = sortTokensByValue(filteredCryptos)
   const currencySymbol = getCurrencySymbol(settings.currency)
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import kaspaSvg from '../../assets/crypto-logos/kaspa-kas-logo.svg'
 import bitcoinSvg from '../../assets/crypto-logos/bitcoin-btc-logo.svg'
 import ethSvg from '../../assets/crypto-logos/ethereum-eth-logo.svg'
@@ -37,7 +37,7 @@ const CryptoImage: React.FC<CryptoImageProps> = ({ ticker, size }) => {
       <img
         src={imgSrc}
         alt={`${ticker} logo`}
-        loading='lazy'
+        loading="lazy"
         className={`${dimensions} ${isRounded ? 'rounded-full' : ''} object-cover`}
         onError={() => setHasFailed(true)}
       />

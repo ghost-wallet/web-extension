@@ -1,9 +1,8 @@
-import { useEffect, useState, useCallback } from 'react'
 import { fetchKRC20TransactionHistory } from '@/hooks/kasplex/fetchKrc20TransactionHistory'
-import { KRC20Transaction, KRC20TransactionList } from '@/utils/interfaces'
+import { KRC20TransactionList } from '@/utils/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import useSettings from '@/hooks/contexts/useSettings'
-import { useInfiniteQuery, InfiniteData } from '@tanstack/react-query'
+import { InfiniteData, useInfiniteQuery } from '@tanstack/react-query'
 
 interface FetchKRC20TransactionsParams {
   selectedNode: number
@@ -28,18 +27,19 @@ export function useKRC20Transactions(tick?: string) {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
 
-  const query = useInfiniteQuery<
+  return useInfiniteQuery<
     KRC20TransactionList,
     Error,
     InfiniteData<KRC20TransactionList>,
     KRC20TransactionQueryKey,
     string | null
   >({
-    queryKey: ['krc20Transactions', { selectedNode: settings.selectedNode, address: kaspa.addresses[0], tick }],
+    queryKey: [
+      'krc20Transactions',
+      { selectedNode: settings.selectedNode, address: kaspa.addresses[0], tick },
+    ],
     queryFn: krc20TransactionsqueryFn,
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.next,
   })
-  
-  return query
 }

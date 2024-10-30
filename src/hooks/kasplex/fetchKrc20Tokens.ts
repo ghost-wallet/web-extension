@@ -38,7 +38,7 @@ export const fetchKrc20Tokens = async (
         throw new Error('Error fetching KRC20 tokens. Invalid API response structure')
       }
     } while (nextPage)
-      
+
     return allTokens
   } catch (error) {
     console.error('Error fetching tokens:', error)

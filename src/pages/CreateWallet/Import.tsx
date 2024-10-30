@@ -5,6 +5,7 @@ import * as bip39 from 'bip39'
 import { Buffer } from 'buffer'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
+import NextButton from '@/components/buttons/NextButton'
 
 if (typeof globalThis.Buffer === 'undefined') {
   globalThis.Buffer = Buffer
@@ -127,18 +128,10 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
 
         {/* TODO: make button always enabled -> implement popup message dialog if seed phrase invalid */}
         <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
-          <button
-            type="button"
-            disabled={!isValid}
+          <NextButton
             onClick={() => onMnemonicsSubmit(is24Words ? textAreaInput : userInputs.join(' '))}
-            className={`w-full h-[52px] text-base font-semibold rounded-[25px] ${
-              isValid
-                ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
-                : 'bg-secondary text-secondarytext cursor-default'
-            }`}
-          >
-            Continue
-          </button>
+            buttonEnabled={isValid}
+          />
         </div>
       </div>
     </AnimatedMain>

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { EyeIcon, EyeSlashIcon, DocumentDuplicateIcon, DocumentCheckIcon } from '@heroicons/react/24/outline'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
+import NextButton from '@/components/buttons/NextButton'
 
 export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSaved: () => void }) {
   const [isSeedVisible, setIsSeedVisible] = useState(false)
@@ -93,18 +94,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
       </div>
 
       <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
-        <button
-          type="button"
-          disabled={!isConfirmed}
-          onClick={onSaved}
-          className={`w-full h-[52px] text-base font-semibold rounded-[25px] ${
-            isConfirmed
-              ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
-              : 'bg-secondary text-secondarytext cursor-default'
-          }`}
-        >
-          Continue
-        </button>
+        <NextButton onClick={onSaved} buttonEnabled={isConfirmed} />
       </div>
     </AnimatedMain>
   )

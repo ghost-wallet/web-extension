@@ -13,7 +13,7 @@ const Crypto: React.FC = () => {
   const { token } = location.state || {}
 
   useEffect(() => {
-    window.scrollTo(0,0)
+    window.scrollTo(0, 0)
   }, [])
 
   return (
@@ -22,7 +22,7 @@ const Crypto: React.FC = () => {
         <Header title={token.tick} showBackButton={true} />
         <CryptoImage ticker={token.tick} size={'large'} />
         <ActionButtons token={token} />
-        { token.tick === 'KASPA' ? <KaspaDetails /> : <KRC20Details token={token}></KRC20Details> }
+        {token.tick === 'KASPA' ? <KaspaDetails /> : <KRC20Details token={token}></KRC20Details>}
       </AnimatedMain>
 
       <BottomNav />

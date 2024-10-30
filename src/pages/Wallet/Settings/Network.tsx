@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import useSettings from '@/hooks/contexts/useSettings'
 import useKaspa from '@/hooks/contexts/useKaspa'
 
@@ -21,9 +21,7 @@ const Network: React.FC = () => {
       <div className="flex items-center justify-center gap-2 mb-2">
         <h1 className="text-mutedtext text-base">Network</h1>
         <span
-          className={`px-2 py-1 ${
-            kaspa.connected ? 'text-success text-base' : 'text-mutedtext text-base'
-          }`}
+          className={`px-2 py-1 ${kaspa.connected ? 'text-success text-base' : 'text-mutedtext text-base'}`}
         >
           {kaspa.connected
             ? `Connected to ${settings.nodes[settings.selectedNode].address}`

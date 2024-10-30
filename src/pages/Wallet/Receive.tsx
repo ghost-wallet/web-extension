@@ -18,9 +18,7 @@ export default function Receive() {
             <QRCode style={{ height: '150px', width: '150px' }} value={kaspa.addresses[0]} />
           </div>
 
-          <h1 className="pt-4 font-semibold text-base text-primarytext text-center">
-            Your Kaspa Address
-          </h1>
+          <h1 className="pt-4 font-semibold text-base text-primarytext text-center">Your Kaspa Address</h1>
           <div className="py-6 w-full flex justify-center">
             <KaspaAddress address={kaspa.addresses[0]} />
           </div>
