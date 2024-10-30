@@ -63,7 +63,7 @@ export default function Transactions() {
   return (
     <>
       <AnimatedMain>
-        <Header title="Recent Activity" showBackButton={false} />
+        <Header title="KRC20 Recent Activity" showBackButton={false} />
 
         {initialLoading ? (
           <div className="mt-10 flex justify-center">
@@ -78,7 +78,9 @@ export default function Transactions() {
             loadingMore={loadingMore}
           />
         ) : (
-          <p className="text-mutedtext mt-10 text-center">No recent activity found.</p>
+          <p className="text-mutedtext mt-10 text-center font-lato text-base">
+            No recent activity found for KRC20 tokens.
+          </p>
         )}
       </AnimatedMain>
       <BottomNav />

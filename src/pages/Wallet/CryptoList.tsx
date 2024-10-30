@@ -8,7 +8,6 @@ import Spinner from '@/components/Spinner'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import useKaspaPrice from '@/hooks/useKaspaPrice'
 import CryptoListItem from '@/pages/Wallet/CryptoList/CryptoListItem'
-import ErrorMessage from '@/components/ErrorMessage'
 import { fetchKrc20Tokens } from '@/hooks/kasplex/fetchKrc20Tokens'
 import { Token } from '@/utils/interfaces'
 
@@ -30,7 +29,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const fetchPromiseRef = useRef<Promise<Token[]> | null>(null)
 
   const loadTokens = useCallback(async () => {
-    if (!kaspa.connected || kaspaPrice === 0) {
+    if (!kaspa.connected || kaspaPrice === 0 || !kaspa.addresses[0]) {
       setIsLoading(false)
       return
     }
@@ -83,21 +82,19 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   }, [kaspa.connected, kaspa.addresses, kaspa.balance, kaspaPrice, settings.selectedNode])
 
   useEffect(() => {
-    loadTokens()
-  }, [loadTokens])
+    if (kaspa.addresses && kaspa.addresses[0]) {
+      loadTokens()
+    }
+  }, [loadTokens, kaspa.addresses])
 
   useTotalValueCalculation(tokens, kaspaPrice, onTotalValueChange)
 
-  if (isLoading && tokens.length === 0) {
+  if ((isLoading && tokens.length === 0) || error) {
     return (
       <div className="mt-6">
         <Spinner />
       </div>
     )
-  }
-
-  if (error) {
-    return <ErrorMessage message={error} />
   }
 
   const filteredCryptos = tokens.filter((token) => token.tick === 'KASPA' || token.balance !== 0)
@@ -115,7 +112,9 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   return (
     <div className="w-full p-4 mb-20 h-full overflow-auto">
       {sortedCryptos.length === 0 ? (
-        <p className="text-base text-mutedtext font-lato">Loading...</p>
+        <div className="mt-6">
+          <Spinner />
+        </div>
       ) : (
         <ul className="space-y-3">
           {sortedCryptos.map((token) => (
