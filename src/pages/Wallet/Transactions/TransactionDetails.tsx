@@ -16,6 +16,8 @@ export default function TransactionDetails() {
     window.scrollTo(0, 0)
   }, [])
 
+  //TODO: adjust UI to look better for long amounts. Have op text and amount on top row, View Txn on bottom row with external icon.
+
   return (
     <AnimatedMain>
       <Header title="Transaction Details" showBackButton={true} />

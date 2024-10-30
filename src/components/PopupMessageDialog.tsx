@@ -6,26 +6,32 @@ interface PopupMessageDialogProps {
   onClose: () => void
 }
 
-const PopupMessageDialog: React.FC<PopupMessageDialogProps> = ({ message, onClose }) => {
+export function PopupMessageDialog({ message, onClose }: PopupMessageDialogProps) {
   const handleClickOutside = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose()
     }
   }
 
+  // TODO: don't allow scrolling when dialog is open, or make sure scrolling maintains opacity BG
+
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50"
       onClick={handleClickOutside}
     >
       <div
-        className="bg-darkmuted p-6 rounded-lg shadow-lg text-white w-80 max-w-full relative"
+        className="bg-bgdark p-6 rounded-lg shadow-lg text-white w-80 max-w-full relative"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
           <h1 className="font-lato text-primarytext font-semibold text-xl">Not Available</h1>
-          <button className="text-primarytext p-2" onClick={onClose} aria-label="Close">
-            <XMarkIcon className="w-6 h-6" />
+          <button
+            className="text-primarytext p-2 hover:bg-slightmuted rounded-full transition-colors"
+            onClick={onClose}
+            aria-label="Close"
+          >
+            <XMarkIcon className="w-7 h-7" />
           </button>
         </div>
         <div className="text-base text-mutedtext font-lato" dangerouslySetInnerHTML={{ __html: message }} />

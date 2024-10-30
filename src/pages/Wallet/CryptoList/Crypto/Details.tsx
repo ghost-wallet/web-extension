@@ -15,6 +15,7 @@ import TableSection from '@/components/table/TableSection'
 import Spinner from '@/components/Spinner'
 import TokenPrice from '@/components/TokenPrice'
 import { Token } from '@/utils/interfaces'
+import TransactionsHistory from '@/pages/Wallet/Transactions/TransactionsHistory'
 
 interface CryptoDetailsTableProps {
   token: Token
@@ -91,32 +92,38 @@ const Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
 
       {tick !== 'KASPA' &&
         (krc20Token ? (
-          <TableSection
-            title="Token Details"
-            rows={[
-              {
-                label: 'Total supply',
-                value: formatNumberWithAbbreviation(formatNumberWithDecimal(krc20Token.max, krc20Token.dec)),
-              },
-              {
-                label: 'Total minted',
-                value: `${mintedPercentage}%`,
-              },
-              {
-                label: 'Pre-minted',
-                value: `${preMintedPercentage}%`,
-              },
-              {
-                label: 'Mints',
-                value: krc20Token.mintTotal.toLocaleString() || '0',
-              },
-              {
-                label: 'Holders',
-                value: krc20Token.holderTotal.toLocaleString() || '0',
-              },
-            ]}
-            className="mt-6 mb-16"
-          />
+          <>
+            <TableSection
+              title="Token Details"
+              rows={[
+                {
+                  label: 'Total supply',
+                  value: formatNumberWithAbbreviation(
+                    formatNumberWithDecimal(krc20Token.max, krc20Token.dec),
+                  ),
+                },
+                {
+                  label: 'Total minted',
+                  value: `${mintedPercentage}%`,
+                },
+                {
+                  label: 'Pre-minted',
+                  value: `${preMintedPercentage}%`,
+                },
+                {
+                  label: 'Mints',
+                  value: krc20Token.mintTotal.toLocaleString() || '0',
+                },
+                {
+                  label: 'Holders',
+                  value: krc20Token.holderTotal.toLocaleString() || '0',
+                },
+              ]}
+              className="mt-6 mb-8"
+            />
+
+            <TransactionsHistory tick={krc20Token.tick} />
+          </>
         ) : (
           <Spinner />
         ))}
