@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import BottomNav from '@/components/BottomNav'
+import React from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import TransactionList from '@/pages/Wallet/Transactions/TransactionList'

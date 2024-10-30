@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
+import { BoltIcon } from '@heroicons/react/24/outline'
 import ActionButton from '@/components/buttons/ActionButton'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 import PopupMessageDialog from '@/components/PopupMessageDialog'
@@ -54,7 +54,7 @@ const MintButton: React.FC<MintButtonProps> = ({ tokenTick, className }) => {
   return (
     <>
       <ActionButton
-        icon={<ArrowsRightLeftIcon strokeWidth={2} />}
+        icon={<BoltIcon strokeWidth={2} />}
         label="Mint"
         onClick={handleMintClick}
         className={className}

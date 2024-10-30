@@ -38,7 +38,7 @@ export default function TransactionList({ transactions, loadMore, loadingMore }:
   }, [loadingMore, loadMore])
 
   return (
-    <div className="px-4 pb-24">
+    <div className="pb-24">
       <ul className="space-y-6">
         {Object.entries(groupedTransactions).map(([date, transactions], groupIndex) => (
           <li key={date}>

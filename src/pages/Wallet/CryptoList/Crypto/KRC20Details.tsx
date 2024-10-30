@@ -105,6 +105,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
       />
 
       {krc20Token ? (
+        <>
           <TableSection
             title="Token Details"
             rows={[
@@ -131,6 +132,8 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
             ]}
             className="mt-6 mb-16"
           />
+            <TransactionsHistory tick={krc20Token.tick} />
+        </>
         ) : (
           <Spinner />
         )}

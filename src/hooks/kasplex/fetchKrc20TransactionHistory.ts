@@ -7,12 +7,16 @@ export const fetchKRC20TransactionHistory = async (
   selectedNode: number,
   address: string,
   next: string | null = null,
+  tick: string | null = null,
 ): Promise<KRC20TransactionList> => {
   try {
     const params = new URLSearchParams()
     params.append('address', address)
     if (next) {
       params.append('next', next)
+    }
+    if (tick) {
+      params.append('tick', tick)
     }
     const apiBase = getApiBase(selectedNode)
     const response = await axios.get<KRC20TransactionList>(
