@@ -14,7 +14,7 @@ const ChaingeTokenDropdown: React.FC<ChaingeTokenDropdownProps> = ({ selectedTok
       onClick={openTokenSelect} // Open token select modal
     >
       {selectedToken && <CryptoImage ticker={selectedToken.symbol} size="extra-small" />}
-      <span className="ml-2 text-primarytext font-lato text-base">{selectedToken?.symbol}</span>
+      <span className="ml-2 text-primarytext text-base">{selectedToken?.symbol}</span>
       <ChevronDownIcon className="w-4 h-4 ml-2 text-primarytext" />
     </div>
   )

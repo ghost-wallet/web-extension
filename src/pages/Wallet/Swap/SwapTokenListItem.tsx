@@ -11,7 +11,7 @@ const SwapTokenListItem: React.FC<SwapTokenListItemProps> = ({ token }) => {
     <div className="flex items-center justify-between w-full p-2 bg-darkmuted hover:bg-slightmuted transition-colors rounded-[15px]">
       <div className="flex items-center">
         <CryptoImage ticker={token.symbol} size="small" />
-        <span className="ml-4 text-lg text-primarytext font-lato">{token.name}</span>
+        <span className="ml-4 text-lg text-primarytext">{token.name}</span>
       </div>
     </div>
   )

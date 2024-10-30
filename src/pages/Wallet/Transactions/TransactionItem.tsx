@@ -40,7 +40,7 @@ const TransactionItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ opera
           </div>
         </div>
         <div className="ml-4">
-          <p className="text-base font-lato text-mutedtext">{operationType}</p>
+          <p className="text-base text-mutedtext">{operationType}</p>
         </div>
       </div>
       <TransactionAmountDisplay amt={amt} tick={tick} isMint={isMint} isReceived={isReceived} />

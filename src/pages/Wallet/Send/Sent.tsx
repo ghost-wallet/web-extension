@@ -34,11 +34,11 @@ const Sent: React.FC = () => {
           href={`https://explorer.kaspa.org/txs/${txnId}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-primary font-lato font-bold text-lg hover:underline"
+          className="text-primary font-bold text-lg hover:underline"
         >
           View transaction
         </a>
-        <p className="text-base font-lato text-mutedtext p-4 text-center">
+        <p className="text-base text-mutedtext p-4 text-center">
           {amount.toLocaleString()} {token.tick} was successfully sent to
         </p>
         <KaspaAddress address={recipient} />

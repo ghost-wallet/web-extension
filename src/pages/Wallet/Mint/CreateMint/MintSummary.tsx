@@ -18,19 +18,19 @@ const MintSummary: React.FC<MintSummaryProps> = ({ totalMintCost, mintAmount, to
     <div className="w-full max-w-md space-y-2 mt-6">
       <div className="flex flex-col justify-between">
         <div className="flex justify-between">
-          <span className="text-mutedtext font-lato text-lg">Mint cost</span>
-          <span className="text-primarytext font-lato text-lg">
+          <span className="text-mutedtext text-lg">Mint cost</span>
+          <span className="text-primarytext text-lg">
             {mintAmount?.toLocaleString() || '0'} KAS
           </span>
         </div>
-        <span className="text-mutedtext font-lato text-base text-right">
+        <span className="text-mutedtext text-base text-right">
           {currencySymbol}
           {Number(mintAmount ? mintAmount * kaspaPrice : '0').toFixed(2)}
         </span>
       </div>
       <div className="flex justify-between">
-        <span className="text-mutedtext font-lato text-lg">Receive amount</span>
-        <span className="text-primarytext font-lato text-lg">
+        <span className="text-mutedtext text-lg">Receive amount</span>
+        <span className="text-primarytext text-lg">
           {totalMintCost.toLocaleString()} {tokenTick}
         </span>
       </div>

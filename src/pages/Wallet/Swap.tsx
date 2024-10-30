@@ -85,7 +85,7 @@ export default function Swap() {
           <div>
             {/* You Pay Section */}
             <div className="bg-darkmuted rounded-lg p-4">
-              <h2 className="text-mutedtext text-lg font-lato mb-2">You Pay</h2>
+              <h2 className="text-mutedtext text-lg mb-2">You Pay</h2>
               <div className="flex items-center justify-between">
                 <input
                   type="text"
@@ -107,7 +107,7 @@ export default function Swap() {
 
             {/* You Receive Section */}
             <div className="bg-darkmuted rounded-lg p-4">
-              <h2 className="text-mutedtext text-lg font-lato mb-2">You Receive</h2>
+              <h2 className="text-mutedtext text-lg mb-2">You Receive</h2>
               <div className="flex items-center justify-between">
                 <input
                   type="text"

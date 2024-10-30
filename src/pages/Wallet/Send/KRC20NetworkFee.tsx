@@ -13,7 +13,7 @@ const NetworkFee: React.FC<NetworkFeeProps> = ({ fee }) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
-      className="text-base font-lato text-primarytext"
+      className="text-base text-primarytext"
     >
       {fee} KAS
     </motion.div>

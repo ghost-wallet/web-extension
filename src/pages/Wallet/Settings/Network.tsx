@@ -19,10 +19,10 @@ const Network: React.FC = () => {
   return (
     <>
       <div className="flex items-center justify-center gap-2 mb-2">
-        <h1 className="text-mutedtext text-base font-lato">Network</h1>
+        <h1 className="text-mutedtext text-base">Network</h1>
         <span
           className={`px-2 py-1 ${
-            kaspa.connected ? 'text-success text-base font-lato' : 'text-mutedtext text-base font-lato'
+            kaspa.connected ? 'text-success text-base' : 'text-mutedtext text-base'
           }`}
         >
           {kaspa.connected

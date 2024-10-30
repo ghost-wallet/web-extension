@@ -24,14 +24,14 @@ const CryptoListItem: React.FC<CryptoListItemProps> = ({ token, currencySymbol }
     <div className="flex items-center justify-between w-full p-3 bg-darkmuted hover:bg-slightmuted transition-colors rounded-[15px]">
       <div className="flex items-center">
         <CryptoImage ticker={token.tick} size={'small'} />
-        <span className="ml-4 text-lg text-primarytext font-lato">{token.tick}</span>
+        <span className="ml-4 text-lg text-primarytext">{token.tick}</span>
       </div>
       <div className="flex flex-col items-end">
-        <span className="text-lg text-primarytext font-lato">
+        <span className="text-lg text-primarytext">
           {currencySymbol}
           {totalValue}
         </span>
-        <span className="text-base text-mutedtext font-lato">{formattedBalance}</span>
+        <span className="text-base text-mutedtext">{formattedBalance}</span>
       </div>
     </div>
   )

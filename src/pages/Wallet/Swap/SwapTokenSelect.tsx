@@ -35,7 +35,7 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({
     <div className="fixed inset-0 z-50 bg-bgdark bg-opacity-90 p-4 flex flex-col">
       {/* Header with Title and Close Button */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-center text-primarytext text-2xl font-lato">Select Token</h2>
+        <h2 className="text-center text-primarytext text-2xl">Select Token</h2>
         <button
           className="text-white text-2xl font-bold"
           onClick={onClose}

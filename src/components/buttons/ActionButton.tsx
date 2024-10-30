@@ -31,7 +31,7 @@ export default function ActionButton({
       >
         <div className={`h-8 w-8 ${disabled ? 'text-mutedtext' : 'text-primary'}`}>{icon}</div>
         <span
-          className={`text-sm font-lato mt-1 transition ${
+          className={`text-sm mt-1 transition ${
             disabled ? 'text-mutedtext' : 'text-mutedtext group-hover:text-primary'
           }`}
         >

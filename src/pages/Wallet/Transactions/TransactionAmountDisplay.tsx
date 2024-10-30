@@ -21,7 +21,7 @@ const TransactionAmountDisplay: React.FC<TransactionAmountDisplayProps> = ({
   const amountDisplay = `${isMint || isReceived ? '+ ' : '- '}${formattedAmount} ${tick}`
   const amountColor = isMint || isReceived ? 'text-success' : 'text-error'
 
-  return <p className={`text-base font-lato ${amountColor}`}>{amountDisplay}</p>
+  return <p className={`text-base ${amountColor}`}>{amountDisplay}</p>
 }
 
 export default TransactionAmountDisplay

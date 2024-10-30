@@ -71,7 +71,7 @@ export default function Password({ onPasswordSet }: PasswordProps) {
           type="button"
           disabled={!isValid}
           onClick={handleContinueClick}
-          className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] ${
+          className={`w-full h-[52px] text-base font-semibold rounded-[25px] ${
             isValid
               ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
               : 'bg-secondary text-secondarytext cursor-default'

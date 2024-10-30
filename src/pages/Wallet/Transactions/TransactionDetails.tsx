@@ -41,12 +41,12 @@ export default function TransactionDetails() {
                   </div>
                 </div>
                 <div className="ml-4">
-                  <p className="text-base font-lato text-mutedtext">{operationType}</p>
+                  <p className="text-base text-mutedtext">{operationType}</p>
                   <a
                     href={`https://explorer.kaspa.org/txs/${hashRev}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary font-lato text-sm hover:text-secondary"
+                    className="text-primary text-sm hover:text-secondary"
                   >
                     View Transaction
                   </a>

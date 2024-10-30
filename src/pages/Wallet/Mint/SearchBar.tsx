@@ -30,7 +30,7 @@ const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch }) => {
         onChange={(e) => setTicker(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Enter token ticker"
-        className="bg-darkmuted w-full p-3 pr-12 border border-muted rounded-lg font-lato text-lg text-primarytext h-12"
+        className="bg-darkmuted w-full p-3 pr-12 border border-muted rounded-lg text-lg text-primarytext h-12"
       />
       <button
         onClick={handleSearch}

@@ -35,7 +35,7 @@ const ResetWalletButton: React.FC = () => {
           checked={isChecked}
           onChange={handleCheckboxChange}
         />
-        <label htmlFor="reset-confirmation" className="text-mutedtext text-base font-lato">
+        <label htmlFor="reset-confirmation" className="text-mutedtext text-base">
           I have direct access to my 12-word or 24-word secret recovery phrase.
         </label>
       </div>
@@ -47,7 +47,7 @@ const ResetWalletButton: React.FC = () => {
           type="button"
           disabled={!isChecked}
           onClick={handleConfirm}
-          className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] ${
+          className={`w-full h-[52px] text-base font-semibold rounded-[25px] ${
             isChecked
               ? 'bg-error text-secondarytext cursor-pointer hover:bg-hover'
               : 'bg-slightmuted text-secondarytext cursor-default'

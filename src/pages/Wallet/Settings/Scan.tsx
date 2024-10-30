@@ -24,7 +24,7 @@ const Scan: React.FC = () => {
           isLoading
             ? 'bg-secondary text-secondarytext cursor-not-allowed'
             : 'bg-primary hover:bg-secondary text-secondarytext'
-        } text-base font-semibold font-lato w-[240px] px-8 py-3 rounded-[25px]`}
+        } text-base font-semibold w-[240px] px-8 py-3 rounded-[25px]`}
         disabled={isLoading}
       >
         {isLoading ? (

@@ -101,7 +101,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   return (
     <div className="w-full p-4 mb-20 h-full overflow-auto">
       {sortedCryptos.length === 0 ? (
-        <p className="text-base text-mutedtext font-lato">None</p>
+        <p className="text-base text-mutedtext">None</p>
       ) : (
         <ul className="space-y-3">
           {sortedCryptos.map((token) => (

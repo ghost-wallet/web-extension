@@ -120,7 +120,7 @@ const SendCrypto: React.FC = () => {
               onMaxClick={handleMaxClick}
             />
           </div>
-          <div className="w-full text-right text-mutedtext font-lato font-light text-base px-4 pt-1 pb-1">
+          <div className="w-full text-right text-mutedtext font-light text-base px-4 pt-1 pb-1">
             Available {formattedBalance} {token.tick}
           </div>
           <FeePrioritySelector

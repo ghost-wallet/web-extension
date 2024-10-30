@@ -61,7 +61,7 @@ export default function Login() {
         <button
           type="button"
           onClick={handleForgotPassword}
-          className="text-mutedtext hover:underline font-lato text-lg font-light"
+          className="text-mutedtext hover:underline text-lg font-light"
         >
           Forgot Password
         </button>
@@ -71,7 +71,7 @@ export default function Login() {
         <button
           type="button"
           onClick={login}
-          className="w-full h-[52px] text-lg font-lato font-semibold rounded-[10px] bg-primary text-secondarytext cursor-pointer hover:bg-hover"
+          className="w-full h-[52px] text-lg font-semibold rounded-[10px] bg-primary text-secondarytext cursor-pointer hover:bg-hover"
         >
           Login
         </button>

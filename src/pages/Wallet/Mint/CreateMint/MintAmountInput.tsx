@@ -22,7 +22,7 @@ const MintAmountInput: React.FC<MintAmountInputProps> = ({ mintAmount, onSliderC
       max="1000"
       value={mintAmount !== null ? mintAmount : ''}
       onChange={onInputChange}
-      className="w-30 bg-darkmuted p-2 border border-muted rounded-lg font-lato text-lg text-primarytext text-center"
+      className="w-30 bg-darkmuted p-2 border border-muted rounded-lg text-lg text-primarytext text-center"
       placeholder="KAS"
     />
   </div>

@@ -58,22 +58,22 @@ export default function ConfirmMint() {
           <CryptoImage ticker={token.tick} size="large" />
           <div className="w-full max-w-md space-y-1 pt-2">
             <div className="flex justify-between mt-10">
-              <span className="text-mutedtext font-lato text-base">Receive amount</span>
-              <span className="text-mutedtext font-lato text-base">
+              <span className="text-mutedtext text-base">Receive amount</span>
+              <span className="text-mutedtext text-base">
                 {receiveAmount.toLocaleString()} {token.tick}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-mutedtext font-lato text-base">Mint cost</span>
-              <span className="text-mutedtext font-lato text-base">{payAmount?.toLocaleString()} KAS</span>
+              <span className="text-mutedtext text-base">Mint cost</span>
+              <span className="text-mutedtext text-base">{payAmount?.toLocaleString()} KAS</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-mutedtext font-lato text-base">Service fee</span>
-              <span className="text-mutedtext font-lato text-base">{serviceFee} KAS</span>
+              <span className="text-mutedtext text-base">Service fee</span>
+              <span className="text-mutedtext text-base">{serviceFee} KAS</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-mutedtext font-lato text-base">Network fee</span>
-              <span className="text-mutedtext font-lato text-base">
+              <span className="text-mutedtext text-base">Network fee</span>
+              <span className="text-mutedtext text-base">
                 {networkFee ? `${networkFee} KAS` : 'Calculating...'}
               </span>
             </div>
