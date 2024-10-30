@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import Header from '@/components/Header'
 import AnimatedMain from '@/components/AnimatedMain'
@@ -11,6 +11,10 @@ import KaspaDetails from './Crypto/KaspaDetails'
 const Crypto: React.FC = () => {
   const location = useLocation()
   const { token } = location.state || {}
+
+  useEffect(() => {
+    window.scrollTo(0,0)
+  }, [])
 
   return (
     <>
