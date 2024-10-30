@@ -26,7 +26,9 @@ export default function useKaspaPrice(currency: string) {
 
   const query = useQuery({
     queryKey: ['kaspaPrice', currency],
-    queryFn: fetchPrice
+    queryFn: fetchPrice,
+    staleTime: 60_000, // 1 min
+    refetchInterval: 60_000
   })
 
   return query
