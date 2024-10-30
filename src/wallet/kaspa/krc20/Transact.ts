@@ -1,20 +1,14 @@
 import { Address, addressFromScriptPublicKey, ScriptBuilder, XOnlyPublicKey } from '@/wasm/kaspa'
 import { Inscription } from './Inscription'
+import { TokenFromApi } from '@/utils/interfaces'
 
-// TODO: move to shared types
-export interface Token {
-  tick: string
-  balance: string
-  opScoreMod: string
-  dec: string
-  floorPrice?: number
-}
+export type Token = TokenFromApi
 
 export function setupkrc20Transaction(
   address: string,
   recipient: string,
   amount: string,
-  token: Token,
+  token: TokenFromApi,
   networkId = 'mainnet',
 ) {
   const script = new ScriptBuilder()
