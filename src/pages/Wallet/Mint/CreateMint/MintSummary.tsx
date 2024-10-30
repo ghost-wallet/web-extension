@@ -23,8 +23,7 @@ const MintSummary: React.FC<MintSummaryProps> = ({ totalMintCost, mintAmount, to
         </div>
         <span className="text-mutedtext text-base text-right">
           {currencySymbol}
-          // TODO fix ts type for kaspaPrice
-          {Number(mintAmount ? mintAmount * kaspaPrice : '0').toFixed(2)}
+          {Number(mintAmount ? mintAmount * kaspaPrice.data! : '0').toFixed(2)}
         </span>
       </div>
       <div className="flex justify-between">
