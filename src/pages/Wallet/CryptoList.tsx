@@ -38,7 +38,6 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     const cacheKey = `tokens_${kaspa.addresses[0]}`
     const cachedTokens = localStorage.getItem(cacheKey)
 
-    // TODO fix: sometimes kaspa not showing up in list of visible cryptos
     const kaspaCrypto: Token = {
       tick: 'KASPA',
       balance: kaspa.balance,
@@ -50,7 +49,8 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     if (cachedTokens) {
       try {
         const parsedTokens = JSON.parse(cachedTokens) as Token[]
-        setTokens([...parsedTokens, kaspaCrypto])
+        const updatedTokens = [...parsedTokens, kaspaCrypto]
+        setTokens(updatedTokens)
       } catch (error) {
         console.error('Error parsing cached tokens:', error)
         setTokens([kaspaCrypto])
@@ -60,13 +60,11 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
       setIsLoading(true)
     }
 
-    // If a fetch is already in progress, avoid re-triggering
     if (fetchPromiseRef.current) {
       console.log('[loadTokens] Fetch already in progress, skipping')
       return
     }
 
-    // Store fetch promise to prevent concurrent fetches
     fetchPromiseRef.current = fetchKrc20Tokens(settings.selectedNode, kaspa.addresses[0], kaspaPrice)
 
     try {
@@ -102,7 +100,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     return <ErrorMessage message={error} />
   }
 
-  const filteredCryptos = tokens.filter((token) => token && token.balance !== 0)
+  const filteredCryptos = tokens.filter((token) => token.tick === 'KASPA' || token.balance !== 0)
   const sortedCryptos = sortTokensByValue(filteredCryptos)
   const currencySymbol = getCurrencySymbol(settings.currency)
 

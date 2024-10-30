@@ -90,7 +90,9 @@ export default class Node extends EventEmitter {
     const { isSynced, hasUtxoIndex, networkId, serverVersion, rpcApiVersion } =
       await this.rpcClient.getServerInfo()
 
-    console.log(`[Node] Connected to node with server version ${serverVersion} and RPC API version ${rpcApiVersion}`)
+    console.log(
+      `[Node] Connected to node with server version ${serverVersion} and RPC API version ${rpcApiVersion}`,
+    )
 
     if (!isSynced || !hasUtxoIndex) {
       await this.rpcClient.disconnect()
