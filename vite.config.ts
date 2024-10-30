@@ -20,13 +20,13 @@ const manifest: ManifestV3Export = {
     service_worker: 'src/wallet/initializeWallet.ts',
     type: 'module',
   },
-  content_scripts: [
-    {
-      matches: ['<all_urls>'],
-      js: ['src/provider'],
-      run_at: 'document_start',
-    },
-  ],
+  // content_scripts: [
+  //   {
+  //     matches: ['<all_urls>'],
+  //     js: ['src/provider'],
+  //     run_at: 'document_start',
+  //   },
+  // ],
   permissions: ['storage', 'alarms', 'notifications'],
   // this is an ID for firefox, but the `ManifestV3Export` type doesn't have it
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
