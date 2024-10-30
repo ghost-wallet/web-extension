@@ -1,21 +1,24 @@
 import { formatNumberWithDecimal } from '@/utils/formatting'
 import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
-import { Token } from '@/utils/interfaces'
+import { KaspaToken, Token } from '@/utils/interfaces'
 
-export const sortTokensByValue = (tokens: Token[]): Token[] => {
+export const sortTokensByValue = (tokens: (Token | KaspaToken)[]) => {
   return tokens
-    .map(({ tick, balance, floorPrice = 0, dec, opScoreMod }) => {
+    .map((token) => {
       let formattedBalance: number
 
       // Skip formatting for KASPA, because Kas already has decimals inserted
-      if (tick === 'KASPA') {
-        formattedBalance = balance
+      if (token.isKaspa) {
+        formattedBalance = token.balance
       } else {
-        formattedBalance = formatNumberWithDecimal(balance, dec)
+        formattedBalance = formatNumberWithDecimal(token.balance, token.dec)
       }
 
-      const totalValue = floorPrice * formattedBalance
-      return { tick, balance, floorPrice, dec, opScoreMod, totalValue }
+      const totalValue = token.floorPrice * formattedBalance
+      return { 
+        ...token,
+        totalValue
+       }
     })
     .sort((a, b) => b.totalValue - a.totalValue) // Sort by total value
 }

@@ -24,7 +24,7 @@ const ActionButtons: React.FC<CryptoActionButtonsProps> = ({ token }) => {
         onClick={() => navigate(`/send/${token.tick}`, { state: { token } })}
       />
       <SwapButton token={token} className="flex-1" />
-      {token.tick.toUpperCase() !== 'KASPA' && <MintButton tokenTick={token.tick} className="flex-1" />}
+      {!token.isKaspa && <MintButton tokenTick={token.tick} className="flex-1" />}
     </div>
   )
 }

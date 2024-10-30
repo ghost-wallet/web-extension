@@ -18,18 +18,31 @@ export interface CustomSignature {
   script?: string
 }
 
-// Cryptos: Combines Kaspa with KRC20 Tokens
-export interface Token {
+
+export interface TokenFromApi {
   tick: string
   opScoreMod: string
+  balance: string
+  dec: string
+}
+
+export interface KaspaToken {
+  isKaspa: true
+  tick: 'KASPA'
   balance: number
   dec: number
   floorPrice: number
 }
 
+// Cryptos: Combines Kaspa with KRC20 Tokens
+export interface Token extends TokenFromApi {
+  floorPrice: number
+  isKaspa?: undefined
+}
+
 // Kasplex & KRC20
 export interface KRC20TokenList {
-  result: Token[]
+  result: TokenFromApi[]
   next: string | null
 }
 

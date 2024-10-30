@@ -9,7 +9,7 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 import useKaspaPrice from '@/hooks/useKaspaPrice'
 import CryptoListItem from '@/pages/Wallet/CryptoList/CryptoListItem'
 import { fetchKrc20Tokens } from '@/hooks/kasplex/fetchKrc20Tokens'
-import { Token } from '@/utils/interfaces'
+import { KaspaToken, Token } from '@/utils/interfaces'
 import { useQuery } from '@tanstack/react-query'
 import ErrorMessage from '@/components/ErrorMessage'
 
@@ -50,12 +50,12 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
 
   console.log(kaspaPrice.data)
 
-  const kaspaCrypto: Token = useMemo(
+  const kaspaCrypto: KaspaToken = useMemo(
     () => ({
+      isKaspa: true,
       tick: 'KASPA',
       balance: kaspa.balance,
       dec: 8,
-      opScoreMod: 'kaspa-unique',
       floorPrice: kasPrice,
     }),
     [kaspa.balance, kasPrice],

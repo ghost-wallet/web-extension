@@ -1,10 +1,10 @@
 import React from 'react'
 import { formatNumberWithDecimal, formatNumberWithAbbreviation } from '@/utils/formatting'
 import CryptoImage from '@/components/CryptoImage'
-import { Token } from '@/utils/interfaces'
+import { KaspaToken, Token } from '@/utils/interfaces'
 
 interface CryptoListItemProps {
-  token: Token
+  token: Token | KaspaToken
   currencySymbol: string
 }
 
@@ -12,7 +12,7 @@ const CryptoListItem: React.FC<CryptoListItemProps> = ({ token, currencySymbol }
   console.log(token, currencySymbol)
 
   const numericalBalance =
-    token.tick === 'KASPA' ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
+    token.isKaspa ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
 
   const formattedBalance = formatNumberWithAbbreviation(numericalBalance)
 

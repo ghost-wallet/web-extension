@@ -5,7 +5,13 @@ export const formatValue = (value: number | null | undefined): number => {
   return value
 }
 
-export const formatNumberWithDecimal = (balance: number, decimals: number): number => {
+export const formatNumberWithDecimal = (balance: number | string, decimals: number | string): number => {
+  if (typeof balance !== 'number') {
+    balance = Number(balance)
+  }
+  if (typeof decimals !== 'number') {
+    decimals = Number(decimals)
+  }
   if (isNaN(decimals) || decimals < 0) {
     throw new Error('Invalid decimals value')
   }

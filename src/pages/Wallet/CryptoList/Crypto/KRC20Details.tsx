@@ -8,9 +8,8 @@ import {
   formatNumberWithAbbreviation,
   tokenPriceFormatter,
 } from '@/utils/formatting'
-import { getMintedPercentage } from '@/utils/calculations'
+import { calculateKRC20TotalValue, getMintedPercentage } from '@/utils/calculations'
 import { formatValue } from '@/utils/formatting'
-import { calculateTotalValue } from '@/utils/calculations'
 import TableSection from '@/components/table/TableSection'
 import Spinner from '@/components/Spinner'
 import TokenPrice from '@/components/TokenPrice'
@@ -77,7 +76,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
       ? getMintedPercentage(formatValue(krc20Token.pre), formatValue(krc20Token.max))
       : '0'
 
-  const totalValue = calculateTotalValue(token.balance, floorPrice, tick, token.dec)
+  const totalValue = calculateKRC20TotalValue(token)
 
   return (
     <div className="p-4">
