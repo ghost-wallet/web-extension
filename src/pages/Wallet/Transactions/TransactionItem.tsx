@@ -27,7 +27,7 @@ const TransactionItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ opera
   return (
     <li
       ref={ref}
-      className="flex items-center justify-between p-4 bg-darkmuted rounded-lg shadow-md cursor-pointer"
+      className="flex items-center justify-between p-4 bg-darkmuted hover:bg-slightmuted rounded-lg shadow-md cursor-pointer"
       onClick={handleClick}
     >
       <div className="flex items-center">

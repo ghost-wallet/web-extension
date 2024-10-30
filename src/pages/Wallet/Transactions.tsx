@@ -9,13 +9,15 @@ interface TransactionsProps {
 
 const Transactions: React.FC<TransactionsProps> = ({ tick }: TransactionsProps) => {
   return (
-    <AnimatedMain>
-      <Header title="KRC20 Recent Activity" showBackButton={false} />
-      <div className="px-4">
-        <TransactionsHistory tick={tick} />
-      </div>
+    <>
+      <AnimatedMain>
+        <Header title="KRC20 Recent Activity" showBackButton={false} />
+        <div className="px-4">
+          <TransactionsHistory tick={tick} />
+        </div>
+      </AnimatedMain>
       <BottomNav />
-    </AnimatedMain>
+    </>
   )
 }
 
