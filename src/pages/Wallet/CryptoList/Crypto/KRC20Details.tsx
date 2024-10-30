@@ -16,6 +16,7 @@ import Spinner from '@/components/Spinner'
 import TokenPrice from '@/components/TokenPrice'
 import { Token } from '@/utils/interfaces'
 import { useQuery } from '@tanstack/react-query'
+import TransactionsHistory from '../../Transactions/TransactionsHistory'
 
 interface CryptoDetailsTableProps {
   token: Token
@@ -58,8 +59,8 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
   // }, [tick])
 
   const krc20TokenQuery = useQuery({
-    queryKey: ['krc20TokenInfo', { selectedNode: settings.selectedNode, ticker: token.tick}],
-    queryFn: krc20TokenInfoqueryFn
+    queryKey: ['krc20TokenInfo', { selectedNode: settings.selectedNode, ticker: token.tick }],
+    queryFn: krc20TokenInfoqueryFn,
   })
 
   const krc20Token = krc20TokenQuery.data
@@ -96,9 +97,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
         rows={[
           {
             label: `${settings.currency} Price`,
-            value: (
-              <TokenPrice value={`${currencySymbol}${formattedTokenPrice}`} />
-            ),
+            value: <TokenPrice value={`${currencySymbol}${formattedTokenPrice}`} />,
           },
         ]}
         className="mt-6 mb-2"
@@ -132,11 +131,11 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
             ]}
             className="mt-6 mb-16"
           />
-            <TransactionsHistory tick={krc20Token.tick} />
+          <TransactionsHistory tick={krc20Token.tick} />
         </>
-        ) : (
-          <Spinner />
-        )}
+      ) : (
+        <Spinner />
+      )}
     </div>
   )
 }

@@ -9,8 +9,16 @@ interface TransactionsHistoryProps {
 }
 
 const TransactionsHistory: React.FC<TransactionsHistoryProps> = ({ tick }) => {
-  const { transactions, initialLoading, loadingMore, error, loadMoreTransactions } =
-    useKRC20Transactions(tick)
+  const query = useKRC20Transactions(tick)
+
+  const transactions = query.data ? query.data.pages.flatMap((page) => page.result) : []
+  const error = query.error
+  const loadingMore = query.isFetchingNextPage
+  const initialLoading = query.isPending
+
+  const loadMoreTransactions = () => {
+    query.fetchNextPage()
+  }
 
   if (initialLoading) {
     return (
@@ -21,12 +29,12 @@ const TransactionsHistory: React.FC<TransactionsHistoryProps> = ({ tick }) => {
   }
 
   if (error) {
-    return <ErrorMessage message={error} />
+    return <ErrorMessage message={error.message} />
   }
 
   if (transactions.length === 0) {
     return (
-      <p className="text-mutedtext mt-10 text-center font-lato text-base">
+      <p className="text-mutedtext mt-10 text-center  text-base">
         No recent activity found for KRC20 tokens.
       </p>
     )

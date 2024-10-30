@@ -20,7 +20,7 @@ export default function TransactionList({ transactions, loadMore, loadingMore }:
       async (entries) => {
         const lastEntry = entries[0]
         if (lastEntry.isIntersecting && !loadingMore) {
-          await loadMore()
+          loadMore()
         }
       },
       { threshold: 1.0 },
