@@ -22,7 +22,7 @@ interface FetchKRC20TokensParams {
   address: string
 }
 
-function krc20TokenqueryFn({ queryKey }: {queryKey: [string, FetchKRC20TokensParams]}) {
+function krc20TokenqueryFn({ queryKey }: { queryKey: [string, FetchKRC20TokensParams] }) {
   const [_key, { selectedNode, address }] = queryKey
   return fetchKrc20Tokens(selectedNode, address)
 }
@@ -35,8 +35,8 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const location = useLocation()
 
   const krc20TokensQuery = useQuery({
-    queryKey: ['krc20Tokens', {selectedNode: settings.selectedNode, address: kaspa.addresses[0]} ],
-    queryFn: krc20TokenqueryFn
+    queryKey: ['krc20Tokens', { selectedNode: settings.selectedNode, address: kaspa.addresses[0] }],
+    queryFn: krc20TokenqueryFn,
   })
 
   const isLoading = kaspaPrice.isPending || krc20TokensQuery.isPending
@@ -46,27 +46,29 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
 
   console.log(kaspaPrice.data)
 
-  const kaspaCrypto: Token = useMemo(() => ({
-    tick: 'KASPA',
-    balance: kaspa.balance,
-    dec: 8,
-    opScoreMod: 'kaspa-unique',
-    floorPrice: kasPrice,
-  }), [kaspa.balance, kasPrice])
+  const kaspaCrypto: Token = useMemo(
+    () => ({
+      tick: 'KASPA',
+      balance: kaspa.balance,
+      dec: 8,
+      opScoreMod: 'kaspa-unique',
+      floorPrice: kasPrice,
+    }),
+    [kaspa.balance, kasPrice],
+  )
 
   const tokens = useMemo(() => {
     console.log('THING CALLED')
     return [
       kaspaCrypto,
-      ...krc20TokensQuery.data?.map(token => ({
+      ...(krc20TokensQuery.data?.map((token) => ({
         ...token,
         floorPrice: token.floorPrice * kasPrice,
-      })) ?? []
+      })) ?? []),
     ]
   }, [kaspaCrypto, krc20TokensQuery.data])
 
   useTotalValueCalculation(tokens, kaspaPrice.data!, onTotalValueChange)
-
 
   if (isLoading || !tokens) {
     return (
@@ -79,7 +81,6 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   if (error) {
     return <ErrorMessage message={error.message} />
   }
-  
 
   const filteredCryptos = tokens.filter((token) => token && token.balance !== 0)
   const sortedCryptos = sortTokensByValue(filteredCryptos)

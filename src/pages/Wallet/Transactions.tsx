@@ -18,7 +18,13 @@ interface FetchKRC20TransactionsParams {
 
 type KRC20TransactionQueryKey = [string, FetchKRC20TransactionsParams]
 
-function krc20TransactionsqueryFn({ queryKey, pageParam }: {queryKey: KRC20TransactionQueryKey, pageParam: string | null}) {
+function krc20TransactionsqueryFn({
+  queryKey,
+  pageParam,
+}: {
+  queryKey: KRC20TransactionQueryKey
+  pageParam: string | null
+}) {
   const [_key, { selectedNode, address }] = queryKey
   return fetchKRC20TransactionHistory(selectedNode, address, pageParam)
 }
@@ -26,20 +32,21 @@ function krc20TransactionsqueryFn({ queryKey, pageParam }: {queryKey: KRC20Trans
 export default function Transactions() {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
-  //const [transactions, setTransactions] = useState<KRC20Transaction[]>([])
-  //const [initialLoading, setInitialLoading] = useState(true)
-  //const [loadingMore, setLoadingMore] = useState(false)
-  //const [error, setError] = useState<string | null>(null)
-  //const [nextCursor, setNextCursor] = useState<string | null>(null)
 
-  const query = useInfiniteQuery<KRC20TransactionList, Error, InfiniteData<KRC20TransactionList>, KRC20TransactionQueryKey, string | null>({
-    queryKey: ['krc20Transactions', {selectedNode: settings.selectedNode, address: kaspa.addresses[0]}],
+  const query = useInfiniteQuery<
+    KRC20TransactionList,
+    Error,
+    InfiniteData<KRC20TransactionList>,
+    KRC20TransactionQueryKey,
+    string | null
+  >({
+    queryKey: ['krc20Transactions', { selectedNode: settings.selectedNode, address: kaspa.addresses[0] }],
     queryFn: krc20TransactionsqueryFn,
     initialPageParam: null,
-    getNextPageParam: (lastPage) => lastPage.next
+    getNextPageParam: (lastPage) => lastPage.next,
   })
 
-  const transactions = query.data ? query.data.pages.flatMap(page => page.result) : []
+  const transactions = query.data ? query.data.pages.flatMap((page) => page.result) : []
   const error = query.error
   const loadingMore = query.isFetchingNextPage
   const initialLoading = query.isPending
@@ -47,49 +54,6 @@ export default function Transactions() {
   const loadMoreTransactions = () => {
     query.fetchNextPage()
   }
-
-  // useEffect(() => {
-  //   const fetchTransactionsOnMount = async () => {
-  //     try {
-  //       setInitialLoading(true)
-  //       const response = await fetchKRC20TransactionHistory(
-  //         settings.selectedNode,
-  //         kaspa.addresses[0],
-  //         nextCursor,
-  //       )
-  //       setTransactions(response.result)
-  //       setNextCursor(response.next)
-  //       setError(null)
-  //     } catch (error) {
-  //       setError('Error loading transactions')
-  //     } finally {
-  //       setInitialLoading(false)
-  //     }
-  //   }
-
-  //   fetchTransactionsOnMount()
-  // }, [kaspa.addresses])
-
-  // const loadMoreTransactions = async () => {
-  //   if (!nextCursor || loadingMore) return
-
-  //   try {
-  //     setLoadingMore(true)
-  //     const response = await fetchKRC20TransactionHistory(
-  //       settings.selectedNode,
-  //       kaspa.addresses[0],
-  //       nextCursor,
-  //     )
-  //     setTransactions((prev) => [...prev, ...response.result])
-  //     setNextCursor(response.next)
-  //   } catch (error) {
-  //     setError('Error loading more transactions')
-  //   } finally {
-  //     setLoadingMore(false)
-  //   }
-  // }
-
-  
 
   return (
     <>
