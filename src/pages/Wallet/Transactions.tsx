@@ -10,12 +10,14 @@ interface TransactionsProps {
 
 export default function Transactions({ tick }: TransactionsProps) {
   return (
-    <AnimatedMain>
-      <Header title="KRC20 Recent Activity" showBackButton={false} />
-      <div className="px-4">
-        <TransactionsHistory tick={tick} />
-      </div>
+    <>
+      <AnimatedMain>
+        <Header title="KRC20 Recent Activity" showBackButton={false} />
+        <div className="px-4">
+          <TransactionsHistory tick={tick} />
+        </div>
+      </AnimatedMain>
       <BottomNav />
-    </AnimatedMain>
+    </>
   )
 }
