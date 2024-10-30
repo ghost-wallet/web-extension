@@ -15,25 +15,16 @@ const ActionButtons: React.FC<CryptoActionButtonsProps> = ({ token }) => {
   const navigate = useNavigate()
 
   return (
-    <div className="flex justify-center mt-4 relative">
-      <div className="px-2">
-        <ReceiveButton />
-      </div>
-      <div className="px-2">
-        <ActionButton
-          icon={<PaperAirplaneIcon strokeWidth={2} />}
-          label="Send"
-          onClick={() => navigate(`/send/${token.tick}`, { state: { token } })}
-        />
-      </div>
-      <div className="px-2">
-        <SwapButton token={token} />
-      </div>
-      {token.tick.toUpperCase() !== 'KASPA' && (
-        <div className="px-2">
-          <MintButton tokenTick={token.tick} />
-        </div>
-      )}
+    <div className="flex gap-3 w-full p-4">
+      <ReceiveButton className="flex-1" />
+      <ActionButton
+        className="flex-1"
+        icon={<PaperAirplaneIcon strokeWidth={2} />}
+        label="Send"
+        onClick={() => navigate(`/send/${token.tick}`, { state: { token } })}
+      />
+      <SwapButton token={token} className="flex-1" />
+      {token.tick.toUpperCase() !== 'KASPA' && <MintButton tokenTick={token.tick} className="flex-1" />}
     </div>
   )
 }

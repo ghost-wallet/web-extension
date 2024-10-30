@@ -7,19 +7,26 @@ export default function WalletActionButtons() {
   const navigate = useNavigate()
 
   return (
-    <div className="my-4 flex justify-between gap-4">
-      <ReceiveButton />
+    <div className="flex gap-3 w-full p-4">
+      <ReceiveButton className="flex-1" />
       <ActionButton
         icon={<PaperAirplaneIcon strokeWidth={2} />}
         label="Send"
         onClick={() => navigate('/send')}
+        className="flex-1"
       />
       <ActionButton
         icon={<ArrowsRightLeftIcon strokeWidth={2} />}
         label="Swap"
         onClick={() => navigate('/swap')}
+        className="flex-1"
       />
-      <ActionButton icon={<BoltIcon strokeWidth={2} />} label="Mint" onClick={() => navigate('/mint')} />
+      <ActionButton
+        icon={<BoltIcon strokeWidth={2} />}
+        label="Mint"
+        onClick={() => navigate('/mint')}
+        className="flex-1"
+      />
     </div>
   )
 }
