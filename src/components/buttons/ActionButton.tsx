@@ -24,13 +24,14 @@ export default function ActionButton({
       disabled={disabled}
     >
       <div
-        className={`flex flex-col items-center justify-center w-16 h-16 rounded-lg transition ${
+        style={{ width: '72px', height: '72px' }}
+        className={`flex flex-col items-center justify-center rounded-[15px] transition ${
           disabled ? 'bg-darkmuted' : 'bg-darkmuted hover:bg-slightmuted'
         }`}
       >
-        <div className={`h-6 w-6 ${disabled ? 'text-mutedtext' : 'text-primary'}`}>{icon}</div>
+        <div className={`h-8 w-8 ${disabled ? 'text-mutedtext' : 'text-primary'}`}>{icon}</div>
         <span
-          className={`text-xs font-lato mt-1 transition ${
+          className={`text-sm font-lato mt-1 transition ${
             disabled ? 'text-mutedtext' : 'text-mutedtext group-hover:text-primary'
           }`}
         >

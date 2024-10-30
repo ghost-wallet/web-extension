@@ -9,9 +9,10 @@ import { KRC20TokenResponse } from '@/utils/interfaces'
 
 interface MintButtonProps {
   tokenTick: string
+  className?: string
 }
 
-const MintButton: React.FC<MintButtonProps> = ({ tokenTick }) => {
+const MintButton: React.FC<MintButtonProps> = ({ tokenTick, className }) => {
   const navigate = useNavigate()
   const [showMintDialog, setShowMintDialog] = useState(false)
   const [mintedPercentage, setMintedPercentage] = useState<number>(0)
@@ -52,7 +53,12 @@ const MintButton: React.FC<MintButtonProps> = ({ tokenTick }) => {
 
   return (
     <>
-      <ActionButton icon={<ArrowsRightLeftIcon strokeWidth={2} />} label="Mint" onClick={handleMintClick} />
+      <ActionButton
+        icon={<ArrowsRightLeftIcon strokeWidth={2} />}
+        label="Mint"
+        onClick={handleMintClick}
+        className={className}
+      />
 
       {showMintDialog && (
         <PopupMessageDialog

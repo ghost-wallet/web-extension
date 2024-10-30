@@ -8,9 +8,10 @@ import { Token } from '@/utils/interfaces'
 
 interface SwapButtonProps {
   token: Token
+  className?: string
 }
 
-const SwapButton: React.FC<SwapButtonProps> = ({ token }) => {
+const SwapButton: React.FC<SwapButtonProps> = ({ token, className }) => {
   const navigate = useNavigate()
   const [isTokenAvailable, setIsTokenAvailable] = useState(false)
   const [showDialog, setShowDialog] = useState(false)
@@ -42,7 +43,12 @@ const SwapButton: React.FC<SwapButtonProps> = ({ token }) => {
 
   return (
     <>
-      <ActionButton icon={<ArrowsRightLeftIcon strokeWidth={2} />} label="Swap" onClick={handleSwapClick} />
+      <ActionButton
+        icon={<ArrowsRightLeftIcon strokeWidth={2} />}
+        label="Swap"
+        onClick={handleSwapClick}
+        className={className}
+      />
 
       {showDialog && (
         <PopupMessageDialog
