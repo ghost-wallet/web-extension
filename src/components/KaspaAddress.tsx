@@ -20,7 +20,7 @@ const KaspaAddress: React.FC<KaspaAddressProps> = ({ address }) => {
   const handleCopy = () => {
     navigator.clipboard.writeText(address).then(() => {
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000) // Reset after 2 seconds
+      setTimeout(() => setCopied(false), 2000)
     })
   }
 

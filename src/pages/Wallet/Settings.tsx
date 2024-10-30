@@ -2,9 +2,10 @@ import React from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import Network from '@/pages/Wallet/Settings/Network'
-import LogOut from '@/pages/Wallet/Settings/LogOut'
-import Reset from '@/pages/Wallet/Settings/Reset'
+import LogoutButton from '@/pages/Wallet/Settings/LogoutButton'
+import ResetButton from '@/pages/Wallet/Settings/ResetButton'
 import Header from '@/components/Header'
+import AboutButton from '@/pages/Wallet/Settings/AboutButton'
 
 export default function Settings() {
   return (
@@ -13,10 +14,13 @@ export default function Settings() {
         <Header title="Settings" showBackButton={false} />
         <Network />
         <div className="mt-1 flex flex-col">
-          <LogOut />
+          <LogoutButton />
         </div>
         <div className="mt-1 flex flex-col">
-          <Reset />
+          <AboutButton />
+        </div>
+        <div className="mt-1 flex flex-col">
+          <ResetButton />
         </div>
       </AnimatedMain>
       <BottomNav />

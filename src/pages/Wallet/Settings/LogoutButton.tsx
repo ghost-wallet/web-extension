@@ -5,7 +5,7 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 import SettingsButton from '@/pages/Wallet/Settings/SettingsButton'
 import { ArrowRightEndOnRectangleIcon } from '@heroicons/react/24/outline'
 
-const LogOut: React.FC = () => {
+const LogoutButton: React.FC = () => {
   const { kaspa, request } = useKaspa()
   const navigate = useNavigate()
 
@@ -21,9 +21,9 @@ const LogOut: React.FC = () => {
 
   return (
     <div className="flex flex-col py-1 px-4">
-      <SettingsButton onClick={handleLogOut} text={'Log out'} Icon={ArrowRightEndOnRectangleIcon} />
+      <SettingsButton onClick={handleLogOut} text={'Log out'} LeftSideIcon={ArrowRightEndOnRectangleIcon} />
     </div>
   )
 }
 
-export default LogOut
+export default LogoutButton

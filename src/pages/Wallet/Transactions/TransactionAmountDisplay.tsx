@@ -18,7 +18,7 @@ const TransactionAmountDisplay: React.FC<TransactionAmountDisplayProps> = ({
     ? '0'
     : formatNumberWithAbbreviation(parseInt(amt, 10) / 1e8)
 
-  const amountDisplay = `${isMint || isReceived ? '+' : '-'}${formattedAmount} ${tick}`
+  const amountDisplay = `${isMint || isReceived ? '+ ' : '- '}${formattedAmount} ${tick}`
   const amountColor = isMint || isReceived ? 'text-success' : 'text-error'
 
   return <p className={`text-base font-lato ${amountColor}`}>{amountDisplay}</p>
