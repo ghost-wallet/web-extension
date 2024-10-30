@@ -61,6 +61,10 @@ export const formatNumberWithAbbreviation = (balance: number): string => {
     return rounded.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   }
 
+  if (balance > 0 && balance < 0.01) {
+    return '<0.01'
+  }
+
   if (balance >= 1_000_000_000_000_000) {
     return formatNumber(balance / 1_000_000_000_000_000) + 'Q'
   } else if (balance >= 1_000_000_000_000) {

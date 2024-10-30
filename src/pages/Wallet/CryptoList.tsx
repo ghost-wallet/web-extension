@@ -38,6 +38,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     const cacheKey = `tokens_${kaspa.addresses[0]}`
     const cachedTokens = localStorage.getItem(cacheKey)
 
+    // TODO fix: sometimes kaspa not showing up in list of visible cryptos
     const kaspaCrypto: Token = {
       tick: 'KASPA',
       balance: kaspa.balance,
@@ -79,7 +80,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
       setError('Error loading tokens')
     } finally {
       setIsLoading(false)
-      fetchPromiseRef.current = null // Reset fetchPromiseRef after completion
+      fetchPromiseRef.current = null
     }
   }, [kaspa.connected, kaspa.addresses, kaspa.balance, kaspaPrice, settings.selectedNode])
 

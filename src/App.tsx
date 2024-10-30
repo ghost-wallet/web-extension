@@ -23,6 +23,7 @@ import MintNetworkFee from '@/pages/Wallet/Mint/MintNetworkFee'
 import ConfirmMint from '@/pages/Wallet/Mint/ConfirmMint'
 import Minted from '@/pages/Wallet/Mint/Minted'
 import TransactionDetails from '@/pages/Wallet/Transactions/TransactionDetails'
+import AboutPage from '@/pages/Wallet/Settings/About/AboutPage'
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
             <Route path="/wallet/:tick" element={<Crypto />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings/reset" element={<ConfirmReset />} />
+            <Route path="/settings/about" element={<AboutPage />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/transactions/txn-item" element={<TransactionDetails />} />
             <Route path="/send" element={<Send />} />

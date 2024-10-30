@@ -1,13 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from 'tailwindcss'
-import { ManifestV3Export, crx } from '@crxjs/vite-plugin'
+import { crx } from '@crxjs/vite-plugin'
 import * as path from 'path'
 
-const manifest: ManifestV3Export = {
+const manifest: any = {
   manifest_version: 3,
   name: 'Ghost',
-  version: '0.0.0.4',
+  version: '0.0.1',
   icons: {
     48: 'assets/ghost-outline-thick-48.png',
     128: 'assets/ghost-outline-128.png',
@@ -20,30 +20,23 @@ const manifest: ManifestV3Export = {
     service_worker: 'src/wallet/initializeWallet.ts',
     type: 'module',
   },
-  // content_scripts: [
-  //   {
-  //     matches: ['<all_urls>'],
-  //     js: ['src/provider'],
-  //     run_at: 'document_start',
-  //   },
-  // ],
   permissions: ['storage', 'alarms', 'notifications'],
-  // this is an ID for firefox, but the `ManifestV3Export` type doesn't have it
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   browser_specific_settings: {
     gecko: {
-      id: 'wallet@kaspian.dev',
+      id: 'ghostappwallet@gmail.com',
     },
   },
   content_security_policy: {
     extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
-  }
+  },
 }
 
-// https://vitejs.dev/config/
+// Pass the version as a global variable
 export default defineConfig({
   plugins: [react(), crx({ manifest })],
+  define: {
+    __APP_VERSION__: JSON.stringify((manifest as any).version),
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),

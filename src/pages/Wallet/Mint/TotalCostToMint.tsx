@@ -18,7 +18,7 @@ const TotalCostToMint: React.FC<TotalCostToMintProps> = ({ totalFees }) => {
         <span className="text-mutedtext font-lato text-lg">Total</span>
         <span className="text-primarytext font-lato text-lg">{totalFees?.toLocaleString() || '0'} KAS</span>
       </div>
-      <span className="text-mutedtext font-lato text-base text-right">
+      <span className="text-mutedtext font-lato text-lg text-right">
         {currencySymbol}
         {(totalFees ? Number(totalFees) * kaspaPrice : 0).toFixed(2)}
       </span>
