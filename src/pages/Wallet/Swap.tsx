@@ -132,12 +132,11 @@ export default function Swap() {
       </AnimatedMain>
       <BottomNav />
 
-      {showDialog && (
-        <PopupMessageDialog
+      <PopupMessageDialog
           message="Swaps are not yet available on Ghost wallet. The team is working round the clock to enable swaps as soon as possible. Follow us on X for updates."
           onClose={() => setShowDialog(false)}
+          isOpen={showDialog}
         />
-      )}
 
       {isPayTokenSelectOpen && (
         <SwapTokenSelect

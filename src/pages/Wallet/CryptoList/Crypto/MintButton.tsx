@@ -59,13 +59,11 @@ const MintButton: React.FC<MintButtonProps> = ({ tokenTick, className }) => {
         onClick={handleMintClick}
         className={className}
       />
-
-      {showMintDialog && (
-        <PopupMessageDialog
-          message={`The entire ${tokenTick} supply has already been minted.`}
-          onClose={() => setShowMintDialog(false)}
-        />
-      )}
+      <PopupMessageDialog
+        message={`The entire ${tokenTick} supply has already been minted.`}
+        onClose={() => setShowMintDialog(false)}
+        isOpen={showMintDialog}
+      />
     </>
   )
 }
