@@ -36,9 +36,7 @@ const KaspaTxnHistory: React.FC<KaspaTxnHistoryProps> = () => {
   }
 
   if (transactions.length === 0) {
-    return (
-      <p className="text-mutedtext mt-10 text-center text-base">No recent activity found for KRC20 tokens.</p>
-    )
+    return <p className="text-mutedtext mt-10 text-center text-base">No recent activity for Kaspa.</p>
   }
 
   return (
