@@ -57,7 +57,7 @@ function App() {
               <Route path="/settings/reset" element={<ConfirmReset />} />
               <Route path="/settings/about" element={<AboutPage />} />
               <Route path="/transactions" element={<Transactions />} />
-              <Route path="/transactions/txn-item" element={<TransactionDetails />} />
+              <Route path="/transactions/details" element={<TransactionDetails />} />
               <Route path="/send" element={<Send />} />
               <Route path="/send/:tick" element={<SendCrypto />} />
               <Route path="/send/:tick/confirm" element={<ConfirmSend />} />

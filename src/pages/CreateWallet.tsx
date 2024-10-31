@@ -25,7 +25,7 @@ export default function CreateWallet() {
   const [password, setPassword] = useState('')
   const [mnemonic, setMnemonic] = useState('')
   const [flowType, setFlowType] = useState<'create' | 'import'>('create')
-  const [loading, setLoading] = useState(false) // Loading state
+  const [loading, setLoading] = useState(false)
 
   const handleForward = (nextTab: Tabs, nextFlowType?: 'create' | 'import') => {
     if (nextFlowType) setFlowType(nextFlowType)

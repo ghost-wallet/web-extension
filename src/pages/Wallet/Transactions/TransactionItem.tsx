@@ -17,11 +17,22 @@ const TransactionItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ opera
   const navigate = useNavigate()
   const { kaspa } = useKaspa()
   const address = kaspa.addresses[0]
-  const { amt, tick, groupedOperations } = operation
+
+  const { amt, tick, hashRev } = operation
   const { operationType, isMint, isReceived } = getOperationDetails(operation, address)
 
   const handleClick = () => {
-    navigate(`/transactions/txn-item`, { state: { groupedOperations, address } })
+    navigate(`/transactions/details`, {
+      state: {
+        amt,
+        tick,
+        hashRev,
+        operationType,
+        isMint,
+        isReceived,
+        address,
+      },
+    })
   }
 
   return (

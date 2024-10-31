@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import TransactionItem from './TransactionItem'
 import Spinner from '@/components/Spinner'
 import { KRC20Transaction } from '@/utils/interfaces'
-import { groupConsecutiveMints, groupTransactionsByDate } from '@/utils/grouping'
+import { groupTransactionsByDate } from '@/utils/grouping'
 
 interface TransactionListProps {
   transactions: KRC20Transaction[]
@@ -13,8 +13,7 @@ interface TransactionListProps {
 export default function TransactionList({ transactions, loadMore, loadingMore }: TransactionListProps) {
   const lastElementRef = useRef<HTMLLIElement | null>(null)
 
-  // TODO: fix mint ops being grouped with transfer ops on click
-  const groupedTransactions = groupTransactionsByDate(groupConsecutiveMints(transactions))
+  const groupedTransactions = groupTransactionsByDate(transactions)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
