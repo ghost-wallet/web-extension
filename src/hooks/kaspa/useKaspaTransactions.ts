@@ -5,23 +5,22 @@ import { InfiniteData, useInfiniteQuery } from '@tanstack/react-query'
 
 interface FetchKaspaTransactionsParams {
   address: string
-  limit: number
-  offset: number
 }
+
+type KaspaTransactionQueryKey = [string, FetchKaspaTransactionsParams]
+
+const KASPA_HISTORY_TRANSACTIONS_PER_PAGE = 25 as const
 
 function kaspaTransactionsqueryFn({
   queryKey,
   pageParam,
 }: {
-  queryKey: KaspaTransactionQueryKey
-  pageParam: number
+  queryKey: [string, FetchKaspaTransactionsParams]
+  pageParam: number | null
 }) {
-  const [_key, { address, limit }] = queryKey
-  const offset = pageParam ?? 0
-  return fetchKaspaTransactionHistory(address, limit, offset)
+  const [_key, { address }] = queryKey
+  return fetchKaspaTransactionHistory(address, KASPA_HISTORY_TRANSACTIONS_PER_PAGE, pageParam)
 }
-
-type KaspaTransactionQueryKey = [string, Omit<FetchKaspaTransactionsParams, 'offset'>]
 
 export function useKaspaTransactions() {
   const { kaspa } = useKaspa()
@@ -31,14 +30,13 @@ export function useKaspaTransactions() {
     Error,
     InfiniteData<KaspaTransactionList>,
     KaspaTransactionQueryKey,
-    number
+    number | null
   >({
-    queryKey: ['kaspaTransactions', { address: kaspa.addresses[0], limit: 50 }],
+    queryKey: ['kaspaTransactions', { address: kaspa.addresses[0] }],
     queryFn: kaspaTransactionsqueryFn,
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages) => {
-      const limit = 25
-      return allPages.length * limit
+    initialPageParam: null,
+    getNextPageParam: (lastPage) => {
+      return lastPage[lastPage.length - 1]?.block_time
     },
   })
 }

@@ -4,18 +4,18 @@ import { KaspaTransactionList } from '@/utils/interfaces'
 export const fetchKaspaTransactionHistory = async (
   address: string,
   limit: number | null = null,
-  offset: number | null = null,
-): Promise<KaspaTransactionList> => {
+  before: number | null = null,
+) => {
   try {
     const params = new URLSearchParams()
     if (limit) {
       params.append('limit', limit.toString())
     }
-    if (offset) {
-      params.append('offset', offset.toString())
+    if (before) {
+      params.append('before', before.toString())
     }
     const response = await axios.get<KaspaTransactionList>(
-      `https://api.kaspa.org/addresses/${address}/full-transactions?${params.toString()}`,
+      `https://api.kaspa.org/addresses/${address}/full-transactions-page?${params.toString()}`,
     )
 
     if (response.data) {

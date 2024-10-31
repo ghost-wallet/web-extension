@@ -37,9 +37,7 @@ export interface KaspaToken {
  * Requests and responses for using Kaspa API. Official documentation:
  * https://api.kaspa.org
  */
-export interface KaspaTransactionList {
-  result: KaspaTransaction[]
-}
+export type KaspaTransactionList = KaspaTransaction[]
 
 export interface KaspaTransaction {
   transaction_id: string
