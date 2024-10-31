@@ -33,10 +33,7 @@ export function useKaspaTransactions() {
     KaspaTransactionQueryKey,
     number
   >({
-    queryKey: [
-      'kaspaTransactions',
-      { address: kaspa.addresses[0], limit: 50 },
-    ],
+    queryKey: ['kaspaTransactions', { address: kaspa.addresses[0], limit: 50 }],
     queryFn: kaspaTransactionsqueryFn,
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
