@@ -11,8 +11,7 @@ interface CryptoListItemProps {
 const CryptoListItem: React.FC<CryptoListItemProps> = ({ token, currencySymbol }) => {
   console.log(token, currencySymbol)
 
-  const numericalBalance =
-    token.isKaspa ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
+  const numericalBalance = token.isKaspa ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
 
   const formattedBalance = formatNumberWithAbbreviation(numericalBalance)
 

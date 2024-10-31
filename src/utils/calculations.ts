@@ -7,7 +7,7 @@ export const getMintedPercentage = (minted: number, max: number): number => {
   return parseFloat(((minted / max) * 100).toFixed(2))
 }
 
-export const calculateKRC20TotalValue = ({balance, dec, floorPrice}: Token): string => {
+export const calculateKRC20TotalValue = ({ balance, dec, floorPrice }: Token): string => {
   const value = formatNumberWithDecimal(balance, dec) * floorPrice
 
   return value.toFixed(2)

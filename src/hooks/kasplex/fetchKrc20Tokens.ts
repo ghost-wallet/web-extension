@@ -28,7 +28,7 @@ export const fetchKrc20Tokens = async (
         const tokens = await Promise.all(
           response.data.result.map(async (token) => {
             const tokenData = await fetchKasFyiToken(token.tick)
-            return { ...token, floorPrice: tokenData?.price?.floorPrice ?? 0}
+            return { ...token, floorPrice: tokenData?.price?.floorPrice ?? 0 }
           }),
         )
 

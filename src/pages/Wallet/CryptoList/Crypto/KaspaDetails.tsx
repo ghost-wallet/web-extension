@@ -21,7 +21,7 @@ const KaspaDetails: React.FC = () => {
             label: settings.currency,
             value: kaspaPrice.isPending
               ? 'Loading...'
-              : `${currencySymbol}${(kaspa.balance *  kaspaPrice.data!).toFixed(2)}`,
+              : `${currencySymbol}${(kaspa.balance * kaspaPrice.data!).toFixed(2)}`,
           },
           {
             label: 'KASPA',

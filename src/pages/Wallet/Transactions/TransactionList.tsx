@@ -13,6 +13,7 @@ interface TransactionListProps {
 export default function TransactionList({ transactions, loadMore, loadingMore }: TransactionListProps) {
   const lastElementRef = useRef<HTMLLIElement | null>(null)
 
+  // TODO: fix mint ops being grouped with transfer ops on click
   const groupedTransactions = groupTransactionsByDate(groupConsecutiveMints(transactions))
 
   useEffect(() => {

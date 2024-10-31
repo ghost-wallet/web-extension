@@ -11,7 +11,9 @@ export default function Send() {
     <>
       <AnimatedMain>
         <Header title="Send" showBackButton={true} />
-        <CryptoList onTotalValueChange={setTotalValue} />
+        <div className="flex flex-col items-center">
+          <CryptoList onTotalValueChange={setTotalValue} />
+        </div>
       </AnimatedMain>
       <BottomNav />
     </>

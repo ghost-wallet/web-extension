@@ -18,7 +18,6 @@ export interface CustomSignature {
   script?: string
 }
 
-
 export interface TokenFromApi {
   tick: string
   opScoreMod: string

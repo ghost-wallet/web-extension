@@ -15,10 +15,10 @@ export const sortTokensByValue = (tokens: (Token | KaspaToken)[]) => {
       }
 
       const totalValue = token.floorPrice * formattedBalance
-      return { 
+      return {
         ...token,
-        totalValue
-       }
+        totalValue,
+      }
     })
     .sort((a, b) => b.totalValue - a.totalValue) // Sort by total value
 }
