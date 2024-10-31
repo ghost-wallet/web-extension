@@ -82,7 +82,7 @@ export default function CreateMint() {
         <div className="px-4 mt-4" style={{ height: '24px' }}>
           {showError && <ErrorMessage message={error} />}
         </div>
-        <div className="px-4 pt-6">
+        <div className="px-4 pt-4 pb-20">
           <NextButton buttonEnabled={isMintAmountValid} showError={showError} onClick={handleNext} />
         </div>
       </AnimatedMain>

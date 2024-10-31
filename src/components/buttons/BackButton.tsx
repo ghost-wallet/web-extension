@@ -8,7 +8,7 @@ const BackButton: React.FC = () => {
   return (
     <button
       onClick={() => navigate(-1)}
-      className="flex items-center justify-center h-10 w-10 rounded-full text-primarytext hover:bg-darkmuted transition-colors"
+      className="flex items-center justify-center h-10 w-10 text-primarytext"
     >
       <ArrowLeftIcon className="h-6 w-6" />
     </button>

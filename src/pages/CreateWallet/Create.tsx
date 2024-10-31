@@ -27,10 +27,11 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
   }
 
   return (
-    <AnimatedMain showConnectingMessage={false}>
+    <AnimatedMain showConnectingMessage={false} className="flex flex-col h-screen">
       <Header title="Secret Phrase" showBackButton={false} />
-      <div className="px-6">
-        <p className="text-warning text-base text-justify pt-4 mb-6">
+
+      <div className="flex flex-col flex-grow justify-center px-4 pb-6 space-y-4">
+        <p className="text-warning text-base text-justify pt-4 mb-4">
           This secret recovery phrase is the only way to restore your wallet. Do not share it with anyone. Do
           not enter it into any app or site other than wallets from ghostapp.org. Beware of fake customer
           support scams.
@@ -93,7 +94,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
+      <div className="w-full px-4 pb-10">
         <NextButton onClick={onSaved} buttonEnabled={isConfirmed} />
       </div>
     </AnimatedMain>

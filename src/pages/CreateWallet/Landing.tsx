@@ -11,7 +11,7 @@ export default function Landing({
   const [enable, setEnable] = useState<boolean>(false)
 
   return (
-    <AnimatedMain className="pt-10 px-6 overflow-y-scroll h-full">
+    <AnimatedMain showConnectingMessage={false} className="pt-10 px-4 overflow-y-scroll h-full">
       <h1 className="text-primarytext text-4xl font-rubik font-bold text-center">GHOST</h1>
       <p className="text-mutedtext text-base text-center mt-2">Secure Kaspa wallet for KRC20 tokens.</p>
       <div className="flex justify-center mt-7 mb-8">
@@ -33,7 +33,7 @@ export default function Landing({
           .
         </p>
       </div>
-      <div className="w-full px-6 pb-10 flex flex-col gap-3 mt-auto">
+      <div className="w-full pb-10 flex flex-col gap-3 mt-auto">
         <button
           onClick={() => {
             forward(Tabs.Password, 'create')

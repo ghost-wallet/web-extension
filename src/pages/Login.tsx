@@ -5,6 +5,7 @@ import ErrorMessage from '@/components/ErrorMessage'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import ghostIcon from '../../assets/ghost.svg'
 import AnimatedMain from '@/components/AnimatedMain'
+import NextButton from '@/components/buttons/NextButton'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -39,42 +40,36 @@ export default function Login() {
   }
 
   return (
-    <AnimatedMain showConnectingMessage={false}>
-      <div className="flex justify-center mt-24">
-        <img className="w-[123px] h-[123px]" src={ghostIcon} alt="logo" />
-      </div>
-      <h1 className="text-primarytext text-3xl font-rubik text-center mb-6 mt-14">Enter your password</h1>
-      <form className="flex flex-col items-center px-6" onKeyDown={handleKeyDown}>
-        <PasswordInput
-          placeholder="Password"
-          id="password"
-          value={password}
-          onChange={(e) => {
-            if (error) setError('')
-            setPassword(e.target.value)
-          }}
-        />
-        <ErrorMessage message={error} />
-      </form>
-
-      <div className="text-center">
-        <button
-          type="button"
-          onClick={handleForgotPassword}
-          className="text-mutedtext hover:underline text-lg font-light"
-        >
-          Forgot Password
-        </button>
+    <AnimatedMain showConnectingMessage={false} className="flex flex-col h-screen">
+      <div className="flex justify-center pt-6">
+        <img className="w-[7.7rem] h-[7.7rem]" src={ghostIcon} alt="logo" />
       </div>
 
-      <div className="fixed bottom-0 left-0 w-full px-6 pb-6">
-        <button
-          type="button"
-          onClick={login}
-          className="w-full h-[52px] text-lg font-semibold rounded-[10px] bg-primary text-secondarytext cursor-pointer hover:bg-hover"
-        >
-          Login
-        </button>
+      <div className="flex flex-col items-center justify-center flex-grow px-6">
+        <h1 className="text-primarytext text-3xl font-rubik text-center mb-6">Enter your password</h1>
+        <form className="flex flex-col items-center w-full" onKeyDown={handleKeyDown}>
+          <PasswordInput
+            placeholder="Password"
+            id="password"
+            value={password}
+            onChange={(e) => {
+              if (error) setError('')
+              setPassword(e.target.value)
+            }}
+          />
+          <ErrorMessage message={error} />
+          <button
+            type="button"
+            onClick={handleForgotPassword}
+            className="text-mutedtext hover:underline text-lg font-light mt-2 mb-10"
+          >
+            Forgot Password
+          </button>
+        </form>
+      </div>
+
+      <div className="w-full px-4 pb-10">
+        <NextButton onClick={login} text={'Login'} />
       </div>
     </AnimatedMain>
   )

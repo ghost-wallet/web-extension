@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import TableSection from '@/components/table/TableSection'
-// import { formatTime } from '@/utils/formatting'
 
 interface FeePrioritySelectorProps {
   currentFeeTypeIndex: number
@@ -27,11 +26,6 @@ const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
     return () => clearTimeout(timer)
   }, [currentFeeTypeIndex, estimatedFee, estimatedSeconds])
 
-  // const transferSpeedText =
-  //   estimatedSeconds >= 60
-  //     ? `${formatTime(estimatedSeconds / 60)} minute${Math.ceil(estimatedSeconds / 60) === 1 ? '' : 's'}`
-  //     : `${formatTime(estimatedSeconds)} second${Math.ceil(estimatedSeconds) === 1 ? '' : 's'}`
-
   return (
     <>
       <div className="w-full flex text-mutedtext text-base pt-2 px-4 gap-2">
@@ -52,13 +46,9 @@ const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
         ))}
       </div>
 
-      {/* Use TableSection to display Network Fee and Transfer Speed */}
       <TableSection
         title=""
-        rows={[
-          { label: 'Network fee', value: estimatedFee ? `${estimatedFee} KAS` : '' },
-          // { label: 'Transfer speed', value: transferSpeedText },
-        ]}
+        rows={[{ label: 'Network fee', value: estimatedFee ? `${estimatedFee} KAS` : '' }]}
         className={`px-4 py-1 ${animate ? 'fade-animation' : ''}`}
       />
     </>

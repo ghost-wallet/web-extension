@@ -73,66 +73,64 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
   }
 
   return (
-    <AnimatedMain showConnectingMessage={false}>
-      <div className="flex flex-col items-center">
-        <Header title="Import" showBackButton={false} />
-        <div className="px-6">
-          <p className="text-mutedtext text-lg text-center mb-4">
-            Import an existing wallet with your {is24Words ? '24-word' : '12-word'} secret recovery phrase.
-          </p>
-          <div className="flex justify-center mb-6">
+    <AnimatedMain showConnectingMessage={false} className="flex flex-col h-screen">
+      <Header title="Import" showBackButton={false} />
+      <div className="flex flex-col items-center flex-grow justify-center px-4 pb-6">
+        <p className="text-mutedtext text-lg text-center mb-4">
+          Import an existing wallet with your {is24Words ? '24-word' : '12-word'} secret recovery phrase.
+        </p>
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={handleToggle}
+            className="text-center text-base font-semibold text-primary hover:underline"
+          >
+            {is24Words ? 'Switch to 12 words' : 'Switch to 24 words'}
+          </button>
+        </div>
+
+        {!is24Words ? (
+          <RecoveryPhraseGrid
+            values={userInputs}
+            onInputChange={(i, value) =>
+              setUserInputs((inputs) => {
+                const updated = [...inputs]
+                updated[i] = value.trim().toLowerCase()
+                return updated
+              })
+            }
+            onPaste={handlePaste}
+            editableIndices={Array.from({ length: 12 }, (_, i) => i)}
+          />
+        ) : (
+          <div className="relative w-full">
+            <textarea
+              value={textAreaInput}
+              onChange={(e) => setTextAreaInput(e.target.value)}
+              placeholder="Enter or paste your 24-word secret recovery phrase"
+              className={`w-full h-48 border border-muted rounded-lg p-4 bg-bgdarker text-mutedtext text-base resize-none`}
+              style={
+                {
+                  WebkitTextSecurity: isTextVisible ? 'none' : 'disc',
+                } as React.CSSProperties
+              }
+            />
             <button
-              onClick={handleToggle}
-              className="text-center text-base font-semibold text-primary hover:underline"
+              type="button"
+              onClick={toggleTextVisibility}
+              className="absolute right-4 bottom-4 text-mutedtext"
             >
-              {is24Words ? 'Switch to 12 words' : 'Switch to 24 words'}
+              {isTextVisible ? <EyeIcon className="h-8 w-8" /> : <EyeSlashIcon className="h-8 w-8" />}
             </button>
           </div>
+        )}
+      </div>
 
-          {!is24Words ? (
-            <RecoveryPhraseGrid
-              values={userInputs}
-              onInputChange={(i, value) =>
-                setUserInputs((inputs) => {
-                  const updated = [...inputs]
-                  updated[i] = value.trim().toLowerCase()
-                  return updated
-                })
-              }
-              onPaste={handlePaste}
-              editableIndices={Array.from({ length: 12 }, (_, i) => i)}
-            />
-          ) : (
-            <div className="relative w-full">
-              <textarea
-                value={textAreaInput}
-                onChange={(e) => setTextAreaInput(e.target.value)}
-                placeholder="Enter or paste your 24-word secret recovery phrase"
-                className={`w-full h-48 border border-muted rounded-lg p-4 bg-bgdarker text-mutedtext text-base resize-none`}
-                style={
-                  {
-                    WebkitTextSecurity: isTextVisible ? 'none' : 'disc',
-                  } as React.CSSProperties
-                }
-              />
-              <button
-                type="button"
-                onClick={toggleTextVisibility}
-                className="absolute right-4 bottom-4 text-mutedtext"
-              >
-                {isTextVisible ? <EyeIcon className="h-8 w-8" /> : <EyeSlashIcon className="h-8 w-8" />}
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* TODO: make button always enabled -> implement popup message dialog if seed phrase invalid */}
-        <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
-          <NextButton
-            onClick={() => onMnemonicsSubmit(is24Words ? textAreaInput : userInputs.join(' '))}
-            buttonEnabled={isValid}
-          />
-        </div>
+      {/* TODO: make button always enabled -> implement popup message dialog if seed phrase invalid */}
+      <div className="w-full px-4 pb-10">
+        <NextButton
+          onClick={() => onMnemonicsSubmit(is24Words ? textAreaInput : userInputs.join(' '))}
+          buttonEnabled={isValid}
+        />
       </div>
     </AnimatedMain>
   )

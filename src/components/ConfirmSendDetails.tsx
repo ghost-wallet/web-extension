@@ -60,7 +60,7 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
 
         <ErrorMessage message={error || ''} />
 
-        <div className="flex pt-12">
+        <div className="flex pt-12 pb-20">
           <NextButton onClick={onConfirm} text={'Confirm Send'} />
         </div>
       </div>

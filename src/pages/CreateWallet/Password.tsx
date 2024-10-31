@@ -50,9 +50,10 @@ export default function Password({ onPasswordSet }: PasswordProps) {
   }
 
   return (
-    <AnimatedMain showConnectingMessage={false}>
+    <AnimatedMain showConnectingMessage={false} className="flex flex-col h-screen">
       <Header title="Create Password" showBackButton={true} />
-      <form className="flex flex-col items-center pt-36 px-6">
+
+      <div className="flex flex-col items-center flex-grow justify-center px-4 space-y-4">
         <PasswordInput
           id="password"
           value={password}
@@ -65,9 +66,11 @@ export default function Password({ onPasswordSet }: PasswordProps) {
           onChange={handleConfirmPasswordChange}
           placeholder="Confirm password"
         />
-        {error && <ErrorMessage message={error} />}
-      </form>
-      <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
+
+        <div className="h-6">{error && <ErrorMessage message={error} />}</div>
+      </div>
+
+      <div className="w-full px-4 pb-10">
         <NextButton onClick={handleContinueClick} buttonEnabled={isValid} />
       </div>
     </AnimatedMain>

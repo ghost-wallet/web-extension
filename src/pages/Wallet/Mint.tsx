@@ -10,6 +10,7 @@ import TokenDetails from '@/pages/Wallet/Mint/TokenDetails'
 import SearchBar from '@/pages/Wallet/Mint/SearchBar'
 import ErrorMessage from '@/components/ErrorMessage'
 import Spinner from '@/components/Spinner'
+import NextButton from '@/components/buttons/NextButton'
 
 export default function Mint() {
   const [token, setToken] = useState<KRC20TokenResponse | null>(null)
@@ -73,18 +74,12 @@ export default function Mint() {
         </div>
         <div className="px-4">{token && <TokenDetails token={token} />}</div>
         {token && (
-          <div className="px-4 pt-2">
-            <button
+          <div className="px-4 pt-2 pb-20">
+            <NextButton
+              text={getButtonLabel()}
+              buttonEnabled={isMintable() || token.state !== 'unused'}
               onClick={handleContinue}
-              disabled={!isMintable() || token.state === 'unused'}
-              className={`w-full h-[52px] text-lg font-semibold rounded-[25px] ${
-                isMintable() && token.state !== 'unused'
-                  ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
-                  : 'bg-muted text-mutedtext cursor-not-allowed'
-              }`}
-            >
-              {getButtonLabel()}
-            </button>
+            />
           </div>
         )}
       </AnimatedMain>

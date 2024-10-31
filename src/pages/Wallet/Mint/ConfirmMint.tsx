@@ -59,21 +59,21 @@ export default function ConfirmMint() {
           <div className="w-full max-w-md space-y-1 pt-2">
             <div className="flex justify-between mt-10">
               <span className="text-mutedtext text-base">Receive amount</span>
-              <span className="text-mutedtext text-base">
+              <span className="text-mutedtext text-base text-right">
                 {receiveAmount.toLocaleString()} {token.tick}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Mint cost</span>
-              <span className="text-mutedtext text-base">{payAmount?.toLocaleString()} KAS</span>
+              <span className="text-mutedtext text-base text-right">{payAmount?.toLocaleString()} KAS</span>
             </div>
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Service fee</span>
-              <span className="text-mutedtext text-base">{serviceFee} KAS</span>
+              <span className="text-mutedtext text-base text-right">{serviceFee} KAS</span>
             </div>
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Network fee</span>
-              <span className="text-mutedtext text-base">
+              <span className="text-mutedtext text-base text-right">
                 {networkFee ? `${networkFee} KAS` : 'Calculating...'}
               </span>
             </div>
@@ -81,7 +81,7 @@ export default function ConfirmMint() {
             <TotalCostToMint totalFees={totalFees} />
           </div>
         </div>
-        <div className="px-4 pt-12">
+        <div className="px-4 pt-12 pb-20">
           <NextButton onClick={handleMint} text="Confirm Mint" />
         </div>
       </AnimatedMain>

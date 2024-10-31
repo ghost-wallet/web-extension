@@ -13,6 +13,9 @@ interface AnimatedMainProps {
 const AnimatedMain: React.FC<AnimatedMainProps> = ({ children, className, showConnectingMessage = true }) => {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   return (
     <>

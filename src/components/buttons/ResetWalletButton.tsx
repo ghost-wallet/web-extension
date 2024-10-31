@@ -42,7 +42,7 @@ const ResetWalletButton: React.FC = () => {
 
       {error && <ErrorMessage message={error} />}
 
-      <div className="w-full pb-10">
+      <div className="w-full pb-20">
         <button
           type="button"
           disabled={!isChecked}
