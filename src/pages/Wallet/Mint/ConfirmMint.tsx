@@ -9,6 +9,7 @@ import CryptoImage from '@/components/CryptoImage'
 import SpinnerPage from '@/components/SpinnerPage'
 import NextButton from '@/components/buttons/NextButton'
 import TotalCostToMint from '@/pages/Wallet/Mint/TotalCostToMint'
+import { useQueryClient } from '@tanstack/react-query'
 
 export default function ConfirmMint() {
   const location = useLocation()
@@ -25,8 +26,11 @@ export default function ConfirmMint() {
   }
   const [isMinting, setIsMinting] = useState(false)
 
+  const queryClient = useQueryClient()
+
   const handleMint = async () => {
     setIsMinting(true)
+    queryClient.invalidateQueries({ queryKey: ['krc20Tokens'] })
     try {
       const transactionIds = await request('account:doKRC20Mint', [token.tick, feeRate, payAmount])
       navigate(`/mint/${token.tick}/network-fee/review/minted`, {
