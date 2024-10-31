@@ -16,11 +16,14 @@ const manifest: any = {
   action: {
     default_popup: 'index.html',
   },
+  side_panel: {
+    default_path: 'index.html'
+  },
   background: {
     service_worker: 'src/wallet/initializeWallet.ts',
     type: 'module',
   },
-  permissions: ['storage', 'alarms', 'notifications'],
+  permissions: ['storage', 'alarms', 'notifications', 'sidePanel'],
   browser_specific_settings: {
     gecko: {
       id: 'ghostappwallet@gmail.com',

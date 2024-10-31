@@ -6,6 +6,7 @@ import ConfirmSendDetails from '@/components/ConfirmSendDetails'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import SpinnerPage from '@/components/SpinnerPage'
 import { KRC20TokenRequest } from '@/utils/interfaces'
+import { useQueryClient } from '@tanstack/react-query'
 
 const ConfirmSendKRC20: React.FC = () => {
   const location = useLocation()
@@ -42,6 +43,8 @@ const ConfirmSendKRC20: React.FC = () => {
     return () => clearInterval(intervalId)
   }, [fetchEstimatedFee])
 
+  const queryClient = useQueryClient()
+
   const handleConfirmClick = useCallback(() => {
     if (!krc20Info) {
       setError('Missing token information. Please try again.')
@@ -57,6 +60,7 @@ const ConfirmSendKRC20: React.FC = () => {
         navigate(`/send/${token.tick}/confirm/sent`, {
           state: { token, amount, recipient, txnId },
         })
+        queryClient.invalidateQueries({ queryKey: ['krc20Tokens'] })
       })
       .catch((err) => {
         setError(`Error: ${err}`)
