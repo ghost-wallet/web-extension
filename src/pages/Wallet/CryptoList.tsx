@@ -45,10 +45,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
 
   const isLoading = kaspaPrice.isPending || krc20TokensQuery.isPending
   const error = kaspaPrice.error || krc20TokensQuery.error
-
   const kasPrice = kaspaPrice.data ?? 0
-
-  console.log(kaspaPrice.data)
 
   const kaspaCrypto: KaspaToken = useMemo(
     () => ({

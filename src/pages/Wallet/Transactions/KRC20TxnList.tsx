@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react'
-import TransactionItem from './TransactionItem'
+import React, { useRef } from 'react'
+import KRC20TxnItem from './KRC20TxnItem'
 import Spinner from '@/components/Spinner'
 import { KRC20Transaction } from '@/utils/interfaces'
-import { groupTransactionsByDate } from '@/utils/grouping'
+import { groupKRC20TransactionsByDate } from '@/utils/grouping'
+import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 
 interface TransactionListProps {
   transactions: KRC20Transaction[]
@@ -10,32 +11,11 @@ interface TransactionListProps {
   loadingMore: boolean
 }
 
-export default function TransactionList({ transactions, loadMore, loadingMore }: TransactionListProps) {
+export default function KRC20TxnList({ transactions, loadMore, loadingMore }: TransactionListProps) {
   const lastElementRef = useRef<HTMLLIElement | null>(null)
+  const groupedTransactions = groupKRC20TransactionsByDate(transactions)
 
-  const groupedTransactions = groupTransactionsByDate(transactions)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      async (entries) => {
-        const lastEntry = entries[0]
-        if (lastEntry.isIntersecting && !loadingMore) {
-          loadMore()
-        }
-      },
-      { threshold: 1.0 },
-    )
-
-    if (lastElementRef.current) {
-      observer.observe(lastElementRef.current)
-    }
-
-    return () => {
-      if (lastElementRef.current) {
-        observer.unobserve(lastElementRef.current)
-      }
-    }
-  }, [loadingMore, loadMore])
+  useInfiniteScroll(loadingMore, loadMore, lastElementRef)
 
   return (
     <div className="pb-24">
@@ -49,7 +29,7 @@ export default function TransactionList({ transactions, loadMore, loadingMore }:
                   groupIndex === Object.keys(groupedTransactions).length - 1 &&
                   index === transactions.length - 1
                 return (
-                  <TransactionItem
+                  <KRC20TxnItem
                     key={transaction.hashRev}
                     operation={transaction}
                     ref={isLastElement ? lastElementRef : null}

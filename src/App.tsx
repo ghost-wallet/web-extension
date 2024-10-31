@@ -22,7 +22,7 @@ import CreateMint from '@/pages/Wallet/Mint/CreateMint'
 import MintNetworkFee from '@/pages/Wallet/Mint/MintNetworkFee'
 import ConfirmMint from '@/pages/Wallet/Mint/ConfirmMint'
 import Minted from '@/pages/Wallet/Mint/Minted'
-import TransactionDetails from '@/pages/Wallet/Transactions/TransactionDetails'
+import KRC20TxnDetails from '@/pages/Wallet/Transactions/KRC20TxnDetails'
 import AboutPage from '@/pages/Wallet/Settings/About/AboutPage'
 import { QueryClient } from '@tanstack/react-query'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
@@ -57,7 +57,7 @@ function App() {
               <Route path="/settings/reset" element={<ConfirmReset />} />
               <Route path="/settings/about" element={<AboutPage />} />
               <Route path="/transactions" element={<Transactions />} />
-              <Route path="/transactions/details" element={<TransactionDetails />} />
+              <Route path="/transactions/details" element={<KRC20TxnDetails />} />
               <Route path="/send" element={<Send />} />
               <Route path="/send/:tick" element={<SendCrypto />} />
               <Route path="/send/:tick/confirm" element={<ConfirmSend />} />

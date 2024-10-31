@@ -6,7 +6,7 @@ import AnimatedMain from '@/components/AnimatedMain'
 import TransactionIcon from '@/pages/Wallet/Transactions/TransactionIcon'
 import TransactionAmountDisplay from '@/pages/Wallet/Transactions/TransactionAmountDisplay'
 
-export default function TransactionDetails() {
+export default function KRC20TxnDetails() {
   const location = useLocation()
   const { amt, tick, hashRev, operationType, isMint, isReceived } = location.state || {}
 

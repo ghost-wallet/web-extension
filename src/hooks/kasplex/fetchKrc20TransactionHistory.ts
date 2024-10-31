@@ -2,7 +2,6 @@ import axios from 'axios'
 import { getApiBase } from '@/hooks/kasplex/fetchHelper'
 import { KRC20TransactionList } from '@/utils/interfaces'
 
-//TODO cache transaction history
 export const fetchKRC20TransactionHistory = async (
   selectedNode: number,
   address: string,

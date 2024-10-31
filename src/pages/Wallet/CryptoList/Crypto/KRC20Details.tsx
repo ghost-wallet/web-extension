@@ -15,7 +15,7 @@ import Spinner from '@/components/Spinner'
 import TokenPrice from '@/components/TokenPrice'
 import { Token } from '@/utils/interfaces'
 import { useQuery } from '@tanstack/react-query'
-import TransactionsHistory from '../../Transactions/TransactionsHistory'
+import KRC20TxnHistory from '../../Transactions/KRC20TxnHistory'
 
 interface CryptoDetailsTableProps {
   token: Token
@@ -36,26 +36,6 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
   const { settings } = useSettings()
   const kaspaPrice = useKaspaPrice(settings.currency)
   const currencySymbol = getCurrencySymbol(settings.currency)
-
-  // const [krc20Token, setKrc20Token] = useState<any>(null)
-
-  // useEffect(() => {
-  //   window.scrollTo(0, 0)
-  //   if (tick !== 'KASPA') {
-  //     const fetchTokenInfo = async () => {
-  //       try {
-  //         const tokenInfo = await fetchKrc20TokenInfo(0, tick)
-  //         if (tokenInfo) {
-  //           setKrc20Token(tokenInfo)
-  //         }
-  //       } catch (error) {
-  //         console.error('Error fetching KRC20 token info:', error)
-  //       }
-  //     }
-
-  //     fetchTokenInfo()
-  //   }
-  // }, [tick])
 
   const krc20TokenQuery = useQuery({
     queryKey: ['krc20TokenInfo', { selectedNode: settings.selectedNode, ticker: token.tick }],
@@ -130,7 +110,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
             ]}
             className="mt-6 mb-6"
           />
-          <TransactionsHistory tick={krc20Token.tick} />
+          <KRC20TxnHistory tick={krc20Token.tick} />
         </>
       ) : (
         <Spinner />

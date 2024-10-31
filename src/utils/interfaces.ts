@@ -33,13 +33,39 @@ export interface KaspaToken {
   floorPrice: number
 }
 
-// Cryptos: Combines Kaspa with KRC20 Tokens
+/**
+ * Requests and responses for using Kaspa API. Official documentation:
+ * https://api.kaspa.org
+ */
+export interface KaspaTransactionList {
+  result: KaspaTransaction[]
+}
+
+export interface KaspaTransaction {
+  transaction_id: string
+  block_time: number
+  outputs: KaspaTransactionOutput[]
+}
+
+export interface KaspaTransactionOutput {
+  transaction_id: string
+  index: number
+  amount: number
+  script_public_key_address: string
+}
+
+/**
+ * Our own interface for building token data to account for Kaspa (Kaspa is not a KRC20 token).
+ */
 export interface Token extends TokenFromApi {
   floorPrice: number
   isKaspa?: undefined
 }
 
-// Kasplex & KRC20
+/**
+ * Requests and responses for using Kasplex API. Official documentation:
+ * https://docs.kasplex.org
+ */
 export interface KRC20TokenList {
   result: TokenFromApi[]
   next: string | null
@@ -71,6 +97,14 @@ export interface KRC20TokenRequest {
   script: string
 }
 
+export interface KRC20MintEstimateResult {
+  totalFees: string
+  mintFees: string
+  extraNetworkFees: string
+  serviceFee: string
+  commitTotal: string
+}
+
 /**
  * KRC-20 token response from the Kasplex Indexer API. Official documentation:
  * https://docs.kasplex.org/tools-and-reference/kasplex-indexer-api/krc-20/get-krc-20-info
@@ -93,17 +127,12 @@ export interface KRC20TokenResponse {
   mintTotal: number
 }
 
-// KAS.FYI
+/**
+ * Requests and responses for using Kas.FYI API. They don't have official documentation.
+ * https://api-v2-do.kas.fyi and https://kas.fyi
+ */
 export interface KasFyiToken {
   price?: {
     floorPrice?: number
   }
-}
-
-export interface KRC20MintEstimateResult {
-  totalFees: string
-  mintFees: string
-  extraNetworkFees: string
-  serviceFee: string
-  commitTotal: string
 }

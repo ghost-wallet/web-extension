@@ -1,5 +1,5 @@
 import React from 'react'
-import TransactionList from '@/pages/Wallet/Transactions/TransactionList'
+import KRC20TxnList from '@/pages/Wallet/Transactions/KRC20TxnList'
 import Spinner from '@/components/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import { useKRC20Transactions } from '@/hooks/kasplex/useKRC20Transactions'
@@ -8,7 +8,7 @@ interface TransactionsHistoryProps {
   tick?: string
 }
 
-const TransactionsHistory: React.FC<TransactionsHistoryProps> = ({ tick }) => {
+const KRC20TxnHistory: React.FC<TransactionsHistoryProps> = ({ tick }) => {
   const query = useKRC20Transactions(tick)
 
   const transactions = query.data ? query.data.pages.flatMap((page) => page.result) : []
@@ -41,8 +41,8 @@ const TransactionsHistory: React.FC<TransactionsHistoryProps> = ({ tick }) => {
   }
 
   return (
-    <TransactionList transactions={transactions} loadMore={loadMoreTransactions} loadingMore={loadingMore} />
+    <KRC20TxnList transactions={transactions} loadMore={loadMoreTransactions} loadingMore={loadingMore} />
   )
 }
 
-export default TransactionsHistory
+export default KRC20TxnHistory

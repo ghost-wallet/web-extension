@@ -5,6 +5,7 @@ import { getCurrencySymbol } from '@/utils/currencies'
 import TableSection from '@/components/table/TableSection'
 import TokenPrice from '@/components/TokenPrice'
 import useKaspa from '@/hooks/contexts/useKaspa'
+import KaspaTxnHistory from '@/pages/Wallet/Transactions/KaspaTxnHistory'
 
 const KaspaDetails: React.FC = () => {
   const { settings } = useSettings()
@@ -42,8 +43,9 @@ const KaspaDetails: React.FC = () => {
             ),
           },
         ]}
-        className="mt-6 mb-2"
+        className="mt-6 mb-6"
       />
+      <KaspaTxnHistory />
     </div>
   )
 }

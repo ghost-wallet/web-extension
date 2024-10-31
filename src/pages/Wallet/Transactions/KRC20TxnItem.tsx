@@ -13,7 +13,7 @@ interface TransactionItemProps {
   ref?: React.Ref<HTMLLIElement>
 }
 
-const TransactionItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ operation }, ref) => {
+const KRC20TxnItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ operation }, ref) => {
   const navigate = useNavigate()
   const { kaspa } = useKaspa()
   const address = kaspa.addresses[0]
@@ -59,4 +59,4 @@ const TransactionItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ opera
   )
 })
 
-export default TransactionItem
+export default KRC20TxnItem
