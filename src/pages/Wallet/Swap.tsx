@@ -140,7 +140,7 @@ export default function Swap() {
 
       {isPayTokenSelectOpen && (
         <SwapTokenSelect
-          tokens={tokens}
+          tokens={tokens.filter((token) => token.symbol !== receiveToken?.symbol)} // Exclude receiveToken
           onSelectToken={selectToken}
           onClose={closePayTokenSelect}
           loading={loading}
@@ -150,7 +150,7 @@ export default function Swap() {
 
       {isReceiveTokenSelectOpen && (
         <SwapTokenSelect
-          tokens={tokens}
+          tokens={tokens.filter((token) => token.symbol !== payToken?.symbol)} // Exclude payToken
           onSelectToken={selectReceiveToken}
           onClose={closeReceiveTokenSelect}
           loading={loading}
