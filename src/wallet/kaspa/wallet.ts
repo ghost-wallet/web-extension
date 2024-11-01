@@ -19,7 +19,9 @@ export enum Status {
 
 export default class Wallet extends EventEmitter {
   status: Status = Status.Uninitialized
-  encryptedKey?: string // Define encryptedKey as a property
+  encryptedKey?: string
+  private lockTimeout?: NodeJS.Timeout // Timeout reference to clear if needed
+  private static readonly LOCK_TIMEOUT_MS = 30 * 60 * 1000 // Timeout duration - 30 minutes
 
   constructor(readyCallback: () => void) {
     super()
@@ -97,11 +99,13 @@ export default class Wallet extends EventEmitter {
       encryptedKey: this.encryptedKey,
     })
     await this.sync()
+
+    // Set the lock timeout after unlocking
+    this.setLockTimeout()
+
     return decryptedKey
   }
 
-  // TODO: export should return KeyManager.getKey(), which is the seed phrase
-  // no password necessary
   async export(password: string) {
     const wallet = await LocalStorage.get('wallet', undefined)
     if (!wallet) {
@@ -109,6 +113,17 @@ export default class Wallet extends EventEmitter {
       throw Error('Wallet is not initialized')
     }
     return decryptXChaCha20Poly1305(wallet.encryptedKey, password)
+  }
+
+  private setLockTimeout() {
+    if (this.lockTimeout) {
+      clearTimeout(this.lockTimeout)
+    }
+
+    this.lockTimeout = setTimeout(async () => {
+      console.log('[Wallet] Locking wallet after timeout.')
+      await this.lock()
+    }, Wallet.LOCK_TIMEOUT_MS)
   }
 
   async lock() {
