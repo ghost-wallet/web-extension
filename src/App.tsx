@@ -11,7 +11,7 @@ import Send from '@/pages/Wallet/Send'
 import Receive from '@/pages/Wallet/Receive'
 import Swap from '@/pages/Wallet/Swap'
 import SendCrypto from '@/pages/Wallet/Send/SendCrypto'
-import ConfirmSend from '@/pages/Wallet/Send/ConfirmSend'
+import ConfirmSendKaspa from '@/pages/Wallet/Send/ConfirmSendKaspa'
 import ConfirmSendKRC20 from '@/pages/Wallet/Send/ConfirmSendKRC20'
 import Sent from '@/pages/Wallet/Send/Sent'
 import ConfirmReset from '@/pages/Wallet/Settings/Reset/ConfirmReset'
@@ -27,6 +27,7 @@ import AboutPage from '@/pages/Wallet/Settings/About/AboutPage'
 import { QueryClient } from '@tanstack/react-query'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
+import NetworkFeeSelect from '@/pages/Wallet/Send/NetworkFeeSelect'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,9 +61,10 @@ function App() {
               <Route path="/transactions/details" element={<KRC20TxnDetails />} />
               <Route path="/send" element={<Send />} />
               <Route path="/send/:tick" element={<SendCrypto />} />
-              <Route path="/send/:tick/confirm" element={<ConfirmSend />} />
-              <Route path="/send/:tick/confirmkrc20" element={<ConfirmSendKRC20 />} />
-              <Route path="/send/:tick/confirm/sent" element={<Sent />} />
+              <Route path="/send/:tick/network-fee" element={<NetworkFeeSelect />} />
+              <Route path="/send/:tick/network-fee/confirm" element={<ConfirmSendKaspa />} />
+              <Route path="/send/:tick/network-fee/confirmkrc20" element={<ConfirmSendKRC20 />} />
+              <Route path="/send/:tick/sent" element={<Sent />} />
               <Route path="/receive" element={<Receive />} />
               <Route path="/swap" element={<Swap />} />
               <Route path="/mint" element={<Mint />} />

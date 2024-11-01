@@ -42,7 +42,6 @@ export default class Router {
         account.transactions.estimateKaspaTransactionFee(outputs, feeRate, fee),
       'account:create': (outputs, feeRate, fee, inputs) =>
         account.transactions.create(outputs, feeRate, fee, inputs),
-      // TODO update the `account:sign` mapping to not require password
       'account:sign': (transactions) => account.transactions.sign(transactions),
       'account:submitContextful': (transactions) => account.transactions.submitContextful(transactions),
       'account:submitKaspaTransaction': (transactions) =>

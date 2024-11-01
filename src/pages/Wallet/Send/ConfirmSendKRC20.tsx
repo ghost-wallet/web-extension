@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
-import ConfirmSendDetails from '@/components/ConfirmSendDetails'
+import ConfirmSendDetails from '@/pages/Wallet/Send/ConfirmSendDetails'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import SpinnerPage from '@/components/SpinnerPage'
 import { KRC20TokenRequest } from '@/utils/interfaces'
@@ -57,7 +57,7 @@ const ConfirmSendKRC20: React.FC = () => {
       .then((response) => {
         console.log('[ConfirmSendKRC20] write inscription success. Response:', response)
         const txnId = response[1]
-        navigate(`/send/${token.tick}/confirm/sent`, {
+        navigate(`/send/${token.tick}/sent`, {
           state: { token, amount, recipient, txnId },
         })
         queryClient.invalidateQueries({ queryKey: ['krc20Tokens'] })

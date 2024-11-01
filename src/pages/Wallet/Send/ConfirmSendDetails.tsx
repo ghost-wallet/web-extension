@@ -3,7 +3,7 @@ import CryptoImage from '@/components/CryptoImage'
 import RecipientAddress from '@/components/RecipientAddress'
 import Header from '@/components/Header'
 import ErrorMessage from '@/components/ErrorMessage'
-import KRC20NetworkFee from '@/pages/Wallet/Send/KRC20NetworkFee'
+import AnimatedNetworkFee from '@/pages/Wallet/Send/AnimatedNetworkFee'
 import TableSection from '@/components/table/TableSection'
 import NextButton from '@/components/buttons/NextButton'
 
@@ -27,7 +27,6 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
   onConfirm,
   error,
 }) => {
-  // Create rows for the TableSection
   const tableRows = [
     {
       label: 'To',
@@ -40,7 +39,7 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
     },
     {
       label: 'Network fee',
-      value: <KRC20NetworkFee fee={fee} />,
+      value: <AnimatedNetworkFee fee={fee} />,
     },
   ]
 

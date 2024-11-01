@@ -2,14 +2,14 @@ import React, { useCallback, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
-import ConfirmSendDetails from '@/components/ConfirmSendDetails'
+import ConfirmSendDetails from '@/pages/Wallet/Send/ConfirmSendDetails'
 import Spinner from '@/components/Spinner'
 import useKaspa from '@/hooks/contexts/useKaspa'
 
-const ConfirmSend: React.FC = () => {
+const ConfirmSendKaspa: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { token, recipient, amount, transactions = [], fee } = location.state || {}
+  const { token, recipient, amount, outputs, fee, feeRate } = location.state || {}
   const { request } = useKaspa()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -19,20 +19,14 @@ const ConfirmSend: React.FC = () => {
       setLoading(true)
       setError('')
 
-      if (!transactions || transactions.length === 0) {
-        throw new Error('No transactions found')
+      const [generatedTransactions] = await request('account:create', [outputs, feeRate, fee])
+      if (!generatedTransactions || generatedTransactions.length === 0) {
+        throw new Error('Failed to create transactions')
       }
 
-      let updatedTransactions = transactions ? [...transactions] : []
-      const parsedTransactions = JSON.parse(transactions[0])
-      if (!parsedTransactions?.inputs?.length) {
-        throw new Error('No inputs found in transaction')
-      }
+      const [txnId] = await request('account:submitKaspaTransaction', [generatedTransactions])
 
-      const submitContextful = await request('account:submitKaspaTransaction', [updatedTransactions])
-      const txnId = submitContextful[0]
-
-      navigate(`/send/${token.tick}/confirm/sent`, {
+      navigate(`/send/${token.tick}/sent`, {
         state: { token, amount, recipient, txnId },
       })
     } catch (err) {
@@ -41,7 +35,7 @@ const ConfirmSend: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }, [request, transactions, navigate, token, amount, recipient])
+  }, [request, outputs, feeRate, fee, navigate, token, amount, recipient])
 
   return (
     <>
@@ -68,4 +62,4 @@ const ConfirmSend: React.FC = () => {
   )
 }
 
-export default ConfirmSend
+export default ConfirmSendKaspa

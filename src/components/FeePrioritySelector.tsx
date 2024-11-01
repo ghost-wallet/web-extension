@@ -28,7 +28,7 @@ const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
 
   return (
     <>
-      <div className="w-full flex text-mutedtext text-base pt-2 px-4 gap-2">
+      <div className="w-full flex text-mutedtext text-base py-2 px-4 gap-2">
         {FEE_TYPE_LABELS.map((type, index) => (
           <button
             key={type}

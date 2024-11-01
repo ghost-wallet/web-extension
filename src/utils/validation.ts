@@ -7,7 +7,9 @@ export const validateRecipient = async (
 ) => {
   try {
     const isValid = await request('wallet:validate', [address])
-    setRecipientError(isValid ? null : 'Invalid Kaspa address')
+    setRecipientError(
+      isValid ? null : 'Invalid Kaspa address. Kaspa addresses should start with the kaspa: prefix.',
+    )
   } catch (err) {
     console.error('Error validating address:', err)
     setRecipientError('Error validating address.')

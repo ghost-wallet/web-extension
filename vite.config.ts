@@ -7,7 +7,7 @@ import * as path from 'path'
 const manifest: any = {
   manifest_version: 3,
   name: 'Ghost',
-  version: '0.0.1',
+  version: '0.0.2',
   icons: {
     48: 'assets/ghost-outline-thick-48.png',
     128: 'assets/ghost-outline-128.png',

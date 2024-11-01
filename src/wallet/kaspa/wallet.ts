@@ -133,7 +133,6 @@ export default class Wallet extends EventEmitter {
   }
 
   async reset() {
-    // TODO: see if more things need to be reset
     await SessionStorage.clear()
     await LocalStorage.remove('wallet')
     await this.sync()
