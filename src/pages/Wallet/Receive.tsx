@@ -1,14 +1,33 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import QRCode from 'react-qr-code'
 import KaspaAddress from '@/components/KaspaAddress'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import Header from '@/components/Header'
+import Spinner from '@/components/Spinner'
 
 export default function Receive() {
   const { kaspa } = useKaspa()
-  const kaspaAddress = kaspa.addresses[0] || ''
+  const [kaspaAddress, setKaspaAddress] = useState(kaspa.addresses[0] || '')
+
+  useEffect(() => {
+    setKaspaAddress(kaspa.addresses[0] || '')
+  }, [kaspa.addresses])
+
+  if (!kaspaAddress) {
+    return (
+      <>
+        <AnimatedMain>
+          <Header title="Receive Address" showBackButton={true} />
+          <div className="flex items-center justify-center w-full h-full">
+            <Spinner />
+          </div>
+        </AnimatedMain>
+        <BottomNav />
+      </>
+    )
+  }
 
   return (
     <>
