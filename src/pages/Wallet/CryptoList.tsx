@@ -37,8 +37,8 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const krc20TokensQuery = useQuery({
     queryKey: ['krc20Tokens', { selectedNode: settings.selectedNode, address: kaspa.addresses[0] }],
     queryFn: krc20TokenqueryFn,
-    staleTime: 600_000, // 10 minutes
-    refetchInterval: 600_000,
+    staleTime: 3_000, // 3 seconds
+    refetchInterval: 3_000,
     //refetchOnMount: false,
     //refetchOnWindowFocus: false
   })

@@ -60,10 +60,10 @@ export default function Mint() {
 
   return (
     <>
-      <AnimatedMain>
+      <AnimatedMain className="flex flex-col h-screen">
         <Header title="Mint" showBackButton={true} />
-        <div className="px-4 -mb-6">
-          <SearchBar onSearch={handleSearch} />
+        <SearchBar onSearch={handleSearch} />
+        <div className="flex flex-col flex-grow px-4 -mt-6">
           {loading ? (
             <div className="mt-10">
               <Spinner />
@@ -71,8 +71,8 @@ export default function Mint() {
           ) : (
             <ErrorMessage message={error} />
           )}
+          {token && <TokenDetails token={token} />}
         </div>
-        <div className="px-4">{token && <TokenDetails token={token} />}</div>
         {token && (
           <div className="px-4 pt-2 pb-20">
             <NextButton

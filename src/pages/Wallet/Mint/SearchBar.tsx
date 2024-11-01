@@ -23,24 +23,25 @@ const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch }) => {
   const isInputEmpty = ticker.trim() === ''
 
   return (
-    <div className="relative w-full">
-      <input
-        type="text"
-        value={ticker}
-        onChange={(e) => setTicker(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Enter token ticker"
-        className="bg-darkmuted w-full p-3 pr-12 border border-muted rounded-lg text-lg text-primarytext h-12"
-      />
-      <button
-        onClick={handleSearch}
-        disabled={isInputEmpty}
-        className={`absolute right-0 top-0 h-full w-12 flex items-center justify-center 
-          ${isInputEmpty ? 'bg-slightmuted text-primarytext' : 'bg-primary text-secondarytext'}
-          rounded-tr-lg rounded-br-lg border-t border-r border-b border-muted`} // Matching borders with input field
-      >
-        <MagnifyingGlassIcon className="h-6 w-6" />
-      </button>
+    <div className="flex items-center w-full px-4">
+      <div className="flex w-full border border-muted rounded-lg overflow-hidden">
+        <input
+          type="text"
+          value={ticker}
+          onChange={(e) => setTicker(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Enter token ticker"
+          className="bg-darkmuted w-full p-3 text-lg text-primarytext h-12"
+        />
+        <button
+          onClick={handleSearch}
+          disabled={isInputEmpty}
+          className={`h-12 w-12 flex items-center justify-center 
+        ${isInputEmpty ? 'bg-slightmuted text-primarytext' : 'bg-primary text-secondarytext'}`}
+        >
+          <MagnifyingGlassIcon className="h-6 w-6" />
+        </button>
+      </div>
     </div>
   )
 }

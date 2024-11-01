@@ -56,9 +56,9 @@ export default function ConfirmMint() {
 
   return (
     <>
-      <AnimatedMain>
+      <AnimatedMain className="flex flex-col h-screen">
         <Header title="Confirm Mint" showBackButton={true} />
-        <div className="px-6">
+        <div className="flex flex-col flex-grow px-6">
           <CryptoImage ticker={token.tick} size="large" />
           <div className="w-full max-w-md space-y-1 pt-2">
             <div className="flex justify-between mt-10">
@@ -85,7 +85,7 @@ export default function ConfirmMint() {
             <TotalCostToMint totalFees={totalFees} />
           </div>
         </div>
-        <div className="px-4 pt-12 pb-20">
+        <div className="w-full px-4 pb-20">
           <NextButton onClick={handleMint} text="Confirm Mint" />
         </div>
       </AnimatedMain>

@@ -67,9 +67,9 @@ export default function CreateMint() {
 
   return (
     <>
-      <AnimatedMain>
+      <AnimatedMain className="flex flex-col h-screen">
         <Header title={`Mint ${token.tick}`} showBackButton={true} />
-        <div className="px-4">
+        <div className="flex flex-col flex-grow  px-4">
           <CryptoImage ticker={token.tick} size={'large'} />
           <MintAmountInput
             mintAmount={mintAmount}
@@ -82,7 +82,7 @@ export default function CreateMint() {
         <div className="px-4 mt-4" style={{ height: '24px' }}>
           {showError && <ErrorMessage message={error} />}
         </div>
-        <div className="px-4 pt-4 pb-20">
+        <div className="w-full px-4 pb-20">
           <NextButton buttonEnabled={isMintAmountValid} showError={showError} onClick={handleNext} />
         </div>
       </AnimatedMain>
