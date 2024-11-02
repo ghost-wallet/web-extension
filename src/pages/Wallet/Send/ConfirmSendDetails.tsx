@@ -46,22 +46,22 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
   return (
     <>
       <Header title="Confirm Send" showBackButton={true} />
-
-      <CryptoImage ticker={token.tick} size={'large'} />
-      <div className="text-primarytext text-center p-2">
-        <p className="text-lg">
-          {amount} {token.tick}
-        </p>
-      </div>
-
-      <div className="p-4">
-        <TableSection rows={tableRows} className="mb-4" />
-
-        <ErrorMessage message={error || ''} />
-
-        <div className="flex pt-12 pb-20">
-          <NextButton onClick={onConfirm} text={'Confirm Send'} />
+      <div className="flex flex-col items-center flex-grow justify-center">
+        <CryptoImage ticker={token.tick} size={'large'} />
+        <div className="text-primarytext text-center p-2">
+          <p className="text-lg">
+            {amount} {token.tick}
+          </p>
         </div>
+
+        <div className="p-4">
+          <TableSection rows={tableRows} className="mb-4" />
+
+          <ErrorMessage message={error || ''} />
+        </div>
+      </div>
+      <div className="px-4 pb-20">
+        <NextButton onClick={onConfirm} text={'Confirm Send'} />
       </div>
     </>
   )

@@ -73,7 +73,7 @@ const ConfirmSendKRC20: React.FC = () => {
 
   return (
     <>
-      <AnimatedMain>
+      <AnimatedMain className="flex flex-col h-screen">
         {loading ? (
           <SpinnerPage displayText={`Transferring ${amount.toLocaleString()} ${token.tick}...`} />
         ) : (

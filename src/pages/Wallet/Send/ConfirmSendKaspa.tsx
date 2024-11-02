@@ -39,7 +39,7 @@ const ConfirmSendKaspa: React.FC = () => {
 
   return (
     <>
-      <AnimatedMain>
+      <AnimatedMain className="flex flex-col h-screen">
         {loading ? (
           <div className="flex justify-center items-center h-full">
             <Spinner />

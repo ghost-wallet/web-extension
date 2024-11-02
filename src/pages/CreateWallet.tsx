@@ -47,11 +47,6 @@ export default function CreateWallet() {
     try {
       setLoading(true)
       await request('wallet:import', [mnemonic, password])
-
-      if (flowType === 'import') {
-        await request('account:scan', [])
-      }
-
       navigate('/wallet')
     } catch (error) {
       console.error('Error setting up wallet:', error)
