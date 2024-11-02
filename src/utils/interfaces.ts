@@ -1,4 +1,7 @@
-// Kaspa WASM Requests & Responses
+/**
+ * Requests and responses for WASM. Official documentation:
+ * https://api.kaspa.org
+ */
 export interface UTXO {
   amount: number
   transaction: string
@@ -16,21 +19,6 @@ export interface CustomSignature {
   index: number
   signer: string
   script?: string
-}
-
-export interface TokenFromApi {
-  tick: string
-  opScoreMod: string
-  balance: string
-  dec: string
-}
-
-export interface KaspaToken {
-  isKaspa: true
-  tick: 'KASPA'
-  balance: number
-  dec: number
-  floorPrice: number
 }
 
 /**
@@ -55,6 +43,21 @@ export interface KaspaTransactionOutput {
 /**
  * Our own interface for building token data to account for Kaspa (Kaspa is not a KRC20 token).
  */
+export interface TokenFromApi {
+  tick: string
+  opScoreMod: string
+  balance: string
+  dec: string
+}
+
+export interface KaspaToken {
+  isKaspa: true
+  tick: 'KASPA'
+  balance: number
+  dec: number
+  floorPrice: number
+}
+
 export interface Token extends TokenFromApi {
   isKaspa?: undefined
   floorPrice: number
@@ -139,4 +142,16 @@ export interface KasFyiToken {
 
 export interface KasFyiTokenList {
   results: KasFyiToken[]
+}
+
+/**
+ * Responses for KSPR Bot API.
+ */
+export interface KsprToken {
+  floor_price: number
+  change_24h: number
+}
+
+export interface KsprTokenResponse {
+  [symbol: string]: KsprToken
 }
