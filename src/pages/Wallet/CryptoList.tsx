@@ -12,6 +12,7 @@ import { fetchKrc20Tokens } from '@/hooks/kasplex/fetchKrc20Tokens'
 import { KaspaToken, Token } from '@/utils/interfaces'
 import { useQuery } from '@tanstack/react-query'
 import ErrorMessage from '@/components/ErrorMessage'
+import { fetchKasFyiTokenList } from '@/hooks/kasfyi/fetchKasFyiTokenList'
 
 interface CryptoListProps {
   onTotalValueChange: (value: number) => void
@@ -39,8 +40,13 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     queryFn: krc20TokenqueryFn,
     staleTime: 3_000, // 3 seconds
     refetchInterval: 3_000,
-    //refetchOnMount: false,
-    //refetchOnWindowFocus: false
+  })
+
+  const kasFyiTokenListQuery = useQuery({
+    queryKey: ['kasFyiTokenList', { selectedNode: settings.selectedNode, address: kaspa.addresses[0] }],
+    queryFn: fetchKasFyiTokenList,
+    staleTime: 300_000, // 5 minutes
+    refetchInterval: 300_000,
   })
 
   const isLoading = kaspaPrice.isPending || krc20TokensQuery.isPending
@@ -59,14 +65,23 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   )
 
   const tokens = useMemo(() => {
+    // Create a map for quick lookup of floor prices by ticker from kasFyiTokenListQuery
+    const floorPriceMap = kasFyiTokenListQuery.data?.results.reduce(
+      (acc, token) => {
+        acc[token.ticker] = token.price?.floorPrice ?? 0
+        return acc
+      },
+      {} as Record<string, number>,
+    )
+
     return [
       kaspaCrypto,
       ...(krc20TokensQuery.data?.map((token) => ({
         ...token,
-        floorPrice: token.floorPrice * kasPrice,
+        floorPrice: (floorPriceMap?.[token.tick] || 0) * kasPrice,
       })) ?? []),
     ]
-  }, [kaspaCrypto, krc20TokensQuery.data])
+  }, [kaspaCrypto, krc20TokensQuery.data, kasFyiTokenListQuery.data, kasPrice])
 
   useTotalValueCalculation(tokens, kaspaPrice.data!, onTotalValueChange)
 

@@ -6,7 +6,6 @@ import Header from '@/components/Header'
 import { KRC20TokenResponse } from '@/utils/interfaces'
 import { formatNumberWithDecimal } from '@/utils/formatting'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import ErrorMessage from '@/components/ErrorMessage'
 import CryptoImage from '@/components/CryptoImage'
 import MintAmountInput from '@/pages/Wallet/Mint/CreateMint/MintAmountInput'
 import MintSummary from '@/pages/Wallet/Mint/CreateMint/MintSummary'
@@ -14,6 +13,7 @@ import MintRateInfo from '@/pages/Wallet/Mint/CreateMint/MintRateInfo'
 import NextButton from '@/components/buttons/NextButton'
 import useMintErrorHandling from '@/pages/Wallet/Mint/CreateMint/hooks/useMintErrorHandling'
 import useMintValidation from '@/pages/Wallet/Mint/CreateMint/hooks/useMintValidation'
+import PopupMessageDialog from '@/components/PopupMessageDialog'
 
 export default function CreateMint() {
   const { kaspa } = useKaspa()
@@ -21,9 +21,10 @@ export default function CreateMint() {
   const location = useLocation()
   const token = location.state?.token as KRC20TokenResponse
 
-  const [mintAmount, setMintAmount] = useState<number | null>(null)
-  const totalMintCost = mintAmount ? formatNumberWithDecimal(token.lim, token.dec) * mintAmount : 0
+  const [mintAmount, setMintAmount] = useState<number | 0>(0)
+  const [showDialog, setShowDialog] = useState(false)
 
+  const totalMintCost = mintAmount ? formatNumberWithDecimal(token.lim, token.dec) * mintAmount : 0
   const mintRate = formatNumberWithDecimal(token.lim, token.dec)
   const totalSupply = formatNumberWithDecimal(token.max, token.dec)
   const availableSupply = formatNumberWithDecimal(token.max - token.minted, token.dec)
@@ -38,10 +39,10 @@ export default function CreateMint() {
     exceedsSupply,
     availableSupply,
   )
-  const showError = !!error
 
   const handleNext = () => {
-    if (isMintAmountValid && !showError) {
+    console.log('error:', error)
+    if (isMintAmountValid && !error) {
       navigate(`/mint/${token.tick}/network-fee`, {
         state: {
           token,
@@ -49,6 +50,9 @@ export default function CreateMint() {
           receiveAmount: totalMintCost,
         },
       })
+    } else {
+      console.log('there is indeed error')
+      setShowDialog(true)
     }
   }
 
@@ -59,7 +63,7 @@ export default function CreateMint() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     if (value === '') {
-      setMintAmount(null)
+      setMintAmount(0)
     } else if (/^\d+$/.test(value) && Number(value) <= 1000) {
       setMintAmount(Number(value))
     }
@@ -69,7 +73,7 @@ export default function CreateMint() {
     <>
       <AnimatedMain className="flex flex-col h-screen">
         <Header title={`Mint ${token.tick}`} showBackButton={true} />
-        <div className="flex flex-col flex-grow  px-4">
+        <div className="flex flex-col flex-grow px-4">
           <CryptoImage ticker={token.tick} size={'large'} />
           <MintAmountInput
             mintAmount={mintAmount}
@@ -79,14 +83,17 @@ export default function CreateMint() {
           <MintSummary totalMintCost={totalMintCost} mintAmount={mintAmount} tokenTick={token.tick} />
           <MintRateInfo mintRate={mintRate} tokenTick={token.tick} />
         </div>
-        <div className="px-4 mt-4" style={{ height: '24px' }}>
-          {showError && <ErrorMessage message={error} />}
-        </div>
         <div className="w-full px-4 pb-20">
-          <NextButton buttonEnabled={isMintAmountValid} showError={showError} onClick={handleNext} />
+          <NextButton buttonEnabled={true} onClick={handleNext} />
         </div>
       </AnimatedMain>
       <BottomNav />
+      <PopupMessageDialog
+        message={error}
+        onClose={() => setShowDialog(false)}
+        isOpen={showDialog}
+        title="Error"
+      />
     </>
   )
 }

@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { getApiBase } from '@/hooks/kasplex/fetchHelper'
 import { Token, KRC20TokenList } from '@/utils/interfaces'
-import { fetchKasFyiToken } from '@/hooks/kasfyi/fetchKasFyiToken'
 
 export const fetchKrc20Tokens = async (selectedNode: number, address: string) => {
   const apiBase = getApiBase(selectedNode)
@@ -21,14 +20,7 @@ export const fetchKrc20Tokens = async (selectedNode: number, address: string) =>
       )
 
       if (response.data && response.data.result) {
-        const tokens = await Promise.all(
-          response.data.result.map(async (token) => {
-            const tokenData = await fetchKasFyiToken(token.tick)
-            return { ...token, floorPrice: tokenData?.price?.floorPrice ?? 0 }
-          }),
-        )
-
-        allTokens = [...allTokens, ...tokens]
+        allTokens = [...allTokens, ...response.data.result]
         nextPage = response.data.next
       } else {
         throw new Error('Error fetching KRC20 tokens. Invalid API response structure')

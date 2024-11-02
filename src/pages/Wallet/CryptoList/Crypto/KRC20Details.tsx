@@ -1,5 +1,4 @@
 import React from 'react'
-import useKaspaPrice from '@/hooks/useKaspaPrice'
 import useSettings from '@/hooks/contexts/useSettings'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 import { getCurrencySymbol } from '@/utils/currencies'
@@ -34,7 +33,6 @@ function krc20TokenInfoqueryFn({ queryKey }: { queryKey: [string, FetchKRC20Toke
 const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
   const { floorPrice, tick } = token
   const { settings } = useSettings()
-  const kaspaPrice = useKaspaPrice(settings.currency)
   const currencySymbol = getCurrencySymbol(settings.currency)
 
   const krc20TokenQuery = useQuery({
@@ -44,8 +42,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
 
   const krc20Token = krc20TokenQuery.data
 
-  const tokenPrice = floorPrice * kaspaPrice.data!
-  const formattedTokenPrice = tokenPriceFormatter(tokenPrice)
+  const formattedTokenPrice = tokenPriceFormatter(floorPrice)
 
   const mintedPercentage =
     krc20Token?.minted && krc20Token?.max

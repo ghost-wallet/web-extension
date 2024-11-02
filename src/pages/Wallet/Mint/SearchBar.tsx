@@ -23,21 +23,24 @@ const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch }) => {
   const isInputEmpty = ticker.trim() === ''
 
   return (
-    <div className="flex items-center w-full px-4">
-      <div className="flex w-full border border-muted rounded-lg overflow-hidden">
+    <div className="flex items-center w-full px-4 h-14 relative">
+      <div className="flex w-full border border-muted rounded-lg overflow-hidden h-full">
         <input
           type="text"
           value={ticker}
           onChange={(e) => setTicker(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Enter token ticker"
-          className="bg-darkmuted w-full p-3 text-lg text-primarytext h-12"
+          className="bg-darkmuted w-full p-3 text-lg text-primarytext h-full"
         />
         <button
           onClick={handleSearch}
           disabled={isInputEmpty}
-          className={`h-12 w-12 flex items-center justify-center 
-        ${isInputEmpty ? 'bg-slightmuted text-primarytext' : 'bg-primary text-secondarytext'}`}
+          className={`h-full w-12 flex items-center justify-center ${
+            isInputEmpty
+              ? 'bg-slightmuted text-primarytext cursor-not-allowed'
+              : 'bg-primary text-secondarytext'
+          }`}
         >
           <MagnifyingGlassIcon className="h-6 w-6" />
         </button>

@@ -63,23 +63,19 @@ export default function Mint() {
       <AnimatedMain className="flex flex-col h-screen">
         <Header title="Mint" showBackButton={true} />
         <SearchBar onSearch={handleSearch} />
-        <div className="flex flex-col flex-grow px-4 -mt-6">
+        <div className="flex flex-col flex-grow px-4 pt-6">
           {loading ? (
             <div className="mt-10">
               <Spinner />
             </div>
           ) : (
-            <ErrorMessage message={error} />
+            error && <ErrorMessage message={error} />
           )}
           {token && <TokenDetails token={token} />}
         </div>
         {token && (
           <div className="px-4 pt-2 pb-20">
-            <NextButton
-              text={getButtonLabel()}
-              buttonEnabled={isMintable() || token.state !== 'unused'}
-              onClick={handleContinue}
-            />
+            <NextButton text={getButtonLabel()} buttonEnabled={isMintable()} onClick={handleContinue} />
           </div>
         )}
       </AnimatedMain>

@@ -56,8 +56,8 @@ export interface KaspaTransactionOutput {
  * Our own interface for building token data to account for Kaspa (Kaspa is not a KRC20 token).
  */
 export interface Token extends TokenFromApi {
-  floorPrice: number
   isKaspa?: undefined
+  floorPrice: number
 }
 
 /**
@@ -133,4 +133,9 @@ export interface KasFyiToken {
   price?: {
     floorPrice?: number
   }
+  ticker: string
+}
+
+export interface KasFyiTokenList {
+  results: KasFyiToken[]
 }
