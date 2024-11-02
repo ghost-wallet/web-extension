@@ -43,8 +43,6 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     refetchInterval: 3_000,
   })
 
-  // TODO
-  // Fetch KSPR token prices
   const ksprPricesQuery = useKsprPrices()
 
   const isLoading = kaspaPrice.isPending || krc20TokensQuery.isLoading || ksprPricesQuery.isLoading
