@@ -6,18 +6,18 @@ interface RecipientAddressProps {
   address: string
 }
 
-const RecipientAddress: React.FC<RecipientAddressProps> = ({ address }) => {
+const TruncatedCopyAddress: React.FC<RecipientAddressProps> = ({ address }) => {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
     navigator.clipboard.writeText(address).then(() => {
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      setTimeout(() => setCopied(false), 1000)
     })
   }
 
   return (
-    <div className="flex cursor-pointer" onClick={handleCopy}>
+    <div className="inline-flex cursor-pointer" onClick={handleCopy}>
       {copied ? (
         <>
           <span className="text-base text-primary">Copied</span>
@@ -33,4 +33,4 @@ const RecipientAddress: React.FC<RecipientAddressProps> = ({ address }) => {
   )
 }
 
-export default RecipientAddress
+export default TruncatedCopyAddress

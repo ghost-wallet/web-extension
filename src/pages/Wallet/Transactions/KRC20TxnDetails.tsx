@@ -1,51 +1,72 @@
 import React, { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import CryptoImage from '@/components/CryptoImage'
+import TransactionIconDisplay from '@/pages/Wallet/Transactions/TransactionIconDisplay'
 import Header from '@/components/Header'
 import AnimatedMain from '@/components/AnimatedMain'
-import TransactionIcon from '@/pages/Wallet/Transactions/TransactionIcon'
 import TransactionAmountDisplay from '@/pages/Wallet/Transactions/TransactionAmountDisplay'
+import TableSection from '@/components/table/TableSection'
+import { getKaspaExplorerUrl, getTransactionStatusText } from '@/utils/transactions'
+import { formatTransactionDateAndTime } from '@/utils/grouping'
+import TruncatedCopyAddress from '@/components/TruncatedCopyAddress'
 
 export default function KRC20TxnDetails() {
   const location = useLocation()
-  const { amt, tick, hashRev, operationType, isMint, isReceived } = location.state || {}
+  const { operation, operationType, isMint, isReceived } = location.state || {}
+  const { op, amt, hashRev, tick, mtsAdd, from, to, opAccept } = operation
 
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
-  if (!amt || !tick || !hashRev || !operationType) {
+  if (!tick || !hashRev || !operationType) {
     return <p className="text-center text-base text-mutedtext">No transaction details available.</p>
   }
 
   return (
     <AnimatedMain>
-      <Header title="Transaction Details" showBackButton={true} />
-      <div className="space-y-3 px-4 pb-4">
-        <div className="flex items-center justify-between p-4 bg-darkmuted rounded-lg shadow-md">
-          <div className="flex items-center">
-            <div className="relative">
-              <CryptoImage ticker={tick} size="small" />
-              <div className="absolute -bottom-1 -right-1">
-                <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center border border-darkmuted">
-                  <TransactionIcon operationType={operationType} />
-                </div>
-              </div>
-            </div>
-            <div className="ml-4">
-              <p className="text-base text-mutedtext">{operationType}</p>
-              <a
-                href={`https://explorer.kaspa.org/txs/${hashRev}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary text-sm hover:text-secondary"
-              >
-                View Transaction
-              </a>
-            </div>
-          </div>
-          <TransactionAmountDisplay amt={amt} tick={tick} isMint={isMint} isReceived={isReceived} />
-        </div>
+      <Header title={getTransactionStatusText(operationType, opAccept, op)} showBackButton={true} />
+      <div className="flex flex-col items-center justify-center p-4">
+        <TransactionIconDisplay ticker={tick} operationType={operationType} size="large" />
+        {opAccept === '1' && (
+          <TransactionAmountDisplay
+            amt={amt}
+            tick={tick}
+            isMint={isMint}
+            isReceived={isReceived}
+            className="mt-6 text-3xl"
+          />
+        )}
+      </div>
+      <div className="p-4">
+        <TableSection
+          rows={[
+            { label: 'Date', value: formatTransactionDateAndTime(mtsAdd) },
+            {
+              label: 'Status',
+              value: (
+                <span className={opAccept === '1' ? 'text-success' : 'text-error'}>
+                  {opAccept === '1' ? 'Succeeded' : 'Failed'}
+                </span>
+              ),
+            },
+            { label: 'From', value: <TruncatedCopyAddress address={from} /> },
+            { label: 'To', value: <TruncatedCopyAddress address={to} /> },
+            {
+              label: '',
+              value: (
+                <a
+                  href={getKaspaExplorerUrl(hashRev)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  View on Kaspa Explorer
+                </a>
+              ),
+              isFullWidth: true,
+            },
+          ]}
+        />
       </div>
     </AnimatedMain>
   )

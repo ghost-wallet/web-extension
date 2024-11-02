@@ -1,11 +1,10 @@
 import React, { forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import CryptoImage from '@/components/CryptoImage'
-import TransactionIcon from '@/pages/Wallet/Transactions/TransactionIcon'
+import TransactionIconDisplay from '@/pages/Wallet/Transactions/TransactionIconDisplay'
 import TransactionAmountDisplay from '@/pages/Wallet/Transactions/TransactionAmountDisplay'
 import { KRC20Transaction } from '@/utils/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import { getOperationDetails } from '@/utils/transactions'
+import { getOperationDetails, getTransactionStatusText } from '@/utils/transactions'
 
 interface TransactionItemProps {
   operation: KRC20Transaction
@@ -17,16 +16,13 @@ const KRC20TxnItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ operatio
   const navigate = useNavigate()
   const { kaspa } = useKaspa()
   const address = kaspa.addresses[0]
-
-  const { amt, tick, hashRev } = operation
+  const { op, amt, tick, opAccept } = operation
   const { operationType, isMint, isReceived } = getOperationDetails(operation, address)
 
   const handleClick = () => {
     navigate(`/transactions/krc20/details`, {
       state: {
-        amt,
-        tick,
-        hashRev,
+        operation,
         operationType,
         isMint,
         isReceived,
@@ -42,19 +38,20 @@ const KRC20TxnItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ operatio
       onClick={handleClick}
     >
       <div className="flex items-center">
-        <div className="relative">
-          <CryptoImage ticker={tick} size="small" />
-          <div className="absolute -bottom-1 -right-1">
-            <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center border border-darkmuted">
-              <TransactionIcon operationType={operationType} />
-            </div>
-          </div>
-        </div>
+        <TransactionIconDisplay ticker={tick} operationType={operationType} size="small" />
         <div className="ml-4">
-          <p className="text-base text-mutedtext">{operationType}</p>
+          <p className="text-base text-mutedtext">{getTransactionStatusText(operationType, opAccept, op)}</p>
         </div>
       </div>
-      <TransactionAmountDisplay amt={amt} tick={tick} isMint={isMint} isReceived={isReceived} />
+      {opAccept === '1' && (
+        <TransactionAmountDisplay
+          amt={amt}
+          tick={tick}
+          isMint={isMint}
+          isReceived={isReceived}
+          className="text-base"
+        />
+      )}
     </li>
   )
 })

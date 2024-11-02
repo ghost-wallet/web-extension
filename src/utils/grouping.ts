@@ -41,3 +41,14 @@ export const formatTransactionDate = (timestamp: string): string => {
     day: 'numeric',
   })
 }
+
+export const formatTransactionDateAndTime = (timestamp: string): string => {
+  return new Date(parseInt(timestamp)).toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  })
+}

@@ -6,6 +6,7 @@ interface TransactionAmountDisplayProps {
   tick: string
   isMint: boolean
   isReceived: boolean
+  className?: string
 }
 
 const TransactionAmountDisplay: React.FC<TransactionAmountDisplayProps> = ({
@@ -13,6 +14,7 @@ const TransactionAmountDisplay: React.FC<TransactionAmountDisplayProps> = ({
   tick,
   isMint,
   isReceived,
+  className = '',
 }) => {
   const formattedAmount =
     tick === 'KAS'
@@ -22,9 +24,9 @@ const TransactionAmountDisplay: React.FC<TransactionAmountDisplayProps> = ({
         : formatNumberWithAbbreviation(parseInt(amt, 10) / 1e8)
 
   const amountDisplay = `${isMint || isReceived ? '+ ' : '- '}${formattedAmount} ${tick}`
-  const amountColor = isMint || isReceived ? 'text-success' : 'text-error'
+  const amountColor = isMint || isReceived ? 'text-success' : 'text-primarytext'
 
-  return <p className={`text-base ${amountColor}`}>{amountDisplay}</p>
+  return <p className={`${amountColor} ${className}`}>{amountDisplay}</p>
 }
 
 export default TransactionAmountDisplay

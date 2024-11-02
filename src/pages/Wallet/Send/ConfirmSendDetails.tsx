@@ -1,6 +1,6 @@
 import React from 'react'
 import CryptoImage from '@/components/CryptoImage'
-import RecipientAddress from '@/components/RecipientAddress'
+import TruncatedCopyAddress from '@/components/TruncatedCopyAddress'
 import Header from '@/components/Header'
 import ErrorMessage from '@/components/ErrorMessage'
 import AnimatedNetworkFee from '@/pages/Wallet/Send/AnimatedNetworkFee'
@@ -31,7 +31,7 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
     {
       label: 'To',
       // TODO: why is Recipient Address centered on the table?
-      value: <RecipientAddress address={recipient} />,
+      value: <TruncatedCopyAddress address={recipient} />,
     },
     {
       label: 'Network',
@@ -53,12 +53,11 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
             {amount} {token.tick}
           </p>
         </div>
+      </div>
+      <div className="p-4">
+        <TableSection rows={tableRows} className="mb-4" />
 
-        <div className="p-4">
-          <TableSection rows={tableRows} className="mb-4" />
-
-          <ErrorMessage message={error || ''} />
-        </div>
+        <ErrorMessage message={error || ''} />
       </div>
       <div className="px-4 pb-20">
         <NextButton onClick={onConfirm} text={'Confirm Send'} />

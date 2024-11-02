@@ -16,3 +16,10 @@ export function getOperationDetails(operation: KRC20Transaction, address: string
 
   return { operationType, isSent, isReceived, isMint }
 }
+
+export const getKaspaExplorerUrl = (transactionId: string) =>
+  `https://explorer.kaspa.org/txs/${transactionId}`
+
+export const getTransactionStatusText = (operationType: string, opAccept: string, op: string): string => {
+  return opAccept === '1' ? operationType : `${op.charAt(0).toUpperCase() + op.slice(1)} Failed`
+}

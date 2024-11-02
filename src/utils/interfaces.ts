@@ -71,6 +71,7 @@ export interface KRC20TokenList {
 
 export interface KRC20Transaction {
   op: string
+  opAccept: string
   tick: string
   amt: string
   from: string

@@ -48,6 +48,7 @@ const KaspaTxnItem = forwardRef<HTMLLIElement, KaspaTxnItemProps>(({ transaction
           tick={'KAS'}
           isMint={false}
           isReceived={isReceived}
+          className={'text-base'}
         />
       </div>
     </li>

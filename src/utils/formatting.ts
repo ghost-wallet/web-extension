@@ -58,6 +58,10 @@ export const tokenPriceFormatter = (value: number): string => {
 
 export const formatNumberWithAbbreviation = (balance: number): string => {
   const formatNumber = (num: number): string => {
+    if (num < 1 && num > 0) {
+      return num.toString()
+    }
+
     const rounded = parseFloat(num.toFixed(2))
 
     if (rounded % 1 === 0) {
@@ -65,10 +69,6 @@ export const formatNumberWithAbbreviation = (balance: number): string => {
     }
 
     return rounded.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-  }
-
-  if (balance > 0 && balance < 0.01) {
-    return '<0.01'
   }
 
   if (balance >= 1_000_000_000_000_000) {
@@ -85,5 +85,5 @@ export const formatNumberWithAbbreviation = (balance: number): string => {
 }
 
 export const truncateAddress = (address: string): string => {
-  return `${address.slice(0, 11)}.....${address.slice(-10)}`
+  return `${address.slice(0, 10)}.....${address.slice(-6)}`
 }
