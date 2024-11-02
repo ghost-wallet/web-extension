@@ -21,7 +21,7 @@ export default function CreateMint() {
   const location = useLocation()
   const token = location.state?.token as KRC20TokenResponse
 
-  const [mintAmount, setMintAmount] = useState<number | 0>(0)
+  const [mintAmount, setMintAmount] = useState<number | null>(null)
   const [showDialog, setShowDialog] = useState(false)
 
   const totalMintCost = mintAmount ? formatNumberWithDecimal(token.lim, token.dec) * mintAmount : 0
@@ -63,7 +63,7 @@ export default function CreateMint() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     if (value === '') {
-      setMintAmount(0)
+      setMintAmount(null)
     } else if (/^\d+$/.test(value) && Number(value) <= 1000) {
       setMintAmount(Number(value))
     }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 const useMintErrorHandling = (
-  mintAmount: number,
+  mintAmount: number | null,
   kaspaBalance: number,
   exceedsBalance: boolean,
   exceedsSupply: boolean,
@@ -10,8 +10,10 @@ const useMintErrorHandling = (
   const [error, setError] = useState<string>('')
 
   useEffect(() => {
-    if (mintAmount < 5) {
-      setError(`Ghost requires a minimum of 5 KAS per mint.`)
+    if (mintAmount === null) {
+      setError('Mint amount is required.')
+    } else if (mintAmount < 5) {
+      setError('Ghost requires a minimum of 5 KAS per mint.')
     } else if (exceedsSupply) {
       setError(`Cannot mint more tokens than the remaining unminted supply: ${availableSupply}`)
     } else if (exceedsBalance) {
