@@ -37,7 +37,7 @@ const manifest: ManifestV3Export = {
     'https://api.coingecko.com/*',
     'https://*.kas.fyi/*',
     'https://api.kaspa.org/*',
-    'https://*.kasplex.org/'
+    'https://*.kasplex.org/*'
   ]
 
 }
