@@ -1,10 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from 'tailwindcss'
-import { crx } from '@crxjs/vite-plugin'
+import { crx, ManifestV3Export } from '@crxjs/vite-plugin'
 import * as path from 'path'
 
-const manifest: any = {
+const manifest: ManifestV3Export = {
   manifest_version: 3,
   name: 'Ghost',
   version: '0.0.2',
@@ -24,14 +24,22 @@ const manifest: any = {
     type: 'module',
   },
   permissions: ['storage', 'alarms', 'notifications', 'sidePanel'],
-  browser_specific_settings: {
-    gecko: {
-      id: 'ghostappwallet@gmail.com',
-    },
-  },
+  // browser_specific_settings: {
+  //   gecko: {
+  //     id: 'ghostappwallet@gmail.com',
+  //   },
+  // },
   content_security_policy: {
     extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
   },
+  host_permissions: [
+    'https://storage.googleapis.com/kspr-api-v1/*',
+    'https://api.coingecko.com/*',
+    'https://*.kas.fyi/*',
+    'https://api.kaspa.org/*',
+    'https://*.kasplex.org/*'
+  ]
+
 }
 
 // Pass the version as a global variable

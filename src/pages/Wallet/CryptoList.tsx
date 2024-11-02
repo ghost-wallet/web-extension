@@ -9,10 +9,10 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 import useKaspaPrice from '@/hooks/useKaspaPrice'
 import CryptoListItem from '@/pages/Wallet/CryptoList/CryptoListItem'
 import { fetchKrc20Tokens } from '@/hooks/kasplex/fetchKrc20Tokens'
-import { KaspaToken, Token } from '@/utils/interfaces'
+import { KaspaToken, Token, KsprToken } from '@/utils/interfaces'
 import { useQuery } from '@tanstack/react-query'
 import ErrorMessage from '@/components/ErrorMessage'
-import { fetchKasFyiTokenList } from '@/hooks/kasfyi/fetchKasFyiTokenList'
+import { useKsprPrices } from '@/hooks/kspr/fetchKsprPrices'
 
 interface CryptoListProps {
   onTotalValueChange: (value: number) => void
@@ -35,6 +35,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
+  // Fetch KRC20 tokens
   const krc20TokensQuery = useQuery({
     queryKey: ['krc20Tokens', { selectedNode: settings.selectedNode, address: kaspa.addresses[0] }],
     queryFn: krc20TokenqueryFn,
@@ -42,15 +43,10 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     refetchInterval: 3_000,
   })
 
-  const kasFyiTokenListQuery = useQuery({
-    queryKey: ['kasFyiTokenList'],
-    queryFn: fetchKasFyiTokenList,
-    staleTime: 300_000, // 5 minutes
-    refetchInterval: 300_000,
-  })
+  const ksprPricesQuery = useKsprPrices()
 
-  const isLoading = kaspaPrice.isPending || krc20TokensQuery.isPending
-  const error = kaspaPrice.error || krc20TokensQuery.error
+  const isLoading = kaspaPrice.isPending || krc20TokensQuery.isLoading || ksprPricesQuery.isLoading
+  const error = kaspaPrice.error || krc20TokensQuery.error || ksprPricesQuery.error
   const kasPrice = kaspaPrice.data ?? 0
 
   const kaspaCrypto: KaspaToken = useMemo(
@@ -64,26 +60,24 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     [kaspa.balance, kasPrice],
   )
 
+  // Merge KSPR token prices with KRC20 tokens
   const tokens = useMemo(() => {
-    // Create a map for quick lookup of floor prices by ticker from kasFyiTokenListQuery
-    const floorPriceMap = kasFyiTokenListQuery.data?.results.reduce(
-      (acc, token) => {
-        acc[token.ticker] = token.price?.floorPrice ?? 0
-        return acc
-      },
-      {} as Record<string, number>,
-    )
+    if (!krc20TokensQuery.data || !ksprPricesQuery.data) return null
 
     return [
       kaspaCrypto,
-      ...(krc20TokensQuery.data?.map((token) => ({
-        ...token,
-        floorPrice: (floorPriceMap?.[token.tick] || 0) * kasPrice,
-      })) ?? []),
+      ...krc20TokensQuery.data.map((token) => {
+        const ksprPriceData: KsprToken | undefined = ksprPricesQuery.data[token.tick]
+        const floorPrice = ksprPriceData?.floor_price ?? 0
+        return {
+          ...token,
+          floorPrice: floorPrice * kasPrice,
+        }
+      }),
     ]
-  }, [kaspaCrypto, krc20TokensQuery.data, kasFyiTokenListQuery.data, kasPrice])
+  }, [kaspaCrypto, krc20TokensQuery.data, ksprPricesQuery.data, kasPrice])
 
-  useTotalValueCalculation(tokens, kaspaPrice.data!, onTotalValueChange)
+  useTotalValueCalculation(tokens || [], kaspaPrice.data!, onTotalValueChange)
 
   if (isLoading || !tokens) {
     return (
@@ -97,7 +91,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     return <ErrorMessage message={error.message} />
   }
 
-  const filteredCryptos = tokens.filter((token) => token.tick === 'KASPA' || token.balance !== 0)
+  const filteredCryptos = tokens.filter((token) => token.tick === 'KASPA' || token.balance !== '0')
   const sortedCryptos = sortTokensByValue(filteredCryptos)
   const currencySymbol = getCurrencySymbol(settings.currency)
 

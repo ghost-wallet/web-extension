@@ -20,6 +20,7 @@ export const fetchKrc20Tokens = async (selectedNode: number, address: string) =>
       )
 
       if (response.data && response.data.result) {
+        //TODO fix interfaces and types
         allTokens = [...allTokens, ...response.data.result]
         nextPage = response.data.next
       } else {
