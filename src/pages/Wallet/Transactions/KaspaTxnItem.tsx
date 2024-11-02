@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import CryptoImage from '@/components/CryptoImage'
 import TransactionIcon from '@/pages/Wallet/Transactions/TransactionIcon'
 import TransactionAmountDisplay from '@/pages/Wallet/Transactions/TransactionAmountDisplay'
@@ -14,13 +15,28 @@ interface KaspaTxnItemProps {
 
 const KaspaTxnItem = forwardRef<HTMLLIElement, KaspaTxnItemProps>(({ transaction }, ref) => {
   const { kaspa } = useKaspa()
+  const navigate = useNavigate()
   const address = kaspa.addresses[0]
-  const { transaction_id, outputs } = transaction
+  const { outputs } = transaction
   const isReceived = outputs[0].script_public_key_address === address
   const amount = formatNumberWithDecimal(outputs[0].amount, 8)
 
+  const handleClick = () => {
+    navigate(`/transactions/kaspa/details`, {
+      state: {
+        isReceived,
+        amount,
+        transaction,
+      },
+    })
+  }
+
   return (
-    <li ref={ref} className="flex items-center justify-between p-4 bg-darkmuted rounded-lg shadow-md">
+    <li
+      ref={ref}
+      className="flex items-center justify-between p-4 bg-darkmuted hover:bg-slightmuted rounded-lg shadow-md cursor-pointer"
+      onClick={handleClick}
+    >
       <div className="flex items-center">
         <div className="relative">
           <CryptoImage ticker={'KAS'} size="small" />
@@ -32,14 +48,6 @@ const KaspaTxnItem = forwardRef<HTMLLIElement, KaspaTxnItemProps>(({ transaction
         </div>
         <div className="ml-4">
           <p className="text-base text-mutedtext">{isReceived ? 'Received' : 'Sent'}</p>
-          <a
-            href={`https://explorer.kaspa.org/txs/${transaction_id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary text-sm hover:underline mt-1 block"
-          >
-            View Transaction
-          </a>
         </div>
       </div>
       <div className="text-right">

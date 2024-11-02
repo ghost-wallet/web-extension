@@ -29,6 +29,7 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
 import NetworkFeeSelect from '@/pages/Wallet/Send/NetworkFeeSelect'
 import DeveloperPage from '@/pages/Wallet/Settings/Developer/DeveloperPage'
+import KaspaTxnDetails from '@/pages/Wallet/Transactions/KaspaTxnDetails'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,6 +61,7 @@ function App() {
               <Route path="/settings/about" element={<AboutPage />} />
               <Route path="/settings/developer" element={<DeveloperPage />} />
               <Route path="/transactions/kaspa" element={<Transactions />} />
+              <Route path="/transactions/kaspa/details" element={<KaspaTxnDetails />} />
               <Route path="/transactions/krc20" element={<Transactions />} />
               <Route path="/transactions/krc20/details" element={<KRC20TxnDetails />} />
               <Route path="/send" element={<Send />} />

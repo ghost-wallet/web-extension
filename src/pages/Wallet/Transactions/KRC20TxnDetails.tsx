@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useLocation } from 'react-router-dom'
 import TransactionIconDisplay from '@/pages/Wallet/Transactions/TransactionIconDisplay'
 import Header from '@/components/Header'
@@ -13,10 +13,6 @@ export default function KRC20TxnDetails() {
   const location = useLocation()
   const { operation, operationType, isMint, isReceived } = location.state || {}
   const { op, amt, hashRev, tick, mtsAdd, from, to, opAccept } = operation
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
 
   if (!tick || !hashRev || !operationType) {
     return <p className="text-center text-base text-mutedtext">No transaction details available.</p>
