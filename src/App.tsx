@@ -59,8 +59,9 @@ function App() {
               <Route path="/settings/reset" element={<ConfirmReset />} />
               <Route path="/settings/about" element={<AboutPage />} />
               <Route path="/settings/developer" element={<DeveloperPage />} />
-              <Route path="/transactions" element={<Transactions />} />
-              <Route path="/transactions/details" element={<KRC20TxnDetails />} />
+              <Route path="/transactions/kaspa" element={<Transactions />} />
+              <Route path="/transactions/krc20" element={<Transactions />} />
+              <Route path="/transactions/krc20/details" element={<KRC20TxnDetails />} />
               <Route path="/send" element={<Send />} />
               <Route path="/send/:tick" element={<SendCrypto />} />
               <Route path="/send/:tick/network-fee" element={<NetworkFeeSelect />} />

@@ -20,7 +20,10 @@ export default function BottomNav() {
             }`}
           />
         </button>
-        <button onClick={() => navigate('/transactions')} className="flex flex-col items-center relative">
+        <button
+          onClick={() => navigate('/transactions/kaspa')}
+          className="flex flex-col items-center relative"
+        >
           <DocumentTextIcon
             className={`h-7 w-7 transform transition-transform duration-300 hover:scale-125 ${
               isActive('/transactions') ? 'text-primary' : 'text-mutedtext'

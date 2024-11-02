@@ -22,7 +22,7 @@ const KRC20TxnItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ operatio
   const { operationType, isMint, isReceived } = getOperationDetails(operation, address)
 
   const handleClick = () => {
-    navigate(`/transactions/details`, {
+    navigate(`/transactions/krc20/details`, {
       state: {
         amt,
         tick,
