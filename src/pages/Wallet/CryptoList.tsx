@@ -43,7 +43,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   })
 
   const kasFyiTokenListQuery = useQuery({
-    queryKey: ['kasFyiTokenList', { selectedNode: settings.selectedNode, address: kaspa.addresses[0] }],
+    queryKey: ['kasFyiTokenList'],
     queryFn: fetchKasFyiTokenList,
     staleTime: 300_000, // 5 minutes
     refetchInterval: 300_000,

@@ -3,13 +3,18 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import { Description, Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 
 interface PopupMessageDialogProps {
-  title?: string | 'Not Available'
+  title: string
   message: string
   isOpen: boolean
   onClose: () => void
 }
 
-export function PopupMessageDialog({ title, message, onClose, isOpen }: PopupMessageDialogProps) {
+export function PopupMessageDialog({
+  title = 'Not Available',
+  message,
+  onClose,
+  isOpen,
+}: PopupMessageDialogProps) {
   return (
     <Dialog
       open={isOpen}
