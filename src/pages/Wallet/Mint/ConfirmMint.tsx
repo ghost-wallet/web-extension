@@ -49,7 +49,7 @@ export default function ConfirmMint() {
       <SpinnerPage
         displayText={`Minting ${receiveAmount.toLocaleString()} ${
           token.tick
-        }. Do not close your web browser or 
+        }. Do not close your web browser or log out, else
         minting will stop and you'll permanently lose any unminted KAS. You can close your Ghost extension and 
         it'll keep minting in the background. 
         Every 1 KAS = 1 mint = 1 transaction, which means this could take a while. Feel free to close and re-open your

@@ -10,7 +10,7 @@ const TotalWalletValue: React.FC<TotalValueProps> = ({ totalValue }) => {
   const { settings } = useSettings()
 
   return (
-    <h1 className="text-primarytext font-rubik text-center flex-grow text-4xl">
+    <h1 className="text-primarytext font-rubik text-center flex-grow text-4xl py-4">
       {getCurrencySymbol(settings.currency)}
       {totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
     </h1>

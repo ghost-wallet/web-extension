@@ -1,7 +1,5 @@
 import { PublicKeyGenerator, UtxoContext } from '@/wasm'
 import { EventEmitter } from 'events'
-import SessionStorage from '@/storage/SessionStorage'
-import LocalStorage from '@/storage/LocalStorage'
 
 export default class Addresses extends EventEmitter {
   context: UtxoContext
@@ -26,12 +24,6 @@ export default class Addresses extends EventEmitter {
   }
 
   async derive() {
-    // const session = await SessionStorage.get('session', undefined)
-
-    // if (!session?.publicKey) {
-    //   throw Error('[Addresses] No publicKey in SessionStorage')
-    // }
-    // this.publicKey = PublicKeyGenerator.fromXPub(session.publicKey)
     if (!this.publicKey) {
       throw Error('[Addresses] No publicKey')
     }

@@ -13,7 +13,7 @@ export default function Wallet() {
     <>
       <TopNav />
       <AnimatedMain>
-        <div className="flex flex-col items-center pt-10">
+        <div className="flex flex-col items-center pt-4">
           <TotalWalletValue totalValue={totalValue} />
           <WalletActionButtons />
           <CryptoList onTotalValueChange={setTotalValue} />
