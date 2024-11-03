@@ -33,6 +33,7 @@ const manifest: ManifestV3Export = {
     extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
   },
   host_permissions: [
+    'https://*.kaspa.stream/*',
     'https://storage.googleapis.com/kspr-api-v1/*',
     'https://api.coingecko.com/*',
     'https://*.kas.fyi/*',
