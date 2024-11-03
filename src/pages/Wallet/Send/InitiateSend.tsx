@@ -25,7 +25,7 @@ const InitiateSend: React.FC = () => {
 
   const maxAmount = token.isKaspa ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
   const { outputs, recipientError, amountError, handleRecipientChange, handleAmountChange, handleMaxClick } =
-    useTransactionInputs(token, maxAmount)
+    useTransactionInputs(token, maxAmount, kaspa.addresses[0])
 
   const currencyValue = (Number(outputs[0][1]) * token.floorPrice).toFixed(2) || '0.00'
   const formattedCurrencyValue = Number(currencyValue).toLocaleString('en-US', { minimumFractionDigits: 2 })

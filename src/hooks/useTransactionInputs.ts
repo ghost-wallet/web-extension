@@ -1,19 +1,19 @@
 import { useState } from 'react'
 import { validateRecipient, validateAmountToSend } from '@/utils/validation'
 
-export const useTransactionInputs = (token: any, maxAmount: string) => {
+export const useTransactionInputs = (token: any, maxAmount: string, yourAddress: string) => {
   const [outputs, setOutputs] = useState<[string, string][]>([['', '']])
   const [recipientError, setRecipientError] = useState<string | null>(null)
   const [amountError, setAmountError] = useState<string | null>(null)
 
-  const handleRecipientChange = (value: string, request: any) => {
+  const handleRecipientChange = (recipientAddress: string, request: any) => {
     setOutputs((prevOutputs) => {
       const newOutputs = [...prevOutputs]
-      newOutputs[0][0] = value
+      newOutputs[0][0] = recipientAddress
       return newOutputs
     })
 
-    validateRecipient(request, value, setRecipientError)
+    validateRecipient(request, recipientAddress, yourAddress, token.isKaspa, setRecipientError)
   }
 
   const handleAmountChange = (value: string) => {

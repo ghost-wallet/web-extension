@@ -4,11 +4,17 @@ import { KRC20TokenResponse, TokenFromApi } from '@/utils/interfaces'
 
 export const validateRecipient = async (
   request: Function,
-  address: string,
+  recipientAddress: string,
+  yourAddress: string,
+  isKaspa: boolean | undefined,
   setRecipientError: React.Dispatch<React.SetStateAction<string | null>>,
 ) => {
+  if (!isKaspa && recipientAddress === yourAddress) {
+    setRecipientError('Cannot transfer KRC20 tokens to yourself.')
+    return
+  }
   try {
-    const isValid = await request('wallet:validate', [address])
+    const isValid = await request('wallet:validate', [recipientAddress])
     setRecipientError(
       isValid ? null : 'Invalid Kaspa address. Kaspa addresses should start with the kaspa: prefix.',
     )
