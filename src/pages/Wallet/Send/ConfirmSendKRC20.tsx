@@ -27,9 +27,7 @@ const ConfirmSendKRC20: React.FC = () => {
         return request('account:estimateKRC20TransactionFee', [info, feeRate])
       })
       .then((response) => {
-        const _estimatedFee = response
-        setEstimatedFee(_estimatedFee || '')
-        console.log('Estimated fee:', _estimatedFee)
+        setEstimatedFee(response || '')
       })
       .catch((err) => {
         setError(`Error fetching estimated fee: ${err}`)

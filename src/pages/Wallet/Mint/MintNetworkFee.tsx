@@ -21,7 +21,6 @@ const MintNetworkFee: React.FC = () => {
   const [networkFee, setNetworkFee] = useState<string>('0')
   const [serviceFee, setServiceFee] = useState<string>('0')
   const [totalFees, setTotalFees] = useState<string>('0')
-  const [estimatedSeconds, setEstimatedSeconds] = useState<number>(0)
   const [error, setError] = useState<string | null>(null)
 
   const selectedBucket = buckets[FEE_TYPES[currentFeeTypeIndex]]
@@ -31,12 +30,10 @@ const MintNetworkFee: React.FC = () => {
   const fetchEstimatedFee = useCallback(() => {
     request('account:estimateKRC20MintFees', [token.tick, feeRate, payAmount])
       .then((response) => {
-        console.log('response fees:', response)
-        const { extraNetworkFees, mintFees, serviceFee, totalFees } = response
+        const { extraNetworkFees, serviceFee, totalFees } = response
         setNetworkFee(extraNetworkFees)
         setServiceFee(serviceFee)
         setTotalFees(totalFees)
-        setEstimatedSeconds(estimatedTime)
         setError(null)
       })
       .catch((err) => {
@@ -81,7 +78,6 @@ const MintNetworkFee: React.FC = () => {
           <FeePrioritySelector
             currentFeeTypeIndex={currentFeeTypeIndex}
             estimatedFee={networkFee.toString()}
-            estimatedSeconds={estimatedSeconds}
             isButtonEnabled={true}
             onFeeTypeClick={handleFeeTypeClick}
           />

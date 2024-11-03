@@ -9,15 +9,10 @@ interface KaspaTxnHistoryProps {}
 
 const KaspaTxnHistory: React.FC<KaspaTxnHistoryProps> = () => {
   const query = useKaspaTransactions()
-  console.log('KaspaTxnHistory query', query)
-
   const transactions = query.data ? query.data.pages.flatMap((page) => page) : []
-
   const error = query.error
   const loadingMore = query.isFetchingNextPage
   const initialLoading = query.isPending
-
-  console.log('KaspaTxnHistory transactions', transactions)
 
   const loadMoreTransactions = () => {
     query.fetchNextPage()

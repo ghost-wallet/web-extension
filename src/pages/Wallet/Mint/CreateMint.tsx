@@ -41,7 +41,6 @@ export default function CreateMint() {
   )
 
   const handleNext = () => {
-    console.log('error:', error)
     if (isMintAmountValid && !error) {
       navigate(`/mint/${token.tick}/network-fee`, {
         state: {
@@ -51,7 +50,6 @@ export default function CreateMint() {
         },
       })
     } else {
-      console.log('there is indeed error')
       setShowDialog(true)
     }
   }

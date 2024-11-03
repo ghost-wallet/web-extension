@@ -13,7 +13,6 @@ export default function KaspaTxnDetails() {
   const location = useLocation()
 
   const { transaction, amount, isReceived } = location.state || {}
-  console.log('transaction', transaction)
   return (
     <AnimatedMain>
       <Header title={isReceived ? 'Received' : 'Sent'} showBackButton={true} />

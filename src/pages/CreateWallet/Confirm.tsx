@@ -60,7 +60,7 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
     <AnimatedMain showConnectingMessage={false} className="flex flex-col h-screen">
       <Header title="Confirm Secret Phrase" showBackButton={false} />
       <div className="px-4">
-        <p className="text-mutedtext text-lg text-center mb-6">Enter the missing words.</p>
+        <p className="text-mutedtext text-lg text-center mb-6">Enter the 3rd, 5th, and 8th missing words.</p>
         <RecoveryPhraseGrid
           values={userInputs}
           onInputChange={(i, value) =>

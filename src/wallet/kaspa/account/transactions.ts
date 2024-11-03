@@ -72,12 +72,10 @@ export default class Transactions extends EventEmitter {
   async findCustomEntries(customs: CustomInput[]) {
     let priorityEntries: IUtxoEntry[] = []
 
-    console.log('customs:')
     console.log(customs)
     const { entries } = await this.kaspa.getUtxosByAddresses({
       addresses: customs.map((custom) => custom.address),
     })
-    console.log('entries:')
     console.log(entries)
     for (const custom of customs) {
       const matchingEntry = entries.find(
@@ -133,13 +131,7 @@ export default class Transactions extends EventEmitter {
       feeRate,
       priorityFee: kaspaToSompi(fee)!,
     }
-    console.log('Creating transaction with:')
-    console.log(preparedTxn)
-
     const { transactions, summary } = await createTransactions(preparedTxn)
-
-    console.log('create transactions', transactions)
-    console.log('create summary', summary)
 
     for (const transaction of transactions) {
       this.transactions.set(transaction.id, transaction)
@@ -302,7 +294,6 @@ export default class Transactions extends EventEmitter {
         console.log(event)
 
         if (event.data.id.toString() === transactionID) {
-          console.log('event found, continuing')
           // i think the types for the callback are wrong?
           this.processor.removeEventListener('maturity', listener as UtxoProcessorNotificationCallback)
           resolve()
@@ -394,17 +385,9 @@ export default class Transactions extends EventEmitter {
       priorityFee: feeSompi,
       feeRate: 1,
     }
-    console.log('Creating estimatePreparedTxn with:', estimatePreparedTxn)
 
     const estimateSummary = await estimateTransactions(estimatePreparedTxn)
-
-    console.log('estimateSummary', estimateSummary)
-
     const newPriorityFeeSompi = feeSompi - estimateSummary.mass
-
-    console.log('estimateSummary.fees', estimateSummary.fees)
-    console.log('estimateSummary.mass', estimateSummary.mass)
-    console.log('newPriorityFeeSompi', newPriorityFeeSompi)
 
     const preparedTxn: IGeneratorSettingsObject = {
       priorityEntries,
@@ -414,12 +397,8 @@ export default class Transactions extends EventEmitter {
       priorityFee: newPriorityFeeSompi,
       feeRate: 1,
     }
-    console.log('Creating transaction with:', preparedTxn)
 
     const { transactions, summary } = await createTransactions(preparedTxn)
-
-    console.log('create transactions', transactions)
-    console.log('create summary', summary)
 
     for (const transaction of transactions) {
       this.transactions.set(transaction.id, transaction)
@@ -446,7 +425,6 @@ export default class Transactions extends EventEmitter {
       signer: sender,
       script: script,
     }
-    console.log('[Transactions] Reveal transaction input:', input)
 
     const [reveal1] = await this.createForKRC20Mint(
       context,
@@ -454,14 +432,9 @@ export default class Transactions extends EventEmitter {
       [input],
       backToScript ? scriptAddress : undefined,
     )
-    console.log('[Transactions] Created reveal transaction:', reveal1)
 
     const reveal2 = await this.sign(reveal1, [input])
-    console.log('[Transactions] Signed reveal transaction:', reveal2)
-
-    const reveal3 = await this.submitContextful(reveal2)
-    console.log('[Transactions] Submitted reveal transaction:', reveal3)
-    return reveal3
+    return await this.submitContextful(reveal2)
   }
 
   async estimateKRC20MintFees(
@@ -474,12 +447,8 @@ export default class Transactions extends EventEmitter {
     const scriptAddress = mintSetup.scriptAddress.toString()
 
     const mintSompi = BigInt(timesToMint) * SOMPI_PER_KAS
-
     const serviceFee = mintSompi / 10n
-
     const sompiToLoad = mintSompi + KRC20_MINT_EXTRA_KAS * SOMPI_PER_KAS
-
-    //const kaspaToLoad = (timesToMint + 10).toString()
 
     const commitSettings: IGeneratorSettingsObject = {
       priorityEntries: [],
@@ -500,9 +469,7 @@ export default class Transactions extends EventEmitter {
     }
 
     const commitResult = await estimateTransactions(commitSettings)
-
     const totalFeeSompi = mintSompi + serviceFee + commitResult.fees
-    console.log('commitResult.fees', commitResult.fees)
 
     return {
       totalFees: sompiToKaspaString(totalFeeSompi),
