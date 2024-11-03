@@ -19,7 +19,7 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
 
   return (
     <div className="rounded-md pb-2">
-      <div className="flex flex-row items-center justify-center pb-1 -mt-3">
+      <div className="flex flex-row items-center justify-center py-2">
         <CryptoImage ticker={token.tick} size="large" />
         <h1 className="text-primarytext font-bold text-4xl pl-4">{token.tick}</h1>
       </div>

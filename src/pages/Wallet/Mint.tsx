@@ -5,7 +5,7 @@ import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 import { KRC20TokenResponse } from '@/utils/interfaces'
-import { getMintedPercentage } from '@/utils/calculations'
+import { checkIfMintable } from '@/utils/validation'
 import TokenDetails from '@/pages/Wallet/Mint/TokenDetails'
 import SearchBar from '@/pages/Wallet/Mint/SearchBar'
 import ErrorMessage from '@/components/ErrorMessage'
@@ -37,23 +37,16 @@ export default function Mint() {
     }
   }
 
-  const isMintable = () => {
-    if (!token) return false
-    if (token.state === 'unused') return false
-
-    const maxSupply = token.max
-    const mintedPercentage = getMintedPercentage(token.minted, maxSupply)
-    return maxSupply !== 0 && mintedPercentage < 100
-  }
+  const isMintable = checkIfMintable(token)
 
   const getButtonLabel = () => {
     if (!token || token.state === 'unused') return 'Token Not Deployed'
-    if (!isMintable()) return 'Supply Is Already Minted'
+    if (!isMintable) return 'Supply Is Already Minted'
     return 'Next'
   }
 
   const handleContinue = () => {
-    if (token && isMintable()) {
+    if (token && isMintable) {
       navigate(`/mint/${token.tick}`, { state: { token } })
     }
   }
@@ -62,8 +55,8 @@ export default function Mint() {
     <>
       <AnimatedMain className="flex flex-col h-screen">
         <Header title="Mint" showBackButton={true} />
-        <SearchBar onSearch={handleSearch} />
-        <div className="flex flex-col flex-grow px-4 pt-6">
+        <div className="flex flex-col flex-grow px-4">
+          <SearchBar onSearch={handleSearch} />
           {loading ? (
             <div className="mt-10">
               <Spinner />
@@ -75,7 +68,7 @@ export default function Mint() {
         </div>
         {token && (
           <div className="px-4 pt-2 pb-20">
-            <NextButton text={getButtonLabel()} buttonEnabled={isMintable()} onClick={handleContinue} />
+            <NextButton text={getButtonLabel()} buttonEnabled={isMintable} onClick={handleContinue} />
           </div>
         )}
       </AnimatedMain>

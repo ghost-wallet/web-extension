@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { getApiBase } from '@/hooks/kasplex/fetchHelper'
-import { Token, KRC20TokenList, TokenFromApi } from '@/utils/interfaces'
+import { KRC20TokenList, TokenFromApi } from '@/utils/interfaces'
 
-export const fetchKrc20Tokens = async (selectedNode: number, address: string) => {
+export const fetchKrc20AddressTokenList = async (selectedNode: number, address: string) => {
   const apiBase = getApiBase(selectedNode)
 
   try {
@@ -20,17 +20,18 @@ export const fetchKrc20Tokens = async (selectedNode: number, address: string) =>
       )
 
       if (response.data && response.data.result) {
-        //TODO fix interfaces and types
         allTokens = [...allTokens, ...response.data.result]
         nextPage = response.data.next
       } else {
-        throw new Error('Error fetching KRC20 tokens. Invalid API response structure')
+        throw new Error(
+          `Error fetching KRC20 token list for address ${address}. Invalid API response structure`,
+        )
       }
     } while (nextPage)
 
     return allTokens
   } catch (error) {
-    console.error('Error fetching tokens:', error)
+    console.error(`Error fetching KRC20 token list for address ${address}:`, error)
     throw error
   }
 }

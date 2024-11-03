@@ -21,6 +21,24 @@ export interface CustomSignature {
   script?: string
 }
 
+export interface TokenFromApi {
+  tick: string
+  opScoreMod: string
+  balance: string
+  dec: string
+  state: string
+  max: string
+  minted: string
+}
+
+export interface KaspaToken {
+  isKaspa: true
+  tick: 'KASPA'
+  balance: number
+  dec: number
+  floorPrice: number
+}
+
 /**
  * Requests and responses for using Kaspa API. Official documentation:
  * https://api.kaspa.org
@@ -127,21 +145,6 @@ export interface KRC20TokenResponse {
   holderTotal: number
   transferTotal: number
   mintTotal: number
-}
-
-/**
- * Requests and responses for using Kas.FYI API. They don't have official documentation.
- * https://api-v2-do.kas.fyi and https://kas.fyi
- */
-export interface KasFyiToken {
-  price?: {
-    floorPrice?: number
-  }
-  ticker: string
-}
-
-export interface KasFyiTokenList {
-  results: KasFyiToken[]
 }
 
 /**

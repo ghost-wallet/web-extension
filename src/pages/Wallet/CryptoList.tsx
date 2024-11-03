@@ -8,7 +8,7 @@ import Spinner from '@/components/Spinner'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import useKaspaPrice from '@/hooks/useKaspaPrice'
 import CryptoListItem from '@/pages/Wallet/CryptoList/CryptoListItem'
-import { fetchKrc20Tokens } from '@/hooks/kasplex/fetchKrc20Tokens'
+import { fetchKrc20AddressTokenList } from '@/hooks/kasplex/fetchKrc20AddressTokenList'
 import { KaspaToken, Token, KsprToken } from '@/utils/interfaces'
 import { useQuery } from '@tanstack/react-query'
 import ErrorMessage from '@/components/ErrorMessage'
@@ -25,7 +25,7 @@ interface FetchKRC20TokensParams {
 
 function krc20TokenqueryFn({ queryKey }: { queryKey: [string, FetchKRC20TokensParams] }) {
   const [_key, { selectedNode, address }] = queryKey
-  return fetchKrc20Tokens(selectedNode, address)
+  return fetchKrc20AddressTokenList(selectedNode, address)
 }
 
 const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {

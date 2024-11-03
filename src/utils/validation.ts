@@ -1,4 +1,6 @@
 import React from 'react'
+import { getMintedPercentage } from '@/utils/calculations'
+import { KRC20TokenResponse, TokenFromApi } from '@/utils/interfaces'
 
 export const validateRecipient = async (
   request: Function,
@@ -41,4 +43,12 @@ export const validateAmountToSend = (
       setAmountError(null)
     }
   }
+}
+
+export const checkIfMintable = (token: KRC20TokenResponse | TokenFromApi | null) => {
+  if (!token || token.state === 'unused') return false
+
+  const maxSupply = token.max
+  const mintedPercentage = getMintedPercentage(Number(token.minted), Number(maxSupply))
+  return maxSupply !== 0 && mintedPercentage < 100
 }
