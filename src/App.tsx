@@ -10,7 +10,7 @@ import Transactions from '@/pages/Wallet/Transactions'
 import Send from '@/pages/Wallet/Send'
 import Receive from '@/pages/Wallet/Receive'
 import Swap from '@/pages/Wallet/Swap'
-import SendCrypto from '@/pages/Wallet/Send/SendCrypto'
+import InitiateSend from '@/pages/Wallet/Send/InitiateSend'
 import ConfirmSendKaspa from '@/pages/Wallet/Send/ConfirmSendKaspa'
 import ConfirmSendKRC20 from '@/pages/Wallet/Send/ConfirmSendKRC20'
 import Sent from '@/pages/Wallet/Send/Sent'
@@ -65,7 +65,7 @@ function App() {
               <Route path="/transactions/krc20" element={<Transactions />} />
               <Route path="/transactions/krc20/details" element={<KRC20TxnDetails />} />
               <Route path="/send" element={<Send />} />
-              <Route path="/send/:tick" element={<SendCrypto />} />
+              <Route path="/send/:tick" element={<InitiateSend />} />
               <Route path="/send/:tick/network-fee" element={<NetworkFeeSelect />} />
               <Route path="/send/:tick/network-fee/confirm" element={<ConfirmSendKaspa />} />
               <Route path="/send/:tick/network-fee/confirmkrc20" element={<ConfirmSendKRC20 />} />

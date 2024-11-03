@@ -13,7 +13,7 @@ const AmountInput: React.FC<AmountInputProps> = ({ value, onChange, onMaxClick }
       value={value}
       onChange={onChange}
       placeholder="Amount"
-      className="w-full p-3 pr-20 border border-slightmuted bg-bgdarker text-base text-primarytext placeholder-mutedtext rounded"
+      className="w-full p-3 pr-20 border border-slightmuted bg-bgdarker text-base text-primarytext placeholder-lightmuted rounded"
     />
     <button
       type="button"

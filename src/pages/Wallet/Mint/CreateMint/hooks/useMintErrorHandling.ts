@@ -20,7 +20,9 @@ const useMintErrorHandling = (
       setError(
         `You need at least ${
           mintAmount + 25 + 0.1 * mintAmount
-        } Kaspa in your wallet, but you have ${kaspaBalance}. Minting requires a minimum of 25 KAS, 10% of the mint cost to cover fees, and 1 KAS per mint.`,
+        } KAS in your wallet, but you have ${kaspaBalance.toFixed(
+          2,
+        )}. Minting requires a minimum of 25 KAS, 10% of the mint cost to cover fees, and 1 KAS per mint.`,
       )
     } else {
       setError('')
