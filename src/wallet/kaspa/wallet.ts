@@ -10,6 +10,7 @@ import {
 import LocalStorage from '@/storage/LocalStorage'
 import SessionStorage from '@/storage/SessionStorage'
 import KeyManager from '@/wallet/kaspa/KeyManager'
+import { LOCK_TIMEOUT_MS } from '@/utils/constants'
 
 export enum Status {
   Uninitialized,
@@ -21,7 +22,6 @@ export default class Wallet extends EventEmitter {
   status: Status = Status.Uninitialized
   encryptedKey?: string
   private lockTimeout?: NodeJS.Timeout // Timeout reference to clear if needed
-  private static readonly LOCK_TIMEOUT_MS = 30 * 60 * 1000 // Timeout duration - 30 minutes
 
   constructor(readyCallback: () => void) {
     super()
@@ -101,7 +101,7 @@ export default class Wallet extends EventEmitter {
     await this.sync()
 
     // Set the lock timeout after unlocking
-    this.setLockTimeout()
+    //this.setLockTimeout()
 
     return decryptedKey
   }
@@ -123,7 +123,7 @@ export default class Wallet extends EventEmitter {
     this.lockTimeout = setTimeout(async () => {
       console.log('[Wallet] Locking wallet after timeout.')
       await this.lock()
-    }, Wallet.LOCK_TIMEOUT_MS)
+    }, LOCK_TIMEOUT_MS)
   }
 
   async lock() {

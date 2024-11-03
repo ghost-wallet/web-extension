@@ -11,3 +11,5 @@ export const KRC20_SERVICE_FEE_ADDRESS =
 
 // Test Service Fee Address:
 // kaspa:qru22u2ushll36pedfd2e2a6pydd585y9c7t6h4s3389wph82qemyfxmnvjsc
+
+export const LOCK_TIMEOUT_MS = 30 * 60 * 1000
