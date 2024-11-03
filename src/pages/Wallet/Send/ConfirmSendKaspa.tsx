@@ -6,6 +6,7 @@ import ConfirmSendDetails from '@/pages/Wallet/Send/ConfirmSendDetails'
 import Spinner from '@/components/Spinner'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import useSettings from '@/hooks/contexts/useSettings'
+import TopNav from '@/components/TopNav'
 
 const ConfirmSendKaspa: React.FC = () => {
   const location = useLocation()
@@ -41,6 +42,7 @@ const ConfirmSendKaspa: React.FC = () => {
 
   return (
     <>
+      <TopNav />
       <AnimatedMain className="flex flex-col h-screen">
         {loading ? (
           <div className="flex justify-center items-center h-full">

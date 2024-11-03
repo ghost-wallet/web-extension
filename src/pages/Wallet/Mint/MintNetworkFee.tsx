@@ -9,6 +9,7 @@ import { FEE_TYPES } from '@/utils/constants'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import { useBuckets } from '@/hooks/useBuckets'
 import NextButton from '@/components/buttons/NextButton'
+import TopNav from '@/components/TopNav'
 
 const MintNetworkFee: React.FC = () => {
   const navigate = useNavigate()
@@ -72,9 +73,10 @@ const MintNetworkFee: React.FC = () => {
 
   return (
     <>
-      <AnimatedMain>
+      <TopNav />
+      <AnimatedMain className="flex flex-col h-screen">
         <Header title="Network Fee" showBackButton={true} />
-        <div className="pt-24">
+        <div className="flex flex-col flex-grow">
           <FeePrioritySelector
             currentFeeTypeIndex={currentFeeTypeIndex}
             estimatedFee={networkFee.toString()}
@@ -82,10 +84,8 @@ const MintNetworkFee: React.FC = () => {
             onFeeTypeClick={handleFeeTypeClick}
           />
         </div>
-        <div className="w-full flex flex-col items-center justify-center flex-grow space-y-2 px-4">
-          {error && <ErrorMessage message={error} />}
-        </div>
-        <div className="flex items-center justify-center w-full px-4 pb-20">
+        <ErrorMessage message={error || ''} />
+        <div className="flex-auto px-4">
           <NextButton onClick={handleNext} showError={false} />
         </div>
       </AnimatedMain>

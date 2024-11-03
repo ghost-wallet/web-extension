@@ -9,6 +9,7 @@ import SwitchChaingeTokens from '@/pages/Wallet/Swap/SwitchChaingeTokens'
 import { useLocation } from 'react-router-dom'
 import NextButton from '@/components/buttons/NextButton'
 import PopupMessageDialog from '@/components/PopupMessageDialog'
+import TopNav from '@/components/TopNav'
 
 export default function Swap() {
   const [tokens, setTokens] = useState<ChaingeToken[]>([])
@@ -79,6 +80,7 @@ export default function Swap() {
 
   return (
     <>
+      <TopNav />
       <AnimatedMain>
         <Header title="Swap" showBackButton={true} />
         <div className="flex flex-col justify-between h-screen p-4">

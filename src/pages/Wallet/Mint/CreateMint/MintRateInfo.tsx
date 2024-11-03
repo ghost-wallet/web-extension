@@ -6,7 +6,7 @@ interface MintRateInfoProps {
 }
 
 const MintRateInfo: React.FC<MintRateInfoProps> = ({ mintRate, tokenTick }) => (
-  <div className="rounded-base text-mutedtext text-base text-right mt-8">
+  <div className="rounded-base text-mutedtext text-base text-right pt-2">
     Mint rate ~ 1 KAS = {mintRate.toLocaleString()} {tokenTick}
   </div>
 )

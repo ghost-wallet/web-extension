@@ -8,6 +8,7 @@ import SpinnerPage from '@/components/SpinnerPage'
 import { KRC20TokenRequest } from '@/utils/interfaces'
 import { useQueryClient } from '@tanstack/react-query'
 import useSettings from '@/hooks/contexts/useSettings'
+import TopNav from '@/components/TopNav'
 
 const ConfirmSendKRC20: React.FC = () => {
   const location = useLocation()
@@ -73,6 +74,7 @@ const ConfirmSendKRC20: React.FC = () => {
 
   return (
     <>
+      <TopNav />
       <AnimatedMain className="flex flex-col h-screen">
         {loading ? (
           <SpinnerPage displayText={`Transferring ${amount.toLocaleString()} ${token.tick}...`} />

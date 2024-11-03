@@ -10,6 +10,7 @@ import SpinnerPage from '@/components/SpinnerPage'
 import NextButton from '@/components/buttons/NextButton'
 import TotalCostToMint from '@/pages/Wallet/Mint/TotalCostToMint'
 import { useQueryClient } from '@tanstack/react-query'
+import TopNav from '@/components/TopNav'
 
 export default function ConfirmMint() {
   const location = useLocation()
@@ -59,12 +60,13 @@ export default function ConfirmMint() {
 
   return (
     <>
+      <TopNav />
       <AnimatedMain className="flex flex-col h-screen">
         <Header title="Confirm Mint" showBackButton={true} />
-        <div className="flex flex-col flex-grow px-6">
+        <div className="flex flex-col px-4">
           <CryptoImage ticker={token.tick} size="large" />
           <div className="w-full max-w-md space-y-1 pt-2">
-            <div className="flex justify-between mt-10">
+            <div className="flex justify-between">
               <span className="text-mutedtext text-base">Receive amount</span>
               <span className="text-mutedtext text-base text-right">
                 {receiveAmount.toLocaleString()} {token.tick}
@@ -88,7 +90,7 @@ export default function ConfirmMint() {
             <TotalCostToMint totalFees={totalFees} />
           </div>
         </div>
-        <div className="w-full px-4 pb-20">
+        <div className="flex-auto p-4">
           <NextButton onClick={handleMint} text="Confirm Mint" />
         </div>
       </AnimatedMain>

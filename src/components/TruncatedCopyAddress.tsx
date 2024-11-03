@@ -4,9 +4,10 @@ import { truncateAddress } from '@/utils/formatting'
 
 interface RecipientAddressProps {
   address: string
+  account?: string
 }
 
-const TruncatedCopyAddress: React.FC<RecipientAddressProps> = ({ address }) => {
+const TruncatedCopyAddress: React.FC<RecipientAddressProps> = ({ address, account }) => {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
@@ -17,7 +18,7 @@ const TruncatedCopyAddress: React.FC<RecipientAddressProps> = ({ address }) => {
   }
 
   return (
-    <div className="inline-flex cursor-pointer" onClick={handleCopy}>
+    <div className="inline-flex items-center space-x-1 cursor-pointer group" onClick={handleCopy}>
       {copied ? (
         <>
           <span className="text-base text-primary">Copied</span>
@@ -25,8 +26,10 @@ const TruncatedCopyAddress: React.FC<RecipientAddressProps> = ({ address }) => {
         </>
       ) : (
         <>
-          <span className="text-base text-primarytext">{truncateAddress(address)}</span>
-          <DocumentDuplicateIcon className="h-5 w-5 text-primarytext transition" />
+          <span className="text-base text-primarytext group-hover:text-primary transition">
+            {account ? account : truncateAddress(address)}
+          </span>
+          <DocumentDuplicateIcon className="h-5 w-5 text-primarytext group-hover:text-primary transition" />
         </>
       )}
     </div>

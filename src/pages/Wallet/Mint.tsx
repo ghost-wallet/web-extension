@@ -11,6 +11,7 @@ import SearchBar from '@/pages/Wallet/Mint/SearchBar'
 import ErrorMessage from '@/components/ErrorMessage'
 import Spinner from '@/components/Spinner'
 import NextButton from '@/components/buttons/NextButton'
+import TopNav from '@/components/TopNav'
 
 export default function Mint() {
   const [token, setToken] = useState<KRC20TokenResponse | null>(null)
@@ -53,6 +54,7 @@ export default function Mint() {
 
   return (
     <>
+      <TopNav />
       <AnimatedMain className="flex flex-col h-screen">
         <Header title="Mint" showBackButton={true} />
         <div className="flex flex-col flex-grow px-4">

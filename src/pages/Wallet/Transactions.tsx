@@ -3,10 +3,12 @@ import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import BottomNav from '@/components/BottomNav'
 import TransactionsTabs from './Transactions/TransactionsTabs'
+import TopNav from '@/components/TopNav'
 
 const Transactions: React.FC = () => {
   return (
     <>
+      <TopNav />
       <AnimatedMain>
         <Header title="Recent Activity" showBackButton={false} />
         <div className="px-4">

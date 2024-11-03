@@ -9,6 +9,7 @@ import { FEE_TYPES } from '@/utils/constants'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import BottomNav from '@/components/BottomNav'
+import TopNav from '@/components/TopNav'
 
 const NetworkFeeSelect: React.FC = () => {
   const location = useLocation()
@@ -71,6 +72,7 @@ const NetworkFeeSelect: React.FC = () => {
 
   return (
     <>
+      <TopNav />
       <AnimatedMain className="flex flex-col h-screen">
         <Header title="Network Fee" showBackButton={true} />
         <div className="flex flex-col flex-grow">
@@ -82,7 +84,7 @@ const NetworkFeeSelect: React.FC = () => {
           />
           <ErrorMessage message={recipientError || amountError || error || ''} />
         </div>
-        <div className="px-4 pb-20">
+        <div className="px-4 flex-auto">
           <NextButton onClick={handleContinue} buttonEnabled={!!estimatedFee} />
         </div>
       </AnimatedMain>

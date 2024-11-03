@@ -7,6 +7,7 @@ import CryptoImage from '@/components/CryptoImage'
 import ActionButtons from '@/pages/Wallet/CryptoList/Crypto/ActionButtons'
 import KRC20Details from '@/pages/Wallet/CryptoList/Crypto/KRC20Details'
 import KaspaDetails from './Crypto/KaspaDetails'
+import TopNav from '@/components/TopNav'
 
 const Crypto: React.FC = () => {
   const location = useLocation()
@@ -18,6 +19,7 @@ const Crypto: React.FC = () => {
 
   return (
     <>
+      <TopNav />
       <AnimatedMain>
         <Header title={token.tick} showBackButton={true} />
         <CryptoImage ticker={token.tick} size={'large'} />

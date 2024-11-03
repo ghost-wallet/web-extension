@@ -7,7 +7,7 @@ interface MintAmountInputProps {
 }
 
 const MintAmountInput: React.FC<MintAmountInputProps> = ({ mintAmount, onSliderChange, onInputChange }) => (
-  <div className="flex items-center space-x-4 pt-4">
+  <div className="flex items-center space-x-4">
     <input
       type="range"
       min="0"

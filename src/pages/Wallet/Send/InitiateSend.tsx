@@ -13,6 +13,7 @@ import { formatNumberWithDecimal, formatTokenBalance } from '@/utils/formatting'
 import useSettings from '@/hooks/contexts/useSettings'
 import { getCurrencySymbol } from '@/utils/currencies'
 import CryptoImage from '@/components/CryptoImage'
+import TopNav from '@/components/TopNav'
 
 const InitiateSend: React.FC = () => {
   const location = useLocation()
@@ -58,11 +59,12 @@ const InitiateSend: React.FC = () => {
 
   return (
     <>
+      <TopNav />
       <AnimatedMain className="flex flex-col h-screen">
         <Header title={`Send ${token.tick}`} showBackButton={true} />
         <CryptoImage ticker={token.tick} size="large" />
         <div className="flex flex-col justify-between h-screen">
-          <div className="flex flex-col items-center space-y-4 px-4 pt-4">
+          <div className="flex flex-col items-center space-y-2 p-4">
             <RecipientInput
               value={outputs[0][0]}
               onChange={(e) => handleRecipientChange(e.target.value, request)}
@@ -80,7 +82,7 @@ const InitiateSend: React.FC = () => {
             </div>
             <ErrorMessage message={recipientError || amountError || error || ''} />
           </div>
-          <div className="px-4 pb-20">
+          <div className="flex-auto px-4 pb-20">
             <NextButton onClick={handleContinue} buttonEnabled={isButtonEnabled} />
           </div>
         </div>
