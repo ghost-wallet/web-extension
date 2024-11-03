@@ -49,6 +49,9 @@ export default class Wallet extends EventEmitter {
 
       const hasKey = KeyManager.hasKey()
       this.status = session && hasKey ? Status.Unlocked : Status.Locked
+      if (this.status === Status.Locked && session) {
+        await SessionStorage.remove('session')
+      }
       if (this.status === Status.Locked && hasKey) {
         KeyManager.clearKey()
       }
