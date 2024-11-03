@@ -6,6 +6,7 @@ import {
   formatNumberWithDecimal,
   formatNumberWithAbbreviation,
   tokenPriceFormatter,
+  getMarketCap,
 } from '@/utils/formatting'
 import { calculateKRC20TotalValue, getMintedPercentage } from '@/utils/calculations'
 import { formatValue } from '@/utils/formatting'
@@ -75,6 +76,14 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
             label: `${settings.currency} Price`,
             value: <TokenPrice value={`${currencySymbol}${formattedTokenPrice}`} />,
           },
+          ...(krc20Token
+            ? [
+                {
+                  label: `Market cap`,
+                  value: `${currencySymbol}${getMarketCap(krc20Token.minted, krc20Token.dec, floorPrice)}`,
+                },
+              ]
+            : []),
         ]}
         className="mt-6 mb-2"
       />

@@ -87,3 +87,9 @@ export const formatNumberWithAbbreviation = (balance: number): string => {
 export const truncateAddress = (address: string): string => {
   return `${address.slice(0, 10)}.....${address.slice(-6)}`
 }
+
+export const getMarketCap = (minted: number, dec: number, floorPrice: number) => {
+  return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(
+    formatNumberWithDecimal(minted, dec) * floorPrice,
+  )
+}
