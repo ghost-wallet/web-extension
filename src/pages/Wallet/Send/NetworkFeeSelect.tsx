@@ -73,7 +73,7 @@ const NetworkFeeSelect: React.FC = () => {
   return (
     <>
       <TopNav />
-      <AnimatedMain className="flex flex-col h-screen">
+      <AnimatedMain className="flex flex-col h-screen w-full fixed">
         <Header title="Network Fee" showBackButton={true} />
         <div className="flex flex-col flex-grow">
           <FeePrioritySelector
@@ -84,10 +84,10 @@ const NetworkFeeSelect: React.FC = () => {
           />
           <ErrorMessage message={recipientError || amountError || error || ''} />
         </div>
-        <div className="px-4 flex-auto">
-          <NextButton onClick={handleContinue} buttonEnabled={!!estimatedFee} />
-        </div>
       </AnimatedMain>
+      <div className="bottom-20 left-0 right-0 px-4 fixed">
+        <NextButton onClick={handleContinue} buttonEnabled={!!estimatedFee} />
+      </div>
       <BottomNav />
     </>
   )

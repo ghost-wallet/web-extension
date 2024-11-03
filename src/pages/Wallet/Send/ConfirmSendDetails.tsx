@@ -5,7 +5,6 @@ import Header from '@/components/Header'
 import ErrorMessage from '@/components/ErrorMessage'
 import AnimatedNetworkFee from '@/pages/Wallet/Send/AnimatedNetworkFee'
 import TableSection from '@/components/table/TableSection'
-import NextButton from '@/components/buttons/NextButton'
 
 interface ConfirmSendDetailsProps {
   token: any
@@ -13,7 +12,6 @@ interface ConfirmSendDetailsProps {
   amount: string | number
   fee: string | number
   network: string
-  onConfirm: () => void
   loading: boolean
   error?: string
 }
@@ -24,7 +22,6 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
   amount,
   fee,
   network,
-  onConfirm,
   error,
 }) => {
   const tableRows = [
@@ -55,11 +52,7 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
       </div>
       <div className="px-4 pt-2">
         <TableSection rows={tableRows} />
-
         <ErrorMessage message={error || ''} />
-      </div>
-      <div className="px-4 pb-20 flex-auto">
-        <NextButton onClick={onConfirm} text={'Confirm Send'} />
       </div>
     </>
   )

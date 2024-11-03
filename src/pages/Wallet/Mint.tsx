@@ -17,6 +17,7 @@ export default function Mint() {
   const [token, setToken] = useState<KRC20TokenResponse | null>(null)
   const [error, setError] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const [showSuggestions, setShowSuggestions] = useState(false) // Track suggestions visibility
   const navigate = useNavigate()
 
   const handleSearch = async (ticker: string) => {
@@ -55,10 +56,10 @@ export default function Mint() {
   return (
     <>
       <TopNav />
-      <AnimatedMain className="flex flex-col h-screen">
+      <AnimatedMain className={`flex flex-col h-screen w-full ${showSuggestions ? '' : 'fixed'}`}>
         <Header title="Mint" showBackButton={true} />
         <div className="flex flex-col flex-grow px-4">
-          <SearchBar onSearch={handleSearch} />
+          <SearchBar onSearch={handleSearch} onToggleSuggestions={setShowSuggestions} />
           {loading ? (
             <div className="mt-10">
               <Spinner />
@@ -68,12 +69,12 @@ export default function Mint() {
           )}
           {token && <TokenDetails token={token} />}
         </div>
-        {token && (
-          <div className="px-4 pt-2 pb-20">
-            <NextButton text={getButtonLabel()} buttonEnabled={isMintable} onClick={handleContinue} />
-          </div>
-        )}
       </AnimatedMain>
+      {token && (
+        <div className={`bottom-20 left-0 right-0 px-4 ${showSuggestions ? '' : 'fixed'} z-0`}>
+          <NextButton text={getButtonLabel()} buttonEnabled={isMintable} onClick={handleContinue} />
+        </div>
+      )}
       <BottomNav />
     </>
   )

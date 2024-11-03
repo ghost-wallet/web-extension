@@ -3,10 +3,11 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/BottomNav'
 import ConfirmSendDetails from '@/pages/Wallet/Send/ConfirmSendDetails'
-import Spinner from '@/components/Spinner'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import useSettings from '@/hooks/contexts/useSettings'
 import TopNav from '@/components/TopNav'
+import NextButton from '@/components/buttons/NextButton'
+import SpinnerPage from '@/components/SpinnerPage'
 
 const ConfirmSendKaspa: React.FC = () => {
   const location = useLocation()
@@ -43,10 +44,10 @@ const ConfirmSendKaspa: React.FC = () => {
   return (
     <>
       <TopNav />
-      <AnimatedMain className="flex flex-col h-screen">
+      <AnimatedMain className="flex flex-col h-screen w-full fixed">
         {loading ? (
           <div className="flex justify-center items-center h-full">
-            <Spinner />
+            <SpinnerPage />
           </div>
         ) : (
           <ConfirmSendDetails
@@ -55,12 +56,16 @@ const ConfirmSendKaspa: React.FC = () => {
             amount={amount}
             fee={fee}
             network={settings.nodes[settings.selectedNode].address}
-            onConfirm={handleConfirmClick}
             loading={loading}
             error={error}
           />
         )}
       </AnimatedMain>
+      {!loading && (
+        <div className="bottom-20 left-0 right-0 px-4 fixed">
+          <NextButton onClick={handleConfirmClick} text={'Confirm Send'} />
+        </div>
+      )}
       {!loading && <BottomNav />}
     </>
   )

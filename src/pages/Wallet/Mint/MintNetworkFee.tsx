@@ -74,7 +74,7 @@ const MintNetworkFee: React.FC = () => {
   return (
     <>
       <TopNav />
-      <AnimatedMain className="flex flex-col h-screen">
+      <AnimatedMain className="flex flex-col h-screen fixed w-full">
         <Header title="Network Fee" showBackButton={true} />
         <div className="flex flex-col flex-grow">
           <FeePrioritySelector
@@ -85,10 +85,10 @@ const MintNetworkFee: React.FC = () => {
           />
         </div>
         <ErrorMessage message={error || ''} />
-        <div className="flex-auto px-4">
-          <NextButton onClick={handleNext} showError={false} />
-        </div>
       </AnimatedMain>
+      <div className="fixed bottom-20 left-0 right-0 px-4">
+        <NextButton onClick={handleNext} showError={false} />
+      </div>
       <BottomNav />
     </>
   )

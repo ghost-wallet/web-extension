@@ -9,6 +9,7 @@ import { KRC20TokenRequest } from '@/utils/interfaces'
 import { useQueryClient } from '@tanstack/react-query'
 import useSettings from '@/hooks/contexts/useSettings'
 import TopNav from '@/components/TopNav'
+import NextButton from '@/components/buttons/NextButton'
 
 const ConfirmSendKRC20: React.FC = () => {
   const location = useLocation()
@@ -75,7 +76,7 @@ const ConfirmSendKRC20: React.FC = () => {
   return (
     <>
       <TopNav />
-      <AnimatedMain className="flex flex-col h-screen">
+      <AnimatedMain className="flex flex-col h-screen w-full fixed">
         {loading ? (
           <SpinnerPage displayText={`Transferring ${amount.toLocaleString()} ${token.tick}...`} />
         ) : (
@@ -85,12 +86,16 @@ const ConfirmSendKRC20: React.FC = () => {
             amount={amount}
             fee={estimatedFee || 'Calculating...'}
             network={settings.nodes[settings.selectedNode].address}
-            onConfirm={handleConfirmClick}
             loading={loading}
             error={error}
           />
         )}
       </AnimatedMain>
+      {!loading && (
+        <div className="bottom-20 left-0 right-0 px-4 fixed">
+          <NextButton onClick={handleConfirmClick} text={'Confirm Send'} />
+        </div>
+      )}
       {!loading && <BottomNav />}
     </>
   )

@@ -60,7 +60,7 @@ const InitiateSend: React.FC = () => {
   return (
     <>
       <TopNav />
-      <AnimatedMain className="flex flex-col h-screen">
+      <AnimatedMain className="flex flex-col h-screen w-full fixed">
         <Header title={`Send ${token.tick}`} showBackButton={true} />
         <CryptoImage ticker={token.tick} size="large" />
         <div className="flex flex-col justify-between h-screen">
@@ -82,11 +82,11 @@ const InitiateSend: React.FC = () => {
             </div>
             <ErrorMessage message={recipientError || amountError || error || ''} />
           </div>
-          <div className="flex-auto px-4 pb-20">
-            <NextButton onClick={handleContinue} buttonEnabled={isButtonEnabled} />
-          </div>
         </div>
       </AnimatedMain>
+      <div className="bottom-20 left-0 right-0 px-4 fixed">
+        <NextButton onClick={handleContinue} buttonEnabled={isButtonEnabled} />
+      </div>
       <BottomNav />
     </>
   )

@@ -11,7 +11,7 @@ interface SuggestionsDropdownProps {
 
 const SuggestionsDropdown: React.FC<SuggestionsDropdownProps> = ({ filteredTokens, onSuggestionClick }) => {
   return (
-    <ul className="absolute top-full mt-1 left-0 right-0 z-10 pb-20">
+    <ul className="absolute top-full mt-1 left-0 right-0 z-20 pb-20">
       {filteredTokens.map((token) => (
         <li
           key={token.tick}

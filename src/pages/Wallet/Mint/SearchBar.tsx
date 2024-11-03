@@ -1,16 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import { useKrc20TokenList } from '@/hooks/kasplex/useKrc20TokenList'
 import SuggestionsDropdown from './SuggestionsDropdown'
 
 interface KRC20TokenSearchProps {
   onSearch: (ticker: string) => void
+  onToggleSuggestions: (show: boolean) => void // New prop
 }
 
-const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch }) => {
+const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch, onToggleSuggestions }) => {
   const [ticker, setTicker] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
   const krc20TokenListQuery = useKrc20TokenList()
+
+  useEffect(() => {
+    onToggleSuggestions(showSuggestions)
+  }, [showSuggestions, onToggleSuggestions])
 
   const filteredTokens = ticker
     ? krc20TokenListQuery.data?.filter((token) => token.tick.toLowerCase().includes(ticker.toLowerCase()))
@@ -43,7 +48,7 @@ const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch }) => {
   const isInputEmpty = ticker.trim() === ''
 
   return (
-    <div className="flex items-center w-full h-14 relative">
+    <div className="flex items-center w-full h-14 relative z-30">
       <div className="flex w-full border border-muted rounded-lg overflow-hidden h-full">
         <input
           type="text"
