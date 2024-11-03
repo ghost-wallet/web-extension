@@ -7,6 +7,7 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 import SpinnerPage from '@/components/SpinnerPage'
 import { KRC20TokenRequest } from '@/utils/interfaces'
 import { useQueryClient } from '@tanstack/react-query'
+import useSettings from '@/hooks/contexts/useSettings'
 
 const ConfirmSendKRC20: React.FC = () => {
   const location = useLocation()
@@ -17,6 +18,7 @@ const ConfirmSendKRC20: React.FC = () => {
   const [estimatedFee, setEstimatedFee] = useState<string>('')
   const [krc20Info, setKrc20Info] = useState<KRC20TokenRequest | null>(null)
   const { request } = useKaspa()
+  const { settings } = useSettings()
 
   const fetchEstimatedFee = useCallback(() => {
     request('account:getKRC20Info', [recipient, token, amount])
@@ -82,7 +84,7 @@ const ConfirmSendKRC20: React.FC = () => {
             recipient={recipient}
             amount={amount}
             fee={estimatedFee || 'Calculating...'}
-            network="Mainnet"
+            network={settings.nodes[settings.selectedNode].address}
             onConfirm={handleConfirmClick}
             loading={loading}
             error={error}

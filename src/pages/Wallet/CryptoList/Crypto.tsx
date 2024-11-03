@@ -22,7 +22,7 @@ const Crypto: React.FC = () => {
         <Header title={token.tick} showBackButton={true} />
         <CryptoImage ticker={token.tick} size={'large'} />
         <ActionButtons token={token} />
-        {token.tick === 'KASPA' ? <KaspaDetails /> : <KRC20Details token={token}></KRC20Details>}
+        {token.isKaspa ? <KaspaDetails /> : <KRC20Details token={token}></KRC20Details>}
       </AnimatedMain>
 
       <BottomNav />

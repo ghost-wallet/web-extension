@@ -5,12 +5,14 @@ import BottomNav from '@/components/BottomNav'
 import ConfirmSendDetails from '@/pages/Wallet/Send/ConfirmSendDetails'
 import Spinner from '@/components/Spinner'
 import useKaspa from '@/hooks/contexts/useKaspa'
+import useSettings from '@/hooks/contexts/useSettings'
 
 const ConfirmSendKaspa: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { token, recipient, amount, outputs, fee, feeRate } = location.state || {}
   const { request } = useKaspa()
+  const { settings } = useSettings()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -50,7 +52,7 @@ const ConfirmSendKaspa: React.FC = () => {
             recipient={recipient}
             amount={amount}
             fee={fee}
-            network="Mainnet"
+            network={settings.nodes[settings.selectedNode].address}
             onConfirm={handleConfirmClick}
             loading={loading}
             error={error}

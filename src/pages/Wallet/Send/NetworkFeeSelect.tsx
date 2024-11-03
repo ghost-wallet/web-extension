@@ -23,11 +23,10 @@ const NetworkFeeSelect: React.FC = () => {
 
   const selectedBucket = buckets[FEE_TYPES[currentFeeTypeIndex]]
   const selectedFeeRate = selectedBucket.feeRate || 1
-  const estimatedSeconds = selectedBucket.seconds || 0
 
   const fetchEstimatedFee = useCallback(() => {
     if (outputs && outputs[0][0].length > 0 && outputs[0][1].length > 0 && !recipientError && !amountError) {
-      if (token.tick === 'KASPA') {
+      if (token.isKaspa) {
         request('account:estimateKaspaTransactionFee', [outputs, selectedFeeRate, '0'])
           .then((feeEstimate) => setEstimatedFee(feeEstimate))
           .catch((err) => setError(err))
@@ -55,10 +54,9 @@ const NetworkFeeSelect: React.FC = () => {
   }
 
   const handleContinue = () => {
-    const nextPath =
-      token.tick === 'KASPA'
-        ? `/send/${token.tick}/network-fee/confirm`
-        : `/send/${token.tick}/network-fee/confirmkrc20`
+    const nextPath = token.isKaspa
+      ? `/send/${token.tick}/network-fee/confirm`
+      : `/send/${token.tick}/network-fee/confirmkrc20`
     navigate(nextPath, {
       state: {
         token,
@@ -79,7 +77,6 @@ const NetworkFeeSelect: React.FC = () => {
           <FeePrioritySelector
             currentFeeTypeIndex={currentFeeTypeIndex}
             estimatedFee={estimatedFee}
-            estimatedSeconds={estimatedSeconds}
             onFeeTypeClick={handleFeeTypeClick}
             isButtonEnabled={true}
           />

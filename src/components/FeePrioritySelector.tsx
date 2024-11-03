@@ -4,7 +4,6 @@ import TableSection from '@/components/table/TableSection'
 interface FeePrioritySelectorProps {
   currentFeeTypeIndex: number
   estimatedFee: string
-  estimatedSeconds: number
   isButtonEnabled: boolean
   onFeeTypeClick: (index: number) => void
 }
@@ -14,7 +13,6 @@ const FEE_TYPE_LABELS = ['Average', 'Fast', 'Faster']
 const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
   currentFeeTypeIndex,
   estimatedFee,
-  estimatedSeconds,
   isButtonEnabled,
   onFeeTypeClick,
 }) => {
@@ -24,7 +22,7 @@ const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
     setAnimate(true)
     const timer = setTimeout(() => setAnimate(false), 300) // Duration should match animation duration
     return () => clearTimeout(timer)
-  }, [currentFeeTypeIndex, estimatedFee, estimatedSeconds])
+  }, [currentFeeTypeIndex, estimatedFee])
 
   return (
     <>

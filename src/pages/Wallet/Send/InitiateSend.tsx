@@ -23,7 +23,7 @@ const InitiateSend: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
   const { token } = location.state || {}
 
-  const maxAmount = token.tick === 'KASPA' ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
+  const maxAmount = token.isKaspa ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
   const { outputs, recipientError, amountError, handleRecipientChange, handleAmountChange, handleMaxClick } =
     useTransactionInputs(token, maxAmount)
 
@@ -78,7 +78,6 @@ const InitiateSend: React.FC = () => {
                 Available {formattedBalance} {token.tick}
               </span>
             </div>
-
             <ErrorMessage message={recipientError || amountError || error || ''} />
           </div>
           <div className="px-4 pb-20">
