@@ -5,6 +5,7 @@ import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 import { KRC20TokenResponse, KsprToken } from '@/utils/interfaces'
+import { getButtonLabel } from '@/utils/labels'
 import { checkIfMintable } from '@/utils/validation'
 import TokenDetails from '@/pages/Wallet/Mint/TokenDetails'
 import SearchBar from '@/pages/Wallet/Mint/SearchBar'
@@ -15,6 +16,7 @@ import TopNav from '@/components/TopNav'
 import { useKsprPrices } from '@/hooks/kspr/fetchKsprPrices'
 import useKaspaPrice from '@/hooks/useKaspaPrice'
 import useSettings from '@/hooks/contexts/useSettings'
+import { useKrc20TokenList } from '@/hooks/kasplex/useKrc20TokenList'
 
 export default function Mint() {
   const [token, setToken] = useState<KRC20TokenResponse | null>(null)
@@ -23,12 +25,17 @@ export default function Mint() {
   const [showSuggestions, setShowSuggestions] = useState(false)
   const navigate = useNavigate()
 
-  // TODO: get kspr prices and krc20tokenlist, merge them, then pass that to SearchBar
-  // make searchbar results sort by market cap
   const ksprPricesQuery = useKsprPrices()
   const { settings } = useSettings()
   const kaspaPrice = useKaspaPrice(settings.currency)
   const kasPrice = kaspaPrice.data ?? 0
+  const krc20TokenListQuery = useKrc20TokenList()
+
+  const tokenList = krc20TokenListQuery.data?.map((token) => {
+    const ksprPriceData: KsprToken | undefined = ksprPricesQuery.data?.[token.tick]
+    const floorPrice = ksprPriceData?.floor_price ? ksprPriceData.floor_price * kasPrice : 0
+    return { ...token, floorPrice }
+  })
 
   const handleSearch = async (ticker: string) => {
     setError('')
@@ -52,19 +59,14 @@ export default function Mint() {
     }
   }
 
-  const isMintable = checkIfMintable(token)
-
-  const getButtonLabel = () => {
-    if (!token || token.state === 'unused') return 'Token Not Deployed'
-    if (!isMintable) return 'Supply Is Already Minted'
-    return 'Next'
-  }
-
   const handleContinue = () => {
     if (token && isMintable) {
       navigate(`/mint/${token.tick}`, { state: { token } })
     }
   }
+
+  const isMintable = checkIfMintable(token)
+  const canMintLabel = getButtonLabel(token, isMintable)
 
   return (
     <>
@@ -72,7 +74,13 @@ export default function Mint() {
       <AnimatedMain className={`flex flex-col h-screen w-full ${showSuggestions ? '' : 'fixed'}`}>
         <Header title="Mint" showBackButton={true} />
         <div className="flex flex-col flex-grow px-4">
-          <SearchBar onSearch={handleSearch} onToggleSuggestions={setShowSuggestions} />
+          {tokenList && (
+            <SearchBar
+              onSearch={handleSearch}
+              onToggleSuggestions={setShowSuggestions}
+              krc20TokenList={tokenList}
+            />
+          )}
           {loading ? (
             <div className="mt-10">
               <Spinner />
@@ -83,9 +91,10 @@ export default function Mint() {
           {token && <TokenDetails token={token} />}
         </div>
       </AnimatedMain>
+      {/*TODO: fix bug - show button even while suggestions are showing*/}
       {token && (
         <div className={`bottom-20 left-0 right-0 px-4 ${showSuggestions ? '' : 'fixed'} z-0`}>
-          <NextButton text={getButtonLabel()} buttonEnabled={isMintable} onClick={handleContinue} />
+          <NextButton text={canMintLabel} buttonEnabled={isMintable} onClick={handleContinue} />
         </div>
       )}
       <BottomNav />

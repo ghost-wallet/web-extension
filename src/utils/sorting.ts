@@ -1,6 +1,9 @@
 import { formatNumberWithDecimal } from '@/utils/formatting'
 import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
 import { KaspaToken, Token } from '@/utils/interfaces'
+import { KRC20TokenResponse } from '@/utils/interfaces'
+import { getMarketCap } from '@/utils/formatting'
+import { MAX_MARKET_CAP_THRESHOLD } from '@/utils/constants'
 
 export const sortTokensByValue = (tokens: (Token | KaspaToken)[]) => {
   return tokens
@@ -21,6 +24,33 @@ export const sortTokensByValue = (tokens: (Token | KaspaToken)[]) => {
       }
     })
     .sort((a, b) => b.totalValue - a.totalValue) // Sort by total value
+}
+
+export const sortSearchResults = (krc20TokenList: KRC20TokenResponse[], ticker: string) => {
+  return krc20TokenList
+    .filter((token) => token.tick.toLowerCase().includes(ticker.toLowerCase()))
+    .map((token) => {
+      const marketCap = getMarketCap(token.minted, token.dec, token.floorPrice || 0)
+      return {
+        ...token,
+        marketCap,
+        isAbnormallyLarge: marketCap > MAX_MARKET_CAP_THRESHOLD,
+      }
+    })
+    .sort((a, b) => {
+      // 1. Deprioritize abnormally large market caps by moving them to the end
+      if (a.isAbnormallyLarge && !b.isAbnormallyLarge) return 1
+      if (b.isAbnormallyLarge && !a.isAbnormallyLarge) return -1
+
+      // 2. Sort by market cap (higher market cap comes first)
+      if (a.marketCap !== b.marketCap) return b.marketCap - a.marketCap
+
+      // 3. Prioritize 'deployed' state within the same market cap
+      if (a.state === 'deployed' && b.state !== 'deployed') return -1
+      if (b.state === 'deployed' && a.state !== 'deployed') return 1
+
+      return 0 // No preference if all criteria are the same
+    })
 }
 
 export const sortChaingeTokens = (tokens: ChaingeToken[]): ChaingeToken[] => {

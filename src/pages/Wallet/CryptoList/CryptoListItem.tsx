@@ -18,6 +18,7 @@ const CryptoListItem: React.FC<CryptoListItemProps> = ({ token, currencySymbol }
     maximumFractionDigits: 2,
   })
 
+  // TODO: show loading UI or cached Kaspa data while connecting to network (don't show balance as 0)
   return (
     <div className="flex items-center justify-between w-full p-3 bg-darkmuted hover:bg-slightmuted transition-colors rounded-[15px]">
       <div className="flex items-center">

@@ -4,7 +4,7 @@ import TableSection from '@/components/table/TableSection'
 import {
   formatNumberWithDecimal,
   formatNumberWithAbbreviation,
-  getMarketCap,
+  formatMarketCap,
   tokenPriceFormatter,
 } from '@/utils/formatting'
 import { getMintedPercentage } from '@/utils/calculations'
@@ -47,7 +47,7 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
             rows={[
               {
                 label: 'Market cap',
-                value: `${currencySymbol}${getMarketCap(token.minted, token.dec, token.floorPrice)}`,
+                value: `${currencySymbol}${formatMarketCap(token.minted, token.dec, token.floorPrice)}`,
               },
               {
                 label: 'Total supply',

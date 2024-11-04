@@ -86,7 +86,7 @@ export interface Token extends TokenFromApi {
  * https://docs.kasplex.org
  */
 export interface KRC20TokenList {
-  result: TokenFromApi[]
+  result: KRC20TokenResponse[]
   next: string | null
 }
 

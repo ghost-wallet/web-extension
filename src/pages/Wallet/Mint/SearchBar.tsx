@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
-import { useKrc20TokenList } from '@/hooks/kasplex/useKrc20TokenList'
 import SuggestionsDropdown from './SuggestionsDropdown'
+import { KRC20TokenResponse } from '@/utils/interfaces'
+import { sortSearchResults } from '@/utils/sorting'
 
 interface KRC20TokenSearchProps {
   onSearch: (ticker: string) => void
-  onToggleSuggestions: (show: boolean) => void // New prop
+  onToggleSuggestions: (show: boolean) => void
+  krc20TokenList: KRC20TokenResponse[]
 }
 
-const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch, onToggleSuggestions }) => {
+const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch, onToggleSuggestions, krc20TokenList }) => {
   const [ticker, setTicker] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
-  const krc20TokenListQuery = useKrc20TokenList()
 
   useEffect(() => {
     onToggleSuggestions(showSuggestions)
   }, [showSuggestions, onToggleSuggestions])
 
-  const filteredTokens = ticker
-    ? krc20TokenListQuery.data?.filter((token) => token.tick.toLowerCase().includes(ticker.toLowerCase()))
-    : []
+  // TODO: sort results by volume, not market cap. MCs are unreliable due to incorrect outlier data
+  const sortedTokens = ticker ? sortSearchResults(krc20TokenList, ticker) : []
 
   const handleSearch = () => {
     if (ticker.trim() !== '') {
@@ -73,8 +73,8 @@ const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch, onToggleSuggesti
         </button>
       </div>
 
-      {showSuggestions && filteredTokens && filteredTokens.length > 0 && (
-        <SuggestionsDropdown filteredTokens={filteredTokens} onSuggestionClick={handleSuggestionClick} />
+      {showSuggestions && sortedTokens && sortedTokens.length > 0 && (
+        <SuggestionsDropdown filteredTokens={sortedTokens} onSuggestionClick={handleSuggestionClick} />
       )}
     </div>
   )
