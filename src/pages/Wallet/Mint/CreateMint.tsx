@@ -55,19 +55,6 @@ export default function CreateMint() {
     }
   }
 
-  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMintAmount(Number(e.target.value))
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    if (value === '') {
-      setMintAmount(null)
-    } else if (/^\d+$/.test(value) && Number(value) <= 1000) {
-      setMintAmount(Number(value))
-    }
-  }
-
   return (
     <>
       <TopNav />
@@ -77,8 +64,8 @@ export default function CreateMint() {
           <CryptoImage ticker={token.tick} size={'large'} />
           <MintAmountInput
             mintAmount={mintAmount}
-            onSliderChange={handleSliderChange}
-            onInputChange={handleInputChange}
+            onSliderChange={(e) => setMintAmount(Number(e.target.value))}
+            onInputChange={(e) => setMintAmount(e.target.value === '' ? null : Number(e.target.value))}
           />
           <MintSummary totalMintCost={totalMintCost} mintAmount={mintAmount} tokenTick={token.tick} />
           <MintRateInfo mintRate={mintRate} tokenTick={token.tick} />

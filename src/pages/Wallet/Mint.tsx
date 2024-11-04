@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
@@ -19,6 +19,8 @@ import useSettings from '@/hooks/contexts/useSettings'
 import { useKrc20TokenList } from '@/hooks/kasplex/useKrc20TokenList'
 
 export default function Mint() {
+  const location = useLocation()
+  const ticker = location.state?.ticker || null
   const [token, setToken] = useState<KRC20TokenResponse | null>(null)
   const [error, setError] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
@@ -58,6 +60,12 @@ export default function Mint() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (ticker) {
+      handleSearch(ticker)
+    }
+  }, [ticker])
 
   const handleContinue = () => {
     if (token && isMintable) {
