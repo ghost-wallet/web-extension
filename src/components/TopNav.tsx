@@ -24,7 +24,7 @@ const TopNav: React.FC = () => {
           <div className="flex-1 flex justify-center">
             {!kaspa.connected ? (
               <div className="flex items-center bg-darkmuted text-primarytext text-sm p-1 rounded">
-                <p className="pl-4">{`Connecting to ${settings.nodes[settings.selectedNode].address}...`}</p>
+                <p className="px-2">{`Connecting to ${settings.nodes[settings.selectedNode].address}...`}</p>
                 <div className="p-1">
                   <Spinner size="small" />
                 </div>
