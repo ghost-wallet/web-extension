@@ -4,6 +4,7 @@ import SwapTokenListItem from '@/pages/Wallet/Swap/SwapTokenListItem'
 import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
 import Spinner from '@/components/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 
 interface SwapTokenSelectProps {
   tokens: ChaingeToken[]
@@ -48,7 +49,7 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({
           onClick={onClose}
           aria-label="Close token selection"
         >
-          &times;
+          <XMarkIcon className="h-7 w-7 transform transition-transform duration-300 hover:scale-125 text-mutedtext" />
         </button>
       </div>
 
