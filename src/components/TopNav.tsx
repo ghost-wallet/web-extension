@@ -1,10 +1,14 @@
+import React from 'react'
 import TruncatedCopyAddress from '@/components/TruncatedCopyAddress'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import { Cog6ToothIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
+import Spinner from '@/components/Spinner'
+import useSettings from '@/hooks/contexts/useSettings'
 
-export default function TopNav() {
+const TopNav: React.FC = () => {
   const { kaspa } = useKaspa()
+  const { settings } = useSettings()
   const navigate = useNavigate()
 
   return (
@@ -16,9 +20,18 @@ export default function TopNav() {
             <Cog6ToothIcon className="h-7 w-7 transform transition-transform duration-300 hover:scale-125 text-mutedtext" />
           </button>
 
-          {/* Center - TruncatedCopyAddress */}
+          {/* Center - TruncatedCopyAddress or Spinner if not connected */}
           <div className="flex-1 flex justify-center">
-            <TruncatedCopyAddress account="Account 1" address={kaspa.addresses[0]} />
+            {!kaspa.connected ? (
+              <div className="flex items-center bg-darkmuted text-primarytext text-sm p-1 rounded">
+                <p className="pl-4">{`Connecting to ${settings.nodes[settings.selectedNode].address}...`}</p>
+                <div className="p-1">
+                  <Spinner size="small" />
+                </div>
+              </div>
+            ) : (
+              <TruncatedCopyAddress account="Account 1" address={kaspa.addresses[0]} />
+            )}
           </div>
 
           {/* Right side - Spacer to keep layout balanced */}
@@ -31,3 +44,5 @@ export default function TopNav() {
     </>
   )
 }
+
+export default TopNav

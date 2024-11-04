@@ -6,7 +6,7 @@ import ResetWalletButton from '@/components/buttons/ResetWalletButton'
 const ForgotPassword: React.FC = () => {
   return (
     <>
-      <AnimatedMain showConnectingMessage={false}>
+      <AnimatedMain>
         <Header title="Forgot Password" showBackButton={true} />
         <div className="px-6">
           <p className="text-warning text-base text-center pt-6 pb-32">

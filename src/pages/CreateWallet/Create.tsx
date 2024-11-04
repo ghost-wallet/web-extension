@@ -27,7 +27,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
   }
 
   return (
-    <AnimatedMain showConnectingMessage={false} className="flex flex-col h-screen">
+    <AnimatedMain className="flex flex-col h-screen">
       <Header title="Secret Phrase" showBackButton={false} />
 
       <div className="flex flex-col flex-grow justify-center px-4 pb-6 space-y-4">

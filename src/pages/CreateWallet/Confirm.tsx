@@ -57,7 +57,7 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
   }, [handleValidateEntries])
 
   return (
-    <AnimatedMain showConnectingMessage={false} className="flex flex-col h-screen">
+    <AnimatedMain className="flex flex-col h-screen">
       <Header title="Confirm Secret Phrase" showBackButton={false} />
       <div className="px-4">
         <p className="text-mutedtext text-lg text-center mb-6">Enter the 3rd, 5th, and 8th missing words.</p>

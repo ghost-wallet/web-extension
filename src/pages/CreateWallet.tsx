@@ -60,7 +60,7 @@ export default function CreateWallet() {
   }
 
   return (
-    <AnimatedMain showConnectingMessage={false}>
+    <AnimatedMain>
       {loading ? (
         <SpinnerPage displayText="Initializing wallet..." />
       ) : (

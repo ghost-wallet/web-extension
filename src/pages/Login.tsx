@@ -40,7 +40,7 @@ export default function Login() {
   }
 
   return (
-    <AnimatedMain showConnectingMessage={false} className="flex flex-col h-screen">
+    <AnimatedMain className="flex flex-col h-screen">
       <div className="flex justify-center pt-6">
         <img className="w-[7.7rem] h-[7.7rem]" src={ghostIcon} alt="logo" />
       </div>

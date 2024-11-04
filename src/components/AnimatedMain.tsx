@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import useKaspa from '@/hooks/contexts/useKaspa'
-import Spinner from '@/components/Spinner'
-import useSettings from '@/hooks/contexts/useSettings'
 
 interface AnimatedMainProps {
   children: React.ReactNode
@@ -10,23 +7,13 @@ interface AnimatedMainProps {
   showConnectingMessage?: boolean
 }
 
-const AnimatedMain: React.FC<AnimatedMainProps> = ({ children, className, showConnectingMessage = true }) => {
-  const { kaspa } = useKaspa()
-  const { settings } = useSettings()
+const AnimatedMain: React.FC<AnimatedMainProps> = ({ children, className }) => {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
   return (
     <>
-      {!kaspa.connected && showConnectingMessage && (
-        <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center bg-slightmuted text-primarytext text-sm p-1">
-          <p className="pl-4">{`Connecting to ${settings.nodes[settings.selectedNode].address}...`}</p>
-          <div className="p-1">
-            <Spinner size={'small'} />
-          </div>
-        </div>
-      )}
       <motion.main
         className={`${className}`}
         initial={{ opacity: 0, scale: 0.95 }}

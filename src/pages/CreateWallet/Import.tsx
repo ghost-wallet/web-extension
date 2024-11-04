@@ -47,7 +47,7 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
   }
 
   return (
-    <AnimatedMain showConnectingMessage={false} className="flex flex-col h-screen">
+    <AnimatedMain className="flex flex-col h-screen">
       <Header title="Import" showBackButton={false} />
       <div className="flex flex-col items-center flex-grow justify-center px-4 pb-6">
         <p className="text-mutedtext text-lg text-center mb-4">
