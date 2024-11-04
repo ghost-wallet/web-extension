@@ -3,7 +3,7 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import KRC20TxnHistory from '@/pages/Wallet/Transactions/KRC20TxnHistory'
 import KaspaTxnHistory from '@/pages/Wallet/Transactions/KaspaTxnHistory'
-import KaspaTestnet from '@/pages/Wallet/Transactions/KaspaTestnet'
+import KaspaTxnHistoryTestnet from '@/pages/Wallet/Transactions/KaspaTxnHistoryTestnet'
 import useSettings from '@/hooks/contexts/useSettings'
 
 interface TransactionsTabsProps {}
@@ -44,7 +44,7 @@ const TransactionsTabs: React.FC<TransactionsTabsProps> = () => {
         </Tab>
       </TabList>
       <TabPanels className="mt-4">
-        <TabPanel>{network === 'mainnet' ? <KaspaTxnHistory /> : <KaspaTestnet />}</TabPanel>
+        <TabPanel>{network === 'mainnet' ? <KaspaTxnHistory /> : <KaspaTxnHistoryTestnet />}</TabPanel>
         <TabPanel>
           <KRC20TxnHistory />
         </TabPanel>

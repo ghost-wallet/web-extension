@@ -74,13 +74,11 @@ export default function Mint() {
       <AnimatedMain className={`flex flex-col h-screen w-full ${showSuggestions ? '' : 'fixed'}`}>
         <Header title="Mint" showBackButton={true} />
         <div className="flex flex-col flex-grow px-4">
-          {tokenList && (
-            <SearchBar
-              onSearch={handleSearch}
-              onToggleSuggestions={setShowSuggestions}
-              krc20TokenList={tokenList}
-            />
-          )}
+          <SearchBar
+            onSearch={handleSearch}
+            onToggleSuggestions={setShowSuggestions}
+            krc20TokenList={tokenList}
+          />
           {loading ? (
             <div className="mt-10">
               <Spinner />

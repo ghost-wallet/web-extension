@@ -7,7 +7,7 @@ import { sortSearchResults } from '@/utils/sorting'
 interface KRC20TokenSearchProps {
   onSearch: (ticker: string) => void
   onToggleSuggestions: (show: boolean) => void
-  krc20TokenList: KRC20TokenResponse[]
+  krc20TokenList?: KRC20TokenResponse[]
 }
 
 const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch, onToggleSuggestions, krc20TokenList }) => {
@@ -18,8 +18,8 @@ const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch, onToggleSuggesti
     onToggleSuggestions(showSuggestions)
   }, [showSuggestions, onToggleSuggestions])
 
-  // TODO: sort results by volume, not market cap. MCs are unreliable due to incorrect outlier data
-  const sortedTokens = ticker ? sortSearchResults(krc20TokenList, ticker) : []
+  // Set sortedTokens to null to trigger loading in SuggestionsDropdown
+  const sortedTokens = krc20TokenList ? sortSearchResults(krc20TokenList, ticker) : null
 
   const handleSearch = () => {
     if (ticker.trim() !== '') {
@@ -73,8 +73,8 @@ const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch, onToggleSuggesti
         </button>
       </div>
 
-      {showSuggestions && sortedTokens && sortedTokens.length > 0 && (
-        <SuggestionsDropdown filteredTokens={sortedTokens} onSuggestionClick={handleSuggestionClick} />
+      {showSuggestions && (
+        <SuggestionsDropdown filteredTokens={sortedTokens || []} onSuggestionClick={handleSuggestionClick} />
       )}
     </div>
   )

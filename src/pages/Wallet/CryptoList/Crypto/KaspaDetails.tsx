@@ -6,12 +6,14 @@ import TableSection from '@/components/table/TableSection'
 import TokenPrice from '@/components/TokenPrice'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import KaspaTxnHistory from '@/pages/Wallet/Transactions/KaspaTxnHistory'
+import KaspaTxnHistoryTestnet from '@/pages/Wallet/Transactions/KaspaTxnHistoryTestnet'
 
 const KaspaDetails: React.FC = () => {
   const { settings } = useSettings()
   const { kaspa } = useKaspa()
   const kaspaPrice = useKaspaPrice(settings.currency)
   const currencySymbol = getCurrencySymbol(settings.currency)
+  const network = settings.nodes[settings.selectedNode].address
 
   return (
     <div className="p-4">
@@ -45,7 +47,7 @@ const KaspaDetails: React.FC = () => {
         ]}
         className="mt-6 mb-6"
       />
-      <KaspaTxnHistory />
+      {network === 'mainnet' ? <KaspaTxnHistory /> : <KaspaTxnHistoryTestnet />}
     </div>
   )
 }

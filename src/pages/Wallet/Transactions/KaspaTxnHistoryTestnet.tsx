@@ -2,7 +2,7 @@ import React from 'react'
 import useSettings from '@/hooks/contexts/useSettings'
 import useKaspa from '@/hooks/contexts/useKaspa'
 
-const KaspaTestnet: React.FC = () => {
+const KaspaTxnHistoryTestnet: React.FC = () => {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
   const network = settings.nodes[settings.selectedNode].address
@@ -22,7 +22,7 @@ const KaspaTestnet: React.FC = () => {
   }
 
   return (
-    <div className="mt-10 flex justify-center">
+    <div className="mt-10 flex justify-center pb-20">
       <p className="text-mutedtext text-center text-base">
         View on{' '}
         <a
@@ -39,4 +39,4 @@ const KaspaTestnet: React.FC = () => {
   )
 }
 
-export default KaspaTestnet
+export default KaspaTxnHistoryTestnet

@@ -4,7 +4,6 @@ import { sortTokensByValue } from '@/utils/sorting'
 import { useTotalValueCalculation } from '@/hooks/useTotalValueCalculation'
 import { getCurrencySymbol } from '@/utils/currencies'
 import useSettings from '@/hooks/contexts/useSettings'
-import Spinner from '@/components/Spinner'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import useKaspaPrice from '@/hooks/useKaspaPrice'
 import CryptoListItem from '@/pages/Wallet/CryptoList/CryptoListItem'
@@ -44,9 +43,6 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   })
 
   const ksprPricesQuery = useKsprPrices()
-
-  const isLoading = kaspaPrice.isPending || krc20TokensQuery.isLoading || ksprPricesQuery.isLoading
-  const error = kaspaPrice.error || krc20TokensQuery.error || ksprPricesQuery.error
   const kasPrice = kaspaPrice.data ?? 0
 
   const kaspaCrypto: KaspaToken = useMemo(
@@ -60,36 +56,25 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     [kaspa.balance, kasPrice],
   )
 
-  // Merge KSPR token prices with KRC20 tokens
+  // Merge KSPR token prices with KRC20 tokens, always including kaspaCrypto
   const tokens = useMemo(() => {
-    if (!krc20TokensQuery.data || !ksprPricesQuery.data) return null
+    const additionalTokens = krc20TokensQuery.data
+      ? krc20TokensQuery.data.map((token) => {
+          const ksprPriceData: KsprToken | undefined = ksprPricesQuery.data?.[token.tick]
+          const floorPrice = ksprPriceData?.floor_price ?? 0
+          return {
+            ...token,
+            floorPrice: floorPrice * kasPrice,
+          }
+        })
+      : []
 
-    return [
-      kaspaCrypto,
-      ...krc20TokensQuery.data.map((token) => {
-        const ksprPriceData: KsprToken | undefined = ksprPricesQuery.data[token.tick]
-        const floorPrice = ksprPriceData?.floor_price ?? 0
-        return {
-          ...token,
-          floorPrice: floorPrice * kasPrice,
-        }
-      }),
-    ]
+    return [kaspaCrypto, ...additionalTokens]
   }, [kaspaCrypto, krc20TokensQuery.data, ksprPricesQuery.data, kasPrice])
 
-  useTotalValueCalculation(tokens || [], kaspaPrice.data!, onTotalValueChange)
+  useTotalValueCalculation(tokens, kaspaPrice.data!, onTotalValueChange)
 
-  if (isLoading || !tokens) {
-    return (
-      <div className="mt-6">
-        <Spinner />
-      </div>
-    )
-  }
-
-  if (error) {
-    return <ErrorMessage message={error.message} />
-  }
+  const errorMessage = krc20TokensQuery.isError ? krc20TokensQuery.error.message : null
 
   const filteredCryptos = tokens.filter((token) => token.tick === 'KASPA' || token.balance !== '0')
   const sortedCryptos = sortTokensByValue(filteredCryptos)
@@ -120,6 +105,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
           ))}
         </ul>
       )}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
     </div>
   )
 }
