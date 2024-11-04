@@ -46,7 +46,6 @@ export default class Router {
       'account:submitContextful': (transactions) => account.transactions.submitContextful(transactions),
       'account:submitKaspaTransaction': (transactions) =>
         account.transactions.submitKaspaTransaction(transactions),
-      'account:scan': () => account.scan(),
       'account:getKRC20Info': (recipient, token, amount) =>
         account.transactions.getKRC20Info(recipient, token, amount),
       'account:submitKRC20Transaction': (info, feeRate) =>

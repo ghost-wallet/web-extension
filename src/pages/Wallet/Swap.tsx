@@ -34,7 +34,7 @@ export default function Swap() {
       try {
         const fetchedTokens = await fetchChaingeTokens()
         const defaultPayToken = fetchedTokens.find((token) =>
-          locationToken ? token.symbol === locationToken.tick : token.symbol === 'KAS'
+          locationToken ? token.symbol === locationToken.tick : token.symbol === 'KAS',
         )
         const defaultReceiveToken = fetchedTokens.find((token) => token.symbol === 'USDT')
         setChaingeTokens(fetchedTokens)

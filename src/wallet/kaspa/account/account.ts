@@ -27,7 +27,6 @@ export default class Account extends EventEmitter {
 
     node.on('network', async (networkId: string) => {
       console.log('[Account] network event', networkId)
-      //await this.addresses.changeNetwork(networkId)
 
       if (this.processor.isActive) {
         await this.processor.stop()
@@ -61,26 +60,6 @@ export default class Account extends EventEmitter {
       .map((utxo) => mapUTXO(utxo, true))
 
     return [...pendingUTXOs, ...matureUTXOs]
-  }
-
-  async scan(): Promise<number> {
-    if (!this.node.connected) {
-      await this.node.waitUntilConnected()
-    }
-    console.log('[Account] Starting scan for addresses:', this.addresses.allAddresses)
-
-    const foundUtxos = await this.scanSingleAddress()
-    console.log('[Account] Scan complete and found utxos:', foundUtxos)
-    return foundUtxos
-  }
-
-  private async scanSingleAddress(): Promise<number> {
-    const address = this.addresses.receiveAddresses[0]
-    const { entries } = await this.processor.rpc.getUtxosByAddresses([address])
-
-    const numUtxosFound = entries.length
-    console.log(`[Account] Scan done. Found ${numUtxosFound} UTXOs for the receive address.`)
-    return numUtxosFound
   }
 
   private registerProcessor() {
