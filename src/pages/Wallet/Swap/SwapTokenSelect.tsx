@@ -1,4 +1,5 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 import SwapTokenListItem from '@/pages/Wallet/Swap/SwapTokenListItem'
 import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
 import Spinner from '@/components/Spinner'
@@ -32,7 +33,13 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-bgdark bg-opacity-90 p-4 flex flex-col">
+    <motion.div
+      className="fixed inset-0 z-50 bg-bgdark bg-opacity-90 p-4 flex flex-col"
+      initial={{ y: '100%' }}
+      animate={{ y: 0 }}
+      exit={{ y: '100%' }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+    >
       {/* Header with Title and Close Button */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-center text-primarytext text-2xl">Select Token</h2>
@@ -59,7 +66,7 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({
           ))}
         </ul>
       </div>
-    </div>
+    </motion.div>
   )
 }
 
