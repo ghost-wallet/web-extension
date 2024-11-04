@@ -4,7 +4,7 @@ import BottomNav from '@/components/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
-import { KRC20TokenResponse } from '@/utils/interfaces'
+import { KRC20TokenResponse, KsprToken } from '@/utils/interfaces'
 import { checkIfMintable } from '@/utils/validation'
 import TokenDetails from '@/pages/Wallet/Mint/TokenDetails'
 import SearchBar from '@/pages/Wallet/Mint/SearchBar'
@@ -12,13 +12,23 @@ import ErrorMessage from '@/components/ErrorMessage'
 import Spinner from '@/components/Spinner'
 import NextButton from '@/components/buttons/NextButton'
 import TopNav from '@/components/TopNav'
+import { useKsprPrices } from '@/hooks/kspr/fetchKsprPrices'
+import useKaspaPrice from '@/hooks/useKaspaPrice'
+import useSettings from '@/hooks/contexts/useSettings'
 
 export default function Mint() {
   const [token, setToken] = useState<KRC20TokenResponse | null>(null)
   const [error, setError] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
-  const [showSuggestions, setShowSuggestions] = useState(false) // Track suggestions visibility
+  const [showSuggestions, setShowSuggestions] = useState(false)
   const navigate = useNavigate()
+
+  // TODO: get kspr prices and krc20tokenlist, merge them, then pass that to SearchBar
+  // make searchbar results sort by market cap
+  const ksprPricesQuery = useKsprPrices()
+  const { settings } = useSettings()
+  const kaspaPrice = useKaspaPrice(settings.currency)
+  const kasPrice = kaspaPrice.data ?? 0
 
   const handleSearch = async (ticker: string) => {
     setError('')
@@ -28,7 +38,10 @@ export default function Mint() {
     try {
       const result = await fetchKrc20TokenInfo(0, ticker)
       if (result) {
-        setToken(result)
+        if (!ksprPricesQuery.data) return null
+        const ksprPriceData: KsprToken | undefined = ksprPricesQuery.data[result.tick]
+        const floorPrice = ksprPriceData?.floor_price ? ksprPriceData.floor_price * kasPrice : 0
+        setToken({ ...result, floorPrice })
       } else {
         setError('No token found.')
       }

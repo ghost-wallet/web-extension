@@ -7,7 +7,7 @@ import * as path from 'path'
 const manifest: ManifestV3Export = {
   manifest_version: 3,
   name: 'Ghost',
-  version: '0.0.2',
+  version: '0.0.3',
   icons: {
     48: 'assets/ghost-outline-thick-48.png',
     128: 'assets/ghost-outline-128.png',
@@ -17,7 +17,7 @@ const manifest: ManifestV3Export = {
     default_popup: 'index.html',
   },
   side_panel: {
-    default_path: 'index.html'
+    default_path: 'index.html',
   },
   background: {
     service_worker: 'src/wallet/initializeWallet.ts',
@@ -38,9 +38,8 @@ const manifest: ManifestV3Export = {
     'https://api.coingecko.com/*',
     'https://*.kas.fyi/*',
     'https://api.kaspa.org/*',
-    'https://*.kasplex.org/*'
-  ]
-
+    'https://*.kasplex.org/*',
+  ],
 }
 
 // Pass the version as a global variable
