@@ -6,9 +6,7 @@ import {
   IGeneratorSettingsObject,
   IUtxoEntry,
   kaspaToSompi,
-  Mnemonic,
   PendingTransaction,
-  PrivateKeyGenerator,
   RpcClient,
   ScriptBuilder,
   signTransaction,
@@ -18,11 +16,10 @@ import {
   UtxoProcessor,
   UtxoProcessorEvent,
   UtxoProcessorNotificationCallback,
-  XPrv,
 } from '@/wasm'
 import AccountAddresses from './AccountAddresses'
 import EventEmitter from 'events'
-import KeyManager from '@/wallet/account/AccountKeys'
+import KeyManager from '@/wallet/account/KeyManager'
 import Account from '@/wallet/Account'
 import { Token } from '@/wallet/krc20/KRC20TransactionSetup'
 import { CustomInput, CustomSignature, KRC20TokenRequest } from '@/utils/interfaces'
@@ -140,29 +137,12 @@ export default class AccountTransactions extends EventEmitter {
       throw Error('No imported account')
     }
 
-    const decryptedKey = KeyManager.getKey()
-    if (!decryptedKey) {
-      console.error('[AccountTransactions] No decrypted key available in KeyManager.')
-      throw Error('No decrypted key available in KeyManager.')
-    }
-
-    const mnemonic = new Mnemonic(decryptedKey)
-    const seed = mnemonic.toSeed() // This should be a 64-byte buffer
-    const xprv = new XPrv(seed)
-    const keyGenerator = new PrivateKeyGenerator(xprv, false, 0n)
+    const keyGenerator = KeyManager.createKeyGenerator()
     const signedTransactions: Transaction[] = []
 
     for (const transaction of transactions) {
       const parsedTransaction = Transaction.deserializeFromSafeJSON(transaction)
-      const privateKeys = []
-      for (let address of parsedTransaction.addresses(this.addresses.networkId)) {
-        if (address.version === 'ScriptHash') {
-          continue
-        }
-        const [isReceive, index] = this.addresses.findIndexes(address.toString())
-        privateKeys.push(isReceive ? keyGenerator.receiveKey(index) : keyGenerator.changeKey(index))
-      }
-
+      const privateKeys = KeyManager.getPrivateKeys(parsedTransaction, this.addresses)
       const signedTransaction = signTransaction(parsedTransaction, privateKeys, false)
 
       for (const custom of customs) {
