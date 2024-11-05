@@ -22,5 +22,5 @@ export const useTotalValueCalculation = (
     }, kaspaValue)
 
     onTotalValueChange(totalValue)
-  }, [tokens, kaspa.balance, price, onTotalValueChange])
+  }, [tokens, price, onTotalValueChange])
 }

@@ -20,7 +20,7 @@ const manifest: ManifestV3Export = {
     default_path: 'index.html',
   },
   background: {
-    service_worker: 'src/wallet/initializeWallet.ts',
+    service_worker: 'src/wallet/walletServiceWorker.ts',
     type: 'module',
   },
   permissions: ['storage', 'alarms', 'notifications', 'sidePanel'],

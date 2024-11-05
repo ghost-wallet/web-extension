@@ -1,13 +1,13 @@
 import React, { useCallback, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
-import BottomNav from '@/components/BottomNav'
+import BottomNav from '@/components/navigation/BottomNav'
 import ConfirmSendDetails from '@/pages/Wallet/Send/ConfirmSendDetails'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import useSettings from '@/hooks/contexts/useSettings'
-import TopNav from '@/components/TopNav'
+import TopNav from '@/components/navigation/TopNav'
 import NextButton from '@/components/buttons/NextButton'
-import SpinnerPage from '@/components/SpinnerPage'
+import SpinnerPage from '@/components/loaders/SpinnerPage'
 
 const ConfirmSendKaspa: React.FC = () => {
   const location = useLocation()

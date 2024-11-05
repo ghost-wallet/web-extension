@@ -1,11 +1,11 @@
 import { EventEmitter } from 'events'
 import { UtxoContext, UtxoProcessor, PublicKeyGenerator, UtxoEntryReference } from '@/wasm'
-import type Node from '../Node'
-import AccountAddresses from './AccountAddresses'
+import type Node from './Node'
+import AccountAddresses from './account/AccountAddresses'
 import SessionStorage from '@/storage/SessionStorage'
-import AccountTransactions from './AccountTransactions'
+import AccountTransactions from './account/AccountTransactions'
 
-export default class AccountManager extends EventEmitter {
+export default class Account extends EventEmitter {
   processor: UtxoProcessor
   addresses: AccountAddresses
   context: UtxoContext
@@ -15,7 +15,7 @@ export default class AccountManager extends EventEmitter {
   constructor(node: Node) {
     super()
     this.node = node
-    console.log('[AccountManager] Setting up this.processor', node.rpcClient, node.networkId)
+    console.log('[Account] Setting up this.processor', node.rpcClient, node.networkId)
     this.processor = new UtxoProcessor({
       rpc: node.rpcClient,
       networkId: node.networkId,
@@ -26,7 +26,7 @@ export default class AccountManager extends EventEmitter {
     this.transactions.setAccount(this)
 
     node.on('network', async (networkId: string) => {
-      console.log('[AccountManager] network event', networkId)
+      console.log('[Account] network event', networkId)
 
       if (this.processor.isActive) {
         await this.processor.stop()
@@ -63,10 +63,10 @@ export default class AccountManager extends EventEmitter {
   }
 
   private registerProcessor() {
-    console.log('[AccountManager] Context data when processor is registered:', this.context)
+    console.log('[Account] Context data when processor is registered:', this.context)
 
     this.processor.addEventListener('utxo-proc-start', async () => {
-      console.log('[AccountManager] utxo-proc-start event')
+      console.log('[Account] utxo-proc-start event')
       await this.context.clear()
       await this.context.trackAddresses(this.addresses.allAddresses)
     })
@@ -77,7 +77,7 @@ export default class AccountManager extends EventEmitter {
 
   private listenSession() {
     SessionStorage.subscribeChanges(async (key, newValue) => {
-      console.log('[AccountManager] session event', key, newValue)
+      console.log('[Account] session event', key, newValue)
       if (key !== 'session') return
 
       if (newValue) {

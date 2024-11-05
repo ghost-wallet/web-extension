@@ -1,6 +1,6 @@
-import { Status } from '../kaspa/Wallet'
+import { Status } from '../Wallet'
 import { KRC20MintEstimateResult, KRC20TokenRequest, UTXO } from '@/utils/interfaces'
-import { PriorityBuckets } from '../kaspa/Node'
+import { PriorityBuckets } from '../Node'
 
 export interface ResponseMappings {
   'wallet:status': Status

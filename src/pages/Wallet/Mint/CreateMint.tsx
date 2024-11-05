@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import BottomNav from '@/components/BottomNav'
+import BottomNav from '@/components/navigation/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import { KRC20TokenResponse } from '@/utils/interfaces'
@@ -13,8 +13,8 @@ import MintRateInfo from '@/pages/Wallet/Mint/CreateMint/MintRateInfo'
 import NextButton from '@/components/buttons/NextButton'
 import useMintErrorHandling from '@/pages/Wallet/Mint/CreateMint/hooks/useMintErrorHandling'
 import useMintValidation from '@/pages/Wallet/Mint/CreateMint/hooks/useMintValidation'
-import PopupMessageDialog from '@/components/PopupMessageDialog'
-import TopNav from '@/components/TopNav'
+import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
+import TopNav from '@/components/navigation/TopNav'
 
 export default function CreateMint() {
   const { kaspa } = useKaspa()
@@ -36,6 +36,7 @@ export default function CreateMint() {
   const error = useMintErrorHandling(
     mintAmount,
     kaspa.balance,
+    kaspa.connected,
     exceedsBalance,
     exceedsSupply,
     availableSupply,

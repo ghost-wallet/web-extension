@@ -1,7 +1,7 @@
 import React from 'react'
 import Header from '@/components/Header'
 import AnimatedMain from '@/components/AnimatedMain'
-import BottomNav from '@/components/BottomNav'
+import BottomNav from '@/components/navigation/BottomNav'
 import ghostIcon from '../../../../../assets/ghost.svg'
 import SettingsButton from '@/pages/Wallet/Settings/SettingsButton'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'

@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
-import BottomNav from '@/components/BottomNav'
+import BottomNav from '@/components/navigation/BottomNav'
 import ConfirmSendDetails from '@/pages/Wallet/Send/ConfirmSendDetails'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import SpinnerPage from '@/components/SpinnerPage'
+import SpinnerPage from '@/components/loaders/SpinnerPage'
 import { KRC20TokenRequest } from '@/utils/interfaces'
 import { useQueryClient } from '@tanstack/react-query'
 import useSettings from '@/hooks/contexts/useSettings'
-import TopNav from '@/components/TopNav'
+import TopNav from '@/components/navigation/TopNav'
 import NextButton from '@/components/buttons/NextButton'
 
 const ConfirmSendKRC20: React.FC = () => {

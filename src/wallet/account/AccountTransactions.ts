@@ -22,9 +22,9 @@ import {
 } from '@/wasm'
 import AccountAddresses from './AccountAddresses'
 import EventEmitter from 'events'
-import KeyManager from '@/wallet/kaspa/KeyManager'
-import AccountManager from '@/wallet/kaspa/account/AccountManager'
-import { Token } from '../krc20/KRC20TransactionSetup'
+import KeyManager from '@/wallet/account/AccountKeys'
+import Account from '@/wallet/Account'
+import { Token } from '@/wallet/krc20/KRC20TransactionSetup'
 import { CustomInput, CustomSignature, KRC20TokenRequest } from '@/utils/interfaces'
 import { KRC20_COMMIT_AMOUNT } from '@/utils/constants'
 import {
@@ -34,14 +34,14 @@ import {
   submitKRC20Reveal,
   estimateKRC20MintFees,
   doKRC20Mint,
-} from '../krc20/KRC20TransactionHandlers'
+} from '@/wallet/krc20/KRC20TransactionHandlers'
 
 export default class AccountTransactions extends EventEmitter {
   kaspa: RpcClient
   context: UtxoContext
   processor: UtxoProcessor
   addresses: AccountAddresses
-  account: AccountManager | null = null
+  account: Account | null = null
   encryptedKey: string | undefined
 
   private transactions: Map<string, PendingTransaction> = new Map()
@@ -54,7 +54,7 @@ export default class AccountTransactions extends EventEmitter {
     this.addresses = addresses
   }
 
-  setAccount(account: AccountManager) {
+  setAccount(account: Account) {
     this.account = account
   }
 

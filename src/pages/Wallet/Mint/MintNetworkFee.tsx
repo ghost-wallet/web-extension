@@ -1,15 +1,15 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
-import BottomNav from '@/components/BottomNav'
+import BottomNav from '@/components/navigation/BottomNav'
 import Header from '@/components/Header'
-import ErrorMessage from '@/components/ErrorMessage'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 import FeePrioritySelector from '@/components/FeePrioritySelector'
 import { FEE_TYPES } from '@/utils/constants'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import { useBuckets } from '@/hooks/useBuckets'
+import { useBuckets } from '@/hooks/kaspa/useBuckets'
 import NextButton from '@/components/buttons/NextButton'
-import TopNav from '@/components/TopNav'
+import TopNav from '@/components/navigation/TopNav'
 
 const MintNetworkFee: React.FC = () => {
   const navigate = useNavigate()

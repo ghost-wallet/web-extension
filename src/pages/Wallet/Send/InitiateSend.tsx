@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AnimatedMain from '@/components/AnimatedMain'
-import BottomNav from '@/components/BottomNav'
+import BottomNav from '@/components/navigation/BottomNav'
 import Header from '@/components/Header'
-import ErrorMessage from '@/components/ErrorMessage'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 import RecipientInput from '@/components/inputs/RecipientInput'
 import AmountInput from '@/components/inputs/AmountInput'
 import NextButton from '@/components/buttons/NextButton'
@@ -13,7 +13,7 @@ import { formatNumberWithDecimal, formatTokenBalance } from '@/utils/formatting'
 import useSettings from '@/hooks/contexts/useSettings'
 import { getCurrencySymbol } from '@/utils/currencies'
 import CryptoImage from '@/components/CryptoImage'
-import TopNav from '@/components/TopNav'
+import TopNav from '@/components/navigation/TopNav'
 
 const InitiateSend: React.FC = () => {
   const location = useLocation()
@@ -21,7 +21,6 @@ const InitiateSend: React.FC = () => {
   const { request, kaspa } = useKaspa()
   const { settings } = useSettings()
   const currencySymbol = getCurrencySymbol(settings.currency)
-  const [error, setError] = useState<string | null>(null)
   const { token } = location.state || {}
 
   const maxAmount = token.isKaspa ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
@@ -31,15 +30,11 @@ const InitiateSend: React.FC = () => {
   const currencyValue = (Number(outputs[0][1]) * token.floorPrice).toFixed(2) || '0.00'
   const formattedCurrencyValue = Number(currencyValue).toLocaleString('en-US', { minimumFractionDigits: 2 })
 
-  useEffect(() => {
-    if (kaspa.balance < 1) {
-      setError(
-        `Not enough Kaspa in wallet to cover network fees. You need at least 1 KAS, but you have ${kaspa.balance}.`,
-      )
-    } else {
-      setError(null)
-    }
-  }, [kaspa.balance])
+  const error = !kaspa.connected
+    ? `Not connected to network. Please try again later.`
+    : kaspa.balance < 1
+      ? `Not enough Kaspa in wallet to cover network fees. You need at least 1 KAS, but you have ${kaspa.balance}.`
+      : null
 
   const handleContinue = () => {
     navigate(`/send/${token.tick}/network-fee`, {

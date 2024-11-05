@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 const useMintErrorHandling = (
   mintAmount: number | null,
   kaspaBalance: number,
+  kaspaConnected: boolean,
   exceedsBalance: boolean,
   exceedsSupply: boolean,
   availableSupply: number,
@@ -16,6 +17,8 @@ const useMintErrorHandling = (
       setError('Ghost requires a minimum of 5 KAS per mint.')
     } else if (exceedsSupply) {
       setError(`Cannot mint more tokens than the remaining unminted supply: ${availableSupply}`)
+    } else if (!kaspaConnected) {
+      setError(`Not connected to network. Please try again later.`)
     } else if (exceedsBalance) {
       setError(
         `You need at least ${

@@ -4,14 +4,14 @@ import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 import { getCurrencySymbol } from '@/utils/currencies'
 import {
   formatNumberWithDecimal,
-  formatNumberWithAbbreviation,
+  formatNumberAbbreviated,
   tokenPriceFormatter,
   formatMarketCap,
 } from '@/utils/formatting'
 import { calculateKRC20TotalValue, getMintedPercentage } from '@/utils/calculations'
 import { formatValue } from '@/utils/formatting'
 import TableSection from '@/components/table/TableSection'
-import Spinner from '@/components/Spinner'
+import Spinner from '@/components/loaders/Spinner'
 import TokenPrice from '@/components/TokenPrice'
 import { Token } from '@/utils/interfaces'
 import { useQuery } from '@tanstack/react-query'
@@ -95,7 +95,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
             rows={[
               {
                 label: 'Total supply',
-                value: formatNumberWithAbbreviation(formatNumberWithDecimal(krc20Token.max, krc20Token.dec)),
+                value: formatNumberAbbreviated(formatNumberWithDecimal(krc20Token.max, krc20Token.dec)),
               },
               {
                 label: 'Total minted',

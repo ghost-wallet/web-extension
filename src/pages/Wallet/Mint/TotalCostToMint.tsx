@@ -1,6 +1,6 @@
 import React from 'react'
 import useSettings from '@/hooks/contexts/useSettings'
-import useKaspaPrice from '@/hooks/useKaspaPrice'
+import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
 import { getCurrencySymbol } from '@/utils/currencies'
 
 interface TotalCostToMintProps {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
-import BottomNav from '@/components/BottomNav'
-import TopNav from '@/components/TopNav'
+import BottomNav from '@/components/navigation/BottomNav'
+import TopNav from '@/components/navigation/TopNav'
 import NextButton from '@/components/buttons/NextButton'
-import PopupMessageDialog from '@/components/PopupMessageDialog'
+import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
 import { fetchChaingeTokens, ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
 import { useWalletTokens } from '@/hooks/useWalletTokens'
 import { useLocation } from 'react-router-dom'
@@ -75,6 +75,7 @@ export default function Swap() {
     closeReceiveTokenSelect()
   }
 
+  // TODO load UI faster (without waiting for API calls)
   return (
     <>
       <TopNav />

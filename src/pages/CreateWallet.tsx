@@ -7,7 +7,7 @@ import Import from '@/pages/CreateWallet/Import'
 import Confirm from '@/pages/CreateWallet/Confirm'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import AnimatedMain from '@/components/AnimatedMain'
-import SpinnerPage from '@/components/SpinnerPage'
+import SpinnerPage from '@/components/loaders/SpinnerPage'
 
 export enum Tabs {
   Landing,

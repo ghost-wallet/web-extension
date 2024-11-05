@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import RecoveryPhraseGrid from '@/components/RecoveryPhraseGrid'
-import ErrorMessage from '@/components/ErrorMessage'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import NextButton from '@/components/buttons/NextButton'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { formatNumberWithAbbreviation } from '@/utils/formatting'
+import { formatNumberAbbreviated } from '@/utils/formatting'
 
 interface TransactionAmountDisplayProps {
   amt: string
@@ -17,11 +17,7 @@ const TransactionAmountDisplay: React.FC<TransactionAmountDisplayProps> = ({
   className = '',
 }) => {
   const formattedAmount =
-    tick === 'KAS'
-      ? amt
-      : isNaN(parseInt(amt, 10))
-        ? '0'
-        : formatNumberWithAbbreviation(parseInt(amt, 10) / 1e8)
+    tick === 'KAS' ? amt : isNaN(parseInt(amt, 10)) ? '0' : formatNumberAbbreviated(parseInt(amt, 10) / 1e8)
 
   const amountDisplay = `${isMint || isReceived ? '+ ' : '- '}${formattedAmount} ${tick}`
   const amountColor = isMint || isReceived ? 'text-success' : 'text-primarytext'

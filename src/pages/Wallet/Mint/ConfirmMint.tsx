@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import BottomNav from '@/components/BottomNav'
+import BottomNav from '@/components/navigation/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import { KRC20TokenResponse } from '@/utils/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import CryptoImage from '@/components/CryptoImage'
-import SpinnerPage from '@/components/SpinnerPage'
+import SpinnerPage from '@/components/loaders/SpinnerPage'
 import NextButton from '@/components/buttons/NextButton'
 import TotalCostToMint from '@/pages/Wallet/Mint/TotalCostToMint'
 import { useQueryClient } from '@tanstack/react-query'
-import TopNav from '@/components/TopNav'
+import TopNav from '@/components/navigation/TopNav'
 
 export default function ConfirmMint() {
   const location = useLocation()

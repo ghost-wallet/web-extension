@@ -1,4 +1,4 @@
-export default new (class KeyManager {
+export default new (class AccountKeys {
   private decryptedKey: string | null = null
 
   setKey(decryptedKey: string) {

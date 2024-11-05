@@ -1,7 +1,7 @@
 import React from 'react'
 import { getCurrencySymbol } from '@/utils/currencies'
 import useSettings from '@/hooks/contexts/useSettings'
-import useKaspaPrice from '@/hooks/useKaspaPrice'
+import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
 
 interface MintSummaryProps {
   totalMintCost: number

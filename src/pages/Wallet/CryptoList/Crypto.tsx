@@ -2,12 +2,12 @@ import React, { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import Header from '@/components/Header'
 import AnimatedMain from '@/components/AnimatedMain'
-import BottomNav from '@/components/BottomNav'
+import BottomNav from '@/components/navigation/BottomNav'
 import CryptoImage from '@/components/CryptoImage'
 import ActionButtons from '@/pages/Wallet/CryptoList/Crypto/ActionButtons'
 import KRC20Details from '@/pages/Wallet/CryptoList/Crypto/KRC20Details'
 import KaspaDetails from './Crypto/KaspaDetails'
-import TopNav from '@/components/TopNav'
+import TopNav from '@/components/navigation/TopNav'
 
 const Crypto: React.FC = () => {
   const location = useLocation()

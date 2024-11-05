@@ -1,15 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import FeePrioritySelector from '@/components/FeePrioritySelector'
-import ErrorMessage from '@/components/ErrorMessage'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 import NextButton from '@/components/buttons/NextButton'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import { useBuckets } from '@/hooks/useBuckets'
+import { useBuckets } from '@/hooks/kaspa/useBuckets'
 import { FEE_TYPES } from '@/utils/constants'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
-import BottomNav from '@/components/BottomNav'
-import TopNav from '@/components/TopNav'
+import BottomNav from '@/components/navigation/BottomNav'
+import TopNav from '@/components/navigation/TopNav'
 
 const NetworkFeeSelect: React.FC = () => {
   const location = useLocation()

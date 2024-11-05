@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import ErrorMessage from '@/components/ErrorMessage'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 
 const ResetWalletButton: React.FC = () => {
   const { request } = useKaspa()

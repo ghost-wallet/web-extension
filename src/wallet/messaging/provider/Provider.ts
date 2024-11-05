@@ -1,16 +1,16 @@
 import browser from 'webextension-polyfill'
 import type { Request, Event, EventMappings } from '@/provider/protocol'
 import Windows from '@/wallet/messaging/provider/Windows'
-import AccountManager from '@/wallet/kaspa/account/AccountManager'
+import Account from '@/wallet/Account'
 import { EventEmitter } from 'events'
 
 export default class Provider extends EventEmitter {
   private windows: Windows
-  private account: AccountManager
+  private account: Account
   private port: browser.Runtime.Port | undefined
   private granted: boolean = false
 
-  constructor(account: AccountManager) {
+  constructor(account: Account) {
     super()
 
     this.windows = new Windows()

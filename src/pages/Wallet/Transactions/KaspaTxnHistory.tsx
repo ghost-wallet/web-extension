@@ -1,7 +1,7 @@
 import React from 'react'
 import { useKaspaTransactions } from '@/hooks/kaspa/useKaspaTransactions'
-import Spinner from '@/components/Spinner'
-import ErrorMessage from '@/components/ErrorMessage'
+import Spinner from '@/components/loaders/Spinner'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 import KaspaTxnList from '@/pages/Wallet/Transactions/KaspaTxnList'
 import { KaspaTransaction } from '@/utils/interfaces'
 

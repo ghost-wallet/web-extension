@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PasswordInput from '@/components/inputs/PasswordInput'
-import ErrorMessage from '@/components/ErrorMessage'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import NextButton from '@/components/buttons/NextButton'

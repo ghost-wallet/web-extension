@@ -5,9 +5,9 @@ import { getCurrencySymbol } from '@/utils/currencies'
 import useSettings from '@/hooks/contexts/useSettings'
 import { useTotalValueCalculation } from '@/hooks/useTotalValueCalculation'
 import { Token, KaspaToken } from '@/utils/interfaces'
-import ErrorMessage from '@/components/ErrorMessage'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 import { useLocation, useNavigate } from 'react-router-dom'
-import useKaspaPrice from '@/hooks/useKaspaPrice'
+import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
 
 interface CryptoListProps {
   onTotalValueChange: (value: number) => void

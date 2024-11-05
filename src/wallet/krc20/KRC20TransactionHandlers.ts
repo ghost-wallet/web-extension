@@ -17,8 +17,8 @@ import {
   SOMPI_PER_KAS,
 } from '@/utils/constants'
 import { KRC20MintEstimateResult, KRC20TokenRequest } from '@/utils/interfaces'
-import { calculateScriptExtraFee } from '@/wallet/kaspa/krc20/calculateScriptExtraFee'
-import AccountAddresses from '@/wallet/kaspa/account/AccountAddresses'
+import { calculateScriptExtraFee } from '@/wallet/krc20/calculateScriptExtraFee'
+import AccountAddresses from '@/wallet/account/AccountAddresses'
 
 export async function estimateKRC20TransactionFee(
   context: UtxoContext,

@@ -1,6 +1,6 @@
-import type Wallet from '../kaspa/Wallet'
-import type Node from '../kaspa/Node'
-import type AccountManager from '../kaspa/account/AccountManager'
+import type Wallet from '../Wallet'
+import type Node from '../Node'
+import type Account from '@/wallet/Account'
 import { RequestMappings, Request } from './RequestMappings'
 import { ResponseMappings, Response } from './ResponseMappings'
 import type Provider from '@/wallet/messaging/provider/Provider'
@@ -20,7 +20,7 @@ export default class Router {
   }: {
     wallet: Wallet
     node: Node
-    account: AccountManager
+    account: Account
     provider: Provider
   }) {
     this.mappings = {

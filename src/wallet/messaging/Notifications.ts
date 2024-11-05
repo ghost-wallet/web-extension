@@ -1,6 +1,6 @@
-import type Wallet from '../kaspa/Wallet'
-import type Node from '../kaspa/Node'
-import type AccountManager from '../kaspa/account/AccountManager'
+import type Wallet from '../Wallet'
+import type Node from '../Node'
+import type Account from '@/wallet/Account'
 import type { EventMessage, EventMappings } from '@/wallet/messaging/RequestMappings'
 import Provider from '@/wallet/messaging/provider/Provider'
 
@@ -15,7 +15,7 @@ export default class Notifications {
   }: {
     wallet: Wallet
     node: Node
-    account: AccountManager
+    account: Account
     provider: Provider
   }) {
     wallet.on('status', (status) => this.handleEvent('wallet:status', status))

@@ -3,9 +3,9 @@ import CryptoImage from '@/components/CryptoImage'
 import TableSection from '@/components/table/TableSection'
 import {
   formatNumberWithDecimal,
-  formatNumberWithAbbreviation,
-  formatMarketCap,
+  formatNumberAbbreviated,
   tokenPriceFormatter,
+  formatMarketCapAbbreviated,
 } from '@/utils/formatting'
 import { getMintedPercentage } from '@/utils/calculations'
 import { KRC20TokenResponse } from '@/utils/interfaces'
@@ -47,11 +47,11 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
             rows={[
               {
                 label: 'Market cap',
-                value: `${currencySymbol}${formatMarketCap(token.minted, token.dec, token.floorPrice)}`,
+                value: `${currencySymbol}${formatMarketCapAbbreviated(token.minted, token.dec, token.floorPrice)}`,
               },
               {
                 label: 'Total supply',
-                value: formatNumberWithAbbreviation(formatNumberWithDecimal(token.max, token.dec)),
+                value: formatNumberAbbreviated(formatNumberWithDecimal(token.max, token.dec)),
               },
               {
                 label: 'Total minted',

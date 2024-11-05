@@ -9,7 +9,7 @@ import {
 } from '@/wasm'
 import LocalStorage from '@/storage/LocalStorage'
 import SessionStorage from '@/storage/SessionStorage'
-import KeyManager from '@/wallet/kaspa/KeyManager'
+import KeyManager from '@/wallet/account/AccountKeys'
 
 export enum Status {
   Uninitialized,

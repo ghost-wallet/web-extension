@@ -1,5 +1,5 @@
 import React from 'react'
-import useKaspaPrice from '@/hooks/useKaspaPrice'
+import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
 import useSettings from '@/hooks/contexts/useSettings'
 import { getCurrencySymbol } from '@/utils/currencies'
 import TableSection from '@/components/table/TableSection'

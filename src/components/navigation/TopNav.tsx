@@ -3,7 +3,7 @@ import TruncatedCopyAddress from '@/components/TruncatedCopyAddress'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import { Cog6ToothIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
-import Spinner from '@/components/Spinner'
+import Spinner from '@/components/loaders/Spinner'
 import useSettings from '@/hooks/contexts/useSettings'
 import SearchWalletButton from '@/components/SearchWalletButton'
 

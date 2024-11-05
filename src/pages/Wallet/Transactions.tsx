@@ -1,9 +1,9 @@
 import React from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
-import BottomNav from '@/components/BottomNav'
+import BottomNav from '@/components/navigation/BottomNav'
 import TransactionsTabs from './Transactions/TransactionsTabs'
-import TopNav from '@/components/TopNav'
+import TopNav from '@/components/navigation/TopNav'
 
 const Transactions: React.FC = () => {
   return (

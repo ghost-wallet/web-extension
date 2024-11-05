@@ -8,8 +8,8 @@ import TableSection from '@/components/table/TableSection'
 import { getKaspaExplorerUrl, getTransactionStatusText } from '@/utils/transactions'
 import { formatTransactionDateAndTime } from '@/utils/grouping'
 import TruncatedCopyAddress from '@/components/TruncatedCopyAddress'
-import TopNav from '@/components/TopNav'
-import BottomNav from '@/components/BottomNav'
+import TopNav from '@/components/navigation/TopNav'
+import BottomNav from '@/components/navigation/BottomNav'
 
 export default function KRC20TxnDetails() {
   const location = useLocation()

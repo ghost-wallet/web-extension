@@ -56,7 +56,7 @@ export const tokenPriceFormatter = (value: number): string => {
   return value.toString()
 }
 
-export const formatNumberWithAbbreviation = (balance: number): string => {
+export const formatNumberAbbreviated = (balance: number): string => {
   const formatNumber = (num: number): string => {
     if (num < 1 && num > 0) {
       return num.toString()
@@ -90,6 +90,14 @@ export const truncateAddress = (address: string): string => {
 
 export const getMarketCap = (minted: number, dec: number, floorPrice: number): number => {
   return formatNumberWithDecimal(minted, dec) * floorPrice
+}
+
+export const formatMarketCapAbbreviated = (minted: number, dec: number, floorPrice: number): string => {
+  const marketCap = getMarketCap(minted, dec, floorPrice)
+  if (marketCap < 100_000_000) {
+    return marketCap.toLocaleString()
+  }
+  return formatNumberAbbreviated(marketCap)
 }
 
 export const formatMarketCap = (minted: number, dec: number, floorPrice: number): string => {

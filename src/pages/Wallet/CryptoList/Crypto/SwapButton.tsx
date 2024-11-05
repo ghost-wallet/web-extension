@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
 import ActionButton from '@/components/buttons/ActionButton'
 import { fetchChaingeTokens, ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
-import PopupMessageDialog from '@/components/PopupMessageDialog'
+import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
 import { Token } from '@/utils/interfaces'
 
 interface SwapButtonProps {

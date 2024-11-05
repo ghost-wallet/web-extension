@@ -2,8 +2,8 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import SwapTokenListItem from '@/pages/Wallet/Swap/SwapTokenListItem'
 import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
-import Spinner from '@/components/Spinner'
-import ErrorMessage from '@/components/ErrorMessage'
+import Spinner from '@/components/loaders/Spinner'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
 interface SwapTokenSelectProps {

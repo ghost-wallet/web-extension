@@ -1,7 +1,7 @@
 import React from 'react'
 import Header from '@/components/Header'
 import AnimatedMain from '@/components/AnimatedMain'
-import BottomNav from '@/components/BottomNav'
+import BottomNav from '@/components/navigation/BottomNav'
 import ResetWalletButton from '@/components/buttons/ResetWalletButton'
 
 const ConfirmReset: React.FC = () => {

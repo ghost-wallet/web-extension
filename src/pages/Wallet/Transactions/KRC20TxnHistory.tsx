@@ -1,7 +1,7 @@
 import React from 'react'
 import KRC20TxnList from '@/pages/Wallet/Transactions/KRC20TxnList'
-import Spinner from '@/components/Spinner'
-import ErrorMessage from '@/components/ErrorMessage'
+import Spinner from '@/components/loaders/Spinner'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 import { useKRC20Transactions } from '@/hooks/kasplex/useKRC20Transactions'
 
 interface TransactionsHistoryProps {

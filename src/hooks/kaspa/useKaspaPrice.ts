@@ -1,5 +1,5 @@
-import { fetchFromCoinGecko } from './coingecko/fetchFromCoinGecko'
-import { fetchFromKaspaApi } from './kaspa/fetchFromKaspaApi'
+import { fetchFromCoinGecko } from '../coingecko/fetchFromCoinGecko'
+import { fetchFromKaspaApi } from './fetchFromKaspaApi'
 import { useQuery } from '@tanstack/react-query'
 
 export default function useKaspaPrice(currency: string) {

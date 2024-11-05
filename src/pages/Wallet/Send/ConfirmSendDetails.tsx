@@ -2,7 +2,7 @@ import React from 'react'
 import CryptoImage from '@/components/CryptoImage'
 import TruncatedCopyAddress from '@/components/TruncatedCopyAddress'
 import Header from '@/components/Header'
-import ErrorMessage from '@/components/ErrorMessage'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 import AnimatedNetworkFee from '@/pages/Wallet/Send/AnimatedNetworkFee'
 import TableSection from '@/components/table/TableSection'
 

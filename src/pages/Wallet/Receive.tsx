@@ -1,25 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
-import BottomNav from '@/components/BottomNav'
+import BottomNav from '@/components/navigation/BottomNav'
 import QRCode from 'react-qr-code'
 import KaspaAddress from '@/components/KaspaAddress'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import Header from '@/components/Header'
-import Spinner from '@/components/Spinner'
-import TopNav from '@/components/TopNav'
+import Spinner from '@/components/loaders/Spinner'
+import TopNav from '@/components/navigation/TopNav'
 
 export default function Receive() {
   const { kaspa } = useKaspa()
-  const [kaspaAddress, setKaspaAddress] = useState(kaspa.addresses[0] || '')
+  const receiveAddress = kaspa.addresses[0] || ''
 
-  useEffect(() => {
-    setKaspaAddress(kaspa.addresses[0] || '')
-  }, [kaspa.addresses])
-
-  if (!kaspaAddress) {
+  if (!receiveAddress || !kaspa.connected) {
     return (
       <>
-        <AnimatedMain>
+        <TopNav />
+        <AnimatedMain className="flex flex-col h-screen fixed w-full">
           <Header title="Receive Address" showBackButton={true} />
           <div className="flex items-center justify-center w-full h-full">
             <Spinner />
@@ -33,16 +30,16 @@ export default function Receive() {
   return (
     <>
       <TopNav />
-      <AnimatedMain>
+      <AnimatedMain className="flex flex-col h-screen fixed w-full">
         <Header title="Receive Address" showBackButton={true} />
         <div className="pb-20 flex flex-col items-center justify-center relative w-full">
           <div className="p-2 bg-white rounded-lg">
-            <QRCode style={{ height: '150px', width: '150px' }} value={kaspaAddress} />
+            <QRCode style={{ height: '150px', width: '150px' }} value={receiveAddress} />
           </div>
 
           <h1 className="py-3 font-semibold text-base text-primarytext text-center">Your Kaspa Address</h1>
           <div className="pb-2 w-full flex justify-center">
-            <KaspaAddress address={kaspaAddress} />
+            <KaspaAddress address={receiveAddress} />
           </div>
 
           <p className="px-4 text-base text-mutedtext text-center">
