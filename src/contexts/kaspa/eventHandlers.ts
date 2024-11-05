@@ -1,5 +1,5 @@
 import { Dispatch } from 'react'
-import { Event } from '@/wallet/messaging/messageMappings'
+import { Event } from '@/wallet/messaging/RequestMappings'
 import { Action } from './types'
 
 export const handleNodeConnectionEvent = async (

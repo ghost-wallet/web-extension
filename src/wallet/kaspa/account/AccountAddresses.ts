@@ -1,7 +1,7 @@
 import { PublicKeyGenerator, UtxoContext } from '@/wasm'
 import { EventEmitter } from 'events'
 
-export default class Addresses extends EventEmitter {
+export default class AccountAddresses extends EventEmitter {
   context: UtxoContext
   publicKey: PublicKeyGenerator | undefined
   networkId: string
@@ -25,7 +25,7 @@ export default class Addresses extends EventEmitter {
 
   async derive() {
     if (!this.publicKey) {
-      throw Error('[Addresses] No publicKey')
+      throw Error('[AccountAddresses] No publicKey')
     }
     return this.publicKey.receiveAddressAsString(this.networkId, 0)
   }

@@ -1,8 +1,9 @@
-import type Wallet from '../../kaspa/wallet'
-import type Node from '../../kaspa/node'
-import type Account from '../../kaspa/account/account'
-import type { Request, Response, RequestMappings, ResponseMappings } from '../messageMappings'
-import type Provider from './provider'
+import type Wallet from '../kaspa/Wallet'
+import type Node from '../kaspa/Node'
+import type AccountManager from '../kaspa/account/AccountManager'
+import { RequestMappings, Request } from './RequestMappings'
+import { ResponseMappings, Response } from './ResponseMappings'
+import type Provider from '@/wallet/messaging/provider/Provider'
 
 type MappingsRecord<M extends keyof RequestMappings = keyof RequestMappings> = {
   [K in M]: (...params: RequestMappings[K]) => Promise<ResponseMappings[M]> | ResponseMappings[K]
@@ -19,7 +20,7 @@ export default class Router {
   }: {
     wallet: Wallet
     node: Node
-    account: Account
+    account: AccountManager
     provider: Provider
   }) {
     this.mappings = {

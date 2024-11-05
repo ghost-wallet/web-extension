@@ -1,7 +1,8 @@
 import { createContext } from 'react'
 import { IKaspa } from './types'
-import { RequestMappings, ResponseMappings } from '@/wallet/messaging/messageMappings'
-import { Status } from '@/wallet/kaspa/wallet'
+import { RequestMappings } from '@/wallet/messaging/RequestMappings'
+import { ResponseMappings } from '@/wallet/messaging/ResponseMappings'
+import { Status } from '@/wallet/kaspa/Wallet'
 
 export const defaultState: IKaspa = {
   status: Status.Uninitialized,

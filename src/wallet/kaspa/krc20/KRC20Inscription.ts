@@ -32,7 +32,7 @@ type InscriptionData<O extends keyof OperationMappings> = {
 
 const encoder = new TextEncoder()
 
-export class Inscription<O extends keyof OperationMappings> {
+export class KRC20Inscription<O extends keyof OperationMappings> {
   data: InscriptionData<O>
 
   constructor(operation: O, params: OperationMappings[O]) {

@@ -1,11 +1,11 @@
 import browser from 'webextension-polyfill'
-import Router from './wallet/router'
-import Notifier from './wallet/notifications'
-import type { Request } from './messageMappings'
-import type Wallet from '../kaspa/wallet'
-import type Node from '../kaspa/node'
-import type Account from '../kaspa/account/account'
-import Provider from './wallet/provider'
+import Router from './Router'
+import Notifier from './Notifications'
+import type { Request } from '@/wallet/messaging/RequestMappings'
+import type Wallet from '../kaspa/Wallet'
+import type Node from '../kaspa/Node'
+import type AccountManager from '../kaspa/account/AccountManager'
+import Provider from '@/wallet/messaging/provider/Provider'
 
 export default class RPC {
   provider: Provider
@@ -14,7 +14,7 @@ export default class RPC {
 
   private ports: Set<browser.Runtime.Port> = new Set()
 
-  constructor({ wallet, node, account }: { wallet: Wallet; node: Node; account: Account }) {
+  constructor({ wallet, node, account }: { wallet: Wallet; node: Node; account: AccountManager }) {
     console.log('[RPC] Initializing RPC class...')
 
     this.provider = new Provider(account)

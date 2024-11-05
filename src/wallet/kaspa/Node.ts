@@ -18,19 +18,6 @@ export default class Node extends EventEmitter {
     return this.rpcClient.isConnected
   }
 
-  waitUntilConnected() {
-    return new Promise<void>((resolve) => {
-      if (this.connected) {
-        resolve()
-      }
-      const listener = () => {
-        this.rpcClient.removeEventListener('connect', listener)
-        resolve()
-      }
-      this.rpcClient.addEventListener('connect', listener)
-    })
-  }
-
   async getPriorityBuckets() {
     const { estimate } = await this.rpcClient.getFeeEstimate({})
     console.log('[Node] Fee estimate:', estimate)

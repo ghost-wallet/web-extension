@@ -8,14 +8,8 @@ import {
   handleNodeConnectionEvent,
   handleAccountAddressesEvent,
 } from './eventHandlers'
-import {
-  Event,
-  isEvent,
-  Request,
-  RequestMappings,
-  Response,
-  ResponseMappings,
-} from '@/wallet/messaging/messageMappings'
+import { Request, RequestMappings, isEvent, Event } from '@/wallet/messaging/RequestMappings'
+import { Response, ResponseMappings } from '@/wallet/messaging/ResponseMappings'
 
 export function KaspaProvider({ children }: { children: ReactNode }) {
   const [kaspa, dispatch] = useReducer(kaspaReducer, defaultState)

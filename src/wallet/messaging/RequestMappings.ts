@@ -1,9 +1,6 @@
-import { Status } from '../kaspa/wallet'
-import { KRC20MintEstimateResult, UTXO } from '@/utils/interfaces'
-import { CustomInput } from '@/utils/interfaces'
-import { PriorityBuckets } from '../kaspa/node'
-import { Token } from '../kaspa/krc20/Transact'
-import { KRC20TokenRequest } from '@/utils/interfaces'
+import { Status } from '../kaspa/Wallet'
+import { CustomInput, KRC20TokenRequest } from '@/utils/interfaces'
+import { Token } from '../kaspa/krc20/KRC20TransactionSetup'
 
 export interface RequestMappings {
   'wallet:status': []
@@ -36,47 +33,10 @@ export interface RequestMappings {
   'provider:disconnect': []
 }
 
-export interface Request<M extends keyof ResponseMappings = keyof ResponseMappings> {
+export interface Request<M extends keyof RequestMappings = keyof RequestMappings> {
   id: number
   method: M
   params: RequestMappings[M]
-}
-
-export interface ResponseMappings {
-  'wallet:status': Status
-  'wallet:createMnemonic': string
-  'wallet:import': void
-  'wallet:unlock': string // Updated to return a string (decrypted key)
-  'wallet:export': string
-  'wallet:lock': void
-  'wallet:reset': void
-  'wallet:validate': boolean // Added wallet:validate response
-  'node:connect': void
-  'node:connection': boolean
-  'node:priorityBuckets': PriorityBuckets
-  'node:submit': string[]
-  'account:addresses': string[]
-  'account:balance': number
-  'account:utxos': UTXO[]
-  'account:estimateKaspaTransactionFee': string
-  'account:create': [string[], string]
-  'account:sign': string[]
-  'account:submitContextful': string[]
-  'account:submitKaspaTransaction': string[]
-  'account:getKRC20Info': KRC20TokenRequest
-  'account:submitKRC20Transaction': [string, string]
-  'account:estimateKRC20TransactionFee': string
-  'account:doKRC20Mint': string[]
-  'account:estimateKRC20MintFees': KRC20MintEstimateResult
-  'provider:connect': void
-  'provider:connection': string
-  'provider:disconnect': void
-}
-
-export interface Response<M extends keyof RequestMappings = keyof RequestMappings> {
-  id: number
-  result: ResponseMappings[M] | undefined
-  error?: string
 }
 
 export interface EventMappings {

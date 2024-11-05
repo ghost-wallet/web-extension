@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Status } from '@/wallet/kaspa/wallet'
+import { Status } from '@/wallet/kaspa/Wallet'
 import { useNavigate } from 'react-router-dom'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import SettingsButton from '@/pages/Wallet/Settings/SettingsButton'

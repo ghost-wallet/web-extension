@@ -3,10 +3,7 @@ import {
   createInputSignature,
   createTransactions,
   estimateTransactions,
-  HexString,
   IGeneratorSettingsObject,
-  IScriptPublicKey,
-  ITransactionOutpoint,
   IUtxoEntry,
   kaspaToSompi,
   Mnemonic,
@@ -23,45 +20,41 @@ import {
   UtxoProcessorNotificationCallback,
   XPrv,
 } from '@/wasm'
-import Addresses from './addresses'
+import AccountAddresses from './AccountAddresses'
 import EventEmitter from 'events'
 import KeyManager from '@/wallet/kaspa/KeyManager'
-import Account from '@/wallet/kaspa/account/account'
-import { setupkrc20Mint, setupkrc20Transaction, Token } from '../krc20/Transact'
-import { CustomInput, CustomSignature, KRC20MintEstimateResult, KRC20TokenRequest } from '@/utils/interfaces'
+import AccountManager from '@/wallet/kaspa/account/AccountManager'
+import { Token } from '../krc20/KRC20TransactionSetup'
+import { CustomInput, CustomSignature, KRC20TokenRequest } from '@/utils/interfaces'
+import { KRC20_COMMIT_AMOUNT } from '@/utils/constants'
 import {
-  KRC20_COMMIT_AMOUNT,
-  KRC20_MINT_EXTRA_KAS,
-  KRC20_SERVICE_FEE_ADDRESS,
-  SOMPI_PER_KAS,
-} from '@/utils/constants'
-import { createNotification } from '@/utils/notifications'
+  estimateKRC20TransactionFee,
+  getKRC20Info,
+  submitKRC20Commit,
+  submitKRC20Reveal,
+  estimateKRC20MintFees,
+  doKRC20Mint,
+} from '../krc20/KRC20TransactionHandlers'
 
-function calculateScriptExtraFee(script: HexString, feeRate: number) {
-  const scriptBytes = ScriptBuilder.canonicalDataSize(script)
-  return BigInt(Math.ceil((scriptBytes + 1) * feeRate))
-}
-
-export default class Transactions extends EventEmitter {
+export default class AccountTransactions extends EventEmitter {
   kaspa: RpcClient
   context: UtxoContext
   processor: UtxoProcessor
-  addresses: Addresses
-  account: Account | null = null
+  addresses: AccountAddresses
+  account: AccountManager | null = null
   encryptedKey: string | undefined
 
   private transactions: Map<string, PendingTransaction> = new Map()
 
-  constructor(kaspa: RpcClient, context: UtxoContext, processor: UtxoProcessor, addresses: Addresses) {
+  constructor(kaspa: RpcClient, context: UtxoContext, processor: UtxoProcessor, addresses: AccountAddresses) {
     super()
-
     this.kaspa = kaspa
     this.context = context
     this.processor = processor
     this.addresses = addresses
   }
 
-  setAccount(account: Account) {
+  setAccount(account: AccountManager) {
     this.account = account
   }
 
@@ -143,13 +136,13 @@ export default class Transactions extends EventEmitter {
 
   async sign(transactions: string[], customs: CustomSignature[] = []) {
     if (!this.encryptedKey) {
-      console.error('[Transactions] No imported account available for signing.')
+      console.error('[AccountTransactions] No imported account available for signing.')
       throw Error('No imported account')
     }
 
     const decryptedKey = KeyManager.getKey()
     if (!decryptedKey) {
-      console.error('[Transactions] No decrypted key available in KeyManager.')
+      console.error('[AccountTransactions] No decrypted key available in KeyManager.')
       throw Error('No decrypted key available in KeyManager.')
     }
 
@@ -225,128 +218,6 @@ export default class Transactions extends EventEmitter {
     return await this.submitContextful(signed)
   }
 
-  async estimateKRC20TransactionFee(info: KRC20TokenRequest, feeRate: number) {
-    const { scriptAddress, script } = info
-
-    const commitSettings: IGeneratorSettingsObject = {
-      priorityEntries: [],
-      entries: this.context,
-      outputs: [
-        {
-          address: scriptAddress,
-          amount: kaspaToSompi(KRC20_COMMIT_AMOUNT)!,
-        },
-      ],
-      changeAddress: this.addresses.receiveAddresses[0],
-      feeRate,
-      priorityFee: kaspaToSompi('0')!,
-    }
-
-    const commitResult = await createTransactions(commitSettings)
-    const commitTxn = commitResult.transactions[commitResult.transactions.length - 1]
-    const commitSummary = commitResult.summary
-    const commitOutput = commitTxn.transaction.outputs[0]
-    const commitOutpoint: ITransactionOutpoint = {
-      transactionId: commitTxn.id,
-      index: 0,
-    }
-
-    const commitUTXO: IUtxoEntry = {
-      address: new Address(scriptAddress),
-      outpoint: commitOutpoint,
-      amount: commitOutput.value,
-      scriptPublicKey: commitOutput.scriptPublicKey as IScriptPublicKey, // hopefully this works
-      blockDaaScore: BigInt(0),
-      isCoinbase: false,
-    }
-
-    const scriptExtraFee = calculateScriptExtraFee(script, feeRate)
-
-    const revealSettings: IGeneratorSettingsObject = {
-      priorityEntries: [commitUTXO],
-      entries: this.context,
-      outputs: [],
-      changeAddress: this.addresses.receiveAddresses[0],
-      feeRate,
-      priorityFee: scriptExtraFee,
-    }
-
-    const revealEstimateResult = await estimateTransactions(revealSettings)
-    const totalFee = commitSummary.fees + revealEstimateResult.fees
-
-    return sompiToKaspaString(totalFee)
-  }
-
-  async getKRC20Info(recipient: string, token: Token, amount: string): Promise<KRC20TokenRequest> {
-    const sender = this.addresses.receiveAddresses[0]
-    const { script, scriptAddress } = setupkrc20Transaction(sender, recipient, amount, token)
-    return {
-      sender,
-      recipient,
-      scriptAddress: scriptAddress.toString(),
-      script: script.toString(),
-    }
-  }
-
-  async waitForUTXO(transactionID: string) {
-    return new Promise<void>((resolve) => {
-      const listener = (event: UtxoProcessorEvent<'maturity'>) => {
-        console.log(event)
-
-        if (event.data.id.toString() === transactionID) {
-          // i think the types for the callback are wrong?
-          this.processor.removeEventListener('maturity', listener as UtxoProcessorNotificationCallback)
-          resolve()
-        }
-      }
-      this.processor.addEventListener('maturity', listener)
-    })
-  }
-
-  async submitKRC20Commit(
-    scriptAddress: string,
-    feeRate: number,
-    amount: string = KRC20_COMMIT_AMOUNT,
-    additionalOutputs: [string, string][] = [],
-  ) {
-    const [commit1] = await this.create([[scriptAddress, amount], ...additionalOutputs], feeRate, '0')
-    console.log('[Transactions] Created commit transaction:', commit1)
-
-    const commit2 = await this.sign(commit1)
-    console.log('[Transactions] Signed commit transaction:', commit2)
-
-    const commit3 = await this.submitContextful(commit2)
-    console.log('[Transactions] Submitted commit transaction:', commit3)
-    return commit3
-  }
-
-  async submitKRC20Reveal(
-    commitId: string,
-    { scriptAddress, sender, script }: KRC20TokenRequest,
-    feeRate: number,
-  ) {
-    const input = {
-      address: scriptAddress.toString(),
-      outpoint: commitId,
-      index: 0,
-      signer: sender,
-      script: script,
-    }
-    console.log('[Transactions] Reveal transaction input:', input)
-
-    const scriptExtraFee = calculateScriptExtraFee(script, feeRate)
-
-    const [reveal1] = await this.create([], feeRate, sompiToKaspaString(scriptExtraFee), [input])
-    console.log('[Transactions] Created reveal transaction:', reveal1)
-
-    const reveal2 = await this.sign(reveal1, [input])
-    console.log('[Transactions] Signed reveal transaction:', reveal2)
-
-    const reveal3 = await this.submitContextful(reveal2)
-    console.log('[Transactions] Submitted reveal transaction:', reveal3)
-    return reveal3
-  }
-
   async submitKRC20Transaction(info: KRC20TokenRequest, feeRate: number) {
     const transactionContext = new UtxoContext({ processor: this.processor })
     transactionContext.trackAddresses([info.scriptAddress])
@@ -417,7 +288,6 @@ export default class Transactions extends EventEmitter {
     fee: string,
     backToScript: boolean,
   ) {
-    // - prepare the reveal txn input
     const input = {
       address: scriptAddress,
       outpoint: commitId,
@@ -437,103 +307,73 @@ export default class Transactions extends EventEmitter {
     return await this.submitContextful(reveal2)
   }
 
-  async estimateKRC20MintFees(
-    ticker: string,
+  async estimateKRC20MintFees(ticker: string, feeRate: number, timesToMint = 1) {
+    return await estimateKRC20MintFees(this.addresses, this.context, ticker, feeRate, timesToMint)
+  }
+
+  async estimateKRC20TransactionFee(info: KRC20TokenRequest, feeRate: number) {
+    return await estimateKRC20TransactionFee(this.context, this.addresses, info, feeRate)
+  }
+
+  async getKRC20Info(recipient: string, token: Token, amount: string): Promise<KRC20TokenRequest> {
+    return await getKRC20Info(this.addresses, recipient, token, amount)
+  }
+
+  async submitKRC20Commit(
+    scriptAddress: string,
     feeRate: number,
-    timesToMint = 1,
-  ): Promise<KRC20MintEstimateResult> {
-    const sender = this.addresses.receiveAddresses[0]
-    const mintSetup = setupkrc20Mint(sender, ticker)
-    const scriptAddress = mintSetup.scriptAddress.toString()
-
-    const mintSompi = BigInt(timesToMint) * SOMPI_PER_KAS
-    const serviceFee = mintSompi / 10n
-    const sompiToLoad = mintSompi + KRC20_MINT_EXTRA_KAS * SOMPI_PER_KAS
-
-    const commitSettings: IGeneratorSettingsObject = {
-      priorityEntries: [],
-      entries: this.context,
-      outputs: [
-        {
-          address: scriptAddress,
-          amount: sompiToLoad!,
-        },
-        {
-          address: KRC20_SERVICE_FEE_ADDRESS,
-          amount: serviceFee,
-        },
-      ],
-      changeAddress: this.addresses.receiveAddresses[0],
+    amount: string = KRC20_COMMIT_AMOUNT,
+    additionalOutputs: [string, string][] = [],
+  ) {
+    return await submitKRC20Commit(
+      this.create.bind(this),
+      this.sign.bind(this),
+      this.submitContextful.bind(this),
+      scriptAddress,
       feeRate,
-      priorityFee: 0n!,
-    }
+      amount,
+      additionalOutputs,
+    )
+  }
 
-    const commitResult = await estimateTransactions(commitSettings)
-    const totalFeeSompi = mintSompi + serviceFee + commitResult.fees
-
-    return {
-      totalFees: sompiToKaspaString(totalFeeSompi),
-      mintFees: sompiToKaspaString(mintSompi),
-      extraNetworkFees: sompiToKaspaString(commitResult.fees),
-      serviceFee: sompiToKaspaString(serviceFee),
-      commitTotal: sompiToKaspaString(commitResult.finalAmount!),
-    }
+  async submitKRC20Reveal(commitId: string, info: KRC20TokenRequest, feeRate: number) {
+    return await submitKRC20Reveal(
+      this.create.bind(this),
+      this.sign.bind(this),
+      this.submitContextful.bind(this),
+      commitId,
+      this.context,
+      info,
+      feeRate,
+    )
   }
 
   async doKRC20Mint(ticker: string, feeRate: number, timesToMint = 1) {
-    console.log(`[Transactions] Mint started for ${ticker}. Minting ${timesToMint} time(s).`)
+    return await doKRC20Mint(
+      this.submitKRC20Commit.bind(this),
+      this.submitKRC20MintReveal.bind(this),
+      this.waitForUTXO.bind(this),
+      this.addresses,
+      this.processor,
+      ticker,
+      feeRate,
+      timesToMint,
+    )
+  }
 
-    const sender = this.addresses.receiveAddresses[0]
-    const mintSetup = setupkrc20Mint(sender, ticker)
-    const script = mintSetup.script.toString()
-    const scriptAddress = mintSetup.scriptAddress.toString()
+  async waitForUTXO(transactionID: string) {
+    return new Promise<void>((resolve) => {
+      const listener = (event: UtxoProcessorEvent<'maturity'>) => {
+        console.log(event)
 
-    const mintSompi = BigInt(timesToMint) * SOMPI_PER_KAS
-
-    const serviceFee = mintSompi / 10n
-
-    const sompiToLoad = mintSompi + KRC20_MINT_EXTRA_KAS * SOMPI_PER_KAS
-
-    const mintContext = new UtxoContext({ processor: this.processor })
-    mintContext.trackAddresses([mintSetup.scriptAddress])
-
-    const commit = await this.submitKRC20Commit(scriptAddress, feeRate, sompiToKaspaString(sompiToLoad), [
-      [KRC20_SERVICE_FEE_ADDRESS, sompiToKaspaString(serviceFee)],
-    ])
-
-    const commitId = commit[commit.length - 1]
-
-    await this.waitForUTXO(commitId)
-
-    let transactionIds = [commitId]
-
-    for (let i = 0; i < timesToMint; i++) {
-      console.log(`[Transactions] Mint Reveal index ${i}`)
-      const isLast = i === timesToMint - 1
-      const reveal = await this.submitKRC20MintReveal(
-        mintContext,
-        transactionIds[i],
-        scriptAddress,
-        sender,
-        script,
-        '1',
-        !isLast,
-      )
-
-      const revealId = reveal[reveal.length - 1]
-
-      await this.waitForUTXO(revealId)
-
-      transactionIds.push(revealId)
-    }
-
-    mintContext.clear()
-
-    console.log('[Transactions] Mint complete', transactionIds)
-
-    createNotification('Mint Completed', `Done minting ${ticker}`)
-
-    return transactionIds
+        if (event.data.id.toString() === transactionID) {
+          // i think the types for the callback are wrong?
+          this.processor.removeEventListener('maturity', listener as UtxoProcessorNotificationCallback)
+          resolve()
+        }
+      }
+      this.processor.addEventListener('maturity', listener)
+    })
   }
 
   reset() {

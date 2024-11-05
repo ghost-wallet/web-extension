@@ -1,10 +1,10 @@
-import { Address, addressFromScriptPublicKey, ScriptBuilder, XOnlyPublicKey } from '@/wasm/kaspa'
-import { Inscription } from './Inscription'
+import { Address, addressFromScriptPublicKey, ScriptBuilder, XOnlyPublicKey } from '@/wasm'
+import { KRC20Inscription } from './KRC20Inscription'
 import { TokenFromApi } from '@/utils/interfaces'
 
 export type Token = TokenFromApi
 
-export function setupkrc20Transaction(
+export function setupKrc20Transaction(
   address: string,
   recipient: string,
   amount: string,
@@ -12,7 +12,7 @@ export function setupkrc20Transaction(
   networkId = 'mainnet',
 ) {
   const script = new ScriptBuilder()
-  const inscription = new Inscription('transfer', {
+  const inscription = new KRC20Inscription('transfer', {
     tick: token.tick,
     amt: BigInt(+amount * 10 ** +token.dec).toString(),
     to: recipient,
@@ -25,9 +25,9 @@ export function setupkrc20Transaction(
   return { script, scriptAddress }
 }
 
-export function setupkrc20Mint(address: string, ticker: string, networkId = 'mainnet') {
+export function setupKrc20Mint(address: string, ticker: string, networkId = 'mainnet') {
   const script = new ScriptBuilder()
-  const inscription = new Inscription('mint', {
+  const inscription = new KRC20Inscription('mint', {
     tick: ticker,
   })
 

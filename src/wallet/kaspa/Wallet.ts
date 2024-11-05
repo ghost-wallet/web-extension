@@ -10,7 +10,6 @@ import {
 import LocalStorage from '@/storage/LocalStorage'
 import SessionStorage from '@/storage/SessionStorage'
 import KeyManager from '@/wallet/kaspa/KeyManager'
-import { LOCK_TIMEOUT_MS } from '@/utils/constants'
 
 export enum Status {
   Uninitialized,
@@ -21,7 +20,6 @@ export enum Status {
 export default class Wallet extends EventEmitter {
   status: Status = Status.Uninitialized
   encryptedKey?: string
-  private lockTimeout?: NodeJS.Timeout // Timeout reference to clear if needed
 
   constructor(readyCallback: () => void) {
     super()
@@ -73,14 +71,14 @@ export default class Wallet extends EventEmitter {
     }
 
     const encryptedKey = encryptXChaCha20Poly1305(mnemonics, password)
-    this.encryptedKey = encryptedKey // Set the encryptedKey
+    this.encryptedKey = encryptedKey
     console.log('set encrypted key...', this.encryptedKey)
 
     await LocalStorage.set('wallet', {
       encryptedKey: encryptedKey,
     })
 
-    await this.unlock(0, password) // Unlock wallet and send user to wallet page
+    await this.unlock(0, password)
     await this.sync()
   }
 
@@ -102,10 +100,6 @@ export default class Wallet extends EventEmitter {
       encryptedKey: this.encryptedKey,
     })
     await this.sync()
-
-    // Set the lock timeout after unlocking
-    //this.setLockTimeout()
-
     return decryptedKey
   }
 
@@ -116,17 +110,6 @@ export default class Wallet extends EventEmitter {
       throw Error('Wallet is not initialized')
     }
     return decryptXChaCha20Poly1305(wallet.encryptedKey, password)
-  }
-
-  private setLockTimeout() {
-    if (this.lockTimeout) {
-      clearTimeout(this.lockTimeout)
-    }
-
-    this.lockTimeout = setTimeout(async () => {
-      console.log('[Wallet] Locking wallet after timeout.')
-      await this.lock()
-    }, LOCK_TIMEOUT_MS)
   }
 
   async lock() {

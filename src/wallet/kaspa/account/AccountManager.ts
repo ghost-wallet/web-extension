@@ -1,32 +1,32 @@
 import { EventEmitter } from 'events'
 import { UtxoContext, UtxoProcessor, PublicKeyGenerator, UtxoEntryReference } from '@/wasm'
-import type Node from '../node'
-import Addresses from './addresses'
+import type Node from '../Node'
+import AccountAddresses from './AccountAddresses'
 import SessionStorage from '@/storage/SessionStorage'
-import Transactions from './transactions'
+import AccountTransactions from './AccountTransactions'
 
-export default class Account extends EventEmitter {
+export default class AccountManager extends EventEmitter {
   processor: UtxoProcessor
-  addresses: Addresses
+  addresses: AccountAddresses
   context: UtxoContext
-  transactions: Transactions
+  transactions: AccountTransactions
   node: Node
 
   constructor(node: Node) {
     super()
     this.node = node
-    console.log('[Account] Setting up this.processor', node.rpcClient, node.networkId)
+    console.log('[AccountManager] Setting up this.processor', node.rpcClient, node.networkId)
     this.processor = new UtxoProcessor({
       rpc: node.rpcClient,
       networkId: node.networkId,
     })
     this.context = new UtxoContext({ processor: this.processor })
-    this.addresses = new Addresses(this.context, node.networkId)
-    this.transactions = new Transactions(node.rpcClient, this.context, this.processor, this.addresses)
+    this.addresses = new AccountAddresses(this.context, node.networkId)
+    this.transactions = new AccountTransactions(node.rpcClient, this.context, this.processor, this.addresses)
     this.transactions.setAccount(this)
 
     node.on('network', async (networkId: string) => {
-      console.log('[Account] network event', networkId)
+      console.log('[AccountManager] network event', networkId)
 
       if (this.processor.isActive) {
         await this.processor.stop()
@@ -63,10 +63,10 @@ export default class Account extends EventEmitter {
   }
 
   private registerProcessor() {
-    console.log('[Account] Context data when processor is registered:', this.context)
+    console.log('[AccountManager] Context data when processor is registered:', this.context)
 
     this.processor.addEventListener('utxo-proc-start', async () => {
-      console.log('[Account] utxo-proc-start event')
+      console.log('[AccountManager] utxo-proc-start event')
       await this.context.clear()
       await this.context.trackAddresses(this.addresses.allAddresses)
     })
@@ -77,7 +77,7 @@ export default class Account extends EventEmitter {
 
   private listenSession() {
     SessionStorage.subscribeChanges(async (key, newValue) => {
-      console.log('[Account] session event', key, newValue)
+      console.log('[AccountManager] session event', key, newValue)
       if (key !== 'session') return
 
       if (newValue) {

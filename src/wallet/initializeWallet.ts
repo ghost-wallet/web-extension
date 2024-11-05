@@ -1,7 +1,7 @@
-import Wallet from './kaspa/wallet'
-import Node from './kaspa/node'
-import Account from './kaspa/account/account'
-import RPC from './messaging/rpc'
+import Wallet from './kaspa/Wallet'
+import Node from './kaspa/Node'
+import AccountManager from './kaspa/account/AccountManager'
+import RPC from './messaging/RPC'
 
 import load, { initConsolePanicHook, version } from '@/wasm'
 
@@ -13,7 +13,7 @@ load().then(() => {
 
   const wallet = new Wallet(() => {
     const node = new Node()
-    const account = new Account(node)
+    const account = new AccountManager(node)
 
     const messaging = new RPC({ wallet, node, account })
   })
