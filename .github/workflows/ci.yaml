@@ -15,7 +15,7 @@ jobs:
       - name: Install Dependencies
         run: bun install
       - name: Run tests
-        run: bun run test
+        run: npx jest
 
   build:
     name: Build and Artifact Upload
