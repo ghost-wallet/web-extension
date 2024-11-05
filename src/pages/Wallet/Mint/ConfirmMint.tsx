@@ -65,7 +65,7 @@ export default function ConfirmMint() {
         <Header title="Confirm Mint" showBackButton={true} />
         <div className="flex flex-col px-4">
           <CryptoImage ticker={token.tick} size="large" />
-          <div className="w-full max-w-md space-y-1 pt-2">
+          <div className="w-full space-y-1 pt-2">
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Receive amount</span>
               <span className="text-mutedtext text-base text-right">

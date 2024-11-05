@@ -15,7 +15,7 @@ const MintSummary: React.FC<MintSummaryProps> = ({ totalMintCost, mintAmount, to
   const currencySymbol = getCurrencySymbol(settings.currency)
 
   return (
-    <div className="w-full max-w-md space-y-2 pt-2">
+    <div className="w-full space-y-2 pt-2">
       <div className="flex flex-col justify-between">
         <div className="flex justify-between">
           <span className="text-mutedtext text-lg">Mint cost</span>
