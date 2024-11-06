@@ -74,11 +74,13 @@ export interface KaspaToken {
   balance: number
   dec: number
   floorPrice: number
+  isHidden?: boolean
 }
 
 export interface Token extends TokenFromApi {
   isKaspa?: undefined
   floorPrice: number
+  isHidden?: boolean
 }
 
 /**

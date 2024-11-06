@@ -38,7 +38,6 @@ const CryptoListItem: React.FC<CryptoListItemProps> = ({
       </div>
 
       {showToggle ? (
-        // Show toggle switch when showToggle is true
         <Switch
           checked={isEnabled || false}
           onChange={onToggle}
@@ -53,7 +52,6 @@ const CryptoListItem: React.FC<CryptoListItemProps> = ({
           />
         </Switch>
       ) : (
-        // Show currency, total value, and formatted balance when showToggle is false
         <div className="flex flex-col items-end">
           <span className="text-lg text-primarytext">
             {currencySymbol}

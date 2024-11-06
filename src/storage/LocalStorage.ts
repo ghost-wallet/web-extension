@@ -4,6 +4,7 @@ import Storage from './Storage'
 
 export interface IWallet {
   encryptedKey: string
+  tokens: { [tick: string]: { isHidden: boolean } }
 }
 
 export interface ILocalStorage {
