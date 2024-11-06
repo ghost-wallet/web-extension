@@ -38,18 +38,12 @@ export const sortSearchResults = (krc20TokenList: KRC20TokenResponse[], ticker: 
       }
     })
     .sort((a, b) => {
-      // 1. Deprioritize abnormally large market caps by moving them to the end
-      if (a.isAbnormallyLarge && !b.isAbnormallyLarge) return 1
-      if (b.isAbnormallyLarge && !a.isAbnormallyLarge) return -1
-
-      // 2. Sort by market cap (higher market cap comes first)
-      if (a.marketCap !== b.marketCap) return b.marketCap - a.marketCap
-
-      // 3. Prioritize 'deployed' state within the same market cap
+      // 1. Prioritize deployed tokens
       if (a.state === 'deployed' && b.state !== 'deployed') return -1
       if (b.state === 'deployed' && a.state !== 'deployed') return 1
 
-      return 0 // No preference if all criteria are the same
+      // 2. Sort alphabetically by ticker
+      return a.tick.localeCompare(b.tick)
     })
 }
 
