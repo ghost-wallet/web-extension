@@ -47,7 +47,11 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
             rows={[
               {
                 label: 'Market cap',
-                value: `${currencySymbol}${formatMarketCapAbbreviated(token.minted, token.dec, token.floorPrice)}`,
+                value: `${currencySymbol}${formatMarketCapAbbreviated(
+                  token.minted,
+                  token.dec,
+                  token.floorPrice,
+                )}`,
               },
               {
                 label: 'Total supply',

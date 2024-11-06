@@ -1,4 +1,4 @@
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { HashRouter as Router, Route, Routes } from 'react-router-dom'
 import { KaspaProvider } from './contexts/kaspa/KaspaProvider'
 import { SettingsProvider } from '@/contexts/settings/SettingsProvider'
 import Landing from './pages/Landing'
@@ -30,6 +30,7 @@ import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persist
 import NetworkFeeSelect from '@/pages/Wallet/Send/NetworkFeeSelect'
 import DeveloperPage from '@/pages/Wallet/Settings/Developer/DeveloperPage'
 import KaspaTxnDetails from '@/pages/Wallet/Transactions/KaspaTxnDetails'
+import ManageTokens from '@/pages/Wallet/CryptoList/ManageTokens'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -48,7 +49,7 @@ function App() {
     <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
       <SettingsProvider>
         <KaspaProvider>
-          <MemoryRouter>
+          <Router>
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/create" element={<CreateWallet />} />
@@ -56,6 +57,7 @@ function App() {
               <Route path="/unlock/forgotpassword" element={<ForgotPassword />} />
               <Route path="/wallet" element={<Wallet />} />
               <Route path="/wallet/:tick" element={<Crypto />} />
+              <Route path="/wallet/manage" element={<ManageTokens />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/settings/reset" element={<ConfirmReset />} />
               <Route path="/settings/about" element={<AboutPage />} />
@@ -78,7 +80,7 @@ function App() {
               <Route path="/mint/:tick/network-fee/review" element={<ConfirmMint />} />
               <Route path="/mint/:tick/network-fee/review/minted" element={<Minted />} />
             </Routes>
-          </MemoryRouter>
+          </Router>
         </KaspaProvider>
       </SettingsProvider>
     </PersistQueryClientProvider>

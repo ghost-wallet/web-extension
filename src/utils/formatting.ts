@@ -93,7 +93,7 @@ export const getMarketCap = (minted: number, dec: number, floorPrice: number): n
 }
 
 export const formatMarketCapAbbreviated = (minted: number, dec: number, floorPrice: number): string => {
-  const marketCap = getMarketCap(minted, dec, floorPrice)
+  const marketCap = Math.floor(getMarketCap(minted, dec, floorPrice))
   if (marketCap < 100_000_000) {
     return marketCap.toLocaleString()
   }
