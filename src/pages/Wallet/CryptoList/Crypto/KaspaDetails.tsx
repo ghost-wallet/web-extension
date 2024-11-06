@@ -7,6 +7,7 @@ import TokenPrice from '@/components/TokenPrice'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import KaspaTxnHistory from '@/pages/Wallet/Transactions/KaspaTxnHistory'
 import KaspaTxnHistoryTestnet from '@/pages/Wallet/Transactions/KaspaTxnHistoryTestnet'
+import { calculateKaspaTotalValue } from '@/utils/calculations'
 
 const KaspaDetails: React.FC = () => {
   const { settings } = useSettings()
@@ -24,7 +25,7 @@ const KaspaDetails: React.FC = () => {
             label: settings.currency,
             value: kaspaPrice.isPending
               ? 'Loading...'
-              : `${currencySymbol}${(kaspa.balance * kaspaPrice.data!).toFixed(2)}`,
+              : `${currencySymbol}${calculateKaspaTotalValue(kaspa.balance, kaspaPrice.data!)}`,
           },
           {
             label: 'KASPA',
