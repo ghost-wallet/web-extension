@@ -23,7 +23,7 @@ import KeyManager from '@/wallet/account/KeyManager'
 import Account from '@/wallet/Account'
 import { Token } from '@/wallet/krc20/KRC20TransactionSetup'
 import { CustomInput, CustomSignature, KRC20TokenRequest } from '@/utils/interfaces'
-import { KRC20_COMMIT_AMOUNT } from '@/utils/constants'
+import { KRC20_COMMIT_AMOUNT } from '@/utils/constants/constants'
 import {
   estimateKRC20TransactionFee,
   getKRC20Info,

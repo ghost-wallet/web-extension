@@ -15,7 +15,7 @@ import {
   KRC20_MINT_EXTRA_KAS,
   KRC20_SERVICE_FEE_ADDRESS,
   SOMPI_PER_KAS,
-} from '@/utils/constants'
+} from '@/utils/constants/constants'
 import { KRC20MintEstimateResult, KRC20TokenRequest } from '@/utils/interfaces'
 import { calculateScriptExtraFee } from '@/wallet/krc20/calculateScriptExtraFee'
 import AccountAddresses from '@/wallet/account/AccountAddresses'

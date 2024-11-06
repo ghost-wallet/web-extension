@@ -4,6 +4,7 @@ import ErrorMessage from '@/components/messages/ErrorMessage'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import NextButton from '@/components/buttons/NextButton'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; onConfirmed: () => void }) {
   const [userInputs, setUserInputs] = useState<string[]>(Array(12).fill(''))
@@ -25,7 +26,7 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
       (userInputs[7] && userInputs[7] !== mnemonicWords[7])
 
     if (isEntryBlank || isEntryIncorrect) {
-      setError('Incorrect entries')
+      setError(ErrorMessages.MNEMONIC.INCORRECT_ENTRIES)
     } else {
       setError('')
       onConfirmed()

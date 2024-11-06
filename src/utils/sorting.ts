@@ -3,7 +3,7 @@ import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
 import { KaspaToken, Token } from '@/utils/interfaces'
 import { KRC20TokenResponse } from '@/utils/interfaces'
 import { getMarketCap } from '@/utils/formatting'
-import { MAX_MARKET_CAP_THRESHOLD } from '@/utils/constants'
+import { MAX_MARKET_CAP_THRESHOLD } from '@/utils/constants/constants'
 
 export const sortTokensByValue = (tokens: (Token | KaspaToken)[]) => {
   return tokens

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 const useMintErrorHandling = (
   mintAmount: number | null,
@@ -12,25 +13,19 @@ const useMintErrorHandling = (
 
   useEffect(() => {
     if (mintAmount === null) {
-      setError('Mint amount is required.')
+      setError(ErrorMessages.MINT.REQUIRED_AMOUNT)
     } else if (mintAmount < 5) {
-      setError('Ghost requires a minimum of 5 KAS per mint.')
+      setError(ErrorMessages.MINT.MINIMUM_AMOUNT)
     } else if (exceedsSupply) {
-      setError(`Cannot mint more tokens than the remaining unminted supply: ${availableSupply}`)
+      setError(ErrorMessages.MINT.EXCEEDS_SUPPLY(availableSupply))
     } else if (!kaspaConnected) {
-      setError(`Not connected to network. Please try again later.`)
+      setError(ErrorMessages.NETWORK.NOT_CONNECTED)
     } else if (exceedsBalance) {
-      setError(
-        `You need at least ${
-          mintAmount + 25 + 0.1 * mintAmount
-        } KAS in your wallet, but you have ${kaspaBalance.toFixed(
-          2,
-        )}. Minting requires a minimum of 25 KAS, 10% of the mint cost to cover fees, and 1 KAS per mint.`,
-      )
+      setError(ErrorMessages.MINT.EXCEEDS_BALANCE(mintAmount, kaspaBalance))
     } else {
       setError('')
     }
-  }, [mintAmount, kaspaBalance, exceedsBalance, exceedsSupply])
+  }, [mintAmount, kaspaBalance, kaspaConnected, exceedsBalance, exceedsSupply, availableSupply])
 
   return error
 }

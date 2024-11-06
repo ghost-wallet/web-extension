@@ -14,6 +14,7 @@ import useSettings from '@/hooks/contexts/useSettings'
 import { getCurrencySymbol } from '@/utils/currencies'
 import CryptoImage from '@/components/CryptoImage'
 import TopNav from '@/components/navigation/TopNav'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 const InitiateSend: React.FC = () => {
   const location = useLocation()
@@ -31,9 +32,9 @@ const InitiateSend: React.FC = () => {
   const formattedCurrencyValue = Number(currencyValue).toLocaleString('en-US', { minimumFractionDigits: 2 })
 
   const error = !kaspa.connected
-    ? `Not connected to network. Please try again later.`
+    ? ErrorMessages.NETWORK.NOT_CONNECTED
     : kaspa.balance < 1
-      ? `Not enough Kaspa in wallet to cover network fees. You need at least 1 KAS, but you have ${kaspa.balance}.`
+      ? ErrorMessages.NETWORK.INSUFFICIENT_FUNDS(kaspa.balance)
       : null
 
   const handleContinue = () => {

@@ -11,7 +11,7 @@ const ForgotPassword: React.FC = () => {
         <div className="px-6">
           <p className="text-warning text-base text-center pt-6 pb-32">
             The only way to reset your password is by resetting your wallet. You can re-import your wallet
-            with your 12-word or 24-word secret phrase.
+            with your 12-word secret phrase.
           </p>
           <ResetWalletButton />
         </div>

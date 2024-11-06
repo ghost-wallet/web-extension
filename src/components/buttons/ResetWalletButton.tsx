@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import ErrorMessage from '@/components/messages/ErrorMessage'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 const ResetWalletButton: React.FC = () => {
   const { request } = useKaspa()
@@ -15,7 +16,8 @@ const ResetWalletButton: React.FC = () => {
       await request('wallet:reset', [])
       navigate('/')
     } catch (err: any) {
-      setError(`Error resetting wallet: ${err}`)
+      console.error(`${ErrorMessages.RESET.FAILED}:`, err)
+      setError(ErrorMessages.RESET.FAILED)
       setIsChecked(false)
     }
   }
@@ -36,7 +38,7 @@ const ResetWalletButton: React.FC = () => {
           onChange={handleCheckboxChange}
         />
         <label htmlFor="reset-confirmation" className="text-mutedtext text-base">
-          I have direct access to my 12-word or 24-word secret recovery phrase.
+          I have direct access to my 12-word secret recovery phrase.
         </label>
       </div>
 

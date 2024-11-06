@@ -13,6 +13,7 @@ import YouReceiveSection from '@/pages/Wallet/Swap/YouReceiveSection'
 import TokenSwitch from '@/pages/Wallet/Swap/TokenSwitch'
 import SwapTokenSelect from '@/pages/Wallet/Swap/SwapTokenSelect'
 import { AnimatePresence } from 'framer-motion'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 export default function Swap() {
   const [chaingeTokens, setChaingeTokens] = useState<ChaingeToken[]>([])
@@ -41,7 +42,7 @@ export default function Swap() {
         setPayToken(defaultPayToken || fetchedTokens[0])
         setReceiveToken(defaultReceiveToken || fetchedTokens[1])
       } catch (err) {
-        setError('Error fetching tokens')
+        setError(ErrorMessages.CHAINGE.FAILED_FETCH(err))
       } finally {
         setLoading(false)
       }

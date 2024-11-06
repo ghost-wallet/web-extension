@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import useKaspa from '@/hooks/contexts/useKaspa'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 export const useBuckets = () => {
   const { request } = useKaspa()
@@ -16,8 +17,8 @@ export const useBuckets = () => {
         setBuckets(_buckets)
       })
       .catch((err) => {
-        console.error('Error fetching fee buckets:', err)
-        setError('Failed to retrieve the fee buckets.')
+        console.error(`${ErrorMessages.BUCKETS.FAILED}:`, err)
+        setError(ErrorMessages.BUCKETS.FAILED(err))
       })
   }
 

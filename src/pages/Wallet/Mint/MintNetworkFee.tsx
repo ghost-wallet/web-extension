@@ -5,11 +5,12 @@ import BottomNav from '@/components/navigation/BottomNav'
 import Header from '@/components/Header'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import FeePrioritySelector from '@/components/FeePrioritySelector'
-import { FEE_TYPES } from '@/utils/constants'
+import { FEE_TYPES } from '@/utils/constants/constants'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import { useBuckets } from '@/hooks/kaspa/useBuckets'
 import NextButton from '@/components/buttons/NextButton'
 import TopNav from '@/components/navigation/TopNav'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 const MintNetworkFee: React.FC = () => {
   const navigate = useNavigate()
@@ -38,8 +39,8 @@ const MintNetworkFee: React.FC = () => {
         setError(null)
       })
       .catch((err) => {
-        setError('Error estimating fees')
-        console.error(`Error estimating mint fees: ${err}`)
+        setError(ErrorMessages.FEES.ESTIMATION(err))
+        console.error(ErrorMessages.FEES.ESTIMATION(err))
       })
   }, [request, token, feeRate, payAmount, estimatedTime])
 

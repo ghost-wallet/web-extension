@@ -4,6 +4,7 @@ import ErrorMessage from '@/components/messages/ErrorMessage'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import NextButton from '@/components/buttons/NextButton'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 interface PasswordProps {
   onPasswordSet: (password: string) => void
@@ -21,10 +22,10 @@ export default function Password({ onPasswordSet }: PasswordProps) {
 
   const validatePasswords = (password: string, confirmPassword: string) => {
     if (password.length > 0 && password.length < 8) {
-      setError('Must be at least 8 characters')
+      setError(ErrorMessages.PASSWORD.TOO_SHORT)
       setIsValid(false)
     } else if (password.length >= 8 && password !== confirmPassword && confirmPassword.length > 0) {
-      setError('Passwords do not match')
+      setError(ErrorMessages.PASSWORD.MISMATCH)
       setIsValid(false)
     } else if (password.length >= 8 && password === confirmPassword) {
       setError('')

@@ -17,6 +17,7 @@ import { useKsprPrices } from '@/hooks/kspr/fetchKsprPrices'
 import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
 import useSettings from '@/hooks/contexts/useSettings'
 import { useKrc20TokenList } from '@/hooks/kasplex/useKrc20TokenList'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 export default function Mint() {
   const location = useLocation()
@@ -52,10 +53,10 @@ export default function Mint() {
         const floorPrice = ksprPriceData?.floor_price ? ksprPriceData.floor_price * kasPrice : 0
         setToken({ ...result, floorPrice })
       } else {
-        setError('No token found.')
+        setError(ErrorMessages.MINT.TOKEN_NOT_FOUND(ticker))
       }
     } catch (err) {
-      setError('An error occurred while fetching token info.')
+      setError(ErrorMessages.MINT.SEARCH_FAILED(ticker))
     } finally {
       setLoading(false)
     }

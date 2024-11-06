@@ -8,6 +8,7 @@ import useSettings from '@/hooks/contexts/useSettings'
 import TopNav from '@/components/navigation/TopNav'
 import NextButton from '@/components/buttons/NextButton'
 import SpinnerPage from '@/components/loaders/SpinnerPage'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 const ConfirmSendKaspa: React.FC = () => {
   const location = useLocation()
@@ -25,17 +26,22 @@ const ConfirmSendKaspa: React.FC = () => {
 
       const [generatedTransactions] = await request('account:create', [outputs, feeRate, fee])
       if (!generatedTransactions || generatedTransactions.length === 0) {
-        throw new Error('Failed to create transactions')
+        setError(ErrorMessages.TRANSACTION.FAILED_CREATION)
+        return
       }
 
       const [txnId] = await request('account:submitKaspaTransaction', [generatedTransactions])
+      if (!txnId) {
+        setError(ErrorMessages.TRANSACTION.FAILED_SUBMISSION)
+        return
+      }
 
       navigate(`/send/${token.tick}/sent`, {
         state: { token, amount, recipient, txnId },
       })
     } catch (err) {
-      console.error('Error confirming transaction:', err)
-      setError(`Error confirming transaction: ${err}`)
+      console.error(ErrorMessages.TRANSACTION.CONFIRMATION_ERROR(err))
+      setError(ErrorMessages.TRANSACTION.CONFIRMATION_ERROR(err))
     } finally {
       setLoading(false)
     }

@@ -10,6 +10,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import useSettings from '@/hooks/contexts/useSettings'
 import TopNav from '@/components/navigation/TopNav'
 import NextButton from '@/components/buttons/NextButton'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 const ConfirmSendKRC20: React.FC = () => {
   const location = useLocation()
@@ -32,8 +33,8 @@ const ConfirmSendKRC20: React.FC = () => {
         setEstimatedFee(response || '')
       })
       .catch((err) => {
-        setError(`Error fetching estimated fee: ${err}`)
-        console.error('[ConfirmSendKRC20] error fetching estimated fee:', err)
+        setError(ErrorMessages.FEES.ESTIMATION(err))
+        console.error(ErrorMessages.FEES.ESTIMATION(err))
       })
   }, [request, recipient, token, amount, feeRate])
 
@@ -49,7 +50,7 @@ const ConfirmSendKRC20: React.FC = () => {
 
   const handleConfirmClick = useCallback(() => {
     if (!krc20Info) {
-      setError('Missing token information. Please try again.')
+      setError(ErrorMessages.KRC20.MISSING)
       return
     }
 
@@ -57,7 +58,6 @@ const ConfirmSendKRC20: React.FC = () => {
     setError('')
     request('account:submitKRC20Transaction', [krc20Info, feeRate])
       .then((response) => {
-        console.log('[ConfirmSendKRC20] write inscription success. Response:', response)
         const txnId = response[1]
         navigate(`/send/${token.tick}/sent`, {
           state: { token, amount, recipient, txnId },
@@ -65,8 +65,8 @@ const ConfirmSendKRC20: React.FC = () => {
         queryClient.invalidateQueries({ queryKey: ['krc20Tokens'] })
       })
       .catch((err) => {
-        setError(`Error: ${err}`)
-        console.error('[ConfirmSendKRC20] error writing inscription:', err)
+        setError(ErrorMessages.KRC20.SUBMIT_TXN(err))
+        console.error(ErrorMessages.KRC20.SUBMIT_TXN(err))
       })
       .finally(() => {
         setLoading(false)

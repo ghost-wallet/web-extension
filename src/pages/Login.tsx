@@ -6,6 +6,7 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 import ghostIcon from '../../assets/ghost.svg'
 import AnimatedMain from '@/components/AnimatedMain'
 import NextButton from '@/components/buttons/NextButton'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -20,11 +21,10 @@ export default function Login() {
       if (decryptedKey) {
         navigate('/')
       } else {
-        setError('Failed to get decrypted key')
+        setError(ErrorMessages.LOGIN.FAILED_DECRYPTION)
       }
     } catch (err) {
-      console.log('[Login] Password login error', err)
-      setError('Incorrect password')
+      setError(ErrorMessages.PASSWORD.INCORRECT)
     }
   }, [password, request, navigate])
 
