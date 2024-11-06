@@ -16,7 +16,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({ id, value, onChange, plac
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`w-full p-2 border border-muted h-[52px] bg-transparent text-base text-primarytext placeholder-mutedtext rounded`}
+        className={`w-full p-2 pl-4 border border-slightmuted h-[52px] bg-bgdarker text-lg text-primarytext placeholder-muted rounded`}
       />
     </div>
   )

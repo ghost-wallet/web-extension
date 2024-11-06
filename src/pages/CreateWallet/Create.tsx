@@ -3,6 +3,7 @@ import { EyeIcon, EyeSlashIcon, DocumentDuplicateIcon, DocumentCheckIcon } from 
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import NextButton from '@/components/buttons/NextButton'
+import { WarningMessages } from '@/utils/constants/warningMessages'
 
 export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSaved: () => void }) {
   const [isSeedVisible, setIsSeedVisible] = useState(false)
@@ -31,11 +32,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
       <Header title="Secret Phrase" showBackButton={false} />
 
       <div className="flex flex-col flex-grow justify-center px-4 pb-6 space-y-4">
-        <p className="text-warning text-base text-justify pt-4 mb-4">
-          This secret recovery phrase is the only way to restore your wallet. Do not share it with anyone. Do
-          not enter it into any app or site other than wallets from ghostapp.org. Beware of fake customer
-          support scams.
-        </p>
+        <p className="text-warning text-base text-justify pt-4 mb-4">{WarningMessages.NEW_SEED_PHRASE}</p>
 
         <div
           className="bg-bgdarker border border-muted rounded-lg p-4 mb-4 relative text-primarytext text-sm cursor-pointer"

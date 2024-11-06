@@ -19,7 +19,7 @@ export interface ChaingeTokensList {
 const API_URL = 'https://api2.chainge.finance/v1/getAssetsByChain'
 const CACHE_KEY = 'chainge_tokens'
 const CACHE_TIMESTAMP_KEY = 'chainge_tokens_timestamp'
-const CACHE_DURATION = 10 * 60 * 1000 // 10 minutes
+const CACHE_DURATION = 60 * 60 * 1000 // 60 minutes
 
 export const fetchChaingeTokens = async (): Promise<ChaingeToken[]> => {
   const cachedTokens = localStorage.getItem(CACHE_KEY)

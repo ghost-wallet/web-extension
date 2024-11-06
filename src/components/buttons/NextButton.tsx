@@ -18,7 +18,7 @@ const NextButton: React.FC<NextButtonProps> = ({
     disabled={!buttonEnabled || showError}
     className={`w-full h-[52px] text-lg font-semibold rounded-[25px] ${
       buttonEnabled && !showError
-        ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
+        ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hoverprimary'
         : 'bg-muted text-mutedtext cursor-not-allowed'
     }`}
   >

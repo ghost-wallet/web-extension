@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import PasswordInput from '@/components/inputs/PasswordInput'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import ghostIcon from '../../assets/ghost.svg'
 import AnimatedMain from '@/components/AnimatedMain'
 import NextButton from '@/components/buttons/NextButton'
 import ErrorMessages from '@/utils/constants/errorMessages'
+import AnimatedGhostLogo from '@/components/AnimatedGhostLogo'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -41,12 +41,13 @@ export default function Login() {
 
   return (
     <AnimatedMain className="flex flex-col h-screen">
-      <div className="flex justify-center pt-6">
-        <img className="w-[7.7rem] h-[7.7rem]" src={ghostIcon} alt="logo" />
+      <h1 className="text-muted text-4xl font-rubik font-bold text-center pt-8">GHOST</h1>
+      <div className="flex justify-center pt-14">
+        <AnimatedGhostLogo />
       </div>
 
-      <div className="flex flex-col items-center justify-center flex-grow px-6">
-        <h1 className="text-primarytext text-3xl font-rubik text-center mb-6">Enter your password</h1>
+      <div className="flex flex-col items-center justify-center flex-grow px-4 pt-8">
+        <h1 className="text-primarytext text-2xl font-rubik text-center mb-4">Enter your password</h1>
         <form className="flex flex-col items-center w-full" onKeyDown={handleKeyDown}>
           <PasswordInput
             placeholder="Password"
@@ -61,14 +62,14 @@ export default function Login() {
           <button
             type="button"
             onClick={handleForgotPassword}
-            className="text-mutedtext hover:underline text-lg font-light mt-2 mb-10"
+            className="text-lightmuted hover:underline text-lg mt-2 mb-8"
           >
             Forgot Password
           </button>
         </form>
       </div>
 
-      <div className="w-full px-4 pb-10">
+      <div className="w-full px-4 pb-4">
         <NextButton onClick={login} text={'Login'} />
       </div>
     </AnimatedMain>
