@@ -3,13 +3,11 @@ import TruncatedCopyAddress from '@/components/TruncatedCopyAddress'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import { Cog6ToothIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
-import Spinner from '@/components/loaders/Spinner'
-import useSettings from '@/hooks/contexts/useSettings'
 import SearchWalletButton from '@/components/SearchWalletButton'
+import ConnectingToNetwork from '@/components/ConnectingToNetwork'
 
 const TopNav: React.FC = () => {
   const { kaspa } = useKaspa()
-  const { settings } = useSettings()
   const navigate = useNavigate()
 
   return (
@@ -26,17 +24,14 @@ const TopNav: React.FC = () => {
             {kaspa.connected ? (
               <TruncatedCopyAddress account="Account 1" address={kaspa.addresses[0]} />
             ) : (
-              <div className="flex items-center bg-darkmuted text-primarytext text-sm p-1 rounded">
-                <p className="px-2">{`Connecting to ${settings.nodes[settings.selectedNode].address}...`}</p>
-                <div className="p-1">
-                  <Spinner size="small" />
-                </div>
-              </div>
+              <ConnectingToNetwork />
             )}
           </div>
 
-          {/* Search Wallet Button */}
-          <SearchWalletButton />
+          {/* Search Wallet Button and Side Panel Button */}
+          <div className="flex items-center">
+            <SearchWalletButton />
+          </div>
         </div>
       </nav>
 

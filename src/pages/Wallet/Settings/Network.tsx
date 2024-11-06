@@ -1,6 +1,7 @@
 import React from 'react'
 import useSettings from '@/hooks/contexts/useSettings'
 import useKaspa from '@/hooks/contexts/useKaspa'
+import ConnectingToNetwork from '@/components/ConnectingToNetwork'
 
 const Network: React.FC = () => {
   const { settings, updateSetting } = useSettings()
@@ -19,13 +20,14 @@ const Network: React.FC = () => {
   return (
     <>
       <div className="flex items-center justify-center gap-2 mb-2">
-        <h1 className="text-mutedtext text-base">Network</h1>
         <span
           className={`px-2 py-1 ${kaspa.connected ? 'text-success text-base' : 'text-mutedtext text-base'}`}
         >
-          {kaspa.connected
-            ? `Connected to ${settings.nodes[settings.selectedNode].address}`
-            : 'Connecting...'}
+          {kaspa.connected ? (
+            `Connected to ${settings.nodes[settings.selectedNode].address}`
+          ) : (
+            <ConnectingToNetwork />
+          )}
         </span>
       </div>
 
