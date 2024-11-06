@@ -12,7 +12,7 @@ const SearchWalletButton: React.FC = () => {
     <>
       {/* Search Button Icon */}
       <button onClick={handleSearchToggle} className="flex items-center">
-        <MagnifyingGlassIcon className="h-7 w-7 transform transition-transform duration-300 hover:scale-125 text-mutedtext" />
+        <MagnifyingGlassIcon className="h-6 w-6 transform transition-transform duration-300 hover:scale-125 text-mutedtext" />
       </button>
 
       {/* Search Wallet Overlay */}

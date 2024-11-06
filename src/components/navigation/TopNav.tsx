@@ -18,7 +18,7 @@ const TopNav: React.FC = () => {
         <div className="flex items-center justify-between">
           {/* Settings Button */}
           <button onClick={() => navigate('/settings')} className="flex items-center">
-            <Cog6ToothIcon className="h-7 w-7 transform transition-transform duration-300 hover:scale-125 text-mutedtext" />
+            <Cog6ToothIcon className="h-6 w-6 transform transition-transform duration-300 hover:scale-125 text-mutedtext" />
           </button>
 
           {/* Address or Connection Status */}
