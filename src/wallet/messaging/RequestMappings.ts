@@ -26,8 +26,6 @@ export interface RequestMappings {
   'account:getKRC20Info': [string, Token, string]
   'account:submitKRC20Transaction': [KRC20TokenRequest, number]
   'account:estimateKRC20TransactionFee': [KRC20TokenRequest, number]
-  'account:doKRC20Mint': [string, number, number]
-  'account:estimateKRC20MintFees': [string, number, number]
   'provider:connect': [string]
   'provider:connection': []
   'provider:disconnect': []

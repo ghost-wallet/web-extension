@@ -18,19 +18,25 @@ export function getOperationDetails(operation: KRC20Transaction, address: string
   return { operationType, isSent, isReceived, isMint }
 }
 
-export const getKaspaExplorerUrl = (transactionId: string) => {
+const getKaspaExplorerBaseUrl = () => {
   const { settings } = useSettings()
   const networkAddress = settings.nodes[settings.selectedNode].address
 
-  let baseUrl = 'https://explorer.kaspa.org'
-
   if (networkAddress.includes('testnet-10')) {
-    baseUrl = 'https://explorer-tn10.kaspa.org'
+    return 'https://explorer-tn10.kaspa.org'
   } else if (networkAddress.includes('testnet-11')) {
-    baseUrl = 'https://explorer-tn11.kaspa.org'
+    return 'https://explorer-tn11.kaspa.org'
   }
+  return 'https://explorer.kaspa.org'
+}
 
-  return `${baseUrl}/txs/${transactionId}`
+// TODO update the name to be getKaspaExplorerTxsUrl
+export const getKaspaExplorerUrl = (transactionId: string) => {
+  return `${getKaspaExplorerBaseUrl()}/txs/${transactionId}`
+}
+
+export const getKaspaExplorerAddressUrl = (address: string) => {
+  return `${getKaspaExplorerBaseUrl()}/addresses/${address}`
 }
 
 export const getTransactionStatusText = (operationType: string, opAccept: string, op: string): string => {

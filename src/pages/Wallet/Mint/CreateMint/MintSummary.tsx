@@ -24,7 +24,7 @@ const MintSummary: React.FC<MintSummaryProps> = ({ totalMintCost, mintAmount, to
           </span>
         </div>
         <span className="text-mutedtext text-base text-right">
-          {currencySymbol}
+          ≈ {currencySymbol}
           {Number(mintAmount ? mintAmount * kaspaPrice.data! : '0').toFixed(2)}
         </span>
       </div>

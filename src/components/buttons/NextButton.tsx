@@ -1,10 +1,12 @@
 import React from 'react'
+import Spinner from '@/components/loaders/Spinner'
 
 interface NextButtonProps {
   buttonEnabled?: boolean
   showError?: boolean
   onClick: () => void
   text?: string
+  loading?: boolean
 }
 
 const NextButton: React.FC<NextButtonProps> = ({
@@ -12,17 +14,18 @@ const NextButton: React.FC<NextButtonProps> = ({
   showError = false,
   onClick,
   text = 'Next',
+  loading = false,
 }) => (
   <button
     onClick={onClick}
-    disabled={!buttonEnabled || showError}
-    className={`w-full h-[52px] text-lg font-semibold rounded-[25px] ${
-      buttonEnabled && !showError
+    disabled={!buttonEnabled || showError || loading}
+    className={`w-full h-[52px] text-lg font-semibold rounded-[25px] flex items-center justify-center ${
+      buttonEnabled && !showError && !loading
         ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hoverprimary'
         : 'bg-muted text-mutedtext cursor-not-allowed'
     }`}
   >
-    {text}
+    {loading ? <Spinner /> : text}
   </button>
 )
 

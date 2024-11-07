@@ -1,41 +1,35 @@
-import { useState } from 'react'
-
+/**
+ * Interface defining the structure for a mint request payload.
+ * @property {string} tick - The token ticker symbol (e.g., 'NACHO').
+ * @property {number} timesToMint - The number of times to mint the token, from 5-1000.
+ * @property {string} address - The Kaspa address where the minted tokens will be sent.
+ */
 interface MintRequest {
   tick: string
   timesToMint: number
   address: string
 }
 
-export function useMint() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [data, setData] = useState(null)
+/**
+ * Function to post a mint request to the API.
+ * @param {MintRequest} mintRequest - The payload containing minting details.
+ * @returns {Promise<any>} - The API response if successful.
+ * @throws {Error} - Throws an error if the request fails.
+ */
+export async function postMint(mintRequest: MintRequest): Promise<any> {
+  const response = await fetch('https://ghost-server-wpm2s.ondigitalocean.app/v1/krc20/mint/request', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(mintRequest),
+  })
 
-  const postMint = async (mintRequest: MintRequest) => {
-    setLoading(true)
-    setError('')
-
-    try {
-      const response = await fetch('https://ghost-server-wpm2s.ondigitalocean.app/v1/krc20/mint/request', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(mintRequest),
-      })
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`)
-      }
-
-      const result = await response.json()
-      setData(result)
-    } catch (err: any) {
-      setError(err)
-    } finally {
-      setLoading(false)
-    }
+  if (!response.ok) {
+    console.error('Mint API error:', response)
+    const errorMessage = `${response.status} ${response.statusText}`
+    throw new Error(errorMessage)
   }
 
-  return { postMint, loading, error, data }
+  return await response.json()
 }

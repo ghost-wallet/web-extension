@@ -7,16 +7,10 @@ import {
   IGeneratorSettingsObject,
   IUtxoEntry,
   UtxoContext,
-  UtxoProcessor,
 } from '@/wasm'
-import { setupKrc20Mint, setupKrc20Transaction, Token } from './KRC20TransactionSetup'
-import {
-  KRC20_COMMIT_AMOUNT,
-  KRC20_MINT_EXTRA_KAS,
-  KRC20_SERVICE_FEE_ADDRESS,
-  SOMPI_PER_KAS,
-} from '@/utils/constants/constants'
-import { KRC20MintEstimateResult, KRC20TokenRequest } from '@/utils/interfaces'
+import { setupKrc20Transaction, Token } from './KRC20TransactionSetup'
+import { KRC20_COMMIT_AMOUNT } from '@/utils/constants/constants'
+import { KRC20TokenRequest } from '@/utils/interfaces'
 import { calculateScriptExtraFee } from '@/wallet/krc20/calculateScriptExtraFee'
 import AccountAddresses from '@/wallet/account/AccountAddresses'
 
@@ -124,99 +118,4 @@ export async function submitKRC20Reveal(
   const [reveal1] = await create([], feeRate, sompiToKaspaString(scriptExtraFee), [input])
   const reveal2 = await sign(reveal1, [input])
   return await submitContextful(reveal2)
-}
-
-export async function estimateKRC20MintFees(
-  addresses: AccountAddresses,
-  context: UtxoContext,
-  ticker: string,
-  feeRate: number,
-  timesToMint = 1,
-): Promise<KRC20MintEstimateResult> {
-  const sender = addresses.receiveAddresses[0]
-  const mintSetup = setupKrc20Mint(sender, ticker)
-  const scriptAddress = mintSetup.scriptAddress.toString()
-
-  const mintSompi = BigInt(timesToMint) * SOMPI_PER_KAS
-  const serviceFee = mintSompi / 10n
-  const sompiToLoad = mintSompi + KRC20_MINT_EXTRA_KAS * SOMPI_PER_KAS
-
-  const commitSettings: IGeneratorSettingsObject = {
-    priorityEntries: [],
-    entries: context,
-    outputs: [
-      { address: scriptAddress, amount: sompiToLoad },
-      { address: KRC20_SERVICE_FEE_ADDRESS, amount: serviceFee },
-    ],
-    changeAddress: addresses.receiveAddresses[0],
-    feeRate,
-    priorityFee: 0n,
-  }
-
-  const commitResult = await estimateTransactions(commitSettings)
-  const totalFeeSompi = mintSompi + serviceFee + commitResult.fees
-
-  return {
-    totalFees: sompiToKaspaString(totalFeeSompi),
-    mintFees: sompiToKaspaString(mintSompi),
-    extraNetworkFees: sompiToKaspaString(commitResult.fees),
-    serviceFee: sompiToKaspaString(serviceFee),
-    commitTotal: sompiToKaspaString(commitResult.finalAmount!),
-  }
-}
-
-export async function doKRC20Mint(
-  submitKRC20Commit: Function,
-  submitKRC20MintReveal: Function,
-  waitForUTXO: Function,
-  addresses: AccountAddresses,
-  processor: UtxoProcessor,
-  ticker: string,
-  feeRate: number,
-  timesToMint = 1,
-) {
-  console.log('Mint started', `${ticker}. Minting ${timesToMint} time(s).`)
-
-  const sender = addresses.receiveAddresses[0]
-  const mintSetup = setupKrc20Mint(sender, ticker)
-  const script = mintSetup.script.toString()
-  const scriptAddress = mintSetup.scriptAddress.toString()
-
-  const mintSompi = BigInt(timesToMint) * SOMPI_PER_KAS
-  const serviceFee = mintSompi / 10n
-  const sompiToLoad = mintSompi + KRC20_MINT_EXTRA_KAS * SOMPI_PER_KAS
-
-  const mintContext = new UtxoContext({ processor })
-  mintContext.trackAddresses([mintSetup.scriptAddress])
-
-  const commit = await submitKRC20Commit(scriptAddress, feeRate, sompiToKaspaString(sompiToLoad), [
-    [KRC20_SERVICE_FEE_ADDRESS, sompiToKaspaString(serviceFee)],
-  ])
-
-  const commitId = commit[commit.length - 1]
-  await waitForUTXO(commitId)
-  let transactionIds = [commitId]
-
-  for (let i = 0; i < timesToMint; i++) {
-    console.log('Mint Reveal', `index ${i}`)
-    const isLast = i === timesToMint - 1
-    const reveal = await submitKRC20MintReveal(
-      mintContext,
-      transactionIds[i],
-      scriptAddress,
-      sender,
-      script,
-      '1',
-      !isLast,
-    )
-
-    const revealId = reveal[reveal.length - 1]
-    await waitForUTXO(revealId)
-    transactionIds.push(revealId)
-  }
-
-  mintContext.clear()
-  console.log('Mint complete', transactionIds)
-
-  return transactionIds
 }

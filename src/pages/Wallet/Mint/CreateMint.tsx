@@ -44,7 +44,7 @@ export default function CreateMint() {
 
   const handleNext = () => {
     if (isMintAmountValid && !error) {
-      navigate(`/mint/${token.tick}/network-fee`, {
+      navigate(`/mint/${token.tick}/review`, {
         state: {
           token,
           payAmount: mintAmount,
