@@ -39,7 +39,7 @@ const manifest: ManifestV3Export = {
     'https://*.kas.fyi/*',
     'https://api.kaspa.org/*',
     'https://*.kasplex.org/*',
-    'https://ghost-server-wpm2s.ondigitalocean.app/*'
+    'https://api.ghostwallet.org/*'
   ],
 }
 

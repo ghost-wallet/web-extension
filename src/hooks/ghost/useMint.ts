@@ -17,7 +17,7 @@ interface MintRequest {
  * @throws {Error} - Throws an error if the request fails.
  */
 export async function postMint(mintRequest: MintRequest): Promise<any> {
-  const response = await fetch('https://ghost-server-wpm2s.ondigitalocean.app/v1/krc20/mint/request', {
+  const response = await fetch('https://api.ghostwallet.org/v1/krc20/mint/request', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
