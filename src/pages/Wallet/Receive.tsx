@@ -38,7 +38,7 @@ export default function Receive() {
           </div>
 
           <h1 className="py-3 font-semibold text-base text-primarytext text-center">Your Kaspa Address</h1>
-          <div className="pb-2 w-full flex justify-center">
+          <div className="pb-2 px-4 w-full flex justify-center">
             <KaspaAddress address={receiveAddress} />
           </div>
 

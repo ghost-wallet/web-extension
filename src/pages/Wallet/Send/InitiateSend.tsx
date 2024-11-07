@@ -69,6 +69,7 @@ const InitiateSend: React.FC = () => {
               value={outputs[0][1]}
               onChange={(e) => handleAmountChange(e.target.value)}
               onMaxClick={handleMaxClick}
+              isKaspa={token.isKaspa}
             />
             <div className="w-full flex flex-wrap items-center justify-between text-lightmuted text-base pt-1 pb-4">
               <span className="whitespace-nowrap">{`≈ ${currencySymbol}${formattedCurrencyValue}`}</span>
