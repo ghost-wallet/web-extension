@@ -74,3 +74,15 @@ main {
     opacity: 1;
   }
 }
+
+/* Hide up/down arrows for number inputs in Chrome, Safari, Edge, and Opera */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide up/down arrows for number inputs in Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}

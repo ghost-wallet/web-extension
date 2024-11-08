@@ -1,5 +1,5 @@
 import { Status } from '../Wallet'
-import { KRC20MintEstimateResult, KRC20TokenRequest, UTXO } from '@/utils/interfaces'
+import { KRC20TokenRequest, UTXO } from '@/utils/interfaces'
 import { PriorityBuckets } from '../Node'
 
 export interface ResponseMappings {
@@ -26,8 +26,6 @@ export interface ResponseMappings {
   'account:getKRC20Info': KRC20TokenRequest
   'account:submitKRC20Transaction': [string, string]
   'account:estimateKRC20TransactionFee': string
-  'account:doKRC20Mint': string[]
-  'account:estimateKRC20MintFees': KRC20MintEstimateResult
   'provider:connect': void
   'provider:connection': string
   'provider:disconnect': void

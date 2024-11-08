@@ -24,16 +24,3 @@ export function setupKrc20Transaction(
 
   return { script, scriptAddress }
 }
-
-export function setupKrc20Mint(address: string, ticker: string, networkId = 'mainnet') {
-  const script = new ScriptBuilder()
-  const inscription = new KRC20Inscription('mint', {
-    tick: ticker,
-  })
-
-  inscription.write(script, XOnlyPublicKey.fromAddress(new Address(address!)).toString())
-
-  const scriptAddress = addressFromScriptPublicKey(script.createPayToScriptHashScript(), networkId!)!
-
-  return { script, scriptAddress }
-}

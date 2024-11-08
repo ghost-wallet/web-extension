@@ -4,7 +4,6 @@ import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/navigation/BottomNav'
 import ConfirmSendDetails from '@/pages/Wallet/Send/ConfirmSendDetails'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import SpinnerPage from '@/components/loaders/SpinnerPage'
 import { KRC20TokenRequest } from '@/utils/interfaces'
 import { useQueryClient } from '@tanstack/react-query'
 import useSettings from '@/hooks/contexts/useSettings'
@@ -77,26 +76,20 @@ const ConfirmSendKRC20: React.FC = () => {
     <>
       <TopNav />
       <AnimatedMain className="flex flex-col h-screen w-full fixed">
-        {loading ? (
-          <SpinnerPage displayText={`Transferring ${amount.toLocaleString()} ${token.tick}...`} />
-        ) : (
-          <ConfirmSendDetails
-            token={token}
-            recipient={recipient}
-            amount={amount}
-            fee={estimatedFee || 'Calculating...'}
-            network={settings.nodes[settings.selectedNode].address}
-            loading={loading}
-            error={error}
-          />
-        )}
+        <ConfirmSendDetails
+          token={token}
+          recipient={recipient}
+          amount={amount}
+          fee={estimatedFee || 'Calculating...'}
+          network={settings.nodes[settings.selectedNode].address}
+          loading={loading}
+          error={error}
+        />
       </AnimatedMain>
-      {!loading && (
-        <div className="bottom-20 left-0 right-0 px-4 fixed">
-          <NextButton onClick={handleConfirmClick} text={'Confirm Send'} />
-        </div>
-      )}
-      {!loading && <BottomNav />}
+      <div className="bottom-20 left-0 right-0 px-4 fixed">
+        <NextButton onClick={handleConfirmClick} text={`Confirm Send`} loading={loading} />
+      </div>
+      <BottomNav />
     </>
   )
 }

@@ -7,7 +7,6 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 import useSettings from '@/hooks/contexts/useSettings'
 import TopNav from '@/components/navigation/TopNav'
 import NextButton from '@/components/buttons/NextButton'
-import SpinnerPage from '@/components/loaders/SpinnerPage'
 import ErrorMessages from '@/utils/constants/errorMessages'
 
 const ConfirmSendKaspa: React.FC = () => {
@@ -51,28 +50,20 @@ const ConfirmSendKaspa: React.FC = () => {
     <>
       <TopNav />
       <AnimatedMain className="flex flex-col h-screen w-full fixed">
-        {loading ? (
-          <div className="flex justify-center items-center h-full">
-            <SpinnerPage />
-          </div>
-        ) : (
-          <ConfirmSendDetails
-            token={token}
-            recipient={recipient}
-            amount={amount}
-            fee={fee}
-            network={settings.nodes[settings.selectedNode].address}
-            loading={loading}
-            error={error}
-          />
-        )}
+        <ConfirmSendDetails
+          token={token}
+          recipient={recipient}
+          amount={amount}
+          fee={fee}
+          network={settings.nodes[settings.selectedNode].address}
+          loading={loading}
+          error={error}
+        />
       </AnimatedMain>
-      {!loading && (
-        <div className="bottom-20 left-0 right-0 px-4 fixed">
-          <NextButton onClick={handleConfirmClick} text={'Confirm Send'} />
-        </div>
-      )}
-      {!loading && <BottomNav />}
+      <div className="bottom-20 left-0 right-0 px-4 fixed">
+        <NextButton onClick={handleConfirmClick} text="Confirm Send" loading={loading} />
+      </div>
+      <BottomNav />
     </>
   )
 }

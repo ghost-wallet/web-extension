@@ -26,7 +26,7 @@ const KaspaAddress: React.FC<KaspaAddressProps> = ({ address }) => {
 
   return (
     <div
-      className="relative flex items-center justify-center w-full max-w-[90%] bg-bgdarker text-primarytext text-base p-4 border border-slightmuted rounded cursor-pointer"
+      className="relative flex items-center justify-center w-full bg-bgdarker text-primarytext text-base p-4 border border-slightmuted rounded cursor-pointer"
       style={{ height: fixedHeight !== null ? `${fixedHeight + 16}px` : 'auto' }}
       onClick={handleCopy}
     >

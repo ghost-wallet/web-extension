@@ -29,8 +29,6 @@ import {
   getKRC20Info,
   submitKRC20Commit,
   submitKRC20Reveal,
-  estimateKRC20MintFees,
-  doKRC20Mint,
 } from '@/wallet/krc20/KRC20TransactionHandlers'
 
 export default class AccountTransactions extends EventEmitter {
@@ -214,83 +212,6 @@ export default class AccountTransactions extends EventEmitter {
     return [commitId, revealId]
   }
 
-  async createForKRC20Mint(
-    context: UtxoContext,
-    fee: string,
-    customs?: CustomInput[],
-    changeAddress?: string,
-  ): Promise<[string[], string]> {
-    let priorityEntries: IUtxoEntry[] = []
-
-    if (customs && customs.length > 0) {
-      priorityEntries = await this.findCustomEntries(customs)
-    }
-
-    const feeSompi = kaspaToSompi(fee)!
-
-    const estimatePreparedTxn: IGeneratorSettingsObject = {
-      priorityEntries,
-      entries: context,
-      outputs: [],
-      changeAddress: changeAddress ?? this.addresses.receiveAddresses[0],
-      priorityFee: feeSompi,
-      feeRate: 1,
-    }
-
-    const estimateSummary = await estimateTransactions(estimatePreparedTxn)
-    const newPriorityFeeSompi = feeSompi - estimateSummary.mass
-
-    const preparedTxn: IGeneratorSettingsObject = {
-      priorityEntries,
-      entries: context,
-      outputs: [],
-      changeAddress: changeAddress ?? this.addresses.receiveAddresses[0],
-      priorityFee: newPriorityFeeSompi,
-      feeRate: 1,
-    }
-
-    const { transactions, summary } = await createTransactions(preparedTxn)
-
-    for (const transaction of transactions) {
-      this.transactions.set(transaction.id, transaction)
-    }
-
-    const transactionStrings = transactions.map((transaction) => transaction.serializeToSafeJSON())
-    return [transactionStrings, sompiToKaspaString(summary.fees)]
-  }
-
-  async submitKRC20MintReveal(
-    context: UtxoContext,
-    commitId: string,
-    scriptAddress: string,
-    sender: string,
-    script: string,
-    fee: string,
-    backToScript: boolean,
-  ) {
-    const input = {
-      address: scriptAddress,
-      outpoint: commitId,
-      index: 0,
-      signer: sender,
-      script: script,
-    }
-
-    const [reveal1] = await this.createForKRC20Mint(
-      context,
-      fee,
-      [input],
-      backToScript ? scriptAddress : undefined,
-    )
-
-    const reveal2 = await this.sign(reveal1, [input])
-    return await this.submitContextful(reveal2)
-  }
-
-  async estimateKRC20MintFees(ticker: string, feeRate: number, timesToMint = 1) {
-    return await estimateKRC20MintFees(this.addresses, this.context, ticker, feeRate, timesToMint)
-  }
-
   async estimateKRC20TransactionFee(info: KRC20TokenRequest, feeRate: number) {
     return await estimateKRC20TransactionFee(this.context, this.addresses, info, feeRate)
   }
@@ -325,19 +246,6 @@ export default class AccountTransactions extends EventEmitter {
       this.context,
       info,
       feeRate,
-    )
-  }
-
-  async doKRC20Mint(ticker: string, feeRate: number, timesToMint = 1) {
-    return await doKRC20Mint(
-      this.submitKRC20Commit.bind(this),
-      this.submitKRC20MintReveal.bind(this),
-      this.waitForUTXO.bind(this),
-      this.addresses,
-      this.processor,
-      ticker,
-      feeRate,
-      timesToMint,
     )
   }
 

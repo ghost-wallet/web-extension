@@ -119,14 +119,6 @@ export interface KRC20TokenRequest {
   script: string
 }
 
-export interface KRC20MintEstimateResult {
-  totalFees: string
-  mintFees: string
-  extraNetworkFees: string
-  serviceFee: string
-  commitTotal: string
-}
-
 /**
  * KRC-20 token response from the Kasplex Indexer API. Official documentation:
  * https://docs.kasplex.org/tools-and-reference/kasplex-indexer-api/krc-20/get-krc-20-info
