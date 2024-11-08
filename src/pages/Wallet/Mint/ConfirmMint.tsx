@@ -76,7 +76,7 @@ export default function ConfirmMint() {
       <TopNav />
       <AnimatedMain className="flex flex-col h-screen fixed w-full">
         <Header title="Confirm Mint" showBackButton={true} />
-        <div className="flex flex-col px-4">
+        <div className="flex flex-col px-4 pb-2">
           <CryptoImage ticker={token.tick} size="large" />
           <div className="w-full space-y-1 pt-2">
             <div className="flex justify-between">
