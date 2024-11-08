@@ -80,7 +80,7 @@ export default function CreateMint() {
         message={error}
         onClose={() => setShowDialog(false)}
         isOpen={showDialog}
-        title="Error"
+        title="Cannot mint"
       />
     </>
   )

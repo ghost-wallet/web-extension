@@ -18,7 +18,7 @@ const MintSummary: React.FC<MintSummaryProps> = ({ totalMintCost, mintAmount, to
     <div className="w-full space-y-2 pt-2">
       <div className="flex flex-col justify-between">
         <div className="flex justify-between">
-          <span className="text-mutedtext text-lg">Mint cost</span>
+          <span className="text-mutedtext text-lg">Pay amount</span>
           <span className="text-primarytext text-lg text-right">
             {mintAmount?.toLocaleString() || '0'} KAS
           </span>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Tabs } from '../CreateWallet'
-import ghostIcon from '../../../assets/ghost.svg'
 import AnimatedMain from '@/components/AnimatedMain'
+import AnimatedGhostLogo from '@/components/AnimatedGhostLogo'
+import Checkbox from '@/components/Checkbox'
 
 export default function Landing({
   forward,
@@ -14,18 +15,14 @@ export default function Landing({
     <AnimatedMain className="pt-10 px-4 overflow-y-scroll h-full">
       <h1 className="text-primarytext text-4xl font-rubik font-bold text-center">GHOST</h1>
       <p className="text-mutedtext text-base text-center mt-2">Secure Kaspa wallet for KRC20 tokens.</p>
-      <div className="flex justify-center mt-7 mb-8">
-        <img className="w-[7.7rem] h-[7.7rem]" src={ghostIcon} alt="logo" />
+      <div className="flex justify-center mt-20 mb-8">
+        <AnimatedGhostLogo />
       </div>
       <div className="flex gap-3 justify-center items-center mb-4">
-        <input
-          className="cursor-pointer transform scale-150"
-          onClick={() => setEnable(!enable)}
-          type="checkbox"
-        />
+        <Checkbox checked={enable} onChange={setEnable} />
         <p className="text-primarytext text-base">
           I agree to Ghost’s{' '}
-          <span className="text-primary text-base font-semibold">
+          <span className="text-primary text-base font-semibold hover:underline">
             <a href="https://www.ghostapp.org/terms-of-service" target="_blank" rel="noopener noreferrer">
               Terms of Service
             </a>

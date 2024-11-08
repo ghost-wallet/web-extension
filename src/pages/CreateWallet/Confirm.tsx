@@ -9,6 +9,7 @@ import ErrorMessages from '@/utils/constants/errorMessages'
 export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; onConfirmed: () => void }) {
   const [userInputs, setUserInputs] = useState<string[]>(Array(12).fill(''))
   const [error, setError] = useState<string>('')
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const initialWords = mnemonic
@@ -17,7 +18,7 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
     setUserInputs(initialWords)
   }, [mnemonic])
 
-  const handleValidateEntries = () => {
+  const handleValidateEntries = async () => {
     const mnemonicWords = mnemonic.split(' ')
     const isEntryBlank = userInputs[2] === '' || userInputs[4] === '' || userInputs[7] === ''
     const isEntryIncorrect =
@@ -29,7 +30,12 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
       setError(ErrorMessages.MNEMONIC.INCORRECT_ENTRIES)
     } else {
       setError('')
-      onConfirmed()
+      setIsLoading(true)
+      try {
+        await onConfirmed()
+      } finally {
+        setIsLoading(false)
+      }
     }
   }
 
@@ -58,9 +64,9 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
   }, [handleValidateEntries])
 
   return (
-    <AnimatedMain className="flex flex-col h-screen">
+    <AnimatedMain className="flex flex-col h-screen pt-5">
       <Header title="Confirm Secret Phrase" showBackButton={false} />
-      <div className="px-4">
+      <div className="px-4 text-center flex flex-col flex-grow justify-center ">
         <p className="text-mutedtext text-lg text-center mb-6">Enter the 3rd, 5th, and 8th missing words.</p>
         <RecoveryPhraseGrid
           values={userInputs}
@@ -76,17 +82,15 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
         />
 
         <ErrorMessage message={error} />
-      </div>
-
-      <div className="w-full px-4 pb-10">
         <button
           onClick={handleClearClick}
-          className="mb-4 w-full h-[52px] text-base font-semibold text-primary hover:underline cursor-pointer"
+          className="py-4 text-base font-semibold text-primary hover:underline cursor-pointer"
         >
           Clear Entries
         </button>
-
-        <NextButton onClick={handleValidateEntries} />
+      </div>
+      <div className="w-full px-4 pb-10">
+        <NextButton onClick={handleValidateEntries} loading={isLoading} buttonEnabled={!isLoading} />
       </div>
     </AnimatedMain>
   )

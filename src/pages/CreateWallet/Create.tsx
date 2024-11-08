@@ -4,6 +4,7 @@ import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import NextButton from '@/components/buttons/NextButton'
 import { WarningMessages } from '@/utils/constants/warningMessages'
+import Checkbox from '@/components/Checkbox'
 
 export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSaved: () => void }) {
   const [isSeedVisible, setIsSeedVisible] = useState(false)
@@ -14,26 +15,23 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
     setIsSeedVisible(!isSeedVisible)
   }
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsConfirmed(e.target.checked)
-  }
-
   const handleCopyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(mnemonic)
       setIsCopied(true)
+      setTimeout(() => {
+        setIsCopied(false)
+      }, 2000)
     } catch (err) {
       console.error('Failed to copy seed phrase:', err)
     }
   }
 
   return (
-    <AnimatedMain className="flex flex-col h-screen">
+    <AnimatedMain className="flex flex-col h-screen pt-5">
       <Header title="Secret Phrase" showBackButton={false} />
-
       <div className="flex flex-col flex-grow justify-center px-4 pb-6 space-y-4">
-        <p className="text-warning text-base text-justify pt-4 mb-4">{WarningMessages.NEW_SEED_PHRASE}</p>
-
+        <p className="text-warning text-base text-justify pt-4">{WarningMessages.NEW_SEED_PHRASE}</p>
         <div
           className="bg-bgdarker border border-muted rounded-lg p-4 mb-4 relative text-primarytext text-sm cursor-pointer"
           onClick={toggleSeedVisibility}
@@ -43,7 +41,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
               value={mnemonic}
               readOnly
               rows={3}
-              className={`w-full bg-transparent border-none focus:outline-none resize-none cursor-pointer ${
+              className={`w-full bg-transparent border-none focus:outline-none resize-none cursor-pointer text-base ${
                 isSeedVisible ? '' : 'blur-sm'
               }`}
             />
@@ -67,7 +65,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
           onClick={handleCopyToClipboard}
           className="flex items-center text-mutedtext text-base mb-4 cursor-pointer"
         >
-          <span className="mr-2">
+          <span className="mr-2 -ml-0.5">
             {isCopied ? (
               <DocumentCheckIcon className="h-7 w-7 text-success" />
             ) : (
@@ -77,14 +75,8 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
           {isCopied ? 'Copied' : 'Copy to clipboard'}
         </button>
 
-        <div className="flex gap-3 justify-start items-center p-2 mt-8 mb-8">
-          <input
-            type="checkbox"
-            id="confirmation"
-            className="cursor-pointer transform scale-150"
-            checked={isConfirmed}
-            onChange={handleCheckboxChange}
-          />
+        <div className="flex gap-3 justify-start items-center mt-8 mb-8">
+          <Checkbox checked={isConfirmed} onChange={setIsConfirmed} />
           <label htmlFor="confirmation" className="text-mutedtext text-base">
             I saved my secret recovery phrase.
           </label>

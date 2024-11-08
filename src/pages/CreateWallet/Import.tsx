@@ -13,6 +13,7 @@ if (typeof globalThis.Buffer === 'undefined') {
 export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnemonics: string) => void }) {
   const [userInputs, setUserInputs] = useState<string[]>(Array(12).fill(''))
   const [isValid, setIsValid] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const validateSeedPhrase = () => {
@@ -46,8 +47,17 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
     }
   }
 
+  const handleSubmit = async () => {
+    setIsLoading(true)
+    try {
+      await onMnemonicsSubmit(userInputs.join(' '))
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
-    <AnimatedMain className="flex flex-col h-screen">
+    <AnimatedMain className="flex flex-col h-screen pt-5">
       <Header title="Import" showBackButton={false} />
       <div className="flex flex-col items-center flex-grow justify-center px-4 pb-6">
         <p className="text-mutedtext text-lg text-center mb-4">
@@ -69,9 +79,8 @@ export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnem
         />
       </div>
 
-      {/* TODO: make button always enabled -> implement popup message dialog if seed phrase invalid */}
       <div className="w-full px-4 pb-10">
-        <NextButton onClick={() => onMnemonicsSubmit(userInputs.join(' '))} buttonEnabled={isValid} />
+        <NextButton onClick={handleSubmit} buttonEnabled={isValid && !isLoading} loading={isLoading} />
       </div>
     </AnimatedMain>
   )

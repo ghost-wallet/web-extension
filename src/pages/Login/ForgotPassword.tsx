@@ -7,7 +7,7 @@ import { WarningMessages } from '@/utils/constants/warningMessages'
 const ForgotPassword: React.FC = () => {
   return (
     <>
-      <AnimatedMain>
+      <AnimatedMain className="pt-5">
         <Header title="Forgot Password" showBackButton={true} />
         <div className="px-6">
           <p className="text-warning text-base text-justify pt-6 pb-32">{WarningMessages.FORGOT_PASSWORD}</p>

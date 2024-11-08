@@ -69,7 +69,7 @@ const ErrorMessages = {
         mintAmount + 25 + 0.1 * mintAmount
       } KAS in your wallet, but you have ${kaspaBalance.toFixed(
         2,
-      )}. Minting requires a minimum of 25 KAS, 10% of the mint cost to cover fees, and 1 KAS per mint.`,
+      )}. <br /> <br /> Minting requires that you have a minimum of 25 KAS and an extra 10% of the pay amount to cover network fees.`,
   },
 
   CHAINGE: {

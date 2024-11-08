@@ -7,7 +7,6 @@ import Import from '@/pages/CreateWallet/Import'
 import Confirm from '@/pages/CreateWallet/Confirm'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import AnimatedMain from '@/components/AnimatedMain'
-import SpinnerPage from '@/components/loaders/SpinnerPage'
 
 export enum Tabs {
   Landing,
@@ -25,7 +24,6 @@ export default function CreateWallet() {
   const [password, setPassword] = useState('')
   const [mnemonic, setMnemonic] = useState('')
   const [flowType, setFlowType] = useState<'create' | 'import'>('create')
-  const [loading, setLoading] = useState(false)
 
   const handleForward = (nextTab: Tabs, nextFlowType?: 'create' | 'import') => {
     if (nextFlowType) setFlowType(nextFlowType)
@@ -45,13 +43,10 @@ export default function CreateWallet() {
 
   const handleMnemonicSubmit = async (mnemonic: string) => {
     try {
-      setLoading(true)
       await request('wallet:import', [mnemonic, password])
       navigate('/wallet')
     } catch (error) {
       console.error('Error setting up wallet:', error)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -61,9 +56,7 @@ export default function CreateWallet() {
 
   return (
     <AnimatedMain>
-      {loading ? (
-        <SpinnerPage displayText="Initializing wallet..." />
-      ) : (
+      {
         {
           [Tabs.Landing]: <Landing forward={handleForward} />,
           [Tabs.Password]: <Password onPasswordSet={handlePasswordSet} />,
@@ -78,7 +71,7 @@ export default function CreateWallet() {
             />
           ),
         }[tab]
-      )}
+      }
     </AnimatedMain>
   )
 }

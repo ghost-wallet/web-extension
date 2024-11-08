@@ -51,7 +51,7 @@ export default function Password({ onPasswordSet }: PasswordProps) {
   }
 
   return (
-    <AnimatedMain showConnectingMessage={false} className="flex flex-col h-screen">
+    <AnimatedMain showConnectingMessage={false} className="flex flex-col h-screen pt-5">
       <Header title="Create Password" showBackButton={true} />
 
       <div className="flex flex-col items-center flex-grow justify-center px-4 space-y-4">

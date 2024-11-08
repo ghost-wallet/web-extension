@@ -10,6 +10,7 @@ export const WarningMessages = {
     ' cannot be undone and will erase all your data.',
 
   NEW_SEED_PHRASE:
-    'This secret recovery phrase is the only way to restore your wallet. Do not share it with anyone. Verify\n' +
-    ' that the url you got your wallet from is ghostwallet.org. Beware of fake customer support scams.',
+    'This secret recovery phrase is the only way to restore your wallet. Write it down and save it in a secure location. ' +
+    'Do not share it with anyone. Verify\n' +
+    ' that the url you got your wallet from was ghostwallet.org. Beware of fake customer support scams.',
 }

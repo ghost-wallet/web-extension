@@ -20,22 +20,18 @@ interface MintRequest {
  */
 export async function postMint(mintRequest: MintRequest): Promise<any> {
   try {
-    const response = await axios.post(
-      'https://api.ghostwallet.org/v1/krc20/mint/request',
-      mintRequest,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
+    const response = await axios.post('https://api.ghostwallet.org/v1/krc20/mint/request', mintRequest, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       console.error('Mint API error:', error.response)
       const statusCode = error.response.status
       if (statusCode >= 500 && statusCode < 600) {
-        throw new Error("Ghost server unavailable. Try again later or mint a different token.")
+        throw new Error('Ghost server unavailable. Try again later or mint a different token.')
       } else {
         const errorMessage = `${statusCode} ${error.response.statusText}`
         throw new Error(errorMessage)

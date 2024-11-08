@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import ErrorMessages from '@/utils/constants/errorMessages'
+import Checkbox from '@/components/Checkbox'
 
 const ResetWalletButton: React.FC = () => {
   const { request } = useKaspa()
@@ -22,21 +23,10 @@ const ResetWalletButton: React.FC = () => {
     }
   }
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsChecked(e.target.checked)
-    setError('')
-  }
-
   return (
     <div>
       <div className="flex gap-3 justify-start items-center mt-16 mb-8">
-        <input
-          type="checkbox"
-          id="reset-confirmation"
-          className="cursor-pointer transform scale-150"
-          checked={isChecked}
-          onChange={handleCheckboxChange}
-        />
+        <Checkbox checked={isChecked} onChange={setIsChecked} />
         <label htmlFor="reset-confirmation" className="text-mutedtext text-base">
           I have direct access to my 12-word secret recovery phrase.
         </label>
