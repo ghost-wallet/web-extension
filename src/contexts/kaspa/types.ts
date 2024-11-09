@@ -3,9 +3,11 @@ import { ResponseMappings } from '@/wallet/messaging/ResponseMappings'
 import { Status } from '@/wallet/Wallet'
 import { UTXO } from '@/utils/interfaces'
 
+//TODO: connected field should not have network strings, but something is setting those to become strings
+// it should only be true or false
 export interface IKaspa {
   status: Status
-  connected: boolean
+  connected: boolean | 'mainnet' | 'testnet-10' | 'testnet-11'
   addresses: string[]
   balance: number
   utxos: UTXO[]

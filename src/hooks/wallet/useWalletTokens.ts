@@ -14,11 +14,22 @@ export function useWalletTokens() {
   const kaspaPrice = useKaspaPrice(settings.currency)
   const ksprPricesQuery = useKsprPrices()
   const kasPrice = kaspaPrice.data ?? 0
+  const selectedNetwork = settings.nodes[settings.selectedNode].address
+
+  const isQueryEnabled = useMemo(() => {
+    if (!(kaspa.addresses.length > 0)) return false
+    const address = kaspa.addresses[0]
+    if (kaspa.connected && selectedNetwork === 'mainnet' && address.startsWith('kaspa:')) {
+      return true
+    }
+    return kaspa.connected && selectedNetwork === 'testnet-10' && address.startsWith('kaspatest:')
+  }, [kaspa.addresses, kaspa.connected, settings.selectedNode])
 
   const krc20TokensQuery = useQuery({
     queryKey: ['krc20Tokens', { selectedNode: settings.selectedNode, address: kaspa.addresses[0] }],
     queryFn: async () => fetchKrc20AddressTokenList(settings.selectedNode, kaspa.addresses[0]),
-    staleTime: 3000, // 3 seconds
+    enabled: isQueryEnabled,
+    staleTime: 3000,
     refetchInterval: 3000,
   })
 

@@ -13,11 +13,13 @@ function krc20TokenListQueryFn({ queryKey }: { queryKey: [string, FetchKRC20Toke
 
 export const useKrc20TokenList = () => {
   const { settings } = useSettings()
+  const selectedNetwork = settings.nodes[settings.selectedNode].address
 
   return useQuery({
     queryKey: ['krc20TokenListQuery', { selectedNode: settings.selectedNode }],
     queryFn: krc20TokenListQueryFn,
     staleTime: 300_000, // 5 minutes
     refetchInterval: 300_000,
+    enabled: selectedNetwork === 'mainnet' || selectedNetwork === 'testnet-10',
   })
 }

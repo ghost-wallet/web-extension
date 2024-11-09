@@ -27,9 +27,9 @@ export default function Mint() {
   const [loading, setLoading] = useState<boolean>(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
   const navigate = useNavigate()
-
-  const ksprPricesQuery = useKsprPrices()
   const { settings } = useSettings()
+  const selectedNetwork = settings.nodes[settings.selectedNode].address
+  const ksprPricesQuery = useKsprPrices()
   const kaspaPrice = useKaspaPrice(settings.currency)
   const kasPrice = kaspaPrice.data ?? 0
   const krc20TokenListQuery = useKrc20TokenList()
@@ -83,11 +83,18 @@ export default function Mint() {
       <AnimatedMain className={`flex flex-col h-screen w-full ${showSuggestions ? '' : 'fixed'}`}>
         <Header title="Mint" showBackButton={true} />
         <div className="flex flex-col flex-grow px-4">
-          <SearchBar
-            onSearch={handleSearch}
-            onToggleSuggestions={setShowSuggestions}
-            krc20TokenList={tokenList}
-          />
+          {selectedNetwork === 'testnet-11' && (
+            <p className="text-warning text-center text-base mb-4">
+              KRC20 tokens cannot be minted on {selectedNetwork}. Try a different network.
+            </p>
+          )}
+          {selectedNetwork !== 'testnet-11' && (
+            <SearchBar
+              onSearch={handleSearch}
+              onToggleSuggestions={setShowSuggestions}
+              krc20TokenList={tokenList}
+            />
+          )}
           {loading ? (
             <div className="mt-10">
               <Spinner />
@@ -98,7 +105,6 @@ export default function Mint() {
           {token && <TokenDetails token={token} />}
         </div>
       </AnimatedMain>
-      {/*TODO: fix bug - show button even while suggestions are showing*/}
       {token && (
         <div className={`bottom-20 left-0 right-0 px-4 ${showSuggestions ? '' : 'fixed'} z-0`}>
           <NextButton text={canMintLabel} buttonEnabled={isMintable} onClick={handleContinue} />
