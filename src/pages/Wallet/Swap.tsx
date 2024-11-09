@@ -14,6 +14,7 @@ import TokenSwitch from '@/pages/Wallet/Swap/TokenSwitch'
 import SwapTokenSelect from '@/pages/Wallet/Swap/SwapTokenSelect'
 import { AnimatePresence } from 'framer-motion'
 import ErrorMessages from '@/utils/constants/errorMessages'
+import SwapLoading from '@/pages/Wallet/Swap/SwapLoading'
 
 export default function Swap() {
   const [chaingeTokens, setChaingeTokens] = useState<ChaingeToken[]>([])
@@ -76,7 +77,6 @@ export default function Swap() {
     closeReceiveTokenSelect()
   }
 
-  // TODO load UI faster (without waiting for API calls)
   return (
     <>
       <TopNav />
@@ -84,21 +84,25 @@ export default function Swap() {
         <Header title="Swap" showBackButton={true} />
         <div className="flex flex-col h-full justify-between p-4">
           <div>
-            {payToken && (
-              <YouPaySection
-                payAmount={payAmount}
-                payToken={payToken}
-                openTokenSelect={openPayTokenSelect}
-                onAmountChange={handlePayAmountChange}
-                tokens={tokens}
-              />
+            {loading ? (
+              <SwapLoading />
+            ) : (
+              <>
+                <YouPaySection
+                  payAmount={payAmount}
+                  payToken={payToken}
+                  openTokenSelect={openPayTokenSelect}
+                  onAmountChange={handlePayAmountChange}
+                  tokens={tokens}
+                />
+                <TokenSwitch onSwitch={handleSwitch} />
+                <YouReceiveSection
+                  receiveAmount={receiveAmount}
+                  receiveToken={receiveToken}
+                  openTokenSelect={openReceiveTokenSelect}
+                />
+              </>
             )}
-            <TokenSwitch onSwitch={handleSwitch} />
-            <YouReceiveSection
-              receiveAmount={receiveAmount}
-              receiveToken={receiveToken}
-              openTokenSelect={openReceiveTokenSelect}
-            />
           </div>
         </div>
       </AnimatedMain>
@@ -111,7 +115,7 @@ export default function Swap() {
       <AnimatePresence>
         {isPayTokenSelectOpen && (
           <SwapTokenSelect
-            tokens={chaingeTokens.filter((chaingeToken) => chaingeToken.symbol !== receiveToken?.symbol)} // Exclude receiveToken
+            tokens={chaingeTokens.filter((chaingeToken) => chaingeToken.symbol !== receiveToken?.symbol)}
             onSelectToken={selectToken}
             onClose={closePayTokenSelect}
             loading={loading}
@@ -123,7 +127,7 @@ export default function Swap() {
       <AnimatePresence>
         {isReceiveTokenSelectOpen && (
           <SwapTokenSelect
-            tokens={chaingeTokens.filter((chaingeToken) => chaingeToken.symbol !== payToken?.symbol)} // Exclude payToken
+            tokens={chaingeTokens.filter((chaingeToken) => chaingeToken.symbol !== payToken?.symbol)}
             onSelectToken={selectReceiveToken}
             onClose={closeReceiveTokenSelect}
             loading={loading}
