@@ -9,7 +9,7 @@ const KaspaTxnHistoryTestnet: React.FC = () => {
   const address = kaspa.addresses[0]
 
   if (!address) {
-    return <p className="text-mutedtext">No address available</p>
+    return <p className="text-mutedtext text-center text-base">No address available</p>
   }
 
   let explorerUrl = ''

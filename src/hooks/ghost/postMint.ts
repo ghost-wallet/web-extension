@@ -20,7 +20,10 @@ interface MintRequest {
  */
 export async function postMint(mintRequest: MintRequest): Promise<any> {
   try {
-    const response = await axios.post('https://api.ghostwallet.org/v1/krc20/mint/request', mintRequest, {
+    const url = 'http://localhost:3000/v1/krc20/mint/request'
+    console.log('posting mint to url:', url)
+
+    const response = await axios.post(url, mintRequest, {
       headers: {
         'Content-Type': 'application/json',
       },

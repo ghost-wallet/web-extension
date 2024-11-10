@@ -82,7 +82,9 @@ const NetworkFeeSelect: React.FC = () => {
             onFeeTypeClick={handleFeeTypeClick}
             isButtonEnabled={true}
           />
-          <ErrorMessage message={recipientError || amountError || error || ''} />
+          <div className="p-4">
+            <ErrorMessage message={recipientError || amountError || error || ''} />
+          </div>
         </div>
       </AnimatedMain>
       <div className="bottom-20 left-0 right-0 px-4 fixed">

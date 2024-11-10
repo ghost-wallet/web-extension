@@ -41,6 +41,7 @@ const manifest: ManifestV3Export = {
     'https://*.kasplex.org/*',
     'https://api.ghostwallet.org/*',
     'https://*.kaspa.blue/*',
+    'http://localhost:3000/*',
   ],
 }
 

@@ -9,7 +9,7 @@ import CryptoImage from '@/components/CryptoImage'
 import NextButton from '@/components/buttons/NextButton'
 import TotalCostToMint from '@/pages/Wallet/Mint/TotalCostToMint'
 import TopNav from '@/components/navigation/TopNav'
-import { postMint } from '@/hooks/ghost/useMint'
+import { postMint } from '@/hooks/ghost/postMint'
 import ErrorMessages from '@/utils/constants/errorMessages'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 

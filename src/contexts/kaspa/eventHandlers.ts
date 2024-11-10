@@ -33,7 +33,6 @@ export const handleAccountBalanceEvent = async (
 export const handleAccountAddressesEvent = async (dispatch: Dispatch<Action<any>>, request: any) => {
   try {
     const addresses = await request('account:addresses', [])
-    console.log('eventHandlers handleAccountAddressesEvent addresses', addresses)
     dispatch({ type: 'addresses', payload: addresses })
   } catch (error) {
     console.error('[KaspaContextProvider] Error fetching addresses:', error)
