@@ -139,7 +139,7 @@ export interface KRC20TokenResponse {
   holderTotal: number
   transferTotal: number
   mintTotal: number
-  floorPrice: number
+  floorPrice?: number
 }
 
 /**
