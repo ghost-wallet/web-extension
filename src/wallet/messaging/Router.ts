@@ -48,11 +48,11 @@ export default class Router {
       'account:submitKaspaTransaction': (transactions) =>
         account.transactions.submitKaspaTransaction(transactions),
       'account:getKRC20Info': (recipient, token, amount) =>
-        account.transactions.getKRC20Info(recipient, token, amount),
+        account.krc20Transactions.getKRC20Info(recipient, token, amount),
       'account:submitKRC20Transaction': (info, feeRate) =>
-        account.transactions.submitKRC20Transaction(info, feeRate),
+        account.krc20Transactions.submitKRC20Transaction(info, feeRate),
       'account:estimateKRC20TransactionFee': (info, feeRate) =>
-        account.transactions.estimateKRC20TransactionFee(info, feeRate),
+        account.krc20Transactions.estimateKRC20TransactionFee(info, feeRate),
       'provider:connect': (url) => provider.connect(url),
       'provider:connection': () => provider.connectedURL,
       'provider:disconnect': () => provider.disconnect(),

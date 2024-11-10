@@ -1,6 +1,6 @@
 import { Status } from '../Wallet'
 import { CustomInput, KRC20TokenRequest } from '@/utils/interfaces'
-import { Token } from '@/wallet/krc20/KRC20TransactionSetup'
+import { Token } from '@/wallet/krc20/KRC20Transactions'
 
 export interface RequestMappings {
   'wallet:status': []

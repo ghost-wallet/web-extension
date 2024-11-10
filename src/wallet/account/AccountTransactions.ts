@@ -21,15 +21,10 @@ import AccountAddresses from './AccountAddresses'
 import EventEmitter from 'events'
 import KeyManager from '@/wallet/account/KeyManager'
 import Account from '@/wallet/Account'
-import { Token } from '@/wallet/krc20/KRC20TransactionSetup'
+import { Token } from '@/wallet/krc20/KRC20Transactions'
 import { CustomInput, CustomSignature, KRC20TokenRequest } from '@/utils/interfaces'
 import { KRC20_COMMIT_AMOUNT } from '@/utils/constants/constants'
-import {
-  estimateKRC20TransactionFee,
-  getKRC20Info,
-  submitKRC20Commit,
-  submitKRC20Reveal,
-} from '@/wallet/krc20/KRC20TransactionHandlers'
+
 
 export default class AccountTransactions extends EventEmitter {
   kaspa: RpcClient
@@ -196,73 +191,7 @@ export default class AccountTransactions extends EventEmitter {
     return await this.submitContextful(signed)
   }
 
-  async submitKRC20Transaction(info: KRC20TokenRequest, feeRate: number) {
-    const transactionContext = new UtxoContext({ processor: this.processor })
-    transactionContext.trackAddresses([info.scriptAddress])
-
-    const commit = await this.submitKRC20Commit(info.scriptAddress, feeRate)
-    const commitId = commit[commit.length - 1]
-
-    await this.waitForUTXO(commitId)
-
-    const reveal = await this.submitKRC20Reveal(commitId, info, feeRate)
-    const revealId = reveal[reveal.length - 1]
-
-    transactionContext.clear()
-    return [commitId, revealId]
-  }
-
-  async estimateKRC20TransactionFee(info: KRC20TokenRequest, feeRate: number) {
-    return await estimateKRC20TransactionFee(this.context, this.addresses, info, feeRate)
-  }
-
-  async getKRC20Info(recipient: string, token: Token, amount: string): Promise<KRC20TokenRequest> {
-    return await getKRC20Info(this.addresses, recipient, token, amount)
-  }
-
-  async submitKRC20Commit(
-    scriptAddress: string,
-    feeRate: number,
-    amount: string = KRC20_COMMIT_AMOUNT,
-    additionalOutputs: [string, string][] = [],
-  ) {
-    return await submitKRC20Commit(
-      this.create.bind(this),
-      this.sign.bind(this),
-      this.submitContextful.bind(this),
-      scriptAddress,
-      feeRate,
-      amount,
-      additionalOutputs,
-    )
-  }
-
-  async submitKRC20Reveal(commitId: string, info: KRC20TokenRequest, feeRate: number) {
-    return await submitKRC20Reveal(
-      this.create.bind(this),
-      this.sign.bind(this),
-      this.submitContextful.bind(this),
-      commitId,
-      this.context,
-      info,
-      feeRate,
-    )
-  }
-
-  async waitForUTXO(transactionID: string) {
-    return new Promise<void>((resolve) => {
-      const listener = (event: UtxoProcessorEvent<'maturity'>) => {
-        console.log(event)
-
-        if (event.data.id.toString() === transactionID) {
-          // i think the types for the callback are wrong?
-          this.processor.removeEventListener('maturity', listener as UtxoProcessorNotificationCallback)
-          resolve()
-        }
-      }
-      this.processor.addEventListener('maturity', listener)
-    })
-  }
+  
 
   reset() {
     delete this.encryptedKey

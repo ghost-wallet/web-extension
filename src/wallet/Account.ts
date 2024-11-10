@@ -4,12 +4,14 @@ import type Node from './Node'
 import AccountAddresses from './account/AccountAddresses'
 import SessionStorage from '@/storage/SessionStorage'
 import AccountTransactions from './account/AccountTransactions'
+import KRC20Transactions from './krc20/KRC20Transactions'
 
 export default class Account extends EventEmitter {
   processor: UtxoProcessor
   addresses: AccountAddresses
   context: UtxoContext
   transactions: AccountTransactions
+  krc20Transactions: KRC20Transactions
   node: Node
 
   constructor(node: Node) {
@@ -23,6 +25,7 @@ export default class Account extends EventEmitter {
     this.context = new UtxoContext({ processor: this.processor })
     this.addresses = new AccountAddresses(this.context, node.networkId)
     this.transactions = new AccountTransactions(node.rpcClient, this.context, this.processor, this.addresses)
+    this.krc20Transactions = new KRC20Transactions(node.rpcClient, this.context, this.processor, this.addresses, this.transactions)
     this.transactions.setAccount(this)
 
     node.on('network', async (networkId: string) => {

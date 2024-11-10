@@ -1,9 +1,4 @@
-interface ScriptBuilder {
-  drain: () => void
-  addData: (data: string | Uint8Array) => ScriptBuilder
-  addOp: (op: number) => ScriptBuilder
-  addI64: (value: bigint) => ScriptBuilder
-}
+import { ScriptBuilder } from "@/wasm/kaspa"
 
 interface OperationMappings {
   deploy: {
