@@ -52,7 +52,7 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
       </div>
       <div className="px-4 pt-2">
         <TableSection rows={tableRows} />
-        <ErrorMessage message={error || ''} />
+        <ErrorMessage message={error || ''} className="h-6 mb-4 mt-2 flex justify-center items-center" />
       </div>
     </>
   )

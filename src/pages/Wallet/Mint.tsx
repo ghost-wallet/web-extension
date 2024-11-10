@@ -100,7 +100,9 @@ export default function Mint() {
               <Spinner />
             </div>
           ) : (
-            error && <ErrorMessage message={error} />
+            error && (
+              <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />
+            )
           )}
           {token && <TokenDetails token={token} />}
         </div>

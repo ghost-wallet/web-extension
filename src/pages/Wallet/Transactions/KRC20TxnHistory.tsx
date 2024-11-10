@@ -41,7 +41,7 @@ const KRC20TxnHistory: React.FC<TransactionsHistoryProps> = ({ tick }) => {
   }
 
   if (error) {
-    return <ErrorMessage message={error.message} />
+    return <ErrorMessage message={error.message} className="h-6 mb-4 mt-2 flex justify-center items-center" />
   }
 
   if (transactions.length === 0) {

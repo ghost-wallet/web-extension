@@ -58,7 +58,7 @@ export default function Login() {
               setPassword(e.target.value)
             }}
           />
-          <ErrorMessage message={error} />
+          <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />
           <button
             type="button"
             onClick={handleForgotPassword}

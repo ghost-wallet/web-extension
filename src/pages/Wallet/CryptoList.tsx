@@ -53,7 +53,9 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
           ))}
         </ul>
       )}
-      {errorMessage && <ErrorMessage message={errorMessage} />}
+      {errorMessage && (
+        <ErrorMessage message={errorMessage} className="mt-2 flex justify-center items-center" />
+      )}
     </div>
   )
 }

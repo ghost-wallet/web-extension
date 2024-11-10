@@ -35,7 +35,9 @@ const ManageTokens: React.FC = () => {
         <div className="px-4 -mb-4">
           <SearchBar onSearch={handleSearch} />
         </div>
-        {errorMessage && <ErrorMessage message={errorMessage} />}
+        {errorMessage && (
+          <ErrorMessage message={errorMessage} className="h-6 mb-4 mt-2 flex justify-center items-center" />
+        )}
         {!filteredTokens.length && !errorMessage && <Spinner />}
         {filteredTokens.length > 0 && (
           <ul className="space-y-3 pb-28 pt-4">

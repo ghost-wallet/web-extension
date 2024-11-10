@@ -22,9 +22,13 @@ export const fetchKrc20AddressTokenList = async (selectedNode: number, address: 
       if (response.data && response.data.result) {
         allTokens = [...allTokens, ...response.data.result]
         nextPage = response.data.next
+      } else if (response.status === 204) {
+        throw new Error(
+          `Error 204: cannot get your KRC20 tokens from Kasplex API. If you're using security software like a VPN, disable advanced protection or turn it off and restart your computer.`,
+        )
       } else {
         throw new Error(
-          `Error fetching KRC20 token list for address ${address}. Invalid API response structure`,
+          `Error ${response.status}: cannot get your KRC20 tokens from Kasplex API. Kasplex API is currently down or unavailable.`,
         )
       }
     } while (nextPage)

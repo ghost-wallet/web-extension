@@ -68,7 +68,11 @@ export default function Password({ onPasswordSet }: PasswordProps) {
           placeholder="Confirm password"
         />
 
-        <div className="h-6">{error && <ErrorMessage message={error} />}</div>
+        <div className="h-6">
+          {error && (
+            <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />
+          )}
+        </div>
       </div>
 
       <div className="w-full px-4 pb-10">

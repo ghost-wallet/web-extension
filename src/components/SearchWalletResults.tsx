@@ -40,7 +40,9 @@ const SearchWalletResults: React.FC = () => {
   return (
     <div className="w-full">
       <SearchBar onSearch={handleSearch} />
-      {errorMessage && <ErrorMessage message={errorMessage} />}
+      {errorMessage && (
+        <ErrorMessage message={errorMessage} className="h-6 mb-4 mt-2 flex justify-center items-center" />
+      )}
       {!tokens.length && !errorMessage && <Spinner />}
       {filteredTokens.length > 0 ? (
         <ul className="space-y-3">

@@ -77,7 +77,10 @@ const InitiateSend: React.FC = () => {
                 Available {formattedBalance} {token.tick}
               </span>
             </div>
-            <ErrorMessage message={recipientError || amountError || error || ''} />
+            <ErrorMessage
+              message={recipientError || amountError || error || ''}
+              className="h-6 mb-4 mt-2 flex justify-center items-center"
+            />
           </div>
         </div>
       </AnimatedMain>

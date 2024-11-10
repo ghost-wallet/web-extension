@@ -30,7 +30,7 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({
   }
 
   if (error) {
-    return <ErrorMessage message={error} />
+    return <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />
   }
 
   return (

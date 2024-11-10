@@ -81,7 +81,7 @@ export default function Confirm({ mnemonic, onConfirmed }: { mnemonic: string; o
           editableIndices={[2, 4, 7]}
         />
 
-        <ErrorMessage message={error} />
+        <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />
         <button
           onClick={handleClearClick}
           className="py-4 text-base font-semibold text-primary hover:underline cursor-pointer"

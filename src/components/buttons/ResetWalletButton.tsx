@@ -32,7 +32,7 @@ const ResetWalletButton: React.FC = () => {
         </label>
       </div>
 
-      {error && <ErrorMessage message={error} />}
+      {error && <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />}
 
       <div className="w-full pb-20">
         <button
