@@ -66,7 +66,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
   const load = useCallback(async () => {
     const storedSettings = await LocalStorage.get('settings', defaultSettings)
-    if (storedSettings.version !== defaultSettings.version) return
+    if (!storedSettings || storedSettings.version !== defaultSettings.version) {
+      setSettings(defaultSettings)
+      return
+    }
     setSettings(storedSettings)
   }, [])
 

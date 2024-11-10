@@ -9,7 +9,7 @@ const useVisibleTokens = (tokens: (Token | KaspaToken)[]) => {
 
   useEffect(() => {
     const filterTokens = async () => {
-      const wallet = await LocalStorage.get('wallet', undefined)
+      const wallet = await LocalStorage.get('wallet')
 
       if (!wallet || !wallet.tokens) {
         console.warn('No tokens found in LocalStorage.')

@@ -88,6 +88,10 @@ export const truncateAddress = (address: string): string => {
   return `${address.slice(0, 10)}.....${address.slice(-6)}`
 }
 
+export const truncateWord = (word: string): string => {
+  return word.length > 20 ? `${word.slice(0, 20)}...` : word
+}
+
 export const getMarketCap = (minted: number, dec: number, floorPrice: number): number => {
   return formatNumberWithDecimal(minted, dec) * floorPrice
 }

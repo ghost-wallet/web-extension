@@ -8,7 +8,7 @@ import { WarningMessages } from '@/utils/constants/warningMessages'
 const ConfirmReset: React.FC = () => {
   return (
     <>
-      <AnimatedMain>
+      <AnimatedMain className="pt-5">
         <Header title="Reset Wallet" showBackButton={true} />
         <div className="px-6">
           <p className="text-warning text-base text-justify pt-6 pb-10">{WarningMessages.RESET_WALLET}</p>

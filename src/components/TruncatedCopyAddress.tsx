@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { DocumentDuplicateIcon, CheckIcon } from '@heroicons/react/24/outline'
-import { truncateAddress } from '@/utils/formatting'
+import { truncateAddress, truncateWord } from '@/utils/formatting'
 
 interface RecipientAddressProps {
   address: string
@@ -27,7 +27,7 @@ const TruncatedCopyAddress: React.FC<RecipientAddressProps> = ({ address, accoun
       ) : (
         <>
           <span className="text-base text-primarytext group-hover:text-primary transition">
-            {account ? account : truncateAddress(address)}
+            {account ? truncateWord(account) : truncateAddress(address)}
           </span>
           <DocumentDuplicateIcon className="h-5 w-5 text-primarytext group-hover:text-primary transition" />
         </>

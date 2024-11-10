@@ -36,14 +36,14 @@ export default class Wallet extends EventEmitter {
   }
 
   private async sync() {
-    const wallet = await LocalStorage.get('wallet', undefined)
+    const wallet = await LocalStorage.get('wallet')
 
     if (!wallet) {
       console.log('[Wallet] No wallet found, setting status to Uninitialized.')
       this.status = Status.Uninitialized
     } else {
       this.encryptedKey = wallet.encryptedKey
-      const session = await SessionStorage.get('session', undefined)
+      const session = await SessionStorage.get('session')
 
       const hasKey = KeyManager.hasKey()
       this.status = session && hasKey ? Status.Unlocked : Status.Locked
@@ -77,6 +77,7 @@ export default class Wallet extends EventEmitter {
     await LocalStorage.set('wallet', {
       encryptedKey: encryptedKey,
       tokens: {},
+      accountName: 'Account 1',
     })
 
     await this.unlock(0, password)
@@ -105,7 +106,7 @@ export default class Wallet extends EventEmitter {
   }
 
   async export(password: string) {
-    const wallet = await LocalStorage.get('wallet', undefined)
+    const wallet = await LocalStorage.get('wallet')
     if (!wallet) {
       console.error('[Wallet] Error exporting wallet')
       throw Error('Wallet is not initialized')

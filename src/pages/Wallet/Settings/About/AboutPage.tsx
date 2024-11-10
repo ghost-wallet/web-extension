@@ -13,7 +13,7 @@ export default function AboutPage() {
 
   return (
     <>
-      <AnimatedMain>
+      <AnimatedMain className="pt-5">
         <Header title="About Ghost" showBackButton={true} />
         <div className="pt-8 px-4">
           <h1 className="text-primarytext text-4xl rubik font-bold text-center flex items-center justify-center space-x-2">

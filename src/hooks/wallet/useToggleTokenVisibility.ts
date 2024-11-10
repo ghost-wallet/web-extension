@@ -5,7 +5,7 @@ const useToggleTokenVisibility = (
   setEnabledTokens: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>,
 ) => {
   return async (tick: string) => {
-    const wallet = await LocalStorage.get('wallet', undefined)
+    const wallet = await LocalStorage.get('wallet')
 
     if (!wallet || !wallet.encryptedKey) {
       throw new Error('Wallet or encryptedKey is missing from local storage.')

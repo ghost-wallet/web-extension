@@ -7,7 +7,7 @@ import Network from '../Network'
 export default function DeveloperPage() {
   return (
     <>
-      <AnimatedMain>
+      <AnimatedMain className="pt-5">
         <Header title="Developer Settings" showBackButton={true} />
         <Network />
       </AnimatedMain>

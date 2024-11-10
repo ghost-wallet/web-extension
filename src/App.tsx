@@ -30,6 +30,7 @@ import NetworkFeeSelect from '@/pages/Wallet/Send/NetworkFeeSelect'
 import DeveloperPage from '@/pages/Wallet/Settings/Developer/DeveloperPage'
 import KaspaTxnDetails from '@/pages/Wallet/Transactions/KaspaTxnDetails'
 import ManageTokens from '@/pages/Wallet/CryptoList/ManageTokens'
+import ManageAccounts from '@/pages/Wallet/Settings/Account/ManageAccounts'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -61,6 +62,7 @@ function App() {
               <Route path="/settings/reset" element={<ConfirmReset />} />
               <Route path="/settings/about" element={<AboutPage />} />
               <Route path="/settings/developer" element={<DeveloperPage />} />
+              <Route path="/settings/accounts" element={<ManageAccounts />} />
               <Route path="/transactions/kaspa" element={<Transactions />} />
               <Route path="/transactions/kaspa/details" element={<KaspaTxnDetails />} />
               <Route path="/transactions/krc20" element={<Transactions />} />

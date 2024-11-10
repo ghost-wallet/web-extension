@@ -7,7 +7,7 @@ const useInitializedEnabledTokens = (tokens: Partial<Token>[]) => {
 
   useEffect(() => {
     const initializeEnabledTokens = async () => {
-      const wallet = await LocalStorage.get('wallet', undefined)
+      const wallet = await LocalStorage.get('wallet')
 
       if (!wallet || !wallet.encryptedKey) {
         throw new Error('Wallet or encryptedKey is missing from local storage.')

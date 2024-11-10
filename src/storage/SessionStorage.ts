@@ -7,7 +7,7 @@ export interface ISession {
 }
 
 export interface ISessionStorage {
-  session: ISession | undefined
+  session: ISession
 }
 
 export default new (class SessionStorage extends Storage<ISessionStorage> {
