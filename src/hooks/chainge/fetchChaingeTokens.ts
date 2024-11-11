@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { sortChaingeTokens } from '@/utils/sorting'
+import { unsupportedChaingeTokens } from '@/utils/constants/constants'
 
 export interface ChaingeToken {
   index: number
@@ -41,8 +42,9 @@ export const fetchChaingeTokens = async (): Promise<ChaingeToken[]> => {
     })
 
     if (response.data.code === 0 && response.data.data?.list) {
-      // Filter tokens based on krc20Tradeable being present and true
-      let tokenList = response.data.data.list.filter((token) => token.krc20Tradeable)
+      let tokenList = response.data.data.list.filter(
+        (token) => token.krc20Tradeable && !unsupportedChaingeTokens.includes(token.symbol),
+      )
 
       // Sort the tokens according to the priority order
       tokenList = sortChaingeTokens(tokenList)

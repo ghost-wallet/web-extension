@@ -6,6 +6,7 @@ import TopNav from '@/components/navigation/TopNav'
 import NextButton from '@/components/buttons/NextButton'
 import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
 import { fetchChaingeTokens, ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import { fetchAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
 import { useWalletTokens } from '@/hooks/wallet/useWalletTokens'
 import { useLocation } from 'react-router-dom'
 import YouPaySection from '@/pages/Wallet/Swap/YouPaySection'
@@ -15,6 +16,7 @@ import SwapTokenSelect from '@/pages/Wallet/Swap/SwapTokenSelect'
 import { AnimatePresence } from 'framer-motion'
 import ErrorMessages from '@/utils/constants/errorMessages'
 import SwapLoading from '@/pages/Wallet/Swap/SwapLoading'
+import { formatNumberWithDecimal } from '@/utils/formatting'
 
 export default function Swap() {
   const [chaingeTokens, setChaingeTokens] = useState<ChaingeToken[]>([])
@@ -54,6 +56,27 @@ export default function Swap() {
   const handlePayAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPayAmount(e.target.value)
   }
+
+  useEffect(() => {
+    const formatPayAmount = (amount: number, decimals: number): number => {
+      return amount * Math.pow(10, decimals)
+    }
+
+    const fetchQuote = async () => {
+      if (payToken && receiveToken && payAmount && !isNaN(Number(payAmount))) {
+        try {
+          const adjustedPayAmount = formatPayAmount(parseFloat(payAmount), payToken.decimals)
+          const quote = await fetchAggregateQuote(payToken, receiveToken, adjustedPayAmount)
+          console.log('Aggregate Quote:', quote)
+          setReceiveAmount(formatNumberWithDecimal(quote.outAmount, quote.chainDecimal).toString())
+        } catch (error) {
+          setReceiveAmount('0')
+          console.error('Error fetching aggregate quote:', error)
+        }
+      }
+    }
+    fetchQuote()
+  }, [payAmount, payToken, receiveToken])
 
   const handleSwitch = () => {
     setPayAmount(receiveAmount)
@@ -100,6 +123,7 @@ export default function Swap() {
                   receiveAmount={receiveAmount}
                   receiveToken={receiveToken}
                   openTokenSelect={openReceiveTokenSelect}
+                  tokens={tokens}
                 />
               </>
             )}

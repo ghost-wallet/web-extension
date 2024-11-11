@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import kaspaSvg from '../../assets/crypto-logos/kaspa-kas-logo.svg'
 import bitcoinSvg from '../../assets/crypto-logos/bitcoin-btc-logo.svg'
 import ethSvg from '../../assets/crypto-logos/ethereum-eth-logo.svg'
@@ -23,6 +23,10 @@ const localSvgMap: { [key: string]: string } = {
 const CryptoImage: React.FC<CryptoImageProps> = ({ ticker, size }) => {
   const [hasFailed, setHasFailed] = useState<boolean>(false)
 
+  useEffect(() => {
+    setHasFailed(false)
+  }, [ticker])
+
   const imgSrc = hasFailed
     ? krc20Default
     : ticker in localSvgMap
@@ -30,7 +34,7 @@ const CryptoImage: React.FC<CryptoImageProps> = ({ ticker, size }) => {
       : `https://krc20-assets.kas.fyi/icons/${ticker}.jpg`
 
   const dimensions = size === 'large' ? 'w-20 h-20' : size === 'small' ? 'w-12 h-12' : 'w-8 h-8'
-  const isRounded = ticker !== 'USDT' // Only omit rounding for USDT logo
+  const isRounded = ticker !== 'USDT'
 
   return (
     <div className="flex flex-col items-center">

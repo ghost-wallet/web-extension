@@ -71,13 +71,29 @@ export const formatNumberAbbreviated = (balance: number): string => {
     return rounded.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   }
 
-  if (balance >= 1_000_000_000_000_000) {
-    return formatNumber(balance / 1_000_000_000_000_000) + 'Q'
+  if (balance >= 1_000_000_000_000_000_000_000_000_000) {
+    // Decillion
+    return formatNumber(balance / 1_000_000_000_000_000_000_000_000_000) + 'Dc'
+  } else if (balance >= 1_000_000_000_000_000_000_000_000) {
+    // Nonillion
+    return formatNumber(balance / 1_000_000_000_000_000_000_000_000) + 'N'
+  } else if (balance >= 1_000_000_000_000_000_000_000) {
+    // Octillion
+    return formatNumber(balance / 1_000_000_000_000_000_000_000) + 'Oc'
+  } else if (balance >= 1_000_000_000_000_000_000) {
+    // Septillion
+    return formatNumber(balance / 1_000_000_000_000_000_000) + 'Sp'
+  } else if (balance >= 1_000_000_000_000_000) {
+    // Sextillion
+    return formatNumber(balance / 1_000_000_000_000_000) + 'Sx'
   } else if (balance >= 1_000_000_000_000) {
-    return formatNumber(balance / 1_000_000_000_000) + 'T'
+    // Quintillion
+    return formatNumber(balance / 1_000_000_000_000) + 'Qi'
   } else if (balance >= 1_000_000_000) {
+    // Billion
     return formatNumber(balance / 1_000_000_000) + 'B'
   } else if (balance >= 1_000_000) {
+    // Million
     return formatNumber(balance / 1_000_000) + 'M'
   } else {
     return formatNumber(balance)

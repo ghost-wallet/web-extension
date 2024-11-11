@@ -5,7 +5,7 @@ export interface ChaingeAggregateQuote {
   chain: string
   chainDecimal: number
   aggregator: string
-  outAmount: number
+  outAmount: string
   outAmountUsd: string
   minOutAmount?: string
   serviceFee: string
@@ -16,11 +16,11 @@ export interface ChaingeAggregateQuote {
 
 const API_URL = 'https://api2.chainge.finance/v1/getAggregateQuote'
 
-export const fetchChaingeTokens = async (
+export const fetchAggregateQuote = async (
   fromToken: ChaingeToken,
   toToken: ChaingeToken,
   fromAmount: number,
-): Promise<ChaingeAggregateQuote[]> => {
+): Promise<ChaingeAggregateQuote> => {
   try {
     const response = await axios.get<{ code: number; msg: string; data: ChaingeAggregateQuote }>(API_URL, {
       params: {
@@ -35,12 +35,12 @@ export const fetchChaingeTokens = async (
     })
 
     if (response.data.code === 0 && response.data.data) {
-      // return response.data.data
+      return response.data.data
     } else {
-      throw new Error('Error fetching Chainge tokens: Invalid API response')
+      throw new Error(`Error fetching Chainge tokens: ${response.data.msg || 'Invalid API response'}`)
     }
   } catch (error) {
     console.error('Error fetching Chainge tokens:', error)
-    throw error
+    throw new Error(`Failed to fetch Chainge tokens: ${error instanceof Error ? error.message : error}`)
   }
 }

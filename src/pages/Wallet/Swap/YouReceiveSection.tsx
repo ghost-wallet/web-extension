@@ -1,18 +1,28 @@
 import React from 'react'
 import ChaingeTokenDropdown from '@/pages/Wallet/Swap/ChaingeTokenDropdown'
 import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import ValueAndAvailableBalance from '@/pages/Wallet/Swap/ValueAndAvailableBalance'
+import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
 
 interface YouReceiveSectionProps {
   receiveAmount: string
   receiveToken: ChaingeToken | null
   openTokenSelect: () => void
+  tokens: any[]
 }
 
 const YouReceiveSection: React.FC<YouReceiveSectionProps> = ({
   receiveAmount,
   receiveToken,
   openTokenSelect,
+  tokens,
 }) => {
+  const { currencySymbol, formattedCurrencyValue, formattedBalance } = useChaingeTokenData(
+    receiveAmount,
+    receiveToken,
+    tokens,
+  )
+
   return (
     <div className="bg-darkmuted rounded-lg p-4">
       <h2 className="text-lightmuted text-base mb-2">You Receive</h2>
@@ -26,9 +36,11 @@ const YouReceiveSection: React.FC<YouReceiveSectionProps> = ({
         />
         <ChaingeTokenDropdown selectedToken={receiveToken} openTokenSelect={openTokenSelect} />
       </div>
-      <div className="flex justify-between mt-2">
-        <span className="text-mutedtext">$0.00</span>
-      </div>
+      <ValueAndAvailableBalance
+        currencySymbol={currencySymbol}
+        formattedCurrencyValue={formattedCurrencyValue}
+        formattedBalance={formattedBalance}
+      />
     </div>
   )
 }
