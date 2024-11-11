@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
-import Header from '@/components/Header'
 import BottomNav from '@/components/navigation/BottomNav'
 import TopNav from '@/components/navigation/TopNav'
 import NextButton from '@/components/buttons/NextButton'
@@ -113,7 +112,6 @@ export default function Swap() {
     <>
       <TopNav />
       <AnimatedMain className="flex flex-col h-screen w-full fixed">
-        <Header title="Swap" showBackButton={true} />
         <div className="flex flex-col h-full justify-between p-4">
           <div>
             {loading ? (
@@ -146,7 +144,7 @@ export default function Swap() {
         {amountError && Number(payAmount) > 0 ? (
           <ErrorButton text="Insufficient Funds" />
         ) : Number(payAmount) > 0 ? (
-          <NextButton onClick={() => setShowDialog(true)} />
+          <NextButton text="Review Order" onClick={() => setShowDialog(true)} />
         ) : (
           <div />
         )}

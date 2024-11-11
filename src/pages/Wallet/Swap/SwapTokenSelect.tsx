@@ -42,15 +42,15 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({
       transition={{ duration: 0.2, ease: 'easeOut' }}
     >
       {/* Header with Title and Close Button */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-center text-primarytext text-2xl">Select Token</h2>
+      <div className="relative flex items-center justify-center mb-6">
         <button
-          className="text-white text-2xl font-bold"
+          className="absolute left-0 flex items-center justify-center text-2xl font-bold h-10 w-10 rounded-full transition-colors duration-200 hover:bg-bgdarker hover:text-primarytext"
           onClick={onClose}
           aria-label="Close token selection"
         >
-          <XMarkIcon className="h-7 w-7 transform transition-transform duration-300 hover:scale-125 text-mutedtext" />
+          <XMarkIcon className="h-6 w-6 text-mutedtext transition-colors duration-200 hover:text-primarytext" />
         </button>
+        <h2 className="text-primarytext text-2xl">Select Token</h2>
       </div>
 
       {/* Token List */}

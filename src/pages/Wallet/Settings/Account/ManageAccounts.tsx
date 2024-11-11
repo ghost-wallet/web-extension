@@ -27,6 +27,8 @@ export default function ManageAccounts() {
     if (wallet) {
       wallet.accountName = accountName || 'Account 1'
       await LocalStorage.set('wallet', wallet)
+      // Trigger storage event manually to notify other components
+      window.localStorage.setItem('wallet', JSON.stringify(wallet))
     } else {
       console.warn('Wallet not found in local storage.')
     }
