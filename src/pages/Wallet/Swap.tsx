@@ -16,12 +16,13 @@ import SwapTokenSelect from '@/pages/Wallet/Swap/SwapTokenSelect'
 import { AnimatePresence } from 'framer-motion'
 import ErrorMessages from '@/utils/constants/errorMessages'
 import SwapLoading from '@/pages/Wallet/Swap/SwapLoading'
-import { formatNumberWithDecimal } from '@/utils/formatting'
+import { formatNumberAbbreviated, formatNumberWithDecimal } from '@/utils/formatting'
 
 export default function Swap() {
   const [chaingeTokens, setChaingeTokens] = useState<ChaingeToken[]>([])
   const [payAmount, setPayAmount] = useState('')
   const [receiveAmount, setReceiveAmount] = useState('')
+  const [outAmountUsd, setOutAmountUsd] = useState('')
   const { tokens } = useWalletTokens()
   const [showDialog, setShowDialog] = useState(false)
   const [isPayTokenSelectOpen, setIsPayTokenSelectOpen] = useState(false)
@@ -69,8 +70,10 @@ export default function Swap() {
           const quote = await fetchAggregateQuote(payToken, receiveToken, adjustedPayAmount)
           console.log('Aggregate Quote:', quote)
           setReceiveAmount(formatNumberWithDecimal(quote.outAmount, quote.chainDecimal).toString())
+          setOutAmountUsd(formatNumberAbbreviated(Number(quote.outAmountUsd)))
         } catch (error) {
           setReceiveAmount('0')
+          setOutAmountUsd('0')
           console.error('Error fetching aggregate quote:', error)
         }
       }
@@ -124,6 +127,7 @@ export default function Swap() {
                   receiveToken={receiveToken}
                   openTokenSelect={openReceiveTokenSelect}
                   tokens={tokens}
+                  outAmountUsd={outAmountUsd}
                 />
               </>
             )}

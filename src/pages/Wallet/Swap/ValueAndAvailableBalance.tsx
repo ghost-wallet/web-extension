@@ -1,4 +1,5 @@
 import React from 'react'
+import EstimatedCurrencyValue from '@/components/EstimatedCurrencyValue'
 
 interface ValueAndAvailableBalanceProps {
   currencySymbol: string
@@ -13,7 +14,10 @@ const ValueAndAvailableBalance: React.FC<ValueAndAvailableBalanceProps> = ({
 }) => {
   return (
     <div className="flex justify-between mt-2">
-      <span className="text-mutedtext text-base">{`≈ ${currencySymbol}${formattedCurrencyValue}`}</span>
+      <EstimatedCurrencyValue
+        currencySymbol={currencySymbol}
+        formattedCurrencyValue={formattedCurrencyValue}
+      />
       <span className="text-mutedtext text-base">Available: {formattedBalance.toLocaleString()}</span>
     </div>
   )
