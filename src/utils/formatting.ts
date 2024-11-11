@@ -124,3 +124,14 @@ export const formatMarketCap = (minted: number, dec: number, floorPrice: number)
   const marketCap = getMarketCap(minted, dec, floorPrice)
   return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(marketCap)
 }
+
+export const formatAndValidateAmount = (value: string, maxDecimals: number): string | null => {
+  const decimalPlaces = value.split('.')[1]?.length || 0
+  if (decimalPlaces > maxDecimals) return null
+
+  if (value.startsWith('.') && value.length > 1) {
+    value = `0${value}`
+  }
+
+  return value
+}

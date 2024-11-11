@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { validateRecipient, validateAmountToSend } from '@/utils/validation'
+import { formatAndValidateAmount } from '@/utils/formatting'
 
 export const useTransactionInputs = (token: any, maxAmount: string, yourAddress: string) => {
   const [outputs, setOutputs] = useState<[string, string][]>([['', '']])
@@ -17,13 +18,7 @@ export const useTransactionInputs = (token: any, maxAmount: string, yourAddress:
   }
 
   const handleAmountChange = (value: string) => {
-    const decimalPlaces = value.split('.')[1]?.length || 0
-    if (decimalPlaces > token.dec) return
-
-    if (value.startsWith('.') && value.length > 1) {
-      value = `0${value}`
-    }
-
+    formatAndValidateAmount(value, token.dec)
     setOutputs((prevOutputs) => {
       const newOutputs = [...prevOutputs]
       newOutputs[0][1] = value

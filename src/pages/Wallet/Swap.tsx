@@ -17,11 +17,13 @@ import { AnimatePresence } from 'framer-motion'
 import ErrorMessages from '@/utils/constants/errorMessages'
 import SwapLoading from '@/pages/Wallet/Swap/SwapLoading'
 import { formatNumberAbbreviated, formatNumberWithDecimal } from '@/utils/formatting'
+import ErrorButton from '@/components/buttons/ErrorButton'
 
 export default function Swap() {
   const [chaingeTokens, setChaingeTokens] = useState<ChaingeToken[]>([])
   const [payAmount, setPayAmount] = useState('')
   const [receiveAmount, setReceiveAmount] = useState('')
+  const [amountError, setAmountError] = useState<string | null>(null)
   const [outAmountUsd, setOutAmountUsd] = useState('')
   const { tokens } = useWalletTokens()
   const [showDialog, setShowDialog] = useState(false)
@@ -56,6 +58,10 @@ export default function Swap() {
 
   const handlePayAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPayAmount(e.target.value)
+  }
+
+  const handleAmountErrorChange = (error: string | null) => {
+    setAmountError(error)
   }
 
   useEffect(() => {
@@ -119,6 +125,7 @@ export default function Swap() {
                   payToken={payToken}
                   openTokenSelect={openPayTokenSelect}
                   onAmountChange={handlePayAmountChange}
+                  onAmountErrorChange={handleAmountErrorChange}
                   tokens={tokens}
                 />
                 <TokenSwitch onSwitch={handleSwitch} />
@@ -136,7 +143,13 @@ export default function Swap() {
       </AnimatedMain>
 
       <div className="bottom-20 left-0 right-0 px-4 fixed">
-        <NextButton onClick={() => setShowDialog(true)} />
+        {amountError && Number(payAmount) > 0 ? (
+          <ErrorButton text="Insufficient Funds" />
+        ) : Number(payAmount) > 0 ? (
+          <NextButton onClick={() => setShowDialog(true)} />
+        ) : (
+          <div />
+        )}
       </div>
       <BottomNav />
 
