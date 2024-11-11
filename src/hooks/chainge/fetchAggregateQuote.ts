@@ -12,6 +12,7 @@ export interface ChaingeAggregateQuote {
   gasFee: string
   priceImpact: string
   routeSummary: string
+  slippage: string
 }
 
 const API_URL = 'https://api2.chainge.finance/v1/getAggregateQuote'

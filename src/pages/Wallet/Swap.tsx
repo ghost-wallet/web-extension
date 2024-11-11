@@ -3,9 +3,8 @@ import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/navigation/BottomNav'
 import TopNav from '@/components/navigation/TopNav'
 import NextButton from '@/components/buttons/NextButton'
-import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
 import { fetchChaingeTokens, ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
-import { fetchAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
+import { ChaingeAggregateQuote, fetchAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
 import { useWalletTokens } from '@/hooks/wallet/useWalletTokens'
 import { useLocation } from 'react-router-dom'
 import YouPaySection from '@/pages/Wallet/Swap/YouPaySection'
@@ -17,15 +16,17 @@ import ErrorMessages from '@/utils/constants/errorMessages'
 import SwapLoading from '@/pages/Wallet/Swap/SwapLoading'
 import { formatNumberAbbreviated, formatNumberWithDecimal } from '@/utils/formatting'
 import ErrorButton from '@/components/buttons/ErrorButton'
+import ReviewOrder from '@/pages/Wallet/Swap/ReviewOrder'
 
 export default function Swap() {
   const [chaingeTokens, setChaingeTokens] = useState<ChaingeToken[]>([])
   const [payAmount, setPayAmount] = useState('')
   const [receiveAmount, setReceiveAmount] = useState('')
+  const [aggregateQuote, setAggregateQuote] = useState<ChaingeAggregateQuote | null>(null)
   const [amountError, setAmountError] = useState<string | null>(null)
   const [outAmountUsd, setOutAmountUsd] = useState('')
   const { tokens } = useWalletTokens()
-  const [showDialog, setShowDialog] = useState(false)
+  const [isReviewOrderOpen, setIsReviewOrderOpen] = useState(false)
   const [isPayTokenSelectOpen, setIsPayTokenSelectOpen] = useState(false)
   const [isReceiveTokenSelectOpen, setIsReceiveTokenSelectOpen] = useState(false)
   const location = useLocation()
@@ -74,6 +75,7 @@ export default function Swap() {
           const adjustedPayAmount = formatPayAmount(parseFloat(payAmount), payToken.decimals)
           const quote = await fetchAggregateQuote(payToken, receiveToken, adjustedPayAmount)
           console.log('Aggregate Quote:', quote)
+          setAggregateQuote(quote)
           setReceiveAmount(formatNumberWithDecimal(quote.outAmount, quote.chainDecimal).toString())
           setOutAmountUsd(formatNumberAbbreviated(Number(quote.outAmountUsd)))
         } catch (error) {
@@ -144,7 +146,7 @@ export default function Swap() {
         {amountError && Number(payAmount) > 0 ? (
           <ErrorButton text="Insufficient Funds" />
         ) : Number(payAmount) > 0 ? (
-          <NextButton text="Review Order" onClick={() => setShowDialog(true)} />
+          <NextButton text="Review Order" onClick={() => setIsReviewOrderOpen(true)} />
         ) : (
           <div />
         )}
@@ -157,8 +159,6 @@ export default function Swap() {
             tokens={chaingeTokens.filter((chaingeToken) => chaingeToken.symbol !== receiveToken?.symbol)}
             onSelectToken={selectToken}
             onClose={closePayTokenSelect}
-            loading={loading}
-            error={error}
           />
         )}
       </AnimatePresence>
@@ -169,18 +169,21 @@ export default function Swap() {
             tokens={chaingeTokens.filter((chaingeToken) => chaingeToken.symbol !== payToken?.symbol)}
             onSelectToken={selectReceiveToken}
             onClose={closeReceiveTokenSelect}
-            loading={loading}
-            error={error}
           />
         )}
       </AnimatePresence>
 
-      <PopupMessageDialog
-        title="Not Available"
-        message="Swaps are not yet available on Ghost wallet. Follow us for updates."
-        onClose={() => setShowDialog(false)}
-        isOpen={showDialog}
-      />
+      <AnimatePresence>
+        {isReviewOrderOpen && payToken && receiveToken && aggregateQuote && (
+          <ReviewOrder
+            payToken={payToken}
+            receiveToken={receiveToken}
+            payAmount={payAmount}
+            aggregateQuote={aggregateQuote}
+            onClose={() => setIsReviewOrderOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </>
   )
 }
