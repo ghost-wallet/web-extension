@@ -97,7 +97,7 @@ export default function ConfirmMint() {
             <TotalCostToMint totalFees={totalCost} />
           </div>
         </div>
-        <ErrorMessage message={error || ''} className="h-6 mb-4 mt-2 flex justify-center items-center" />
+        <ErrorMessage message={error || ''} className="h-6 mb-4 mt-2 flex justify-center items-center px-4" />
       </AnimatedMain>
       <div className="fixed bottom-20 left-0 right-0 px-4">
         <NextButton onClick={handleMint} text="Confirm Mint" loading={loading} />
