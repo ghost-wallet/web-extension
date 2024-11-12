@@ -49,8 +49,13 @@ export const fetchAggregateQuote = async (
       return undefined
     } else if (axios.isAxiosError(error) && error.response) {
       if (error.response.status >= 500 && error.response.status < 600) {
-        console.error(`${error.response.status} Error: cannot get aggregate quote from Chainge:`, error.response)
-        throw new Error(`${error.response.status} Error: Chainge DEX is down or unavailable. Please try again later.`)
+        console.error(
+          `${error.response.status} Error: cannot get aggregate quote from Chainge:`,
+          error.response,
+        )
+        throw new Error(
+          `${error.response.status} Error: Chainge DEX is down or unavailable. Please try again later.`,
+        )
       } else {
         console.error('API error:', error.response)
         throw new Error(`${error.response.status} Unknown error: ${error.response.statusText}`)

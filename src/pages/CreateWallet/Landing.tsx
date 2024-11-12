@@ -36,7 +36,7 @@ export default function Landing({
             forward(Tabs.Password, 'create')
           }}
           disabled={!enable}
-          className={`w-full h-[3.25rem] text-base font-semibold rounded-full transition-colors duration-300 ${
+          className={`w-full h-[3.25rem] text-base font-semibold rounded-lg transition-colors duration-300 ${
             enable
               ? 'bg-primary text-secondarytext hover:bg-hoverprimary cursor-pointer'
               : 'bg-secondary text-secondarytext cursor-default'
@@ -49,7 +49,7 @@ export default function Landing({
             forward(Tabs.Password, 'import')
           }}
           disabled={!enable}
-          className={`w-full h-[3.25rem] text-base font-semibold border border-primary rounded-full transition-colors duration-300 ${
+          className={`w-full h-[3.25rem] text-base font-semibold border border-primary rounded-lg transition-colors duration-300 ${
             enable
               ? 'text-primary cursor-pointer hover:border-hover'
               : 'border-secondary text-secondary cursor-default'

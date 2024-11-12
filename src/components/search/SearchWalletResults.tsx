@@ -7,8 +7,9 @@ import ErrorMessage from '@/components/messages/ErrorMessage'
 import Spinner from '@/components/loaders/Spinner'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Token, KaspaToken } from '@/utils/interfaces'
-import SearchBar from '@/components/SearchBar'
+import SearchBar from '@/components/search/SearchBar'
 import useVisibleTokens from '@/hooks/wallet/useVisibleTokens'
+import SearchResultsNotFound from '@/components/search/SearchResultsNotFound'
 
 const SearchWalletResults: React.FC = () => {
   const { tokens, errorMessage } = useWalletTokens()
@@ -18,6 +19,7 @@ const SearchWalletResults: React.FC = () => {
   const currencySymbol = getCurrencySymbol(settings.currency)
   const visibleTokens = useVisibleTokens(tokens)
   const [filteredTokens, setFilteredTokens] = useState<(Token | KaspaToken)[]>([])
+  const [searchTerm, setSearchTerm] = useState<string>('')
 
   useEffect(() => {
     if (visibleTokens.length > 0) {
@@ -25,9 +27,10 @@ const SearchWalletResults: React.FC = () => {
     }
   }, [visibleTokens])
 
-  const handleSearch = (searchTerm: string) => {
+  const handleSearch = (_searchTerm: string) => {
+    setSearchTerm(_searchTerm)
     const filtered = visibleTokens.filter((token) =>
-      token.tick.toLowerCase().includes(searchTerm.toLowerCase()),
+      token.tick.toLowerCase().includes(_searchTerm.toLowerCase()),
     )
     setFilteredTokens(filtered)
   }
@@ -57,9 +60,7 @@ const SearchWalletResults: React.FC = () => {
           ))}
         </ul>
       ) : (
-        filteredTokens.length === 0 && (
-          <p className="text-mutedtext text-lg text-center mt-4">No tokens found.</p>
-        )
+        <SearchResultsNotFound searchTerm={searchTerm} filteredTokens={filteredTokens} />
       )}
     </div>
   )

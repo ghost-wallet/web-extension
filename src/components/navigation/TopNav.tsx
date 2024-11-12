@@ -2,7 +2,7 @@ import React from 'react'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import { Cog6ToothIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
-import SearchWalletButton from '@/components/SearchWalletButton'
+import SearchWalletButton from '@/components/search/SearchWalletButton'
 import ConnectingToNetwork from '@/components/ConnectingToNetwork'
 import TruncatedCopyAccountName from '@/components/TruncatedCopyAccountName'
 
