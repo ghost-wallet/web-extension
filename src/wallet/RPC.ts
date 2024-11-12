@@ -33,26 +33,34 @@ export default class RPC {
     console.log('[RPC] Setting up browser runtime connection listener.')
 
     browser.runtime.onConnect.addListener((port) => {
-      console.log(`[RPC] Port connected with name: ${port.name} and ID: ${port.sender?.id}`)
+      try {
+        console.log(`[RPC] Port connected with name: ${port.name} and ID: ${port.sender?.id}`)
 
-      if (port.sender?.id !== browser.runtime.id) {
-        console.warn('[RPC] Port sender ID does not match. Disconnecting port...')
-        return port.disconnect()
-      }
+        if (port.sender?.id !== browser.runtime.id) {
+          console.warn('[RPC] Port sender ID does not match. Disconnecting port...')
+          return port.disconnect()
+        }
 
-      if (port.name === '@ghost/client') {
-        this.permitPort(port)
-      } else if (port.name === '@ghost/provider') {
-        this.provider.askAccess(port)
-      } else {
-        console.warn(`[RPC] Unrecognized port name: ${port.name}. Disconnecting port...`)
-        port.disconnect()
+        if (port.name === '@ghost/client') {
+          this.permitPort(port)
+        } else if (port.name === '@ghost/provider') {
+          this.provider.askAccess(port)
+        } else {
+          console.warn(`[RPC] Unrecognized port name: ${port.name}. Disconnecting port...`)
+          port.disconnect()
+        }
+      } catch (error) {
+        console.error('[RPC] Error in onConnect listener:', error)
       }
     })
 
     this.notifier.registerCallback((event) => {
       for (const port of this.ports) {
-        port.postMessage(event)
+        try {
+          port.postMessage(event)
+        } catch (error) {
+          console.warn('[RPC] Failed to send message to port:', error)
+        }
       }
     })
   }
@@ -77,8 +85,8 @@ export default class RPC {
     port.onMessage.addListener(onMessageListener)
 
     port.onDisconnect.addListener(() => {
+      console.log(`[RPC] Port disconnected: ${port.name}`)
       port.onMessage.removeListener(onMessageListener)
-
       this.ports.delete(port)
     })
   }
