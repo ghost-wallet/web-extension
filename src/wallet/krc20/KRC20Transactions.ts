@@ -13,13 +13,14 @@ function setupKrc20Transaction(
   address: string,
   recipient: string,
   amount: string,
-  token: TokenFromApi,
+  tick: string,
+  dec: string | number,
   networkId = 'mainnet',
 ) {
   const script = new ScriptBuilder()
   const inscription = new KRC20Inscription('transfer', {
-    tick: token.tick,
-    amt: BigInt(+amount * 10 ** +token.dec).toString(),
+    tick,
+    amt: BigInt(+amount * 10 ** +dec).toString(),
     to: recipient,
   })
 
@@ -100,11 +101,11 @@ export default class KRC20Transactions extends EventEmitter {
   
   async getKRC20Info(
     recipient: string,
-    token: Token,
+    {tick, dec}: {tick: string, dec: number | string},
     amount: string,
   ): Promise<KRC20TokenRequest> {
     const sender = this.addresses.receiveAddresses[0]
-    const { script, scriptAddress } = setupKrc20Transaction(sender, recipient, amount, token)
+    const { script, scriptAddress } = setupKrc20Transaction(sender, recipient, amount, tick, dec)
     return {
       sender,
       recipient,

@@ -1,10 +1,11 @@
 import { EventEmitter } from 'events'
-import { UtxoContext, UtxoProcessor, PublicKeyGenerator, UtxoEntryReference } from '@/wasm'
+import { UtxoContext, UtxoProcessor, PublicKeyGenerator, UtxoEntryReference, signMessage } from '@/wasm'
 import type Node from './Node'
 import AccountAddresses from './account/AccountAddresses'
 import SessionStorage from '@/storage/SessionStorage'
 import AccountTransactions from './account/AccountTransactions'
 import KRC20Transactions from './krc20/KRC20Transactions'
+import { registerChaingeService } from './exchange/chainge'
 
 export default class Account extends EventEmitter {
   processor: UtxoProcessor
@@ -27,6 +28,8 @@ export default class Account extends EventEmitter {
     this.transactions = new AccountTransactions(node.rpcClient, this.context, this.processor, this.addresses)
     this.krc20Transactions = new KRC20Transactions(node.rpcClient, this.context, this.processor, this.addresses, this.transactions)
     this.transactions.setAccount(this)
+
+    registerChaingeService(this.addresses, this.transactions,  this.krc20Transactions)
 
     node.on('network', async (networkId: string) => {
       console.log('[Account] network event', networkId)
@@ -63,6 +66,10 @@ export default class Account extends EventEmitter {
       .map((utxo) => mapUTXO(utxo, true))
 
     return [...pendingUTXOs, ...matureUTXOs]
+  }
+  
+  async sign(message: string) {
+    return signMessage()
   }
 
   private registerProcessor() {

@@ -87,6 +87,12 @@ export interface Token extends TokenFromApi {
  * Requests and responses for using Kasplex API. Official documentation:
  * https://docs.kasplex.org
  */
+export interface KRC20TokenListForAddress {
+  result: TokenFromApi[]
+  next: string | null
+}
+
+
 export interface KRC20TokenList {
   result: KRC20TokenResponse[]
   next: string | null

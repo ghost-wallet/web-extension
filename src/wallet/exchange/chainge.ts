@@ -6,17 +6,18 @@ import BigNumber from 'bignumber.js'
 import AccountAddresses from '../account/AccountAddresses'
 import KeyManager from '../account/KeyManager'
 import KRC20Transactions from '../krc20/KRC20Transactions'
+import AccountTransactions from '../account/AccountTransactions'
 
 function sortParams(params: Record<string, any>, evmAddress: string) {
   let keys = Object.keys(params)
-  if(!keys.length) return undefined
-  keys = keys.sort();
+  if (!keys.length) return undefined
+  keys = keys.sort()
   const keyValList = []
   for (const key of keys) {
-      const val = params[key];
-      if(val) {
-          keyValList.push(`${key}=${val}`)
-      }
+    const val = params[key]
+    if (val) {
+      keyValList.push(`${key}=${val}`)
+    }
   }
   const data = keyValList.join('&')
   const raw = `Address=${evmAddress}&${data}`
@@ -40,12 +41,11 @@ const chaingeMinterAddresses = {
 
 const API_SUBMIT_ORDER_URL = 'https://api2.chainge.finance/v1/submitOrder'
 
-const EXECUTION_CHAIN_NICKNAME = 'KAS'
-
 export default class Chainge {
   constructor(
     private addresses: AccountAddresses,
-    private krc20Transaction: KRC20Transactions,
+    private transactions: AccountTransactions,
+    private krc20Transactions: KRC20Transactions,
   ) {
     //super()
   }
@@ -58,8 +58,10 @@ export default class Chainge {
       AggregateQuoteResponse,
       'chain' | 'chainDecimal' | 'outAmount' | 'serviceFee' | 'gasFee' | 'slippage'
     >,
+    feeRate: number,
   ) {
-    //const amount = parseUnits(fromAmount, fromToken.decimals).toString()
+    const amount = parseUnits(fromAmount, fromToken.decimals).toString()
+
     const channelFeeRate = '0'
 
     const fromAddress = this.addresses.receiveAddresses[0]
@@ -81,19 +83,21 @@ export default class Chainge {
 
     // Computed minimum, After calculating the minimum value, we need to convert it to the decimals of the target chain.
     const miniAmount = BigNumber(receiveAmountHr)
-      .multipliedBy(BigNumber(1 - Number(slippage) * 0.01))
+      .multipliedBy(BigNumber(1 - parseFloat(slippage) * 0.01))
       .toString()
     const miniAmountForExtra = parseUnits(miniAmount, chainDecimal).toString()
 
     // 1_Expected value;2_Third party profit ratio;3_version;4_Mini Amount;5_Execution chain
-    const extra = `1_${receiveAmountForExtra};2_${channelFeeRate};3_2;4_${miniAmountForExtra};5_${'KAS'}`
+    const extra = `1_${receiveAmountForExtra};2_${channelFeeRate};3_2;4_${miniAmountForExtra};5_KAS`
+
+    const transactionId = await this.sendChaingeTransaction(fromAmount, fromToken, feeRate)
 
     const sourceCertsObj = {
-      fromAmount,
+      amount,
       fromIndex: fromToken.index,
       fromChain: 'KAS',
       fromAddr: fromAddress,
-      certHash: tradeHash,
+      certHash: transactionId,
       fromPublicKey: this.addresses.publicKey.receivePubkeyAsString(0),
       signature: '123456',
     }
@@ -120,7 +124,7 @@ export default class Chainge {
 
     const keyGenerator = KeyManager.createKeyGenerator()
     const privateKey = keyGenerator.receiveKey(0)
-    const signature = signMessage({message: raw, privateKey})
+    const signature = signMessage({ message: raw, privateKey })
 
     const header = {
       Address: fromAddress,
@@ -129,7 +133,7 @@ export default class Chainge {
       Signature: signature,
     }
 
-    const response = await fetch('https://api2.chainge.finance/v1/submitOrder', {
+    const response = await fetch(API_SUBMIT_ORDER_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -141,10 +145,37 @@ export default class Chainge {
 
     return result
   }
+
+  private async sendChaingeTransaction(fromAmount: string, fromToken: ChaingeToken, feeRate: number) {
+    if (fromToken.contractAddress === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+      // KAS
+      const [transactions] = await this.transactions.create(
+        [[chaingeMinterAddresses.KAS, fromAmount]],
+        feeRate,
+        '0',
+      )
+      const submittedTransactions = await this.transactions.submitKaspaTransaction(transactions)
+      return submittedTransactions[submittedTransactions.length - 1]
+    } else {
+      // KRC-20
+      const toAddress = ['CUSDT', 'CUSDC', 'CETH', 'CBTC', 'CXCHNG'].includes(fromToken.contractAddress)
+        ? chaingeMinterAddresses.other
+        : chaingeMinterAddresses.KRC20
+
+      const krc20Token =  {
+        tick: fromToken.contractAddress,
+        dec: fromToken.decimals
+      }
+
+      const info = await this.krc20Transactions.getKRC20Info(toAddress, krc20Token, fromAmount)
+      const [commitId, revealId] = await this.krc20Transactions.submitKRC20Transaction(info, feeRate)
+      return revealId
+    }
+  }
 }
 
 export const [registerChaingeService, getChaingeService] = defineProxyService(
   'ChaingeService',
-  (addresses: AccountAddresses, krc20Transactions: KRC20Transactions) =>
-    new Chainge(addresses, krc20Transactions),
+  (addresses: AccountAddresses, transactions: AccountTransactions, krc20Transactions: KRC20Transactions) =>
+    new Chainge(addresses, transactions, krc20Transactions),
 )
