@@ -5,8 +5,9 @@ import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
 import ReviewOrderToken from '@/pages/Wallet/Swap/ReviewOrderToken'
 import NextButton from '@/components/buttons/NextButton'
 import { ChaingeAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
-import { formatNumberWithDecimal } from '@/utils/formatting'
+import { formatNumberAbbreviated } from '@/utils/formatting'
 import ReviewOrderQuote from '@/pages/Wallet/Swap/ReviewOrderQuote'
+import useReceiveAmountAfterFees from '@/hooks/chainge/useReceiveAmountAfterFees'
 
 interface ReviewOrderProps {
   payToken: ChaingeToken
@@ -23,6 +24,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   aggregateQuote,
   onClose,
 }) => {
+  const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
   const { currencySymbol, formattedCurrencyValue } = useChaingeTokenData(payAmount, payToken, [])
 
   return (
@@ -32,7 +34,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
         <ReviewOrderToken
           title="You Pay"
           token={payToken}
-          amount={payAmount}
+          amount={formatNumberAbbreviated(Number(payAmount))}
           estimatedValue={formattedCurrencyValue}
           currencySymbol={currencySymbol}
         />
@@ -41,7 +43,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
         <ReviewOrderToken
           title="You Receive"
           token={receiveToken}
-          amount={formatNumberWithDecimal(aggregateQuote.outAmount, aggregateQuote.chainDecimal).toString()}
+          amount={formatNumberAbbreviated(receiveAmountAfterFees)}
           estimatedValue={aggregateQuote.outAmountUsd}
           currencySymbol={currencySymbol}
         />
