@@ -53,6 +53,14 @@ export interface SubmitChaingeOrderRequest {
   feeRate: number
 }
 
+export interface ChaingeOrderResponse {
+  code: number
+  data: {
+    id: string
+  }
+  msg: string
+}
+
 export default class Chainge {
   constructor(
     private addresses: AccountAddresses,
@@ -113,7 +121,7 @@ export default class Chainge {
     console.log('[Chainge] transactionId', transactionId)
 
     const sourceCertsObj = {
-      amount,
+      fromAmount: amount,
       fromIndex: fromToken.index.toString(),
       fromChain: 'KAS',
       fromAddr: fromAddress,
@@ -178,7 +186,7 @@ export default class Chainge {
 
     console.log('[Chainge] header', header)
 
-    const response = await axios.post<AggregateSwapResponse>(API_SUBMIT_ORDER_URL, params, {
+    const response = await axios.post<ChaingeOrderResponse>(API_SUBMIT_ORDER_URL, params, {
       headers: {
         'Content-Type': 'application/json',
         ...header,
