@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
 import ActionButton from '@/components/buttons/ActionButton'
-import { fetchChaingeTokens, ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import { ChaingeToken, useChaingeTokens } from '@/hooks/chainge/useChaingeTokens'
 import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
 import { Token } from '@/utils/interfaces'
 
@@ -15,23 +15,23 @@ const SwapButton: React.FC<SwapButtonProps> = ({ token, className }) => {
   const navigate = useNavigate()
   const [isTokenAvailable, setIsTokenAvailable] = useState(false)
   const [showDialog, setShowDialog] = useState(false)
+  const { data: fetchedTokens, isError, error } = useChaingeTokens()
 
   useEffect(() => {
-    const checkTokenAvailability = async () => {
-      try {
-        const fetchedTokens: ChaingeToken[] = await fetchChaingeTokens()
-        const tokenExists = fetchedTokens.some(
-          (t) =>
-            t.symbol.toLowerCase() === token.tick.toLowerCase() ||
-            t.name.toLowerCase() === token.tick.toLowerCase(),
-        )
-        setIsTokenAvailable(tokenExists)
-      } catch (error) {
-        console.error('Error checking token availability:', error)
-      }
+    if (isError) {
+      console.error('Error checking token availability:', error)
+      return
     }
-    checkTokenAvailability()
-  }, [token.tick])
+
+    if (fetchedTokens) {
+      const tokenExists = fetchedTokens.some(
+        (t: ChaingeToken) =>
+          t.symbol.toLowerCase() === token.tick.toLowerCase() ||
+          t.name.toLowerCase() === token.tick.toLowerCase(),
+      )
+      setIsTokenAvailable(tokenExists)
+    }
+  }, [fetchedTokens, token.tick, isError, error])
 
   const handleSwapClick = () => {
     if (isTokenAvailable) {

@@ -31,6 +31,7 @@ export const validateAmountToSend = (
 ) => {
   const numericValue = parseFloat(value)
 
+  // TODO don't set error here if value is 0. Let components handle 0
   if (tokenTick === 'KASPA') {
     if (value.length === 0 || isNaN(numericValue) || numericValue <= 0) {
       setAmountError(ErrorMessages.SEND_AMOUNT.MORE_THAN_ZERO)

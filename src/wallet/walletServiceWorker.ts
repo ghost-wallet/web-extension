@@ -6,11 +6,13 @@ import load, { initConsolePanicHook, version } from '@/wasm'
 
 async function initializeApp() {
   try {
-    console.log('[Main] Starting WASM load...')
+    // TODO: fix load() or initConsolePanicHook() throws error: Unchecked runtime.lastError: Could not establish connection. Receiving end does not exist.
+    console.log('[Main] Starting WASM load()...')
     await load()
+    console.log('[Main] Starting WASM initConsolePanicHook()...')
     initConsolePanicHook()
-    console.log(`[Main] Kaspa WASM version ${version()}`)
 
+    console.log(`[Main] Kaspa WASM version ${version()}`)
     const wallet = new Wallet(() => {
       const node = new Node()
       const account = new Account(node)

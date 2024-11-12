@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { sortChaingeTokens } from '@/utils/sorting'
 import { unsupportedChaingeTokens } from '@/utils/constants/constants'
@@ -18,24 +19,17 @@ export interface ChaingeTokensList {
 }
 
 const API_URL = 'https://api2.chainge.finance/v1/getAssetsByChain'
-const CACHE_KEY = 'chainge_tokens'
-const CACHE_TIMESTAMP_KEY = 'chainge_tokens_timestamp'
-const CACHE_DURATION = 60 * 60 * 1000 // 60 minutes
 
-export const fetchChaingeTokens = async (): Promise<ChaingeToken[]> => {
-  const cachedTokens = localStorage.getItem(CACHE_KEY)
-  const cachedTimestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY)
-  const currentTime = Date.now()
+export function useChaingeTokens() {
+  return useQuery({
+    queryKey: ['chaingeTokens'],
+    queryFn: fetchChaingeTokens,
+    staleTime: 60 * 60 * 1000, // 60 minutes
+    refetchInterval: 60 * 60 * 1000, // 60 minutes
+  })
+}
 
-  // Check cache and return if valid
-  if (cachedTokens && cachedTimestamp && currentTime - parseInt(cachedTimestamp) < CACHE_DURATION) {
-    try {
-      return JSON.parse(cachedTokens)
-    } catch (error) {
-      console.error('Error parsing cached Chainge tokens:', error)
-    }
-  }
-
+const fetchChaingeTokens = async (): Promise<ChaingeToken[]> => {
   try {
     const response = await axios.get<{ code: number; msg: string; data: ChaingeTokensList }>(API_URL, {
       params: { chain: 'KAS' },
@@ -49,16 +43,12 @@ export const fetchChaingeTokens = async (): Promise<ChaingeToken[]> => {
       // Sort the tokens according to the priority order
       tokenList = sortChaingeTokens(tokenList)
 
-      // Cache data in localStorage
-      localStorage.setItem(CACHE_KEY, JSON.stringify(tokenList))
-      localStorage.setItem(CACHE_TIMESTAMP_KEY, currentTime.toString())
-
       return tokenList
     } else {
-      throw new Error('Error fetching Chainge tokens: Invalid API response')
+      throw new Error('Invalid API response')
     }
   } catch (error) {
-    console.error('Error fetching Chainge tokens:', error)
+    console.error('Error fetching Chainge tokens from primary API:', error)
     throw error
   }
 }

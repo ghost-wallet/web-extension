@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from 'react'
 import LocalStorage from '@/storage/LocalStorage'
 
 const useAccountName = () => {
-  // Set the initial value from localStorage
   const initialAccountName = useMemo(() => {
     const storedWallet = localStorage.getItem('wallet')
     if (storedWallet) {
@@ -20,7 +19,6 @@ const useAccountName = () => {
       if (wallet) {
         const name = wallet.accountName || 'Account 1'
         setAccountName(name)
-        localStorage.setItem('wallet', JSON.stringify(wallet)) // Ensure localStorage is up-to-date
       }
     }
 
