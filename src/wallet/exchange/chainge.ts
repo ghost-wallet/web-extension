@@ -1,12 +1,13 @@
 import { signMessage } from '@/wasm/kaspa'
 import { defineProxyService } from '@webext-core/proxy-service'
-import { AggregateQuoteResponse } from '@chainge/api-tool-sdk'
+import { AggregateQuoteResponse, AggregateSwapResponse } from '@chainge/api-tool-sdk'
 import { formatUnits, hexlify, keccak256, parseUnits, toUtf8Bytes } from 'ethers'
 import BigNumber from 'bignumber.js'
 import AccountAddresses from '../account/AccountAddresses'
 import KeyManager from '../account/KeyManager'
 import KRC20Transactions from '../krc20/KRC20Transactions'
 import AccountTransactions from '../account/AccountTransactions'
+import axios from 'axios'
 
 function sortParams(params: Record<string, any>, evmAddress: string) {
   let keys = Object.keys(params)
@@ -41,6 +42,17 @@ const chaingeMinterAddresses = {
 
 const API_SUBMIT_ORDER_URL = 'https://api2.chainge.finance/v1/submitOrder'
 
+export interface SubmitChaingeOrderRequest {
+  fromAmount: string
+  fromToken: ChaingeToken
+  toToken: ChaingeToken
+  quote: Pick<
+    AggregateQuoteResponse,
+    'chain' | 'chainDecimal' | 'outAmount' | 'serviceFee' | 'gasFee' | 'slippage'
+  >
+  feeRate: number
+}
+
 export default class Chainge {
   constructor(
     private addresses: AccountAddresses,
@@ -50,16 +62,7 @@ export default class Chainge {
     //super()
   }
 
-  async doChaingeOrder(
-    fromAmount: string,
-    fromToken: ChaingeToken,
-    toToken: ChaingeToken,
-    quote: Pick<
-      AggregateQuoteResponse,
-      'chain' | 'chainDecimal' | 'outAmount' | 'serviceFee' | 'gasFee' | 'slippage'
-    >,
-    feeRate: number,
-  ) {
+  async submitChaingeOrder({ fromAmount, fromToken, toToken, quote, feeRate }: SubmitChaingeOrderRequest) {
     const amount = parseUnits(fromAmount, fromToken.decimals).toString()
 
     const channelFeeRate = '0'
@@ -133,17 +136,16 @@ export default class Chainge {
       Signature: signature,
     }
 
-    const response = await fetch(API_SUBMIT_ORDER_URL, {
-      method: 'POST',
+    const response = await axios.post<AggregateSwapResponse>(API_SUBMIT_ORDER_URL, params, {
       headers: {
         'Content-Type': 'application/json',
         ...header,
       },
-      body: JSON.stringify(params),
     })
-    const result = await response.json()
 
-    return result
+    console.log(response)
+
+    return response
   }
 
   private async sendChaingeTransaction(fromAmount: string, fromToken: ChaingeToken, feeRate: number) {
@@ -162,9 +164,9 @@ export default class Chainge {
         ? chaingeMinterAddresses.other
         : chaingeMinterAddresses.KRC20
 
-      const krc20Token =  {
+      const krc20Token = {
         tick: fromToken.contractAddress,
-        dec: fromToken.decimals
+        dec: fromToken.decimals,
       }
 
       const info = await this.krc20Transactions.getKRC20Info(toAddress, krc20Token, fromAmount)
@@ -173,9 +175,3 @@ export default class Chainge {
     }
   }
 }
-
-export const [registerChaingeService, getChaingeService] = defineProxyService(
-  'ChaingeService',
-  (addresses: AccountAddresses, transactions: AccountTransactions, krc20Transactions: KRC20Transactions) =>
-    new Chainge(addresses, transactions, krc20Transactions),
-)

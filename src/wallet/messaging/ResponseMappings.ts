@@ -1,6 +1,7 @@
 import { Status } from '../Wallet'
 import { KRC20TokenRequest, UTXO } from '@/utils/interfaces'
 import { PriorityBuckets } from '../Node'
+import { AggregateSwapResponse } from '@chainge/api-tool-sdk'
 
 export interface ResponseMappings {
   'wallet:status': Status
@@ -28,7 +29,8 @@ export interface ResponseMappings {
   'account:estimateKRC20TransactionFee': string
   'provider:connect': void
   'provider:connection': string
-  'provider:disconnect': void
+  'provider:disconnect': void,
+  'account:submitChaingeOrder': AggregateSwapResponse
 }
 
 export interface Response<M extends keyof ResponseMappings = keyof ResponseMappings> {

@@ -5,7 +5,7 @@ import AccountAddresses from './account/AccountAddresses'
 import SessionStorage from '@/storage/SessionStorage'
 import AccountTransactions from './account/AccountTransactions'
 import KRC20Transactions from './krc20/KRC20Transactions'
-import { registerChaingeService } from './exchange/chainge'
+import Chainge from './exchange/chainge'
 
 export default class Account extends EventEmitter {
   processor: UtxoProcessor
@@ -13,6 +13,7 @@ export default class Account extends EventEmitter {
   context: UtxoContext
   transactions: AccountTransactions
   krc20Transactions: KRC20Transactions
+  chainge: Chainge
   node: Node
 
   constructor(node: Node) {
@@ -27,9 +28,9 @@ export default class Account extends EventEmitter {
     this.addresses = new AccountAddresses(this.context, node.networkId)
     this.transactions = new AccountTransactions(node.rpcClient, this.context, this.processor, this.addresses)
     this.krc20Transactions = new KRC20Transactions(node.rpcClient, this.context, this.processor, this.addresses, this.transactions)
+    this.chainge = new Chainge(this.addresses, this.transactions, this.krc20Transactions)
     this.transactions.setAccount(this)
 
-    registerChaingeService(this.addresses, this.transactions,  this.krc20Transactions)
 
     node.on('network', async (networkId: string) => {
       console.log('[Account] network event', networkId)
@@ -68,10 +69,6 @@ export default class Account extends EventEmitter {
     return [...pendingUTXOs, ...matureUTXOs]
   }
   
-  async sign(message: string) {
-    return signMessage()
-  }
-
   private registerProcessor() {
     console.log('[Account] Context data when processor is registered:', this.context)
 
