@@ -1,5 +1,5 @@
 import { formatNumberWithDecimal } from '@/utils/formatting'
-import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import { KaspaToken, Token } from '@/utils/interfaces'
 import { KRC20TokenResponse } from '@/utils/interfaces'
 import { getMarketCap } from '@/utils/formatting'

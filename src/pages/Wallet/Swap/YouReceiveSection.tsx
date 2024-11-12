@@ -1,6 +1,6 @@
 import React from 'react'
 import ChaingeTokenDropdown from '@/pages/Wallet/Swap/ChaingeTokenDropdown'
-import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
 import EstimatedCurrencyValue from '@/components/EstimatedCurrencyValue'
 

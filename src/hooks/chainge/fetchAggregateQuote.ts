@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 
 export interface ChaingeAggregateQuote {
   chain: string

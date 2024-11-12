@@ -3,7 +3,7 @@ import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/navigation/BottomNav'
 import TopNav from '@/components/navigation/TopNav'
 import NextButton from '@/components/buttons/NextButton'
-import { fetchChaingeTokens, ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import { ChaingeToken, useChaingeTokens } from '@/hooks/chainge/useChaingeTokens'
 import { ChaingeAggregateQuote, fetchAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
 import { useWalletTokens } from '@/hooks/wallet/useWalletTokens'
 import { useLocation } from 'react-router-dom'
@@ -19,7 +19,6 @@ import ErrorButton from '@/components/buttons/ErrorButton'
 import ReviewOrder from '@/pages/Wallet/Swap/ReviewOrder'
 
 export default function Swap() {
-  const [chaingeTokens, setChaingeTokens] = useState<ChaingeToken[]>([])
   const [payAmount, setPayAmount] = useState('')
   const [receiveAmount, setReceiveAmount] = useState('')
   const [aggregateQuote, setAggregateQuote] = useState<ChaingeAggregateQuote | null>(null)
@@ -33,28 +32,26 @@ export default function Swap() {
   const { token: locationToken } = location.state || {}
   const [payToken, setPayToken] = useState<ChaingeToken | null>(null)
   const [receiveToken, setReceiveToken] = useState<ChaingeToken | null>(null)
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Use the query to fetch Chainge tokens
+  const { data: chaingeTokens, isLoading, isError, error: queryError } = useChaingeTokens()
+
   useEffect(() => {
-    const loadTokens = async () => {
-      try {
-        const fetchedTokens = await fetchChaingeTokens()
-        const defaultPayToken = fetchedTokens.find((token) =>
-          locationToken ? token.symbol === locationToken.tick : token.symbol === 'KAS',
-        )
-        const defaultReceiveToken = fetchedTokens.find((token) => token.symbol === 'USDT')
-        setChaingeTokens(fetchedTokens)
-        setPayToken(defaultPayToken || fetchedTokens[0])
-        setReceiveToken(defaultReceiveToken || fetchedTokens[1])
-      } catch (err) {
-        setError(ErrorMessages.CHAINGE.FAILED_FETCH(err))
-      } finally {
-        setLoading(false)
-      }
+    if (isError) {
+      setError(ErrorMessages.CHAINGE.FAILED_FETCH(queryError))
+      return
     }
-    loadTokens()
-  }, [locationToken])
+
+    if (chaingeTokens) {
+      const defaultPayToken = chaingeTokens.find((token: ChaingeToken) =>
+        locationToken ? token.symbol === locationToken.tick : token.symbol === 'KAS',
+      )
+      const defaultReceiveToken = chaingeTokens.find((token: ChaingeToken) => token.symbol === 'USDT')
+      setPayToken(defaultPayToken || chaingeTokens[0])
+      setReceiveToken(defaultReceiveToken || chaingeTokens[1])
+    }
+  }, [chaingeTokens, locationToken, isError, queryError])
 
   const handlePayAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPayAmount(e.target.value)
@@ -74,7 +71,6 @@ export default function Swap() {
         try {
           const adjustedPayAmount = formatPayAmount(parseFloat(payAmount), payToken.decimals)
           const quote = await fetchAggregateQuote(payToken, receiveToken, adjustedPayAmount)
-          console.log('Aggregate Quote:', quote)
           setAggregateQuote(quote)
           setReceiveAmount(formatNumberWithDecimal(quote.outAmount, quote.chainDecimal).toString())
           setOutAmountUsd(formatNumberAbbreviated(Number(quote.outAmountUsd)))
@@ -116,7 +112,7 @@ export default function Swap() {
       <AnimatedMain className="flex flex-col h-screen w-full fixed">
         <div className="flex flex-col h-full justify-between p-4">
           <div>
-            {loading ? (
+            {isLoading ? (
               <SwapLoading />
             ) : (
               <>
@@ -156,7 +152,9 @@ export default function Swap() {
       <AnimatePresence>
         {isPayTokenSelectOpen && (
           <SwapTokenSelect
-            tokens={chaingeTokens.filter((chaingeToken) => chaingeToken.symbol !== receiveToken?.symbol)}
+            tokens={chaingeTokens?.filter(
+              (chaingeToken: ChaingeToken) => chaingeToken.symbol !== receiveToken?.symbol,
+            )}
             onSelectToken={selectToken}
             onClose={closePayTokenSelect}
           />
@@ -166,7 +164,9 @@ export default function Swap() {
       <AnimatePresence>
         {isReceiveTokenSelectOpen && (
           <SwapTokenSelect
-            tokens={chaingeTokens.filter((chaingeToken) => chaingeToken.symbol !== payToken?.symbol)}
+            tokens={chaingeTokens?.filter(
+              (chaingeToken: ChaingeToken) => chaingeToken.symbol !== payToken?.symbol,
+            )}
             onSelectToken={selectReceiveToken}
             onClose={closeReceiveTokenSelect}
           />

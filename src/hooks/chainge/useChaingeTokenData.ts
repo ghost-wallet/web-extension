@@ -1,4 +1,4 @@
-import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import useSettings from '@/hooks/contexts/useSettings'
 import { getCurrencySymbol } from '@/utils/currencies'
 import { formatTokenBalance, formatNumberAbbreviated } from '@/utils/formatting'

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import ChaingeTokenDropdown from '@/pages/Wallet/Swap/ChaingeTokenDropdown'
-import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import { validateAmountToSend } from '@/utils/validation'
 import ValueAndAvailableBalance from '@/pages/Wallet/Swap/ValueAndAvailableBalance'
 import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'

@@ -10,7 +10,9 @@ const EstimatedCurrencyValue: React.FC<EstimatedCurrencyValueProps> = ({
   formattedCurrencyValue,
 }) => {
   return (
-    <span className="text-mutedtext text-base">{`${currencySymbol}${formattedCurrencyValue ? formattedCurrencyValue : '0'}`}</span>
+    <span className="text-mutedtext text-base">{`${currencySymbol}${
+      formattedCurrencyValue ? formattedCurrencyValue : '0'
+    }`}</span>
   )
 }
 

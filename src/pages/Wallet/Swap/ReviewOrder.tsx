@@ -1,6 +1,6 @@
 import React from 'react'
 import ModalContainer from '@/components/ModalContainer'
-import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
 import ReviewOrderToken from '@/pages/Wallet/Swap/ReviewOrderToken'
 import NextButton from '@/components/buttons/NextButton'
@@ -71,7 +71,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           ]}
         />
       </div>
-      <div className="bottom-4 left-0 right-0 px-4 fixed">
+      <div className="pt-4">
         <NextButton text="Swap" onClick={() => {}} />
       </div>
     </ModalContainer>
