@@ -9,10 +9,11 @@ import useSettings from '@/hooks/contexts/useSettings'
 import TopNav from '@/components/navigation/TopNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import CloseButton from '@/components/buttons/CloseButton'
-import SearchBar from '@/components/SearchBar'
+import SearchBar from '@/components/search/SearchBar'
 import { KaspaToken, Token } from '@/utils/interfaces'
 import useInitializedEnabledTokens from '@/hooks/wallet/useInitializedEnabledTokens'
 import useToggleTokenVisibility from '@/hooks/wallet/useToggleTokenVisibility'
+import SearchResultsNotFound from '@/components/search/SearchResultsNotFound'
 
 const ManageTokens: React.FC = () => {
   const navigate = useNavigate()
@@ -22,9 +23,11 @@ const ManageTokens: React.FC = () => {
   const [enabledTokens, setEnabledTokens] = useInitializedEnabledTokens(tokens as Partial<Token>[])
   const toggleTokenVisibility = useToggleTokenVisibility(setEnabledTokens)
   const [filteredTokens, setFilteredTokens] = useState<(Token | KaspaToken)[]>(tokens)
+  const [searchTerm, setSearchTerm] = useState<string>('')
 
-  const handleSearch = (searchTerm: string) => {
-    const filtered = tokens.filter((token) => token.tick.toLowerCase().includes(searchTerm.toLowerCase()))
+  const handleSearch = (_searchTerm: string) => {
+    setSearchTerm(_searchTerm)
+    const filtered = tokens.filter((token) => token.tick.toLowerCase().includes(_searchTerm.toLowerCase()))
     setFilteredTokens(filtered)
   }
 
@@ -38,23 +41,27 @@ const ManageTokens: React.FC = () => {
         {errorMessage && (
           <ErrorMessage message={errorMessage} className="h-6 mb-4 mt-2 flex justify-center items-center" />
         )}
-        {!filteredTokens.length && !errorMessage && <Spinner />}
-        {filteredTokens.length > 0 && (
+        {!tokens.length && !errorMessage && <Spinner />}
+        {filteredTokens.length > 0 ? (
           <ul className="space-y-3 pb-28 pt-4">
             {filteredTokens
-              .filter((token) => token.tick !== 'KASPA')
+              // .filter((token) => token.tick !== 'KASPA')
               .map((token) => (
                 <li key={token.tick} className="w-full text-left transition-colors rounded-lg px-4">
                   <CryptoListItem
                     token={token}
                     currencySymbol={currencySymbol}
-                    showToggle={true}
+                    showToggle={token.tick !== 'KASPA'}
                     isEnabled={enabledTokens[token.tick] || false}
                     onToggle={() => toggleTokenVisibility(token.tick)}
                   />
                 </li>
               ))}
           </ul>
+        ) : (
+          <div className="p-4">
+            <SearchResultsNotFound searchTerm={searchTerm} filteredTokens={filteredTokens} />
+          </div>
         )}
       </AnimatedMain>
       <div

@@ -1,9 +1,9 @@
 import React from 'react'
 import KRC20TxnList from '@/pages/Wallet/Transactions/KRC20TxnList'
-import Spinner from '@/components/loaders/Spinner'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import { useKRC20Transactions } from '@/hooks/kasplex/useKRC20Transactions'
 import useSettings from '@/hooks/contexts/useSettings'
+import TransactionsLoading from '@/pages/Wallet/Transactions/TransactionsLoading'
 
 interface TransactionsHistoryProps {
   tick?: string
@@ -33,11 +33,7 @@ const KRC20TxnHistory: React.FC<TransactionsHistoryProps> = ({ tick }) => {
   }
 
   if (initialLoading) {
-    return (
-      <div className="mt-10 flex justify-center">
-        <Spinner />
-      </div>
-    )
+    return <TransactionsLoading />
   }
 
   if (error) {

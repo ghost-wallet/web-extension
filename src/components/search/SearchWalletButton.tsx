@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
-import SearchWalletResults from '@/components/SearchWalletResults'
+import SearchWalletResults from '@/components/search/SearchWalletResults'
 
 const SearchWalletButton: React.FC = () => {
   const [showSearch, setShowSearch] = useState(false)

@@ -5,13 +5,20 @@ import Header from '@/components/Header'
 import AnimatedMain from '@/components/AnimatedMain'
 import TransactionAmountDisplay from '@/pages/Wallet/Transactions/TransactionAmountDisplay'
 import TableSection from '@/components/table/TableSection'
-import { getKaspaExplorerUrl, getTransactionStatusText } from '@/utils/transactions'
+import {
+  getKasFyiTransactionUrl,
+  getKaspaExplorerTxsUrl,
+  getTransactionStatusText,
+} from '@/utils/transactions'
 import { formatTransactionDateAndTime } from '@/utils/grouping'
 import TruncatedCopyAddress from '@/components/TruncatedCopyAddress'
 import TopNav from '@/components/navigation/TopNav'
 import BottomNav from '@/components/navigation/BottomNav'
+import useSettings from '@/hooks/contexts/useSettings'
 
 export default function KRC20TxnDetails() {
+  const { settings } = useSettings()
+  const networkAddress = settings.nodes[settings.selectedNode].address
   const location = useLocation()
   const { operation, operationType, isMint, isReceived } = location.state || {}
   const { op, amt, hashRev, tick, mtsAdd, from, to, opAccept } = operation
@@ -40,7 +47,6 @@ export default function KRC20TxnDetails() {
         <div className="px-4">
           <TableSection
             rows={[
-              { label: 'Date', value: formatTransactionDateAndTime(mtsAdd) },
               {
                 label: 'Status',
                 value: (
@@ -49,13 +55,15 @@ export default function KRC20TxnDetails() {
                   </span>
                 ),
               },
+              { label: 'Date', value: formatTransactionDateAndTime(mtsAdd) },
               { label: 'From', value: <TruncatedCopyAddress address={from} /> },
               { label: 'To', value: <TruncatedCopyAddress address={to} /> },
+              { label: 'Txn ID', value: <TruncatedCopyAddress address={hashRev} /> },
               {
                 label: '',
                 value: (
                   <a
-                    href={getKaspaExplorerUrl(hashRev)}
+                    href={getKaspaExplorerTxsUrl(hashRev)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary hover:underline"
@@ -65,6 +73,24 @@ export default function KRC20TxnDetails() {
                 ),
                 isFullWidth: true,
               },
+              ...(networkAddress === 'mainnet'
+                ? [
+                    {
+                      label: '',
+                      value: (
+                        <a
+                          href={getKasFyiTransactionUrl(hashRev)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline"
+                        >
+                          View on Kas.Fyi
+                        </a>
+                      ),
+                      isFullWidth: true,
+                    },
+                  ]
+                : []),
             ]}
           />
         </div>

@@ -26,8 +26,8 @@ export default function ConfirmMint() {
     receiveAmount: number
     feeRate: number
   }
-  const serviceFee = payAmount * 0.1
-  const totalCost = (serviceFee + payAmount).toString()
+  const networkFee = parseFloat((payAmount * 0.1).toFixed(2))
+  const totalCost = (networkFee + payAmount).toString()
 
   const handleMint = async () => {
     setLoading(true)
@@ -91,7 +91,7 @@ export default function ConfirmMint() {
             </div>
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Network fee</span>
-              <span className="text-mutedtext text-base text-right">{serviceFee} KAS</span>
+              <span className="text-mutedtext text-base text-right">{networkFee} KAS</span>
             </div>
 
             <TotalCostToMint totalFees={totalCost} />

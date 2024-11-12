@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import ChaingeTokenDropdown from '@/pages/Wallet/Swap/ChaingeTokenDropdown'
-import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
-import { formatTokenBalance } from '@/utils/formatting'
-import useSettings from '@/hooks/contexts/useSettings'
-import { getCurrencySymbol } from '@/utils/currencies'
+import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
+import { validateAmountToSend } from '@/utils/validation'
+import ValueAndAvailableBalance from '@/pages/Wallet/Swap/ValueAndAvailableBalance'
+import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
+import { formatAndValidateAmount } from '@/utils/formatting'
 
 interface YouPaySectionProps {
   payAmount: string
   payToken: ChaingeToken | null
   openTokenSelect: () => void
   onAmountChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onAmountErrorChange?: (error: string | null) => void
   tokens: any[]
 }
 
@@ -18,26 +20,34 @@ const YouPaySection: React.FC<YouPaySectionProps> = ({
   payToken,
   openTokenSelect,
   onAmountChange,
+  onAmountErrorChange,
   tokens,
 }) => {
-  const { settings } = useSettings()
-  const currencySymbol = getCurrencySymbol(settings.currency)
+  const { currencySymbol, formattedCurrencyValue, formattedBalance, availableBalance, tokenSymbol } =
+    useChaingeTokenData(payAmount, payToken, tokens)
 
-  const payTokenSymbol = payToken?.symbol || 'KAS'
-  const payTokenData = tokens.find(
-    (token) => token.tick === payTokenSymbol || (token.tick === 'KASPA' && payTokenSymbol === 'KAS'),
-  )
+  const [amountError, setAmountError] = useState<string | null>(null)
 
-  const formattedBalance = payTokenData
-    ? formatTokenBalance(
-        Number(payTokenData.balance),
-        payTokenData.tick,
-        Number(payTokenData.dec),
-      ).toLocaleString()
-    : '0'
+  useEffect(() => {
+    validateAmountToSend(tokenSymbol, payAmount, formattedBalance, setAmountError)
+  }, [payAmount, formattedBalance, tokenSymbol])
 
-  const currencyValue = payTokenData ? (Number(payAmount) * payTokenData.floorPrice).toFixed(2) : '0.00'
-  const formattedCurrencyValue = Number(currencyValue).toLocaleString('en-US', { minimumFractionDigits: 2 })
+  useEffect(() => {
+    if (onAmountErrorChange) {
+      onAmountErrorChange(amountError)
+    }
+  }, [amountError, onAmountErrorChange])
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/[^0-9.]/g, '')
+    if (value.split('.').length > 2) {
+      return
+    }
+    const formattedValue = formatAndValidateAmount(value, payToken?.decimals || 0)
+    if (formattedValue === null) return
+    onAmountChange({ ...e, target: { ...e.target, value: formattedValue } })
+    validateAmountToSend(tokenSymbol, formattedValue, availableBalance, setAmountError)
+  }
 
   return (
     <div className="bg-darkmuted rounded-lg p-4">
@@ -46,16 +56,19 @@ const YouPaySection: React.FC<YouPaySectionProps> = ({
         <input
           type="text"
           value={payAmount}
-          onChange={onAmountChange}
+          onChange={handleAmountChange}
           placeholder="0"
-          className="bg-transparent text-primarytext placeholder-lightmuted text-2xl w-40"
+          className={`bg-transparent text-2xl w-40 placeholder-lightmuted ${
+            amountError ? 'text-error' : 'text-primarytext'
+          }`}
         />
         <ChaingeTokenDropdown selectedToken={payToken} openTokenSelect={openTokenSelect} />
       </div>
-      <div className="flex justify-between mt-2">
-        <span className="text-mutedtext text-base">{`≈ ${currencySymbol}${formattedCurrencyValue}`}</span>
-        <span className="text-mutedtext text-base">Available: {formattedBalance}</span>
-      </div>
+      <ValueAndAvailableBalance
+        currencySymbol={currencySymbol}
+        formattedCurrencyValue={formattedCurrencyValue}
+        formattedBalance={formattedBalance}
+      />
     </div>
   )
 }

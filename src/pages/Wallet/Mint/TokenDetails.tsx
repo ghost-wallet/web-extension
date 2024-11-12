@@ -29,7 +29,7 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
   const preMintedPercentage =
     !isNaN(token.pre) && !isNaN(token.max) && token.max > 0 ? getMintedPercentage(token.pre, token.max) : '0'
 
-  const formattedTokenPrice = tokenPriceFormatter(token.floorPrice)
+  const formattedTokenPrice = tokenPriceFormatter(token.floorPrice ?? 0)
 
   return (
     <div className="rounded-md py-2">
@@ -50,7 +50,7 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
                 value: `${currencySymbol}${formatMarketCapAbbreviated(
                   token.minted,
                   token.dec,
-                  token.floorPrice,
+                  token.floorPrice ?? 0,
                 )}`,
               },
               {

@@ -1,16 +1,14 @@
 import React from 'react'
-import TruncatedCopyAddress from '@/components/TruncatedCopyAddress'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import { Cog6ToothIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
-import SearchWalletButton from '@/components/SearchWalletButton'
+import SearchWalletButton from '@/components/search/SearchWalletButton'
 import ConnectingToNetwork from '@/components/ConnectingToNetwork'
-import useAccountName from '@/hooks/wallet/useAccountName'
+import TruncatedCopyAccountName from '@/components/TruncatedCopyAccountName'
 
 const TopNav: React.FC = () => {
   const { kaspa } = useKaspa()
   const navigate = useNavigate()
-  const accountName = useAccountName() || 'Account 1'
   return (
     <>
       <nav className="fixed top-0 w-full bg-bgdark border-b border-slightmuted p-4 z-40">
@@ -23,7 +21,7 @@ const TopNav: React.FC = () => {
           {/* Address or Connection Status */}
           <div className="flex-1 flex justify-left pl-3">
             {kaspa.connected ? (
-              <TruncatedCopyAddress account={accountName} address={kaspa.addresses[0]} />
+              <TruncatedCopyAccountName address={kaspa.addresses[0]} />
             ) : (
               <ConnectingToNetwork />
             )}

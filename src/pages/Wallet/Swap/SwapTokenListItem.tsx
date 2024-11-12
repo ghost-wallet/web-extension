@@ -1,5 +1,5 @@
 import React from 'react'
-import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import CryptoImage from '@/components/CryptoImage'
 
 interface SwapTokenListItemProps {

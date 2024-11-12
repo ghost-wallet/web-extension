@@ -30,13 +30,16 @@ const getKaspaExplorerBaseUrl = () => {
   return 'https://explorer.kaspa.org'
 }
 
-// TODO update the name to be getKaspaExplorerTxsUrl
-export const getKaspaExplorerUrl = (transactionId: string) => {
+export const getKaspaExplorerTxsUrl = (transactionId: string) => {
   return `${getKaspaExplorerBaseUrl()}/txs/${transactionId}`
 }
 
 export const getKaspaExplorerAddressUrl = (address: string) => {
   return `${getKaspaExplorerBaseUrl()}/addresses/${address}`
+}
+
+export const getKasFyiTransactionUrl = (transactionId: string) => {
+  return `https://kas.fyi/transaction/${transactionId}`
 }
 
 export const getTransactionStatusText = (operationType: string, opAccept: string, op: string): string => {

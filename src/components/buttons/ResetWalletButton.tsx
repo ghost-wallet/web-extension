@@ -23,6 +23,7 @@ const ResetWalletButton: React.FC = () => {
     }
   }
 
+  // TODO update to use error button component
   return (
     <div>
       <div className="flex gap-3 justify-start items-center mt-16 mb-8">
@@ -39,7 +40,7 @@ const ResetWalletButton: React.FC = () => {
           type="button"
           disabled={!isChecked}
           onClick={handleConfirm}
-          className={`w-full h-[52px] text-base font-semibold rounded-[25px] ${
+          className={`w-full h-[52px] text-base font-semibold rounded-lg ${
             isChecked
               ? 'bg-error text-secondarytext cursor-pointer hover:bg-hover'
               : 'bg-slightmuted text-secondarytext cursor-default'
