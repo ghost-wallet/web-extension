@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Tabs } from '../CreateWallet'
-import ghostIcon from '../../../assets/ghost.svg'
+import AnimatedMain from '@/components/AnimatedMain'
+import AnimatedGhostLogo from '@/components/AnimatedGhostLogo'
+import Checkbox from '@/components/Checkbox'
 
 export default function Landing({
   forward,
@@ -10,23 +12,17 @@ export default function Landing({
   const [enable, setEnable] = useState<boolean>(false)
 
   return (
-    <main className="pt-10 px-6">
-      <h1 className="text-primarytext text-4xl rubik font-bold text-center">GHOST</h1>
-      <p className="text-mutedtext text-base font-lato text-center mt-2">
-        Secure Kaspa wallet for KRC20 tokens.
-      </p>
-      <div className="flex justify-center mt-7 mb-32">
-        <img className="w-[123px] h-[123px]" src={ghostIcon} alt="logo" />
+    <AnimatedMain className="pt-10 px-4 overflow-y-scroll h-full">
+      <h1 className="text-primarytext text-4xl font-rubik font-bold text-center">GHOST</h1>
+      <p className="text-mutedtext text-base text-center mt-2">Secure Kaspa wallet for KRC20 tokens.</p>
+      <div className="flex justify-center mt-20 mb-8">
+        <AnimatedGhostLogo />
       </div>
-      <div className="flex gap-3 justify-center items-center">
-        <input
-          className="cursor-pointer transform scale-150"
-          onClick={() => setEnable(!enable)}
-          type="checkbox"
-        />
-        <p className="text-primarytext text-base font-lato">
+      <div className="flex gap-3 justify-center items-center mb-4">
+        <Checkbox checked={enable} onChange={setEnable} />
+        <p className="text-primarytext text-base">
           I agree to Ghost’s{' '}
-          <span className="text-primary text-base font-lato font-semibold">
+          <span className="text-primary text-base font-semibold hover:underline">
             <a href="https://www.ghostapp.org/terms-of-service" target="_blank" rel="noopener noreferrer">
               Terms of Service
             </a>
@@ -34,13 +30,13 @@ export default function Landing({
           .
         </p>
       </div>
-      <div className="fixed bottom-0 left-0 w-full px-6 pb-10 flex flex-col gap-3">
+      <div className="w-full pb-10 flex flex-col gap-3 mt-auto">
         <button
           onClick={() => {
             forward(Tabs.Password, 'create')
           }}
           disabled={!enable}
-          className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] transition-colors duration-300 ${
+          className={`w-full h-[3.25rem] text-base font-semibold rounded-full transition-colors duration-300 ${
             enable
               ? 'bg-primary text-secondarytext hover:bg-hoverprimary cursor-pointer'
               : 'bg-secondary text-secondarytext cursor-default'
@@ -53,7 +49,7 @@ export default function Landing({
             forward(Tabs.Password, 'import')
           }}
           disabled={!enable}
-          className={`w-full h-[52px] text-base font-lato font-semibold border-primary border rounded-[25px] transition-colors duration-300 ${
+          className={`w-full h-[3.25rem] text-base font-semibold border border-primary rounded-full transition-colors duration-300 ${
             enable
               ? 'text-primary cursor-pointer hover:border-hover'
               : 'border-secondary text-secondary cursor-default'
@@ -62,6 +58,6 @@ export default function Landing({
           Import Wallet
         </button>
       </div>
-    </main>
+    </AnimatedMain>
   )
 }

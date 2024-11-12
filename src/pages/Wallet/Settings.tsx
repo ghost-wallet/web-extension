@@ -1,26 +1,32 @@
 import React from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
-import BottomNav from '@/components/BottomNav'
-import Network from '@/pages/Wallet/Settings/Network'
-import Scan from '@/pages/Wallet/Settings/Scan'
-import LogOut from '@/pages/Wallet/Settings/LogOut'
-import Reset from '@/pages/Wallet/Settings/Reset'
+import LogoutButton from '@/pages/Wallet/Settings/LogoutButton'
+import ResetButton from '@/pages/Wallet/Settings/ResetButton'
 import Header from '@/components/Header'
+import AboutButton from '@/pages/Wallet/Settings/AboutButton'
+import DeveloperButton from '@/pages/Wallet/Settings/DeveloperButton'
+import BottomNav from '@/components/navigation/BottomNav'
+import AccountButton from '@/pages/Wallet/Settings/AccountButton'
 
 export default function Settings() {
   return (
     <>
-      <AnimatedMain>
-        <Header title="Settings" showBackButton={false} />
-        <Network />
-        <div className="mt-44 flex flex-col">
-          <Scan />
+      <AnimatedMain className="pt-5">
+        <Header title="Settings" showBackButton={true} />
+        <div className="mt-1 flex flex-col">
+          <AccountButton />
         </div>
         <div className="mt-1 flex flex-col">
-          <LogOut />
+          <AboutButton />
         </div>
         <div className="mt-1 flex flex-col">
-          <Reset />
+          <LogoutButton />
+        </div>
+        <div className="mt-1 flex flex-col">
+          <DeveloperButton />
+        </div>
+        <div className="mt-1 flex flex-col">
+          <ResetButton />
         </div>
       </AnimatedMain>
       <BottomNav />

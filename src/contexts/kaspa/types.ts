@@ -1,11 +1,14 @@
-import { Request, RequestMappings, ResponseMappings } from '@/wallet/messaging/messageMappings'
-import { Status } from '@/wallet/kaspa/wallet'
-import { UTXO } from '@/wallet/kaspa/account/account'
+import { Request, RequestMappings } from '@/wallet/messaging/RequestMappings'
+import { ResponseMappings } from '@/wallet/messaging/ResponseMappings'
+import { Status } from '@/wallet/Wallet'
+import { UTXO } from '@/utils/interfaces'
 
+//TODO: connected field should not have network strings, but something is setting those to become strings
+// it should only be true or false
 export interface IKaspa {
   status: Status
-  connected: boolean
-  addresses: [string[], string[]]
+  connected: boolean | 'mainnet' | 'testnet-10' | 'testnet-11'
+  addresses: string[]
   balance: number
   utxos: UTXO[]
   provider: string

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Status } from '@/wallet/kaspa/wallet'
+import { Status } from '@/wallet/Wallet'
 import useSettings from '../hooks/contexts/useSettings'
 import useKaspa from '../hooks/contexts/useKaspa'
 import usePromise from '../hooks/usePromise'
@@ -23,7 +23,6 @@ export default function Landing() {
       if (!kaspa.connected) {
         try {
           await request('node:connect', [settings.settings.nodes[settings.settings.selectedNode].address])
-          console.log('Successfully connected to the node.')
         } catch (error) {
           console.error('Error connecting to node:', error)
         }
@@ -31,7 +30,6 @@ export default function Landing() {
     }
 
     if (loadedSettings && loadedKaspa) {
-      // Perform node:connect after loading settings and kaspa
       connectNode()
 
       switch (kaspa.status) {
@@ -47,16 +45,7 @@ export default function Landing() {
         default:
       }
     }
-  }, [
-    loadedSettings,
-    loadedKaspa,
-    kaspa.connected,
-    kaspa.status,
-    request,
-    settings.settings.nodes,
-    settings.settings.selectedNode,
-    navigate,
-  ])
+  }, [loadedKaspa])
 
   return null
 }

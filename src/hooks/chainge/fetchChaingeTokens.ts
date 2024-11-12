@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { sortChaingeTokens } from '@/utils/sorting'
+import { unsupportedChaingeTokens } from '@/utils/constants/constants'
 
 export interface ChaingeToken {
   index: number
@@ -19,7 +20,7 @@ export interface ChaingeTokensList {
 const API_URL = 'https://api2.chainge.finance/v1/getAssetsByChain'
 const CACHE_KEY = 'chainge_tokens'
 const CACHE_TIMESTAMP_KEY = 'chainge_tokens_timestamp'
-const CACHE_DURATION = 10 * 60 * 1000 // 10 minutes
+const CACHE_DURATION = 60 * 60 * 1000 // 60 minutes
 
 export const fetchChaingeTokens = async (): Promise<ChaingeToken[]> => {
   const cachedTokens = localStorage.getItem(CACHE_KEY)
@@ -41,8 +42,9 @@ export const fetchChaingeTokens = async (): Promise<ChaingeToken[]> => {
     })
 
     if (response.data.code === 0 && response.data.data?.list) {
-      // Filter tokens based on krc20Tradeable being present and true
-      let tokenList = response.data.data.list.filter((token) => token.krc20Tradeable)
+      let tokenList = response.data.data.list.filter(
+        (token) => token.krc20Tradeable && !unsupportedChaingeTokens.includes(token.symbol),
+      )
 
       // Sort the tokens according to the priority order
       tokenList = sortChaingeTokens(tokenList)

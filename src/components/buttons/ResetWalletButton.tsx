@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import ErrorMessage from '@/components/ErrorMessage'
+import ErrorMessage from '@/components/messages/ErrorMessage'
+import ErrorMessages from '@/utils/constants/errorMessages'
+import Checkbox from '@/components/Checkbox'
 
 const ResetWalletButton: React.FC = () => {
   const { request } = useKaspa()
@@ -15,39 +17,30 @@ const ResetWalletButton: React.FC = () => {
       await request('wallet:reset', [])
       navigate('/')
     } catch (err: any) {
-      setError(`Error resetting wallet: ${err}`)
+      console.error(`${ErrorMessages.RESET.FAILED}:`, err)
+      setError(ErrorMessages.RESET.FAILED)
       setIsChecked(false)
     }
   }
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsChecked(e.target.checked)
-    setError('')
-  }
-
+  // TODO update to use error button component
   return (
     <div>
       <div className="flex gap-3 justify-start items-center mt-16 mb-8">
-        <input
-          type="checkbox"
-          id="reset-confirmation"
-          className="cursor-pointer transform scale-150"
-          checked={isChecked}
-          onChange={handleCheckboxChange}
-        />
-        <label htmlFor="reset-confirmation" className="text-mutedtext text-base font-lato">
-          I have direct access to my 12-word or 24-word secret recovery phrase.
+        <Checkbox checked={isChecked} onChange={setIsChecked} />
+        <label htmlFor="reset-confirmation" className="text-mutedtext text-base">
+          I have direct access to my 12-word secret recovery phrase.
         </label>
       </div>
 
-      {error && <ErrorMessage message={error} />}
+      {error && <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />}
 
-      <div className="w-full pb-10">
+      <div className="w-full pb-20">
         <button
           type="button"
           disabled={!isChecked}
           onClick={handleConfirm}
-          className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] ${
+          className={`w-full h-[52px] text-base font-semibold rounded-[25px] ${
             isChecked
               ? 'bg-error text-secondarytext cursor-pointer hover:bg-hover'
               : 'bg-slightmuted text-secondarytext cursor-default'

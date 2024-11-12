@@ -1,31 +1,50 @@
-import { formatBalance } from '@/utils/formatting'
+import { formatNumberWithDecimal } from '@/utils/formatting'
 import { ChaingeToken } from '@/hooks/chainge/fetchChaingeTokens'
+import { KaspaToken, Token } from '@/utils/interfaces'
+import { KRC20TokenResponse } from '@/utils/interfaces'
+import { getMarketCap } from '@/utils/formatting'
+import { MAX_MARKET_CAP_THRESHOLD } from '@/utils/constants/constants'
 
-export const sortTokensByValue = (
-  tokens: Array<{
-    tick: string
-    balance: string
-    floorPrice?: number
-    dec: string
-    opScoreMod: string
-  }>,
-) => {
+export const sortTokensByValue = (tokens: (Token | KaspaToken)[]) => {
   return tokens
-    .map(({ tick, balance, floorPrice = 0, dec, opScoreMod }) => {
-      let formattedBalance
+    .map((token) => {
+      let formattedBalance: number
 
       // Skip formatting for KASPA, because Kas already has decimals inserted
-      // TODO see where decimals were already inserted in previous sections?
-      if (tick === 'KASPA') {
-        formattedBalance = parseFloat(balance)
+      if (token.isKaspa) {
+        formattedBalance = token.balance
       } else {
-        formattedBalance = parseFloat(String(formatBalance(balance, dec)))
+        formattedBalance = formatNumberWithDecimal(token.balance, token.dec)
       }
 
-      const totalValue = floorPrice * formattedBalance
-      return { tick, balance, floorPrice, dec, opScoreMod, totalValue }
+      const totalValue = token.floorPrice * formattedBalance
+      return {
+        ...token,
+        totalValue,
+      }
     })
     .sort((a, b) => b.totalValue - a.totalValue) // Sort by total value
+}
+
+export const sortSearchResults = (krc20TokenList: KRC20TokenResponse[], ticker: string) => {
+  return krc20TokenList
+    .filter((token) => token.tick.toLowerCase().includes(ticker.toLowerCase()))
+    .map((token) => {
+      const marketCap = getMarketCap(token.minted, token.dec, token.floorPrice || 0)
+      return {
+        ...token,
+        marketCap,
+        isAbnormallyLarge: marketCap > MAX_MARKET_CAP_THRESHOLD,
+      }
+    })
+    .sort((a, b) => {
+      // 1. Prioritize deployed tokens
+      if (a.state === 'deployed' && b.state !== 'deployed') return -1
+      if (b.state === 'deployed' && a.state !== 'deployed') return 1
+
+      // 2. Sort alphabetically by ticker
+      return a.tick.localeCompare(b.tick)
+    })
 }
 
 export const sortChaingeTokens = (tokens: ChaingeToken[]): ChaingeToken[] => {

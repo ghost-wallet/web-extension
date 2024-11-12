@@ -9,14 +9,14 @@ interface PasswordInputProps {
 
 const PasswordInput: React.FC<PasswordInputProps> = ({ id, value, onChange, placeholder = '' }) => {
   return (
-    <div className="w-full mb-4">
+    <div className="w-full my-2">
       <input
         type="password"
         id={id}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full p-2 border border-muted bg-transparent text-base text-primarytext placeholder-mutedtext rounded"
+        className={`w-full p-2 pl-4 border border-slightmuted h-[52px] bg-bgdarker text-lg text-primarytext placeholder-muted rounded`}
       />
     </div>
   )

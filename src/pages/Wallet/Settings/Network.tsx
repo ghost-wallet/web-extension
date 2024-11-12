@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import useSettings from '@/hooks/contexts/useSettings'
 import useKaspa from '@/hooks/contexts/useKaspa'
+import ConnectingToNetwork from '@/components/ConnectingToNetwork'
 
 const Network: React.FC = () => {
   const { settings, updateSetting } = useSettings()
@@ -16,41 +17,34 @@ const Network: React.FC = () => {
     }
   }
 
-  useEffect(() => {
-    if (!kaspa.connected) {
-      request('node:connect', [settings.nodes[settings.selectedNode].address]).catch((error) =>
-        console.error('WebSocket connection error:', error),
-      )
-    }
-  }, [kaspa.connected, request, settings.nodes, settings.selectedNode])
-
   return (
     <>
       <div className="flex items-center justify-center gap-2 mb-2">
-        <h1 className="text-primarytext text-base font-lato">Network</h1>
         <span
-          className={`px-2 py-1 ${
-            kaspa.connected ? 'text-success text-base font-lato' : 'text-mutedtext text-base font-lato'
-          }`}
+          className={`px-2 py-1 ${kaspa.connected ? 'text-success text-base' : 'text-mutedtext text-base'}`}
         >
-          {kaspa.connected ? 'Connected to Mainnet' : 'Connecting...'}
+          {kaspa.connected ? (
+            `Connected to ${settings.nodes[settings.selectedNode].address}`
+          ) : (
+            <ConnectingToNetwork />
+          )}
         </span>
       </div>
 
-      <div className="flex flex-col gap-2">
-        {/*<div className="flex gap-1 mx-1">*/}
-        {/*  <select*/}
-        {/*    value={settings.selectedNode.toString()}*/}
-        {/*    onChange={handleNodeChange}*/}
-        {/*    className="w-full py-2 px-2 border rounded border-muted bg-bgdarker text-base text-primarytext cursor-pointer"*/}
-        {/*  >*/}
-        {/*    {settings.nodes.map((node, id) => (*/}
-        {/*      <option key={id} value={id.toString()}>*/}
-        {/*        {node.address}*/}
-        {/*      </option>*/}
-        {/*    ))}*/}
-        {/*  </select>*/}
-        {/*</div>*/}
+      <div className="flex flex-col gap-2 px-4 pb-2">
+        <div className="flex gap-1 mx-1">
+          <select
+            value={settings.selectedNode.toString()}
+            onChange={handleNodeChange}
+            className="w-full py-2 px-2 border rounded border-muted bg-bgdarker text-base text-primarytext cursor-pointer"
+          >
+            {settings.nodes.map((node, id) => (
+              <option key={id} value={id.toString()}>
+                {node.address}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
     </>
   )

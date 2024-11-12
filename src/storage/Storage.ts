@@ -3,13 +3,21 @@ import browser from 'webextension-polyfill'
 export default abstract class Storage<IStorage extends Record<string, any> = Record<string, any>> {
   abstract storage: browser.Storage.StorageArea
 
-  async get<key extends keyof IStorage>(key: key, defaultValue: IStorage[key]): Promise<IStorage[key]> {
+  async get<key extends keyof IStorage>(
+    key: key,
+    defaultValue?: IStorage[key],
+  ): Promise<IStorage[key] | null> {
     if (typeof key !== 'string') throw new Error('key must be a string')
+
     try {
       const result = await this.storage.get(key as string)
+      if (result[key as string] === undefined) {
+        return defaultValue !== undefined ? defaultValue : null
+      }
       return JSON.parse(result[key as string])
     } catch (err) {
-      return defaultValue
+      console.error(`Error retrieving or parsing key "${key}":`, err)
+      return defaultValue !== undefined ? defaultValue : null
     }
   }
 

@@ -1,13 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from 'tailwindcss'
-import { ManifestV3Export, crx } from '@crxjs/vite-plugin'
+import { crx, ManifestV3Export } from '@crxjs/vite-plugin'
 import * as path from 'path'
 
 const manifest: ManifestV3Export = {
   manifest_version: 3,
   name: 'Ghost',
-  version: '0.0.0.4',
+  version: '0.0.5',
   icons: {
     48: 'assets/ghost-outline-thick-48.png',
     128: 'assets/ghost-outline-128.png',
@@ -16,34 +16,40 @@ const manifest: ManifestV3Export = {
   action: {
     default_popup: 'index.html',
   },
+  side_panel: {
+    default_path: 'index.html',
+  },
   background: {
-    service_worker: 'src/wallet/initializeWallet.ts',
+    service_worker: 'src/wallet/walletServiceWorker.ts',
     type: 'module',
   },
-  content_scripts: [
-    {
-      matches: ['<all_urls>'],
-      js: ['src/provider'],
-      run_at: 'document_start',
-    },
-  ],
-  permissions: ['storage', 'alarms', 'notifications'],
-  // this is an ID for firefox, but the `ManifestV3Export` type doesn't have it
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  browser_specific_settings: {
-    gecko: {
-      id: 'wallet@kaspian.dev',
-    },
-  },
+  permissions: ['storage', 'alarms', 'notifications', 'sidePanel'],
+  // browser_specific_settings: {
+  //   gecko: {
+  //     id: 'ghostappwallet@gmail.com',
+  //   },
+  // },
   content_security_policy: {
     extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
-  }
+  },
+  host_permissions: [
+    'https://*.kaspa.stream/*',
+    'https://storage.googleapis.com/kspr-api-v1/*',
+    'https://api.coingecko.com/*',
+    'https://*.kas.fyi/*',
+    'https://api.kaspa.org/*',
+    'https://*.kasplex.org/*',
+    'https://api.ghostwallet.org/*',
+    'https://*.kaspa.blue/*',
+  ],
 }
 
-// https://vitejs.dev/config/
+// Pass the version as a global variable
 export default defineConfig({
   plugins: [react(), crx({ manifest })],
+  define: {
+    __APP_VERSION__: JSON.stringify((manifest as any).version),
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),

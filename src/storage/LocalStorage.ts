@@ -4,18 +4,13 @@ import Storage from './Storage'
 
 export interface IWallet {
   encryptedKey: string
-  accounts: IAccount[]
-}
-
-export interface IAccount {
-  name: string
-  receiveCount: number
-  changeCount: number
+  tokens: { [tick: string]: { isHidden: boolean } }
+  accountName: string
 }
 
 export interface ILocalStorage {
   settings: ISettings
-  wallet: IWallet | undefined
+  wallet: IWallet
 }
 
 export default new (class LocalStorage extends Storage<ILocalStorage> {

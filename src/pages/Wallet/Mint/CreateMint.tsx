@@ -1,60 +1,87 @@
 import React, { useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import BottomNav from '@/components/BottomNav'
+import { useLocation, useNavigate } from 'react-router-dom'
+import BottomNav from '@/components/navigation/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
-import { Krc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
-import { formatBalance } from '@/utils/formatting'
+import { KRC20TokenResponse } from '@/utils/interfaces'
+import { formatNumberWithDecimal } from '@/utils/formatting'
+import useKaspa from '@/hooks/contexts/useKaspa'
+import CryptoImage from '@/components/CryptoImage'
+import MintAmountInput from '@/pages/Wallet/Mint/CreateMint/MintAmountInput'
+import MintSummary from '@/pages/Wallet/Mint/CreateMint/MintSummary'
+import MintRateInfo from '@/pages/Wallet/Mint/CreateMint/MintRateInfo'
+import NextButton from '@/components/buttons/NextButton'
+import useMintErrorHandling from '@/pages/Wallet/Mint/CreateMint/hooks/useMintErrorHandling'
+import useMintValidation from '@/pages/Wallet/Mint/CreateMint/hooks/useMintValidation'
+import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
+import TopNav from '@/components/navigation/TopNav'
 
 export default function CreateMint() {
+  const { kaspa } = useKaspa()
+  const navigate = useNavigate()
   const location = useLocation()
-  const token = location.state?.token as Krc20TokenInfo
+  const token = location.state?.token as KRC20TokenResponse
 
-  const [mintAmount, setMintAmount] = useState(1)
+  const [mintAmount, setMintAmount] = useState<number | null>(null)
+  const [showDialog, setShowDialog] = useState(false)
 
-  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMintAmount(Number(e.target.value))
-  }
+  const totalMintCost = mintAmount ? formatNumberWithDecimal(token.lim, token.dec) * mintAmount : 0
+  const mintRate = formatNumberWithDecimal(token.lim, token.dec)
+  const totalSupply = formatNumberWithDecimal(token.max, token.dec)
+  const availableSupply = formatNumberWithDecimal(token.max - token.minted, token.dec)
 
-  // Handler for input changes with value clamping to 1-10000 range
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Math.min(10000, Math.max(1, Number(e.target.value) || 0))
-    setMintAmount(value)
+  const { isMintAmountValid } = useMintValidation(mintAmount, totalMintCost, availableSupply, totalSupply)
+  const exceedsBalance = mintAmount !== null && mintAmount + kaspa.balance * 0.1 + 25 > kaspa.balance
+  const exceedsSupply = mintAmount !== null && totalMintCost > availableSupply
+  const error = useMintErrorHandling(
+    mintAmount,
+    kaspa.balance,
+    kaspa.connected,
+    exceedsBalance,
+    exceedsSupply,
+    availableSupply,
+  )
+
+  const handleNext = () => {
+    if (isMintAmountValid && !error) {
+      navigate(`/mint/${token.tick}/review`, {
+        state: {
+          token,
+          payAmount: mintAmount,
+          receiveAmount: totalMintCost,
+        },
+      })
+    } else {
+      setShowDialog(true)
+    }
   }
 
   return (
     <>
-      <AnimatedMain>
-        <Header title="Create Mint" showBackButton={true} />
-        <div className="p-4">
-          <div className="rounded-base text-mutedtext text-base font-lato text-center mb-6">
-            Mint rate: {formatBalance(token.lim, token.dec).toLocaleString()} {token.tick} per 1 KAS
-          </div>
-          {/* Slider and Input for Mint Amount */}
-          <div className="flex flex-col items-center space-y-4">
-            {/* Slider */}
-            <input
-              type="range"
-              min="1"
-              max="10000"
-              value={mintAmount}
-              onChange={handleSliderChange}
-              className="w-full cursor-pointer"
-            />
-            {/* Input Field */}
-            <input
-              type="number"
-              min="1"
-              max="10000"
-              value={mintAmount}
-              onChange={handleInputChange}
-              className="w-full bg-darkmuted p-2 border border-muted rounded-lg text-primarytext text-center"
-              placeholder="Enter mint amount"
-            />
-          </div>
+      <TopNav />
+      <AnimatedMain className="flex flex-col h-screen fixed w-full">
+        <Header title={`Mint ${token.tick}`} showBackButton={true} />
+        <div className="flex flex-col flex-grow px-4">
+          <CryptoImage ticker={token.tick} size={'large'} />
+          <MintAmountInput
+            mintAmount={mintAmount}
+            onSliderChange={(e) => setMintAmount(Number(e.target.value))}
+            onInputChange={(e) => setMintAmount(e.target.value === '' ? null : Number(e.target.value))}
+          />
+          <MintSummary totalMintCost={totalMintCost} mintAmount={mintAmount} tokenTick={token.tick} />
+          <MintRateInfo mintRate={mintRate} tokenTick={token.tick} />
         </div>
       </AnimatedMain>
+      <div className="fixed bottom-20 left-0 right-0 px-4">
+        <NextButton buttonEnabled={true} onClick={handleNext} />
+      </div>
       <BottomNav />
+      <PopupMessageDialog
+        message={error}
+        onClose={() => setShowDialog(false)}
+        isOpen={showDialog}
+        title="Cannot mint"
+      />
     </>
   )
 }

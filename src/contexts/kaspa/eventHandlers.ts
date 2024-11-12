@@ -1,5 +1,5 @@
 import { Dispatch } from 'react'
-import { Event } from '@/wallet/messaging/messageMappings'
+import { Event } from '@/wallet/messaging/RequestMappings'
 import { Action } from './types'
 
 export const handleNodeConnectionEvent = async (
@@ -30,26 +30,12 @@ export const handleAccountBalanceEvent = async (
   }
 }
 
-export const handleAccountAddressesEvent = (dispatch: Dispatch<Action<any>>, message: Event) => {
-  dispatch({
-    type: 'addresses',
-    payload: ({ addresses }: { addresses: [string[], string[]] | unknown }) => {
-      if (
-        Array.isArray(addresses) &&
-        addresses.length === 2 &&
-        Array.isArray(addresses[0]) &&
-        Array.isArray(addresses[1]) &&
-        Array.isArray(message.data) &&
-        message.data.length === 2 &&
-        Array.isArray(message.data[0]) &&
-        Array.isArray(message.data[1])
-      ) {
-        return [
-          [...addresses[0], ...message.data[0]],
-          [...addresses[1], ...message.data[1]],
-        ] as [string[], string[]]
-      }
-      return addresses as [string[], string[]]
-    },
-  })
+export const handleAccountAddressesEvent = async (dispatch: Dispatch<Action<any>>, request: any) => {
+  try {
+    const addresses = await request('account:addresses', [])
+    console.log('eventHandlers handleAccountAddressesEvent addresses', addresses)
+    dispatch({ type: 'addresses', payload: addresses })
+  } catch (error) {
+    console.error('[KaspaContextProvider] Error fetching addresses:', error)
+  }
 }

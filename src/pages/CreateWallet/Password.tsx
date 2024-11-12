@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import PasswordInput from '@/components/inputs/PasswordInput'
-import ErrorMessage from '@/components/ErrorMessage'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
+import NextButton from '@/components/buttons/NextButton'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 interface PasswordProps {
   onPasswordSet: (password: string) => void
@@ -20,10 +22,10 @@ export default function Password({ onPasswordSet }: PasswordProps) {
 
   const validatePasswords = (password: string, confirmPassword: string) => {
     if (password.length > 0 && password.length < 8) {
-      setError('Must be at least 8 characters')
+      setError(ErrorMessages.PASSWORD.TOO_SHORT)
       setIsValid(false)
     } else if (password.length >= 8 && password !== confirmPassword && confirmPassword.length > 0) {
-      setError('Passwords do not match')
+      setError(ErrorMessages.PASSWORD.MISMATCH)
       setIsValid(false)
     } else if (password.length >= 8 && password === confirmPassword) {
       setError('')
@@ -49,9 +51,10 @@ export default function Password({ onPasswordSet }: PasswordProps) {
   }
 
   return (
-    <AnimatedMain showConnectingMessage={false}>
+    <AnimatedMain showConnectingMessage={false} className="flex flex-col h-screen pt-5">
       <Header title="Create Password" showBackButton={true} />
-      <form className="flex flex-col items-center pt-36 px-6">
+
+      <div className="flex flex-col items-center flex-grow justify-center px-4 space-y-4">
         <PasswordInput
           id="password"
           value={password}
@@ -64,21 +67,16 @@ export default function Password({ onPasswordSet }: PasswordProps) {
           onChange={handleConfirmPasswordChange}
           placeholder="Confirm password"
         />
-        {error && <ErrorMessage message={error} />}
-      </form>
-      <div className="fixed bottom-0 left-0 w-full px-6 pb-10">
-        <button
-          type="button"
-          disabled={!isValid}
-          onClick={handleContinueClick}
-          className={`w-full h-[52px] text-base font-lato font-semibold rounded-[25px] ${
-            isValid
-              ? 'bg-primary text-secondarytext cursor-pointer hover:bg-hover'
-              : 'bg-secondary text-secondarytext cursor-default'
-          }`}
-        >
-          Continue
-        </button>
+
+        <div className="h-6">
+          {error && (
+            <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />
+          )}
+        </div>
+      </div>
+
+      <div className="w-full px-4 pb-10">
+        <NextButton onClick={handleContinueClick} buttonEnabled={isValid} />
       </div>
     </AnimatedMain>
   )

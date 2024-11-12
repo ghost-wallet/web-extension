@@ -1,29 +1,24 @@
 import { useState } from 'react'
 import { validateRecipient, validateAmountToSend } from '@/utils/validation'
+import { formatAndValidateAmount } from '@/utils/formatting'
 
-export const useTransactionInputs = (token: any, maxAmount: string) => {
+export const useTransactionInputs = (token: any, maxAmount: string, yourAddress: string) => {
   const [outputs, setOutputs] = useState<[string, string][]>([['', '']])
   const [recipientError, setRecipientError] = useState<string | null>(null)
   const [amountError, setAmountError] = useState<string | null>(null)
 
-  const handleRecipientChange = (value: string, request: any) => {
+  const handleRecipientChange = (recipientAddress: string, request: any) => {
     setOutputs((prevOutputs) => {
       const newOutputs = [...prevOutputs]
-      newOutputs[0][0] = value
+      newOutputs[0][0] = recipientAddress
       return newOutputs
     })
 
-    validateRecipient(request, value, setRecipientError)
+    validateRecipient(request, recipientAddress, yourAddress, token.isKaspa, setRecipientError)
   }
 
   const handleAmountChange = (value: string) => {
-    const decimalPlaces = value.split('.')[1]?.length || 0
-    if (decimalPlaces > token.dec) return
-
-    if (value.startsWith('.') && value.length > 1) {
-      value = `0${value}`
-    }
-
+    formatAndValidateAmount(value, token.dec)
     setOutputs((prevOutputs) => {
       const newOutputs = [...prevOutputs]
       newOutputs[0][1] = value

@@ -1,55 +1,54 @@
-import React from 'react'
-import { FEE_TYPES } from '@/utils/constants'
-import { ArrowUturnRightIcon } from '@heroicons/react/24/solid'
+import React, { useState, useEffect } from 'react'
+import TableSection from '@/components/table/TableSection'
 
 interface FeePrioritySelectorProps {
   currentFeeTypeIndex: number
   estimatedFee: string
-  estimatedSeconds: number
   isButtonEnabled: boolean
-  onFeeTypeClick: () => void
+  onFeeTypeClick: (index: number) => void
 }
+
+const FEE_TYPE_LABELS = ['Average', 'Fast', 'Faster']
 
 const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
   currentFeeTypeIndex,
   estimatedFee,
-  estimatedSeconds,
   isButtonEnabled,
   onFeeTypeClick,
 }) => {
-  const feeTypeText = FEE_TYPES[currentFeeTypeIndex]
-  console.log('Fee priority:', feeTypeText)
+  const [animate, setAnimate] = useState(false)
+
+  useEffect(() => {
+    setAnimate(true)
+    const timer = setTimeout(() => setAnimate(false), 300) // Duration should match animation duration
+    return () => clearTimeout(timer)
+  }, [currentFeeTypeIndex, estimatedFee])
 
   return (
     <>
-      <div className="w-full text-left text-mutedtext font-lato font-light text-base px-4 pt-2">
-        <div
-          className={`${
-            isButtonEnabled ? 'bg-primary hover:cursor-pointer' : 'bg-muted'
-          } text-secondarytext rounded-lg px-2 py-1 inline-flex items-center`}
-          onClick={isButtonEnabled ? onFeeTypeClick : undefined}
-          style={{ userSelect: 'none' }} // Prevent text selection
-        >
-          <ArrowUturnRightIcon className="h-5 w-5 mr-1" />
-          <span className="font-bold">
-            {feeTypeText.charAt(0).toUpperCase() + feeTypeText.slice(1)} ~{' '}
-            {estimatedSeconds >= 60
-              ? `${parseFloat((estimatedSeconds / 60).toPrecision(2))} minute${
-                  parseFloat((estimatedSeconds / 60).toPrecision(2)) !== 1 ? 's' : ''
-                }`
-              : estimatedSeconds < 1
-                ? `${parseFloat(estimatedSeconds.toPrecision(1))} second${
-                    parseFloat(estimatedSeconds.toPrecision(1)) !== 1 ? 's' : ''
-                  }`
-                : `${parseFloat(estimatedSeconds.toPrecision(1))} second${
-                    parseFloat(estimatedSeconds.toPrecision(1)) !== 1 ? 's' : ''
-                  }`}
-          </span>
-        </div>
+      <div className="w-full flex text-mutedtext text-base py-2 px-4 gap-2">
+        {FEE_TYPE_LABELS.map((type, index) => (
+          <button
+            key={type}
+            onClick={() => onFeeTypeClick(index)}
+            className={`flex-grow px-3 py-2 rounded-lg ${
+              currentFeeTypeIndex === index
+                ? 'bg-primary text-secondarytext'
+                : 'bg-slightmuted text-primarytext'
+            }`}
+            style={{ userSelect: 'none' }}
+            disabled={!isButtonEnabled}
+          >
+            {type}
+          </button>
+        ))}
       </div>
-      <div className="w-full text-left text-mutedtext font-lato font-light text-base px-4 pb-4">
-        Fee: {estimatedFee ? `${estimatedFee} KAS` : <span className="invisible">Fee Placeholder</span>}
-      </div>
+
+      <TableSection
+        title=""
+        rows={[{ label: 'Network fee', value: estimatedFee ? `${estimatedFee} KAS` : '' }]}
+        className={`px-4 py-1 ${animate ? 'fade-animation' : ''}`}
+      />
     </>
   )
 }

@@ -1,21 +1,17 @@
 import React from 'react'
 import Header from '@/components/Header'
 import AnimatedMain from '@/components/AnimatedMain'
-import BottomNav from '@/components/BottomNav'
+import BottomNav from '@/components/navigation/BottomNav'
 import ResetWalletButton from '@/components/buttons/ResetWalletButton'
+import { WarningMessages } from '@/utils/constants/warningMessages'
 
 const ConfirmReset: React.FC = () => {
   return (
     <>
-      <AnimatedMain>
+      <AnimatedMain className="pt-5">
         <Header title="Reset Wallet" showBackButton={true} />
         <div className="px-6">
-          <p className="text-warning text-base font-lato text-center pt-6 pb-10">
-            Are you sure you want to reset your Ghost extension? This action cannot be undone and will erase
-            all your data. The only way to regain access to your wallet is with your 12-word or 24-word secret
-            recovery phrase. It's not necessary to remember your password, as you will be prompted to create a
-            new one.
-          </p>
+          <p className="text-warning text-base text-justify pt-6 pb-10">{WarningMessages.RESET_WALLET}</p>
           <ResetWalletButton />
         </div>
       </AnimatedMain>

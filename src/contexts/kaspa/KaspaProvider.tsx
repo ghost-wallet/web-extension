@@ -8,14 +8,8 @@ import {
   handleNodeConnectionEvent,
   handleAccountAddressesEvent,
 } from './eventHandlers'
-import {
-  Event,
-  isEvent,
-  Request,
-  RequestMappings,
-  Response,
-  ResponseMappings,
-} from '@/wallet/messaging/messageMappings'
+import { Request, RequestMappings, isEvent, Event } from '@/wallet/messaging/RequestMappings'
+import { Response, ResponseMappings } from '@/wallet/messaging/ResponseMappings'
 
 export function KaspaProvider({ children }: { children: ReactNode }) {
   const [kaspa, dispatch] = useReducer(kaspaReducer, defaultState)
@@ -73,7 +67,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
         await handleAccountBalanceEvent(dispatch, message, request)
         break
       case 'account:addresses':
-        handleAccountAddressesEvent(dispatch, message)
+        await handleAccountAddressesEvent(dispatch, request)
         break
       case 'provider:connection':
         dispatch({ type: 'provider', payload: message.data })
