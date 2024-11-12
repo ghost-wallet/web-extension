@@ -10,7 +10,7 @@ const SearchResultsNotFound: React.FC<SearchResultsNotFoundProps> = ({ searchTer
   return (
     filteredTokens.length === 0 && (
       <p className="text-mutedtext text-base text-justify">
-        You don't have any {searchTerm.toUpperCase()} in your wallet. Transfer KRC20 tokens into your wallet
+        You don't have any {searchTerm.toUpperCase()} in your wallet. Transfer KRC20 tokens to your wallet
         using your receive address and they will appear here.
       </p>
     )
