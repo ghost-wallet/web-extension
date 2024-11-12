@@ -23,21 +23,6 @@ export default new (class KeyManager {
     return this.decryptedKey
   }
 
-  getPrivateKeys(parsedTransaction: Transaction, addresses: AccountAddresses): PrivateKey[] {
-    const keyGenerator = this.createKeyGenerator()
-    const privateKeys = []
-
-    for (let address of parsedTransaction.addresses(addresses.networkId)) {
-      if (address.version === 'ScriptHash') {
-        continue
-      }
-      const [isReceive, index] = addresses.findIndexes(address.toString())
-      privateKeys.push(isReceive ? keyGenerator.receiveKey(index) : keyGenerator.changeKey(index))
-    }
-
-    return privateKeys
-  }
-
   createKeyGenerator(): PrivateKeyGenerator {
     const mnemonic = new Mnemonic(this.getDecryptedKey())
     const seed = mnemonic.toSeed()

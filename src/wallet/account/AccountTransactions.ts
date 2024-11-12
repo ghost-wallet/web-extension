@@ -135,7 +135,15 @@ export default class AccountTransactions extends EventEmitter {
 
     for (const transaction of transactions) {
       const parsedTransaction = Transaction.deserializeFromSafeJSON(transaction)
-      const privateKeys = KeyManager.getPrivateKeys(parsedTransaction, this.addresses)
+      const privateKeys = []
+
+      for (let address of parsedTransaction.addresses(this.addresses.networkId)) {
+        if (address.version === 'ScriptHash') {
+          continue
+        }
+        const [isReceive, index] = this.addresses.findIndexes(address.toString())
+        privateKeys.push(isReceive ? keyGenerator.receiveKey(index) : keyGenerator.changeKey(index))
+      }
       const signedTransaction = signTransaction(parsedTransaction, privateKeys, false)
 
       for (const custom of customs) {
