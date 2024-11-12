@@ -7,6 +7,7 @@ import NextButton from '@/components/buttons/NextButton'
 import { ChaingeAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
 import { formatNumberWithDecimal } from '@/utils/formatting'
 import ReviewOrderQuote from '@/pages/Wallet/Swap/ReviewOrderQuote'
+import useKaspa from '@/hooks/contexts/useKaspa'
 
 interface ReviewOrderProps {
   payToken: ChaingeToken
@@ -24,6 +25,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   onClose,
 }) => {
   const { currencySymbol, formattedCurrencyValue } = useChaingeTokenData(payAmount, payToken, [])
+  const { request } = useKaspa()
 
   return (
     <ModalContainer title="Review Order" onClose={onClose}>
@@ -49,7 +51,15 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
         <ReviewOrderQuote aggregateQuote={aggregateQuote} receiveToken={receiveToken} />
       </div>
       <div className="pt-4">
-        <NextButton text="Swap" onClick={() => {}} />
+        <NextButton text="Swap" onClick={() => {
+          request('account:submitChaingeOrder', [{
+            fromAmount: payAmount,
+            fromToken: payToken,
+            toToken: receiveToken,
+            quote: aggregateQuote,
+            feeRate: 1 // TODO use real feeRate
+          }])
+        }} />
       </div>
     </ModalContainer>
   )
