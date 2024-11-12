@@ -96,6 +96,7 @@ export default class Chainge {
     // Computed minimum, After calculating the minimum value, we need to convert it to the decimals of the target chain.
     const miniAmount = BigNumber(receiveAmountHr)
       .multipliedBy(BigNumber(1 - parseFloat(slippage) * 0.01))
+      .decimalPlaces(chainDecimal)
       .toString()
     const miniAmountForExtra = parseUnits(miniAmount, chainDecimal).toString()
 
@@ -113,7 +114,7 @@ export default class Chainge {
 
     const sourceCertsObj = {
       amount,
-      fromIndex: fromToken.index,
+      fromIndex: fromToken.index.toString(),
       fromChain: 'KAS',
       fromAddr: fromAddress,
       certHash: transactionId,
@@ -135,13 +136,15 @@ export default class Chainge {
 
     console.log('[Chainge] sourceCertsHex', sourceCertsHex)
 
+    const slippageFormat = (Number(slippage) * 100).toFixed(0)
+
     const params = {
       sourceCerts: sourceCertsHex,
       orderType: '2',
-      toIndex: toToken.index,
+      toIndex: toToken.index.toString(),
       toChain: 'KAS',
       toAddr: fromAddress,
-      slippage: slippage,
+      slippage: slippageFormat.toString(),
       execStrategy: '',
       extra: extra,
       triggerPrice: '0',
