@@ -2,6 +2,7 @@ import React from 'react'
 import CryptoImage from '@/components/CryptoImage'
 import EstimatedCurrencyValue from '@/components/EstimatedCurrencyValue'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
+import { formatNumberAbbreviated } from '@/utils/formatting'
 
 interface ReviewOrderTokenProps {
   title: string
@@ -31,7 +32,7 @@ const ReviewOrderToken: React.FC<ReviewOrderTokenProps> = ({
         </span>
       </div>
       <h2 className="text-primarytext text-2xl font-semibold mt-1">
-        {amount} {token.symbol}
+        {formatNumberAbbreviated(Number(amount))} {token.symbol}
       </h2>
     </div>
   </div>

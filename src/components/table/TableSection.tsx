@@ -5,9 +5,10 @@ interface TableSectionProps {
   title?: string
   rows: { label: string; value: React.ReactNode; isFullWidth?: boolean }[]
   className?: string
+  reversedColors?: boolean
 }
 
-const TableSection: React.FC<TableSectionProps> = ({ title, rows, className }) => {
+const TableSection: React.FC<TableSectionProps> = ({ title, rows, className, reversedColors = false }) => {
   return (
     <div className={className}>
       {title && <h1 className="text-lg text-mutedtext mb-2">{title}</h1>}
@@ -15,7 +16,13 @@ const TableSection: React.FC<TableSectionProps> = ({ title, rows, className }) =
         <table className="w-full">
           <tbody>
             {rows.map((row, index) => (
-              <TableRow key={index} label={row.label} value={row.value} isFullWidth={row.isFullWidth} />
+              <TableRow
+                key={index}
+                label={row.label}
+                value={row.value}
+                isFullWidth={row.isFullWidth}
+                reversedColors={reversedColors}
+              />
             ))}
           </tbody>
         </table>

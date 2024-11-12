@@ -21,7 +21,8 @@ export const fetchAggregateQuote = async (
   fromToken: ChaingeToken,
   toToken: ChaingeToken,
   fromAmount: number,
-): Promise<ChaingeAggregateQuote> => {
+  options: { signal?: AbortSignal } = {},
+): Promise<ChaingeAggregateQuote | undefined> => {
   try {
     const response = await axios.get<{ code: number; msg: string; data: ChaingeAggregateQuote }>(API_URL, {
       params: {
@@ -33,15 +34,30 @@ export const fetchAggregateQuote = async (
         toDecimal: toToken.decimals,
         toChain: 'KAS',
       },
+      signal: options.signal,
     })
 
     if (response.data.code === 0 && response.data.data) {
       return response.data.data
     } else {
-      throw new Error(`Error fetching Chainge tokens: ${response.data.msg || 'Invalid API response'}`)
+      console.error('Fetch aggregate quote error:', response)
+      throw new Error(`Chainge DEX Error: ${response.data.msg || 'Invalid API response'}`)
     }
   } catch (error) {
-    console.error('Error fetching Chainge tokens:', error)
-    throw new Error(`Failed to fetch Chainge tokens: ${error instanceof Error ? error.message : error}`)
+    if (axios.isCancel(error)) {
+      console.log('Request canceled:', error.message)
+      return undefined
+    } else if (axios.isAxiosError(error) && error.response) {
+      if (error.response.status >= 500 && error.response.status < 600) {
+        console.error(`${error.response.status} Error: cannot get aggregate quote from Chainge:`, error.response)
+        throw new Error(`${error.response.status} Error: Chainge DEX is down or unavailable. Please try again later.`)
+      } else {
+        console.error('API error:', error.response)
+        throw new Error(`${error.response.status} Unknown error: ${error.response.statusText}`)
+      }
+    } else {
+      console.error('Error fetching Chainge tokens:', error)
+    }
+    throw new Error(`${error instanceof Error ? error.message : error}`)
   }
 }

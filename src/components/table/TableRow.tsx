@@ -4,9 +4,10 @@ interface TableRowProps {
   label: string
   value: React.ReactNode
   isFullWidth?: boolean
+  reversedColors?: boolean
 }
 
-const TableRow: React.FC<TableRowProps> = ({ label, value, isFullWidth }) => {
+const TableRow: React.FC<TableRowProps> = ({ label, value, isFullWidth, reversedColors = false }) => {
   return (
     <tr>
       {isFullWidth ? (
@@ -15,8 +16,14 @@ const TableRow: React.FC<TableRowProps> = ({ label, value, isFullWidth }) => {
         </td>
       ) : (
         <>
-          <td className="text-base text-mutedtext py-2">{label}</td>
-          <td className="text-base text-primarytext py-2 text-right">{value}</td>
+          <td className={`text-base py-2 ${reversedColors ? 'text-primarytext' : 'text-mutedtext'}`}>
+            {label}
+          </td>
+          <td
+            className={`text-base py-2 text-right ${reversedColors ? 'text-mutedtext' : 'text-primarytext'}`}
+          >
+            {value}
+          </td>
         </>
       )}
     </tr>

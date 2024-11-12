@@ -6,7 +6,7 @@ import ReviewOrderToken from '@/pages/Wallet/Swap/ReviewOrderToken'
 import NextButton from '@/components/buttons/NextButton'
 import { ChaingeAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
 import { formatNumberWithDecimal } from '@/utils/formatting'
-import TableSection from '@/components/table/TableSection'
+import ReviewOrderQuote from '@/pages/Wallet/Swap/ReviewOrderQuote'
 
 interface ReviewOrderProps {
   payToken: ChaingeToken
@@ -46,30 +46,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           currencySymbol={currencySymbol}
         />
 
-        <TableSection
-          rows={[
-            {
-              label: 'Aggregator',
-              value: aggregateQuote.aggregator,
-            },
-            {
-              label: 'Gas fee',
-              value: `${formatNumberWithDecimal(aggregateQuote.gasFee, aggregateQuote.chainDecimal)} KAS`,
-            },
-            {
-              label: 'Service fee',
-              value: `${formatNumberWithDecimal(aggregateQuote.serviceFee, aggregateQuote.chainDecimal)} KAS`,
-            },
-            {
-              label: 'Price impact',
-              value: `${aggregateQuote.priceImpact} %`,
-            },
-            {
-              label: 'Slippage',
-              value: `${aggregateQuote.slippage} %`,
-            },
-          ]}
-        />
+        <ReviewOrderQuote aggregateQuote={aggregateQuote} receiveToken={receiveToken} />
       </div>
       <div className="pt-4">
         <NextButton text="Swap" onClick={() => {}} />

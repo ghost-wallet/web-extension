@@ -2,47 +2,38 @@ import React, { useState, useEffect } from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/navigation/BottomNav'
 import TopNav from '@/components/navigation/TopNav'
-import NextButton from '@/components/buttons/NextButton'
 import { ChaingeToken, useChaingeTokens } from '@/hooks/chainge/useChaingeTokens'
-import { ChaingeAggregateQuote, fetchAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
 import { useWalletTokens } from '@/hooks/wallet/useWalletTokens'
 import { useLocation } from 'react-router-dom'
 import YouPaySection from '@/pages/Wallet/Swap/YouPaySection'
 import YouReceiveSection from '@/pages/Wallet/Swap/YouReceiveSection'
-import TokenSwitch from '@/pages/Wallet/Swap/TokenSwitch'
 import SwapTokenSelect from '@/pages/Wallet/Swap/SwapTokenSelect'
 import { AnimatePresence } from 'framer-motion'
-import ErrorMessages from '@/utils/constants/errorMessages'
 import SwapLoading from '@/pages/Wallet/Swap/SwapLoading'
-import { formatNumberAbbreviated, formatNumberWithDecimal } from '@/utils/formatting'
-import ErrorButton from '@/components/buttons/ErrorButton'
 import ReviewOrder from '@/pages/Wallet/Swap/ReviewOrder'
+import useAggregateQuote from '@/hooks/chainge/useAggregateQuote'
+import SwitchChaingeTokens from '@/pages/Wallet/Swap/SwitchChaingeTokens'
+import ReviewOrderButton from '@/pages/Wallet/Swap/ReviewOrderButton'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 
 export default function Swap() {
-  const [payAmount, setPayAmount] = useState('')
-  const [receiveAmount, setReceiveAmount] = useState('')
-  const [aggregateQuote, setAggregateQuote] = useState<ChaingeAggregateQuote | null>(null)
-  const [amountError, setAmountError] = useState<string | null>(null)
-  const [outAmountUsd, setOutAmountUsd] = useState('')
+  const location = useLocation()
+  const { token: locationToken } = location.state || {}
   const { tokens } = useWalletTokens()
+  const [payAmount, setPayAmount] = useState('')
+  const [amountError, setAmountError] = useState<string | null>(null)
+  const [payToken, setPayToken] = useState<ChaingeToken | null>(null)
+  const [receiveToken, setReceiveToken] = useState<ChaingeToken | null>(null)
   const [isReviewOrderOpen, setIsReviewOrderOpen] = useState(false)
   const [isPayTokenSelectOpen, setIsPayTokenSelectOpen] = useState(false)
   const [isReceiveTokenSelectOpen, setIsReceiveTokenSelectOpen] = useState(false)
-  const location = useLocation()
-  const { token: locationToken } = location.state || {}
-  const [payToken, setPayToken] = useState<ChaingeToken | null>(null)
-  const [receiveToken, setReceiveToken] = useState<ChaingeToken | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
-  // Use the query to fetch Chainge tokens
   const { data: chaingeTokens, isLoading, isError, error: queryError } = useChaingeTokens()
+  const { aggregateQuote, receiveAmount, setReceiveAmount, outAmountUsd, loadingQuote, error } =
+    useAggregateQuote(payToken, receiveToken, payAmount)
 
   useEffect(() => {
-    if (isError) {
-      setError(ErrorMessages.CHAINGE.FAILED_FETCH(queryError))
-      return
-    }
-
+    // TODO: handle error if there are no chainge tokens
     if (chaingeTokens) {
       const defaultPayToken = chaingeTokens.find((token: ChaingeToken) =>
         locationToken ? token.symbol === locationToken.tick : token.symbol === 'KAS',
@@ -60,29 +51,6 @@ export default function Swap() {
   const handleAmountErrorChange = (error: string | null) => {
     setAmountError(error)
   }
-
-  useEffect(() => {
-    const formatPayAmount = (amount: number, decimals: number): number => {
-      return amount * Math.pow(10, decimals)
-    }
-
-    const fetchQuote = async () => {
-      if (payToken && receiveToken && payAmount && !isNaN(Number(payAmount))) {
-        try {
-          const adjustedPayAmount = formatPayAmount(parseFloat(payAmount), payToken.decimals)
-          const quote = await fetchAggregateQuote(payToken, receiveToken, adjustedPayAmount)
-          setAggregateQuote(quote)
-          setReceiveAmount(formatNumberWithDecimal(quote.outAmount, quote.chainDecimal).toString())
-          setOutAmountUsd(formatNumberAbbreviated(Number(quote.outAmountUsd)))
-        } catch (error) {
-          setReceiveAmount('0')
-          setOutAmountUsd('0')
-          console.error('Error fetching aggregate quote:', error)
-        }
-      }
-    }
-    fetchQuote()
-  }, [payAmount, payToken, receiveToken])
 
   const handleSwitch = () => {
     setPayAmount(receiveAmount)
@@ -124,31 +92,35 @@ export default function Swap() {
                   onAmountErrorChange={handleAmountErrorChange}
                   tokens={tokens}
                 />
-                <TokenSwitch onSwitch={handleSwitch} />
+                <SwitchChaingeTokens onSwitch={handleSwitch} />
                 <YouReceiveSection
                   receiveAmount={receiveAmount}
                   receiveToken={receiveToken}
+                  payAmount={payAmount}
                   openTokenSelect={openReceiveTokenSelect}
                   tokens={tokens}
                   outAmountUsd={outAmountUsd}
+                  loadingQuote={loadingQuote}
                 />
+                {error && (
+                  <div className="py-4">
+                    {' '}
+                    <ErrorMessage message={error} />{' '}
+                  </div>
+                )}
               </>
             )}
           </div>
         </div>
       </AnimatedMain>
-
-      <div className="bottom-20 left-0 right-0 px-4 fixed">
-        {amountError && Number(payAmount) > 0 ? (
-          <ErrorButton text="Insufficient Funds" />
-        ) : Number(payAmount) > 0 ? (
-          <NextButton text="Review Order" onClick={() => setIsReviewOrderOpen(true)} />
-        ) : (
-          <div />
-        )}
-      </div>
+      <ReviewOrderButton
+        amountError={amountError}
+        outAmountUsd={outAmountUsd}
+        payAmount={payAmount}
+        loadingQuote={loadingQuote}
+        setIsReviewOrderOpen={() => setIsReviewOrderOpen(true)}
+      />
       <BottomNav />
-
       <AnimatePresence>
         {isPayTokenSelectOpen && (
           <SwapTokenSelect
@@ -160,7 +132,6 @@ export default function Swap() {
           />
         )}
       </AnimatePresence>
-
       <AnimatePresence>
         {isReceiveTokenSelectOpen && (
           <SwapTokenSelect
@@ -172,7 +143,6 @@ export default function Swap() {
           />
         )}
       </AnimatePresence>
-
       <AnimatePresence>
         {isReviewOrderOpen && payToken && receiveToken && aggregateQuote && (
           <ReviewOrder
