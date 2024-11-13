@@ -5,12 +5,18 @@ import TableSection from '@/components/table/TableSection'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 
 interface ReviewOrderProps {
+  networkFee: string
   slippage: number
   aggregateQuote: ChaingeAggregateQuote
   receiveToken: ChaingeToken
 }
 
-const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({ slippage, aggregateQuote, receiveToken }) => {
+const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({
+  networkFee,
+  slippage,
+  aggregateQuote,
+  receiveToken,
+}) => {
   return (
     <TableSection
       reversedColors={true}
@@ -30,15 +36,15 @@ const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({ slippage, aggregateQuote
         },
         {
           label: 'Network fee',
-          value: '0.001 KAS', //TODO give option to select network fee
+          value: `${networkFee} KAS`,
         },
         {
           label: 'Price impact',
-          value: `${aggregateQuote.priceImpact} %`,
+          value: `${aggregateQuote.priceImpact}%`,
         },
         {
           label: 'Slippage',
-          value: `${slippage} %`,
+          value: `${slippage}%`,
         },
       ]}
     />

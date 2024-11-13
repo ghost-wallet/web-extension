@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/navigation/BottomNav'
 import { ChaingeToken, useChaingeTokens } from '@/hooks/chainge/useChaingeTokens'
@@ -17,18 +17,20 @@ import ErrorMessage from '@/components/messages/ErrorMessage'
 import TopNavSwap from '@/components/navigation/TopNavSwap'
 import SwapNetworkFeeButton from '@/pages/Wallet/Swap/SwapNetworkFeeButton'
 import SwapNetworkFeeSelect from '@/pages/Wallet/Swap/SwapNetworkFeeSelect'
+import useKaspa from '@/hooks/contexts/useKaspa'
 
 export default function Swap() {
   const location = useLocation()
   const { token: locationToken } = location.state || {}
   const { tokens } = useWalletTokens()
+  const { request } = useKaspa()
   const [payAmount, setPayAmount] = useState('')
   const [amountError, setAmountError] = useState<string | null>(null)
   const [payToken, setPayToken] = useState<ChaingeToken | null>(null)
   const [receiveToken, setReceiveToken] = useState<ChaingeToken | null>(null)
   const [slippage, setSlippage] = useState<number>(1)
-  const [feeRate, setFeeRate] = useState(1)
-  const [networkFee, setNetworkFee] = useState(0.001)
+  const [feeRate, setFeeRate] = useState<number>(1)
+  const [networkFee, setNetworkFee] = useState<string>('')
   const [isNetworkFeeOpen, setIsNetworkFeeOpen] = useState(false)
   const [isReviewOrderOpen, setIsReviewOrderOpen] = useState(false)
   const [isPayTokenSelectOpen, setIsPayTokenSelectOpen] = useState(false)
@@ -37,6 +39,28 @@ export default function Swap() {
   const { data: chaingeTokens, isLoading, isError, error: queryError } = useChaingeTokens()
   const { aggregateQuote, receiveAmount, setReceiveAmount, outAmountUsd, loadingQuote, error } =
     useAggregateQuote(payToken, receiveToken, payAmount)
+
+  const fetchEstimatedFee = useCallback(() => {
+    if (!payToken || !payAmount) return
+    request('account:estimateChaingeTransactionFee', [
+      {
+        fromAmount: payAmount,
+        fromToken: payToken,
+        feeRate,
+      },
+    ])
+      .then((estimatedFee) => {
+        console.log('Estimated network fee:', estimatedFee)
+        setNetworkFee(estimatedFee)
+      })
+      .catch((error) => {
+        console.error('Error fetching estimated network fee:', error)
+      })
+  }, [payAmount, payToken, feeRate, request])
+
+  useEffect(() => {
+    fetchEstimatedFee()
+  }, [fetchEstimatedFee])
 
   useEffect(() => {
     // TODO: handle error if there are no chainge tokens
@@ -108,7 +132,7 @@ export default function Swap() {
                   aggregateQuote={aggregateQuote}
                   loadingQuote={loadingQuote}
                 />
-                {!error && (
+                {!error && payToken && payAmount && Number(outAmountUsd) > 1 && (
                   <SwapNetworkFeeButton setIsNetworkFeeOpen={setIsNetworkFeeOpen} networkFee={networkFee} />
                 )}
                 {error && (
@@ -159,17 +183,18 @@ export default function Swap() {
             receiveToken={receiveToken}
             payAmount={payAmount}
             slippage={slippage}
+            networkFee={networkFee}
             aggregateQuote={aggregateQuote}
             onClose={() => setIsReviewOrderOpen(false)}
           />
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {isNetworkFeeOpen && (
+        {isNetworkFeeOpen && payToken && payAmount && (
           <SwapNetworkFeeSelect
-            onClose={() => setIsNetworkFeeOpen(false)}
+            networkFee={networkFee}
             onSelectFeeRate={setFeeRate}
-            feeRate={feeRate}
+            onClose={() => setIsNetworkFeeOpen(false)}
           />
         )}
       </AnimatePresence>

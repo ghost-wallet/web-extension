@@ -3,7 +3,7 @@ import { PencilSquareIcon } from '@heroicons/react/24/outline'
 
 interface SwapNetworkFeeButtonProps {
   setIsNetworkFeeOpen: (open: boolean) => void
-  networkFee: number
+  networkFee: string
 }
 
 const SwapNetworkFeeButton: React.FC<SwapNetworkFeeButtonProps> = ({ setIsNetworkFeeOpen, networkFee }) => {
