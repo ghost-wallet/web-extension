@@ -16,6 +16,7 @@ interface ReviewOrderProps {
   receiveToken: ChaingeToken
   payAmount: string
   slippage: number
+  feeRate: number
   networkFee: string
   aggregateQuote: ChaingeAggregateQuote
   onClose: () => void
@@ -26,6 +27,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   receiveToken,
   payAmount,
   slippage,
+  feeRate,
   networkFee,
   aggregateQuote,
   onClose,
@@ -46,7 +48,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           fromToken: payToken,
           toToken: receiveToken,
           quote: aggregateQuote,
-          feeRate: 1, // TODO use real feeRate
+          feeRate,
         },
       ])
 

@@ -183,6 +183,7 @@ export default function Swap() {
             receiveToken={receiveToken}
             payAmount={payAmount}
             slippage={slippage}
+            feeRate={feeRate}
             networkFee={networkFee}
             aggregateQuote={aggregateQuote}
             onClose={() => setIsReviewOrderOpen(false)}
