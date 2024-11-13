@@ -1,6 +1,6 @@
 import { signMessage } from '@/wasm/kaspa'
 import { defineProxyService } from '@webext-core/proxy-service'
-import { AggregateQuoteResponse, AggregateSwapResponse } from '@chainge/api-tool-sdk'
+import { AggregateQuoteResponse, AggregateSwapResponse, Chain } from '@chainge/api-tool-sdk'
 import { formatUnits, hexlify, keccak256, parseUnits, toUtf8Bytes } from 'ethers'
 import BigNumber from 'bignumber.js'
 import AccountAddresses from '../account/AccountAddresses'
@@ -53,13 +53,13 @@ export interface SubmitChaingeOrderRequest {
   feeRate: number
 }
 
-export interface ChaingeOrderResponse {
+interface ChaingeResponse<T> {
   code: number
-  data: {
-    id: string
-  }
+  data: T
   msg: string
 }
+
+export type ChaingeOrderResponse = ChaingeResponse<{id: string}>
 
 export default class Chainge {
   constructor(
@@ -68,6 +68,11 @@ export default class Chainge {
     private krc20Transactions: KRC20Transactions,
   ) {
     //super()
+  }
+
+  async getChaingeSupportedChains() {
+    const {data} = await axios.get<ChaingeResponse<{version: number, list: Chain[]}>>('https://api2.chainge.finance/v1/getChain')
+    return data.data.list
   }
 
   async submitChaingeOrder({ fromAmount, fromToken, toToken, quote, feeRate }: SubmitChaingeOrderRequest) {
@@ -96,7 +101,7 @@ export default class Chainge {
 
     // Calculate the value the user should receive.
     const receiveAmountHr = formatUnits(receiveAmount, chainDecimal)
-    const receiveAmountForExtra = parseUnits(receiveAmountHr, chainDecimal).toString()
+    const receiveAmountForExtra = parseUnits(receiveAmountHr, toToken.decimals).toString()
 
     console.log('[Chainge] receiveAmountHr', receiveAmountHr)
     console.log('[Chainge] receiveAmountForExtra', receiveAmountForExtra)
@@ -104,15 +109,25 @@ export default class Chainge {
     // Computed minimum, After calculating the minimum value, we need to convert it to the decimals of the target chain.
     const miniAmount = BigNumber(receiveAmountHr)
       .multipliedBy(BigNumber(1 - parseFloat(slippage) * 0.01))
-      .decimalPlaces(chainDecimal, BigNumber.ROUND_FLOOR)
+      .decimalPlaces(toToken.decimals, BigNumber.ROUND_FLOOR)
       .toString()
-    const miniAmountForExtra = parseUnits(miniAmount, chainDecimal).toString()
+    const miniAmountForExtra = parseUnits(miniAmount, toToken.decimals).toString()
 
     console.log('[Chainge] miniAmount', miniAmount)
     console.log('[Chainge] miniAmountForExtra', miniAmountForExtra)
 
+    const supportChainList = await this.getChaingeSupportedChains() // TODO cache this
+    console.log('[Chainge] supportChainList', supportChainList)
+
+    const executionChainObj = supportChainList.find((item) => item.network === chain)
+    console.log('[Chainge] executionChainObj', executionChainObj)
+
+    if(!executionChainObj) {
+      throw new Error('Couldn\'t find the execution chain!')
+    }
+
     // 1_Expected value;2_Third party profit ratio;3_version;4_Mini Amount;5_Execution chain
-    const extra = `1_${receiveAmountForExtra};2_${channelFeeRate};3_2;4_${miniAmountForExtra};5_KAS`
+    const extra = `1_${receiveAmountForExtra};2_${channelFeeRate};3_2;4_${miniAmountForExtra};5_${executionChainObj.nickName}`
 
     console.log('[Chainge] extra', extra)
 
