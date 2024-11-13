@@ -51,6 +51,12 @@ export interface SubmitChaingeOrderRequest {
   feeRate: number
 }
 
+export interface ChaingeFeeEstimateRequest {
+  fromAmount: string
+  fromToken: ChaingeToken,
+  feeRate: number
+}
+
 interface ChaingeResponse<T> {
   code: number
   data: T
@@ -242,6 +248,30 @@ export default class Chainge {
       const [commitId, revealId] = await this.krc20Transactions.submitKRC20Transaction(info, feeRate)
       console.log('[Chainge] revealId', revealId)
       return revealId
+    }
+  }
+
+  async estimateChaingeTransactionFees({fromAmount, fromToken, feeRate}: ChaingeFeeEstimateRequest) {
+    if (fromToken.contractAddress === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+      // KAS
+      return this.transactions.estimateKaspaTransactionFee(
+        [[chaingeMinterAddresses.KAS, fromAmount]],
+        feeRate,
+        '0',
+      )
+    } else {
+      // KRC-20
+      const toAddress = ['CUSDT', 'CUSDC', 'CETH', 'CBTC', 'CXCHNG'].includes(fromToken.contractAddress)
+        ? chaingeMinterAddresses.other
+        : chaingeMinterAddresses.KRC20
+
+      const krc20Token = {
+        tick: fromToken.contractAddress,
+        dec: fromToken.decimals,
+      }
+
+      const info = await this.krc20Transactions.getKRC20Info(toAddress, krc20Token, fromAmount)
+      return this.krc20Transactions.estimateKRC20TransactionFee(info, feeRate)
     }
   }
 }
