@@ -10,6 +10,7 @@ import { formatNumberAbbreviated } from '@/utils/formatting'
 import ReviewOrderQuote from '@/pages/Wallet/Swap/ReviewOrderQuote'
 import useReceiveAmountAfterFees from '@/hooks/chainge/useReceiveAmountAfterFees'
 import useKaspa from '@/hooks/contexts/useKaspa'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 
 interface ReviewOrderProps {
   payToken: ChaingeToken
@@ -37,11 +38,11 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
   const { currencySymbol, formattedCurrencyValue } = useChaingeTokenData(payAmount, payToken, [])
   const { request } = useKaspa()
+  const [error, setError] = useState(null)
 
   const handleSwap = async () => {
     setLoading(true)
     try {
-      // TODO fix submitChaingeOrder not in RequestMappings
       const order = await request('account:submitChaingeOrder', [
         {
           fromAmount: payAmount,
@@ -51,11 +52,10 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           feeRate,
         },
       ])
-
       navigate('/swap/confirmed', { state: { order } })
-    } catch (error) {
-      console.error('Error submitting order:', error)
-      // TODO show error on screen or in dialog
+    } catch (error: any) {
+      setError(error)
+      console.error('Error submitting Chainge order:', error)
     } finally {
       setLoading(false)
     }
@@ -88,6 +88,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           aggregateQuote={aggregateQuote}
           receiveToken={receiveToken}
         />
+        {error && <ErrorMessage message={error} />}
       </div>
       <div className="pt-4">
         <NextButton text="Swap" onClick={handleSwap} loading={loading} />

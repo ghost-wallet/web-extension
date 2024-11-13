@@ -55,6 +55,7 @@ export default function Swap() {
       })
       .catch((error) => {
         console.error('Error fetching estimated network fee:', error)
+        // TODO show network fee error on UI?
       })
   }, [payAmount, payToken, feeRate, request])
 
@@ -63,7 +64,7 @@ export default function Swap() {
   }, [fetchEstimatedFee])
 
   useEffect(() => {
-    // TODO: handle error if there are no chainge tokens
+    // TODO: show queryError on UI
     if (chaingeTokens) {
       const defaultPayToken = chaingeTokens.find((token: ChaingeToken) =>
         locationToken ? token.symbol === locationToken.tick : token.symbol === 'KAS',
