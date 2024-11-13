@@ -28,7 +28,8 @@ const SwapButton: React.FC<SwapButtonProps> = ({ token, className }) => {
       const tokenExists = fetchedTokens.some(
         (t: ChaingeToken) =>
           t.symbol.toLowerCase() === token.tick.toLowerCase() ||
-          t.name.toLowerCase() === token.tick.toLowerCase(),
+          t.name.toLowerCase() === token.tick.toLowerCase() ||
+          t.contractAddress.toLowerCase() === token.tick.toLowerCase(),
       )
       setIsTokenAvailable(tokenExists)
     }

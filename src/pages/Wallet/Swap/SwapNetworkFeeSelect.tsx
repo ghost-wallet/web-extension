@@ -27,8 +27,6 @@ const SwapNetworkFeeSelect: React.FC<SwapNetworkFeeSelectProps> = ({ onClose, on
   const fetchEstimatedFee = useCallback(() => {
     // TODO get chainge network estimated fee
     setEstimatedFee('0.001')
-
-
   }, [selectedFeeRate, request])
 
   useEffect(() => {
@@ -64,11 +62,7 @@ const SwapNetworkFeeSelect: React.FC<SwapNetworkFeeSelectProps> = ({ onClose, on
         {/*/>*/}
       </div>
       <div className="absolute bottom-4 left-4 right-4">
-        <NextButton
-          text="Confirm"
-          onClick={handleConfirm}
-          buttonEnabled={true}
-        />
+        <NextButton text="Confirm" onClick={handleConfirm} buttonEnabled={true} />
       </div>
     </ModalContainer>
   )

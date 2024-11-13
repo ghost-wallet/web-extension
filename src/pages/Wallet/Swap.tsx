@@ -108,9 +108,9 @@ export default function Swap() {
                   aggregateQuote={aggregateQuote}
                   loadingQuote={loadingQuote}
                 />
-                {!error &&
+                {!error && (
                   <SwapNetworkFeeButton setIsNetworkFeeOpen={setIsNetworkFeeOpen} networkFee={networkFee} />
-                }
+                )}
                 {error && (
                   <div className="py-4">
                     {' '}

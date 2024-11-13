@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import ModalContainer from '@/components/ModalContainer'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
@@ -27,9 +28,34 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   aggregateQuote,
   onClose,
 }) => {
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
   const { currencySymbol, formattedCurrencyValue } = useChaingeTokenData(payAmount, payToken, [])
   const { request } = useKaspa()
+
+  const handleSwap = async () => {
+    setLoading(true)
+    try {
+      // TODO fix submitChaingeOrder not in RequestMappings
+      const order = await request('account:submitChaingeOrder', [
+        {
+          fromAmount: payAmount,
+          fromToken: payToken,
+          toToken: receiveToken,
+          quote: aggregateQuote,
+          feeRate: 1, // TODO use real feeRate
+        },
+      ])
+
+      navigate('/swap/confirmed', { state: { order } })
+    } catch (error) {
+      console.error('Error submitting order:', error)
+      // TODO show error on screen or in dialog
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <ModalContainer title="Review Order" onClose={onClose}>
@@ -55,20 +81,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
         <ReviewOrderQuote slippage={slippage} aggregateQuote={aggregateQuote} receiveToken={receiveToken} />
       </div>
       <div className="pt-4">
-        <NextButton
-          text="Swap"
-          onClick={() => {
-            request('account:submitChaingeOrder', [
-              {
-                fromAmount: payAmount,
-                fromToken: payToken,
-                toToken: receiveToken,
-                quote: aggregateQuote,
-                feeRate: 1, // TODO use real feeRate
-              },
-            ])
-          }}
-        />
+        <NextButton text="Swap" onClick={handleSwap} loading={loading} />
       </div>
     </ModalContainer>
   )

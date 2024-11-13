@@ -31,6 +31,7 @@ import DeveloperPage from '@/pages/Wallet/Settings/Developer/DeveloperPage'
 import KaspaTxnDetails from '@/pages/Wallet/Transactions/KaspaTxnDetails'
 import ManageTokens from '@/pages/Wallet/CryptoList/ManageTokens'
 import ManageAccounts from '@/pages/Wallet/Settings/Account/ManageAccounts'
+import Swapped from '@/pages/Wallet/Swap/Swapped'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -75,6 +76,7 @@ function App() {
               <Route path="/send/:tick/sent" element={<Sent />} />
               <Route path="/receive" element={<Receive />} />
               <Route path="/swap" element={<Swap />} />
+              <Route path="/swap/confirmed" element={<Swapped />} />
               <Route path="/mint" element={<Mint />} />
               <Route path="/mint/:tick" element={<CreateMint />} />
               <Route path="/mint/:tick/review" element={<ConfirmMint />} />
