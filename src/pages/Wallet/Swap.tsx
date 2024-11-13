@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/navigation/BottomNav'
-import TopNav from '@/components/navigation/TopNav'
 import { ChaingeToken, useChaingeTokens } from '@/hooks/chainge/useChaingeTokens'
 import { useWalletTokens } from '@/hooks/wallet/useWalletTokens'
 import { useLocation } from 'react-router-dom'
@@ -15,6 +14,7 @@ import useAggregateQuote from '@/hooks/chainge/useAggregateQuote'
 import SwitchChaingeTokens from '@/pages/Wallet/Swap/SwitchChaingeTokens'
 import ReviewOrderButton from '@/pages/Wallet/Swap/ReviewOrderButton'
 import ErrorMessage from '@/components/messages/ErrorMessage'
+import TopNavSwap from '@/components/navigation/TopNavSwap'
 
 export default function Swap() {
   const location = useLocation()
@@ -24,6 +24,7 @@ export default function Swap() {
   const [amountError, setAmountError] = useState<string | null>(null)
   const [payToken, setPayToken] = useState<ChaingeToken | null>(null)
   const [receiveToken, setReceiveToken] = useState<ChaingeToken | null>(null)
+  const [slippage, setSlippage] = useState<number>(1)
   const [isReviewOrderOpen, setIsReviewOrderOpen] = useState(false)
   const [isPayTokenSelectOpen, setIsPayTokenSelectOpen] = useState(false)
   const [isReceiveTokenSelectOpen, setIsReceiveTokenSelectOpen] = useState(false)
@@ -76,7 +77,7 @@ export default function Swap() {
 
   return (
     <>
-      <TopNav />
+      <TopNavSwap slippage={slippage} setSlippage={setSlippage} />
       <AnimatedMain className="flex flex-col h-screen w-full fixed">
         <div className="flex flex-col h-full justify-between p-4">
           <div>
@@ -149,6 +150,7 @@ export default function Swap() {
             payToken={payToken}
             receiveToken={receiveToken}
             payAmount={payAmount}
+            slippage={slippage}
             aggregateQuote={aggregateQuote}
             onClose={() => setIsReviewOrderOpen(false)}
           />

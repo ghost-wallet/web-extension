@@ -5,11 +5,12 @@ import TableSection from '@/components/table/TableSection'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 
 interface ReviewOrderProps {
+  slippage: number
   aggregateQuote: ChaingeAggregateQuote
   receiveToken: ChaingeToken
 }
 
-const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({ aggregateQuote, receiveToken }) => {
+const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({ slippage, aggregateQuote, receiveToken }) => {
   return (
     <TableSection
       reversedColors={true}
@@ -37,7 +38,7 @@ const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({ aggregateQuote, receiveT
         },
         {
           label: 'Slippage',
-          value: `${aggregateQuote.slippage} %`,
+          value: `${slippage} %`,
         },
       ]}
     />
