@@ -19,16 +19,17 @@ const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({ aggregateQuote, receiveT
           value: aggregateQuote.aggregator,
         },
         {
-          label: 'Network fee',
+          label: `Chainge fee`,
           value: `${formatNumberAbbreviated(
-            formatNumberWithDecimal(aggregateQuote.gasFee, receiveToken.decimals),
+            formatNumberWithDecimal(
+              Number(aggregateQuote.gasFee) + Number(aggregateQuote.serviceFee),
+              receiveToken.decimals,
+            ),
           )} ${receiveToken.symbol}`,
         },
         {
-          label: 'Service fee',
-          value: `${formatNumberAbbreviated(
-            formatNumberWithDecimal(aggregateQuote.serviceFee, receiveToken.decimals),
-          )} ${receiveToken.symbol}`,
+          label: 'Network fee',
+          value: '0.001 KAS', //TODO give option to select network fee
         },
         {
           label: 'Price impact',

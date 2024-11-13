@@ -52,11 +52,10 @@ export function useWalletTokens() {
           const floorPrice = ksprPriceData?.floor_price ?? 0
           return {
             ...token,
-            floorPrice: floorPrice * kasPrice,
+            floorPrice: token.tick === 'CUSDT' ? 1.0 : floorPrice * kasPrice, // TODO use real USDT price from an API
           }
         })
       : []
-
     return [kaspaCrypto, ...additionalTokens]
   }, [kaspaCrypto, krc20TokensQuery.data, ksprPricesQuery.data, kasPrice])
 
