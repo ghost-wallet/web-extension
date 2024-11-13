@@ -29,7 +29,7 @@ export interface ResponseMappings {
   'account:estimateKRC20TransactionFee': string
   'provider:connect': void
   'provider:connection': string
-  'provider:disconnect': void,
+  'provider:disconnect': void
   'account:submitChaingeOrder': AggregateSwapResponse
 }
 

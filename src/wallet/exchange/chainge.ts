@@ -1,6 +1,5 @@
 import { signMessage } from '@/wasm/kaspa'
-import { defineProxyService } from '@webext-core/proxy-service'
-import { AggregateQuoteResponse, AggregateSwapResponse, Chain } from '@chainge/api-tool-sdk'
+import { AggregateQuoteResponse, Chain } from '@chainge/api-tool-sdk'
 import { formatUnits, hexlify, keccak256, parseUnits, toUtf8Bytes } from 'ethers'
 import BigNumber from 'bignumber.js'
 import AccountAddresses from '../account/AccountAddresses'
@@ -21,8 +20,7 @@ function sortParams(params: Record<string, any>, evmAddress: string) {
     }
   }
   const data = keyValList.join('&')
-  const raw = `Address=${evmAddress}&${data}`
-  return raw
+  return `Address=${evmAddress}&${data}`
 }
 
 export interface ChaingeToken {
@@ -59,7 +57,7 @@ interface ChaingeResponse<T> {
   msg: string
 }
 
-export type ChaingeOrderResponse = ChaingeResponse<{id: string}>
+export type ChaingeOrderResponse = ChaingeResponse<{ id: string }>
 
 export default class Chainge {
   constructor(
@@ -71,14 +69,15 @@ export default class Chainge {
   }
 
   async getChaingeSupportedChains() {
-    const {data} = await axios.get<ChaingeResponse<{version: number, list: Chain[]}>>('https://api2.chainge.finance/v1/getChain')
+    const { data } = await axios.get<ChaingeResponse<{ version: number; list: Chain[] }>>(
+      'https://api2.chainge.finance/v1/getChain',
+    )
     return data.data.list
   }
 
   async submitChaingeOrder({ fromAmount, fromToken, toToken, quote, feeRate }: SubmitChaingeOrderRequest) {
-    
     console.log('[Chainge] submit', { fromAmount, fromToken, toToken, quote, feeRate })
-    
+
     const amount = parseUnits(fromAmount, fromToken.decimals).toString()
 
     console.log('[Chainge] amount', amount)
@@ -122,8 +121,8 @@ export default class Chainge {
     const executionChainObj = supportChainList.find((item) => item.network === chain)
     console.log('[Chainge] executionChainObj', executionChainObj)
 
-    if(!executionChainObj) {
-      throw new Error('Couldn\'t find the execution chain!')
+    if (!executionChainObj) {
+      throw new Error("Couldn't find the execution chain!")
     }
 
     // 1_Expected value;2_Third party profit ratio;3_version;4_Mini Amount;5_Execution chain
@@ -215,7 +214,7 @@ export default class Chainge {
   }
 
   private async sendChaingeTransaction(fromAmount: string, fromToken: ChaingeToken, feeRate: number) {
-    console.log('[Chainge] sendChaingeTransaction', {fromAmount, fromToken, feeRate})
+    console.log('[Chainge] sendChaingeTransaction', { fromAmount, fromToken, feeRate })
     if (fromToken.contractAddress === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
       // KAS
       const [transactions] = await this.transactions.create(

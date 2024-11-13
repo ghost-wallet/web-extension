@@ -53,15 +53,20 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
         <ReviewOrderQuote aggregateQuote={aggregateQuote} receiveToken={receiveToken} />
       </div>
       <div className="pt-4">
-        <NextButton text="Swap" onClick={() => {
-          request('account:submitChaingeOrder', [{
-            fromAmount: payAmount,
-            fromToken: payToken,
-            toToken: receiveToken,
-            quote: aggregateQuote,
-            feeRate: 1 // TODO use real feeRate
-          }])
-        }} />
+        <NextButton
+          text="Swap"
+          onClick={() => {
+            request('account:submitChaingeOrder', [
+              {
+                fromAmount: payAmount,
+                fromToken: payToken,
+                toToken: receiveToken,
+                quote: aggregateQuote,
+                feeRate: 1, // TODO use real feeRate
+              },
+            ])
+          }}
+        />
       </div>
     </ModalContainer>
   )

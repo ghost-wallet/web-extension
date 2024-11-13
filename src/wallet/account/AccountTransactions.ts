@@ -14,17 +14,12 @@ import {
   Transaction,
   UtxoContext,
   UtxoProcessor,
-  UtxoProcessorEvent,
-  UtxoProcessorNotificationCallback,
 } from '@/wasm'
 import AccountAddresses from './AccountAddresses'
 import EventEmitter from 'events'
 import KeyManager from '@/wallet/account/KeyManager'
 import Account from '@/wallet/Account'
-import { Token } from '@/wallet/krc20/KRC20Transactions'
-import { CustomInput, CustomSignature, KRC20TokenRequest } from '@/utils/interfaces'
-import { KRC20_COMMIT_AMOUNT } from '@/utils/constants/constants'
-
+import { CustomInput, CustomSignature } from '@/utils/interfaces'
 
 export default class AccountTransactions extends EventEmitter {
   kaspa: RpcClient
@@ -198,8 +193,6 @@ export default class AccountTransactions extends EventEmitter {
     const signed = await this.sign(transactions, customs)
     return await this.submitContextful(signed)
   }
-
-  
 
   reset() {
     delete this.encryptedKey
