@@ -182,7 +182,7 @@ export default function Swap() {
             payToken={payToken}
             receiveToken={receiveToken}
             payAmount={payAmount}
-            slippage={slippage}
+            slippage={slippage.toString()}
             feeRate={feeRate}
             networkFee={networkFee}
             aggregateQuote={aggregateQuote}

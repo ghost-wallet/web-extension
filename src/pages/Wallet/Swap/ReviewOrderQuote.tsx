@@ -6,7 +6,7 @@ import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 
 interface ReviewOrderProps {
   networkFee: string
-  slippage: number
+  slippage: string
   aggregateQuote: ChaingeAggregateQuote
   receiveToken: ChaingeToken
 }

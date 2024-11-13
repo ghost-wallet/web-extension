@@ -15,7 +15,7 @@ interface ReviewOrderProps {
   payToken: ChaingeToken
   receiveToken: ChaingeToken
   payAmount: string
-  slippage: number
+  slippage: string
   feeRate: number
   networkFee: string
   aggregateQuote: ChaingeAggregateQuote
@@ -47,7 +47,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           fromAmount: payAmount,
           fromToken: payToken,
           toToken: receiveToken,
-          quote: aggregateQuote,
+          quote: { ...aggregateQuote, slippage },
           feeRate,
         },
       ])
