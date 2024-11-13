@@ -35,12 +35,12 @@ const TopNavSwap: React.FC<TopNavSwapProps> = ({ slippage, setSlippage }) => {
           </div>
 
           <div className="flex items-center">
-            <SlippageButton setIsSlippageOpen={setIsSlippageOpen} selectedSlippage={slippage} />
+            <SlippageButton setIsSlippageOpen={setIsSlippageOpen} slippage={slippage} />
           </div>
         </div>
       </nav>
 
-      <div className="h-16" />
+      <div className="h-14" />
 
       <AnimatePresence>
         {isSlippageOpen && (

@@ -35,7 +35,7 @@ const TopNav: React.FC = () => {
       </nav>
 
       {/* Placeholder for TopNav Height */}
-      <div className="h-16" />
+      <div className="h-14" />
     </>
   )
 }

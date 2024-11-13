@@ -15,6 +15,8 @@ import SwitchChaingeTokens from '@/pages/Wallet/Swap/SwitchChaingeTokens'
 import ReviewOrderButton from '@/pages/Wallet/Swap/ReviewOrderButton'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import TopNavSwap from '@/components/navigation/TopNavSwap'
+import SwapNetworkFeeButton from '@/pages/Wallet/Swap/SwapNetworkFeeButton'
+import SwapNetworkFeeSelect from '@/pages/Wallet/Swap/SwapNetworkFeeSelect'
 
 export default function Swap() {
   const location = useLocation()
@@ -25,6 +27,9 @@ export default function Swap() {
   const [payToken, setPayToken] = useState<ChaingeToken | null>(null)
   const [receiveToken, setReceiveToken] = useState<ChaingeToken | null>(null)
   const [slippage, setSlippage] = useState<number>(1)
+  const [feeRate, setFeeRate] = useState(1)
+  const [networkFee, setNetworkFee] = useState(0.001)
+  const [isNetworkFeeOpen, setIsNetworkFeeOpen] = useState(false)
   const [isReviewOrderOpen, setIsReviewOrderOpen] = useState(false)
   const [isPayTokenSelectOpen, setIsPayTokenSelectOpen] = useState(false)
   const [isReceiveTokenSelectOpen, setIsReceiveTokenSelectOpen] = useState(false)
@@ -103,6 +108,9 @@ export default function Swap() {
                   aggregateQuote={aggregateQuote}
                   loadingQuote={loadingQuote}
                 />
+                {!error &&
+                  <SwapNetworkFeeButton setIsNetworkFeeOpen={setIsNetworkFeeOpen} networkFee={networkFee} />
+                }
                 {error && (
                   <div className="py-4">
                     {' '}
@@ -153,6 +161,15 @@ export default function Swap() {
             slippage={slippage}
             aggregateQuote={aggregateQuote}
             onClose={() => setIsReviewOrderOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isNetworkFeeOpen && (
+          <SwapNetworkFeeSelect
+            onClose={() => setIsNetworkFeeOpen(false)}
+            onSelectFeeRate={setFeeRate}
+            feeRate={feeRate}
           />
         )}
       </AnimatePresence>
