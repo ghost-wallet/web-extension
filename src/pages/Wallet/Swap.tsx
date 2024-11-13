@@ -132,7 +132,7 @@ export default function Swap() {
                   aggregateQuote={aggregateQuote}
                   loadingQuote={loadingQuote}
                 />
-                {!error && payToken && payAmount && Number(outAmountUsd) > 1 && (
+                {!error && !amountError && payToken && payAmount && Number(outAmountUsd) > 1 && (
                   <SwapNetworkFeeButton setIsNetworkFeeOpen={setIsNetworkFeeOpen} networkFee={networkFee} />
                 )}
                 {error && (

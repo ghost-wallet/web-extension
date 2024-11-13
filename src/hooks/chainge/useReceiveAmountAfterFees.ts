@@ -13,7 +13,7 @@ const useReceiveAmountAfterFees = (
     if (aggregateQuote && receiveToken) {
       const calculatedAmount = formatNumberWithDecimal(
         Number(aggregateQuote.outAmount) - Number(aggregateQuote.serviceFee) - Number(aggregateQuote.gasFee),
-        receiveToken.decimals,
+        aggregateQuote.chainDecimal,
       )
       setReceiveAmountAfterFees(calculatedAmount)
     } else {

@@ -30,7 +30,7 @@ const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({
           value: `${formatNumberAbbreviated(
             formatNumberWithDecimal(
               Number(aggregateQuote.gasFee) + Number(aggregateQuote.serviceFee),
-              receiveToken.decimals,
+              aggregateQuote.chainDecimal,
             ),
           )} ${receiveToken.symbol}`,
         },

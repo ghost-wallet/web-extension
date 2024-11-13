@@ -28,6 +28,7 @@ const YouReceiveSection: React.FC<YouReceiveSectionProps> = ({
 }) => {
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
   const { currencySymbol } = useChaingeTokenData(receiveAmount, receiveToken, tokens)
+  const displayAmount = receiveAmount ? formatNumberAbbreviated(receiveAmountAfterFees) : ''
 
   return (
     <div className="bg-darkmuted rounded-lg p-4">
@@ -38,21 +39,25 @@ const YouReceiveSection: React.FC<YouReceiveSectionProps> = ({
         ) : (
           <input
             type="text"
-            value={formatNumberAbbreviated(receiveAmountAfterFees)}
+            value={displayAmount}
             placeholder="0"
             readOnly
-            className="bg-transparent text-primarytext placeholder-lightmuted text-2xl w-40 focus:outline-none"
+            className={`bg-transparent ${
+              displayAmount ? 'text-primarytext' : 'text-lightmuted'
+            } placeholder:text-lightmuted text-2xl w-40 focus:outline-none`}
           />
         )}
         <ChaingeTokenDropdown selectedToken={receiveToken} openTokenSelect={openTokenSelect} />
       </div>
+
       {loadingQuote || (payAmount && !receiveAmount && !aggregateQuote?.outAmountUsd) ? (
-        <div className="w-14 h-5 bg-muted rounded-md mt-2 animate-pulse"></div>
+        <div className="w-14 h-5 bg-muted rounded-md mb-1 animate-pulse"></div>
       ) : (
-        aggregateQuote && (
+        aggregateQuote &&
+        receiveAmount && (
           <EstimatedCurrencyValue
             currencySymbol={currencySymbol}
-            formattedCurrencyValue={aggregateQuote.outAmountUsd}
+            formattedCurrencyValue={formatNumberAbbreviated(Number(aggregateQuote.outAmountUsd))}
           />
         )
       )}
