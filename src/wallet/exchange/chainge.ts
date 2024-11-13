@@ -104,7 +104,7 @@ export default class Chainge {
     // Computed minimum, After calculating the minimum value, we need to convert it to the decimals of the target chain.
     const miniAmount = BigNumber(receiveAmountHr)
       .multipliedBy(BigNumber(1 - parseFloat(slippage) * 0.01))
-      .decimalPlaces(chainDecimal)
+      .decimalPlaces(chainDecimal, BigNumber.ROUND_FLOOR)
       .toString()
     const miniAmountForExtra = parseUnits(miniAmount, chainDecimal).toString()
 
