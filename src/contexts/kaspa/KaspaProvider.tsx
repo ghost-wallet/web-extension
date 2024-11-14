@@ -41,9 +41,14 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
         await processEvent(message)
       }
     })
-    connection.onDisconnect.addListener(async () => {
+    connection.onDisconnect.addListener(() => {
+      if (runtime.lastError?.message !== 'Could not establish connection. Receiving end does not exist.') return
+
       connectionRef.current = null
-      await reloadState()
+
+      for (const entry of messagesRef.current.values()) {
+        getConnection().postMessage(entry.message)
+      }
     })
     connectionRef.current = connection
     return connection
