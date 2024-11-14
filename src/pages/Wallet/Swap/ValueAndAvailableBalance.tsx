@@ -1,5 +1,6 @@
 import React from 'react'
 import EstimatedCurrencyValue from '@/components/EstimatedCurrencyValue'
+import { formatNumberAbbreviated } from '@/utils/formatting'
 
 interface ValueAndAvailableBalanceProps {
   currencySymbol: string
@@ -18,7 +19,9 @@ const ValueAndAvailableBalance: React.FC<ValueAndAvailableBalanceProps> = ({
         currencySymbol={currencySymbol}
         formattedCurrencyValue={formattedCurrencyValue}
       />
-      <span className="text-mutedtext text-base">Available: {formattedBalance.toLocaleString()}</span>
+      <span className="text-mutedtext text-base">
+        Available: {formatNumberAbbreviated(Number(formattedBalance))}
+      </span>
     </div>
   )
 }
