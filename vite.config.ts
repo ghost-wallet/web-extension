@@ -6,7 +6,7 @@ import * as path from 'path'
 
 const manifest: ManifestV3Export = {
   manifest_version: 3,
-  name: 'Ghost',
+  name: 'Ghost Wallet',
   version: '0.0.5',
   icons: {
     48: 'assets/ghost-outline-thick-48.png',
@@ -23,7 +23,12 @@ const manifest: ManifestV3Export = {
     service_worker: 'src/wallet/walletServiceWorker.ts',
     type: 'module',
   },
-  permissions: ['storage', 'alarms', 'notifications', 'sidePanel'],
+  permissions: [
+    'storage', 
+    //'alarms', 
+    'notifications', 
+    'sidePanel'
+  ],
   // browser_specific_settings: {
   //   gecko: {
   //     id: 'ghostappwallet@gmail.com',
