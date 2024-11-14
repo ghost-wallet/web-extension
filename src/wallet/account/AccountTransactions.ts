@@ -14,17 +14,12 @@ import {
   Transaction,
   UtxoContext,
   UtxoProcessor,
-  UtxoProcessorEvent,
-  UtxoProcessorNotificationCallback,
 } from '@/wasm'
 import AccountAddresses from './AccountAddresses'
 import EventEmitter from 'events'
 import KeyManager from '@/wallet/account/KeyManager'
 import Account from '@/wallet/Account'
-import { Token } from '@/wallet/krc20/KRC20Transactions'
-import { CustomInput, CustomSignature, KRC20TokenRequest } from '@/utils/interfaces'
-import { KRC20_COMMIT_AMOUNT } from '@/utils/constants/constants'
-
+import { CustomInput, CustomSignature } from '@/utils/interfaces'
 
 export default class AccountTransactions extends EventEmitter {
   kaspa: RpcClient
@@ -135,7 +130,15 @@ export default class AccountTransactions extends EventEmitter {
 
     for (const transaction of transactions) {
       const parsedTransaction = Transaction.deserializeFromSafeJSON(transaction)
-      const privateKeys = KeyManager.getPrivateKeys(parsedTransaction, this.addresses)
+      const privateKeys = []
+
+      for (let address of parsedTransaction.addresses(this.addresses.networkId)) {
+        if (address.version === 'ScriptHash') {
+          continue
+        }
+        const [isReceive, index] = this.addresses.findIndexes(address.toString())
+        privateKeys.push(isReceive ? keyGenerator.receiveKey(index) : keyGenerator.changeKey(index))
+      }
       const signedTransaction = signTransaction(parsedTransaction, privateKeys, false)
 
       for (const custom of customs) {
@@ -190,8 +193,6 @@ export default class AccountTransactions extends EventEmitter {
     const signed = await this.sign(transactions, customs)
     return await this.submitContextful(signed)
   }
-
-  
 
   reset() {
     delete this.encryptedKey

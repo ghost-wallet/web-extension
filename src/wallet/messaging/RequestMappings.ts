@@ -1,6 +1,7 @@
 import { Status } from '../Wallet'
 import { CustomInput, KRC20TokenRequest } from '@/utils/interfaces'
 import { Token } from '@/wallet/krc20/KRC20Transactions'
+import { ChaingeFeeEstimateRequest, SubmitChaingeOrderRequest } from '../exchange/chainge'
 
 export interface RequestMappings {
   'wallet:status': []
@@ -29,6 +30,8 @@ export interface RequestMappings {
   'provider:connect': [string]
   'provider:connection': []
   'provider:disconnect': []
+  'account:submitChaingeOrder': [SubmitChaingeOrderRequest]
+  'account:estimateChaingeTransactionFee': [ChaingeFeeEstimateRequest]
 }
 
 export interface Request<M extends keyof RequestMappings = keyof RequestMappings> {

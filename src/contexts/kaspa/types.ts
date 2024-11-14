@@ -7,7 +7,7 @@ import { UTXO } from '@/utils/interfaces'
 // it should only be true or false
 export interface IKaspa {
   status: Status
-  connected: boolean | 'mainnet' | 'testnet-10' | 'testnet-11'
+  connected: boolean
   addresses: string[]
   balance: number
   utxos: UTXO[]

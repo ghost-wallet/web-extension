@@ -5,11 +5,18 @@ import TableSection from '@/components/table/TableSection'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 
 interface ReviewOrderProps {
+  networkFee: string
+  slippage: string
   aggregateQuote: ChaingeAggregateQuote
   receiveToken: ChaingeToken
 }
 
-const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({ aggregateQuote, receiveToken }) => {
+const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({
+  networkFee,
+  slippage,
+  aggregateQuote,
+  receiveToken,
+}) => {
   return (
     <TableSection
       reversedColors={true}
@@ -19,20 +26,25 @@ const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({ aggregateQuote, receiveT
           value: aggregateQuote.aggregator,
         },
         {
-          label: 'Network fee',
-          value: `${formatNumberAbbreviated(formatNumberWithDecimal(aggregateQuote.gasFee, receiveToken.decimals))} ${receiveToken.symbol}`,
+          label: `Chainge fee`,
+          value: `${formatNumberAbbreviated(
+            formatNumberWithDecimal(
+              Number(aggregateQuote.gasFee) + Number(aggregateQuote.serviceFee),
+              aggregateQuote.chainDecimal,
+            ),
+          )} ${receiveToken.symbol}`,
         },
         {
-          label: 'Service fee',
-          value: `${formatNumberAbbreviated(formatNumberWithDecimal(aggregateQuote.serviceFee, receiveToken.decimals))} ${receiveToken.symbol}`,
+          label: 'Network fee',
+          value: `${networkFee} KAS`,
         },
         {
           label: 'Price impact',
-          value: `${aggregateQuote.priceImpact} %`,
+          value: `${aggregateQuote.priceImpact}%`,
         },
         {
           label: 'Slippage',
-          value: `${aggregateQuote.slippage} %`,
+          value: `${slippage}%`,
         },
       ]}
     />

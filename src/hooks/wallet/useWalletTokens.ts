@@ -29,8 +29,8 @@ export function useWalletTokens() {
     queryKey: ['krc20Tokens', { selectedNode: settings.selectedNode, address: kaspa.addresses[0] }],
     queryFn: async () => fetchKrc20AddressTokenList(settings.selectedNode, kaspa.addresses[0]),
     enabled: isQueryEnabled,
-    staleTime: 3000,
-    refetchInterval: 3000,
+    staleTime: 6000,
+    refetchInterval: 6000,
   })
 
   const kaspaCrypto: KaspaToken = useMemo(
@@ -52,11 +52,10 @@ export function useWalletTokens() {
           const floorPrice = ksprPriceData?.floor_price ?? 0
           return {
             ...token,
-            floorPrice: floorPrice * kasPrice,
+            floorPrice: token.tick === 'CUSDT' ? 1.0 : floorPrice * kasPrice, // TODO use real USDT price from an API
           }
         })
       : []
-
     return [kaspaCrypto, ...additionalTokens]
   }, [kaspaCrypto, krc20TokensQuery.data, ksprPricesQuery.data, kasPrice])
 

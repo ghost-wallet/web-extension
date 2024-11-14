@@ -3,11 +3,6 @@ import { runtime, type Runtime } from 'webextension-polyfill'
 import { kaspaReducer } from './kaspaReducer'
 import { KaspaContext, defaultState } from './KaspaContext'
 import { MessageEntry } from './types'
-import {
-  handleAccountBalanceEvent,
-  handleNodeConnectionEvent,
-  handleAccountAddressesEvent,
-} from './eventHandlers'
 import { Request, RequestMappings, isEvent, Event } from '@/wallet/messaging/RequestMappings'
 import { Response, ResponseMappings } from '@/wallet/messaging/ResponseMappings'
 
@@ -46,9 +41,14 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
         await processEvent(message)
       }
     })
-    connection.onDisconnect.addListener(async () => {
+    connection.onDisconnect.addListener(() => {
+      if (runtime.lastError?.message !== 'Could not establish connection. Receiving end does not exist.') return
+
       connectionRef.current = null
-      await reloadState()
+
+      for (const entry of messagesRef.current.values()) {
+        getConnection().postMessage(entry.message)
+      }
     })
     connectionRef.current = connection
     return connection
@@ -57,17 +57,24 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
   const processEvent = async (message: Event) => {
     switch (message.event) {
       case 'node:connection':
+        dispatch({ type: 'addresses', payload: await request('account:addresses', []) })
+        dispatch({ type: 'connected', payload: message.data })
+        break
       case 'node:network':
-        await handleNodeConnectionEvent(dispatch, message, request)
+        dispatch({ type: 'addresses', payload: await request('account:addresses', []) })
         break
       case 'wallet:status':
         dispatch({ type: 'status', payload: message.data })
         break
       case 'account:balance':
-        await handleAccountBalanceEvent(dispatch, message, request)
+        dispatch({ type: 'balance', payload: message.data })
+        dispatch({ type: 'utxos', payload: await request('account:utxos', []) })
         break
       case 'account:addresses':
-        await handleAccountAddressesEvent(dispatch, request)
+        dispatch({
+          type: 'addresses',
+          payload: message.data,
+        })
         break
       case 'provider:connection':
         dispatch({ type: 'provider', payload: message.data })

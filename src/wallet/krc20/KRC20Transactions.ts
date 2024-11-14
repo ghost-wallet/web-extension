@@ -1,11 +1,27 @@
-import { Address, addressFromScriptPublicKey, createTransactions, estimateTransactions, HexString, IGeneratorSettingsObject, IUtxoEntry, kaspaToSompi, RpcClient, ScriptBuilder, sompiToKaspaString, UtxoContext, UtxoProcessor, UtxoProcessorEvent, UtxoProcessorNotificationCallback, XOnlyPublicKey } from "@/wasm/kaspa"
-import EventEmitter from "events"
-import AccountAddresses from "../account/AccountAddresses"
-import AccountTransactions from "../account/AccountTransactions"
-import { KRC20TokenRequest, TokenFromApi } from "@/utils/interfaces"
-import { KRC20Inscription } from "./KRC20Inscription"
-import { KRC20_COMMIT_AMOUNT } from "@/utils/constants/constants"
-
+import {
+  Address,
+  addressFromScriptPublicKey,
+  createTransactions,
+  estimateTransactions,
+  HexString,
+  IGeneratorSettingsObject,
+  IUtxoEntry,
+  kaspaToSompi,
+  RpcClient,
+  ScriptBuilder,
+  sompiToKaspaString,
+  UtxoContext,
+  UtxoProcessor,
+  UtxoProcessorEvent,
+  UtxoProcessorNotificationCallback,
+  XOnlyPublicKey,
+} from '@/wasm/kaspa'
+import EventEmitter from 'events'
+import AccountAddresses from '../account/AccountAddresses'
+import AccountTransactions from '../account/AccountTransactions'
+import { KRC20TokenRequest, TokenFromApi } from '@/utils/interfaces'
+import { KRC20Inscription } from './KRC20Inscription'
+import { KRC20_COMMIT_AMOUNT } from '@/utils/constants/constants'
 
 export type Token = TokenFromApi
 
@@ -13,13 +29,14 @@ function setupKrc20Transaction(
   address: string,
   recipient: string,
   amount: string,
-  token: TokenFromApi,
+  tick: string,
+  dec: string | number,
   networkId = 'mainnet',
 ) {
   const script = new ScriptBuilder()
   const inscription = new KRC20Inscription('transfer', {
-    tick: token.tick,
-    amt: BigInt(+amount * 10 ** +token.dec).toString(),
+    tick,
+    amt: BigInt(+amount * 10 ** +dec).toString(),
     to: recipient,
   })
 
@@ -35,25 +52,20 @@ function calculateScriptExtraFee(script: HexString, feeRate: number) {
   return BigInt(Math.ceil((scriptBytes + 1) * feeRate))
 }
 
-
-
 export default class KRC20Transactions extends EventEmitter {
   constructor(
-    private kaspa: RpcClient, 
-    private context: UtxoContext, 
-    private processor: UtxoProcessor, 
+    private kaspa: RpcClient,
+    private context: UtxoContext,
+    private processor: UtxoProcessor,
     private addresses: AccountAddresses,
-    private transactions: AccountTransactions) {
+    private transactions: AccountTransactions,
+  ) {
     super()
   }
 
-
-  async estimateKRC20TransactionFee(
-    info: KRC20TokenRequest,
-    feeRate: number,
-  ): Promise<string> {
+  async estimateKRC20TransactionFee(info: KRC20TokenRequest, feeRate: number): Promise<string> {
     const { scriptAddress, script } = info
-  
+
     const commitSettings: IGeneratorSettingsObject = {
       priorityEntries: [],
       entries: this.context,
@@ -67,13 +79,13 @@ export default class KRC20Transactions extends EventEmitter {
       feeRate,
       priorityFee: kaspaToSompi('0')!,
     }
-  
+
     const commitResult = await createTransactions(commitSettings)
     const commitTxn = commitResult.transactions[commitResult.transactions.length - 1]
     const commitSummary = commitResult.summary
-  
+
     const scriptExtraFee = calculateScriptExtraFee(script, feeRate)
-  
+
     const revealSettings: IGeneratorSettingsObject = {
       priorityEntries: [
         {
@@ -91,20 +103,20 @@ export default class KRC20Transactions extends EventEmitter {
       feeRate,
       priorityFee: scriptExtraFee,
     }
-  
+
     const revealEstimateResult = await estimateTransactions(revealSettings)
     const totalFee = commitSummary.fees + revealEstimateResult.fees
-  
+
     return sompiToKaspaString(totalFee)
   }
-  
+
   async getKRC20Info(
     recipient: string,
-    token: Token,
+    { tick, dec }: { tick: string; dec: number | string },
     amount: string,
   ): Promise<KRC20TokenRequest> {
     const sender = this.addresses.receiveAddresses[0]
-    const { script, scriptAddress } = setupKrc20Transaction(sender, recipient, amount, token)
+    const { script, scriptAddress } = setupKrc20Transaction(sender, recipient, amount, tick, dec)
     return {
       sender,
       recipient,
@@ -119,16 +131,16 @@ export default class KRC20Transactions extends EventEmitter {
     amount: string = KRC20_COMMIT_AMOUNT,
     additionalOutputs: [string, string][] = [],
   ) {
-    const [commit1] = await this.transactions.create([[scriptAddress, amount], ...additionalOutputs], feeRate, '0')
+    const [commit1] = await this.transactions.create(
+      [[scriptAddress, amount], ...additionalOutputs],
+      feeRate,
+      '0',
+    )
     const commit2 = await this.transactions.sign(commit1)
     return await this.transactions.submitContextful(commit2)
   }
-  
-  async submitKRC20Reveal(
-    commitId: string,
-    info: KRC20TokenRequest,
-    feeRate: number,
-  ) {
+
+  async submitKRC20Reveal(commitId: string, info: KRC20TokenRequest, feeRate: number) {
     const input = {
       address: info.scriptAddress,
       outpoint: commitId,
@@ -136,9 +148,9 @@ export default class KRC20Transactions extends EventEmitter {
       signer: info.sender,
       script: info.script,
     }
-  
+
     const scriptExtraFee = calculateScriptExtraFee(info.script, feeRate)
-  
+
     const [reveal1] = await this.transactions.create([], feeRate, sompiToKaspaString(scriptExtraFee), [input])
     const reveal2 = await this.transactions.sign(reveal1, [input])
     return await this.transactions.submitContextful(reveal2)
@@ -174,7 +186,4 @@ export default class KRC20Transactions extends EventEmitter {
     transactionContext.clear()
     return [commitId, revealId]
   }
-
-
-
 }

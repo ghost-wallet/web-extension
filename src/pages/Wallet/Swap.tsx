@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/navigation/BottomNav'
-import TopNav from '@/components/navigation/TopNav'
 import { ChaingeToken, useChaingeTokens } from '@/hooks/chainge/useChaingeTokens'
 import { useWalletTokens } from '@/hooks/wallet/useWalletTokens'
 import { useLocation } from 'react-router-dom'
@@ -15,15 +14,24 @@ import useAggregateQuote from '@/hooks/chainge/useAggregateQuote'
 import SwitchChaingeTokens from '@/pages/Wallet/Swap/SwitchChaingeTokens'
 import ReviewOrderButton from '@/pages/Wallet/Swap/ReviewOrderButton'
 import ErrorMessage from '@/components/messages/ErrorMessage'
+import TopNavSwap from '@/components/navigation/TopNavSwap'
+import SwapNetworkFeeButton from '@/pages/Wallet/Swap/SwapNetworkFeeButton'
+import SwapNetworkFeeSelect from '@/pages/Wallet/Swap/SwapNetworkFeeSelect'
+import useKaspa from '@/hooks/contexts/useKaspa'
 
 export default function Swap() {
   const location = useLocation()
   const { token: locationToken } = location.state || {}
   const { tokens } = useWalletTokens()
+  const { request } = useKaspa()
   const [payAmount, setPayAmount] = useState('')
   const [amountError, setAmountError] = useState<string | null>(null)
   const [payToken, setPayToken] = useState<ChaingeToken | null>(null)
   const [receiveToken, setReceiveToken] = useState<ChaingeToken | null>(null)
+  const [slippage, setSlippage] = useState<number>(1)
+  const [feeRate, setFeeRate] = useState<number>(1)
+  const [networkFee, setNetworkFee] = useState<string>('')
+  const [isNetworkFeeOpen, setIsNetworkFeeOpen] = useState(false)
   const [isReviewOrderOpen, setIsReviewOrderOpen] = useState(false)
   const [isPayTokenSelectOpen, setIsPayTokenSelectOpen] = useState(false)
   const [isReceiveTokenSelectOpen, setIsReceiveTokenSelectOpen] = useState(false)
@@ -32,8 +40,31 @@ export default function Swap() {
   const { aggregateQuote, receiveAmount, setReceiveAmount, outAmountUsd, loadingQuote, error } =
     useAggregateQuote(payToken, receiveToken, payAmount)
 
+  const fetchEstimatedFee = useCallback(() => {
+    if (!payToken || !payAmount) return
+    request('account:estimateChaingeTransactionFee', [
+      {
+        fromAmount: payAmount,
+        fromToken: payToken,
+        feeRate,
+      },
+    ])
+      .then((estimatedFee) => {
+        console.log('Estimated network fee:', estimatedFee)
+        setNetworkFee(estimatedFee)
+      })
+      .catch((error) => {
+        console.error('Error fetching estimated network fee:', error)
+        // TODO show network fee error on UI?
+      })
+  }, [payAmount, payToken, feeRate, request])
+
   useEffect(() => {
-    // TODO: handle error if there are no chainge tokens
+    fetchEstimatedFee()
+  }, [fetchEstimatedFee])
+
+  useEffect(() => {
+    // TODO: show queryError on UI
     if (chaingeTokens) {
       const defaultPayToken = chaingeTokens.find((token: ChaingeToken) =>
         locationToken ? token.symbol === locationToken.tick : token.symbol === 'KAS',
@@ -76,7 +107,7 @@ export default function Swap() {
 
   return (
     <>
-      <TopNav />
+      <TopNavSwap slippage={slippage} setSlippage={setSlippage} />
       <AnimatedMain className="flex flex-col h-screen w-full fixed">
         <div className="flex flex-col h-full justify-between p-4">
           <div>
@@ -102,6 +133,9 @@ export default function Swap() {
                   aggregateQuote={aggregateQuote}
                   loadingQuote={loadingQuote}
                 />
+                {!error && !amountError && payToken && payAmount && Number(outAmountUsd) > 1 && (
+                  <SwapNetworkFeeButton setIsNetworkFeeOpen={setIsNetworkFeeOpen} networkFee={networkFee} />
+                )}
                 {error && (
                   <div className="py-4">
                     {' '}
@@ -149,8 +183,20 @@ export default function Swap() {
             payToken={payToken}
             receiveToken={receiveToken}
             payAmount={payAmount}
+            slippage={slippage.toString()}
+            feeRate={feeRate}
+            networkFee={networkFee}
             aggregateQuote={aggregateQuote}
             onClose={() => setIsReviewOrderOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isNetworkFeeOpen && payToken && payAmount && (
+          <SwapNetworkFeeSelect
+            networkFee={networkFee}
+            onSelectFeeRate={setFeeRate}
+            onClose={() => setIsNetworkFeeOpen(false)}
           />
         )}
       </AnimatePresence>

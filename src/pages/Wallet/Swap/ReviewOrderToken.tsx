@@ -18,7 +18,7 @@ const ReviewOrderToken: React.FC<ReviewOrderTokenProps> = ({
   estimatedValue,
   currencySymbol,
 }) => (
-  <div className="bg-darkmuted p-4 rounded-lg mb-1 flex items-center">
+  <div className="bg-darkmuted px-4 py-3 rounded-lg mb-1 flex items-center">
     <CryptoImage ticker={token.symbol} size="small" />
     <div className="flex-1 ml-4">
       <div className="flex justify-between items-center">

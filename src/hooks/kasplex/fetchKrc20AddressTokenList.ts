@@ -15,7 +15,7 @@ export const fetchKrc20AddressTokenList = async (selectedNode: number, address: 
         params.append('next', nextPage)
       }
 
-      const response = await axios.get<KRC20TokenList>(
+      const response = await axios.get<KRC20TokenListForAddress>(
         `https://${apiBase}.kasplex.org/v1/krc20/address/${address}/tokenlist?${params.toString()}`,
       )
 

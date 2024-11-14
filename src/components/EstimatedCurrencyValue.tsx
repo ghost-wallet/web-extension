@@ -11,7 +11,7 @@ const EstimatedCurrencyValue: React.FC<EstimatedCurrencyValueProps> = ({
 }) => {
   return (
     <span className="text-mutedtext text-base">{`${currencySymbol}${
-      formattedCurrencyValue ? Number(formattedCurrencyValue).toFixed(2) : '0'
+      formattedCurrencyValue ? formattedCurrencyValue : '0'
     }`}</span>
   )
 }
