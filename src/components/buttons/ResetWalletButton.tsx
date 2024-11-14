@@ -15,6 +15,7 @@ const ResetWalletButton: React.FC = () => {
   const handleConfirm = async () => {
     try {
       await request('wallet:reset', [])
+      window.localStorage.clear()
       navigate('/')
     } catch (err: any) {
       console.error(`${ErrorMessages.RESET.FAILED}:`, err)
@@ -25,7 +26,7 @@ const ResetWalletButton: React.FC = () => {
 
   return (
     <div>
-      <div className="flex gap-3 justify-start items-center mt-16 mb-8">
+      <div className="flex gap-3 justify-start items-center pb-4">
         <Checkbox checked={isChecked} onChange={setIsChecked} />
         <label htmlFor="reset-confirmation" className="text-mutedtext text-base">
           I have direct access to my 12-word secret recovery phrase.
@@ -34,7 +35,7 @@ const ResetWalletButton: React.FC = () => {
 
       {error && <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />}
 
-      <div className="w-full pb-20">
+      <div className="w-full">
         <button
           type="button"
           disabled={!isChecked}

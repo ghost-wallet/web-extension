@@ -5,6 +5,7 @@ import Header from '@/components/Header'
 import NextButton from '@/components/buttons/NextButton'
 import { WarningMessages } from '@/utils/constants/warningMessages'
 import Checkbox from '@/components/Checkbox'
+import WarningMessage from '@/components/WarningMessage'
 
 export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSaved: () => void }) {
   const [isSeedVisible, setIsSeedVisible] = useState(false)
@@ -31,7 +32,9 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
     <AnimatedMain className="flex flex-col h-screen pt-5">
       <Header title="Secret Phrase" showBackButton={false} />
       <div className="flex flex-col flex-grow justify-center px-4 pb-6 space-y-4">
-        <p className="text-warning text-base text-justify pt-4">{WarningMessages.NEW_SEED_PHRASE}</p>
+        <div className="pt-4">
+          <WarningMessage message={WarningMessages.NEW_SEED_PHRASE} />
+        </div>
         <div
           className="bg-bgdarker border border-muted rounded-lg p-4 mb-4 relative text-primarytext text-sm cursor-pointer"
           onClick={toggleSeedVisibility}
@@ -78,7 +81,7 @@ export default function Create({ mnemonic, onSaved }: { mnemonic: string; onSave
         <div className="flex gap-3 justify-start items-center mt-8 mb-8">
           <Checkbox checked={isConfirmed} onChange={setIsConfirmed} />
           <label htmlFor="confirmation" className="text-mutedtext text-base">
-            I saved my secret recovery phrase.
+            I saved my secret recovery phrase and will not share it with anyone.
           </label>
         </div>
       </div>

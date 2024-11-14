@@ -32,6 +32,7 @@ const useAggregateQuote = (
 
       if (payToken && receiveToken && payAmount && !isNaN(Number(payAmount))) {
         setLoadingQuote(true)
+        await new Promise((resolve) => setTimeout(resolve, 200))
         setError(null)
         try {
           const adjustedPayAmount = formatPayAmount(parseFloat(payAmount), payToken.decimals)
@@ -48,7 +49,8 @@ const useAggregateQuote = (
           if (error.name === 'AbortError') {
             console.error('Fetch aborted for Chainge aggregate quote')
           } else {
-            setError(error.message)
+            console.error('Error getting aggregate quote from Chainge API:', error)
+            setError('Chainge DEX error. Please try again.')
             setReceiveAmount('')
             setOutAmountUsd('')
           }
@@ -65,7 +67,7 @@ const useAggregateQuote = (
     }
   }, [payAmount, payToken, receiveToken])
 
-  return { aggregateQuote, receiveAmount, outAmountUsd, setReceiveAmount, loadingQuote, error }
+  return { aggregateQuote, receiveAmount, outAmountUsd, setReceiveAmount, loadingQuote, quoteError: error }
 }
 
 export default useAggregateQuote

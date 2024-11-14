@@ -38,7 +38,7 @@ export default function Swap() {
   const [isReceiveTokenSelectOpen, setIsReceiveTokenSelectOpen] = useState(false)
 
   const { data: chaingeTokens, isLoading, isError, error: queryError } = useChaingeTokens()
-  const { aggregateQuote, receiveAmount, setReceiveAmount, outAmountUsd, loadingQuote, error } =
+  const { aggregateQuote, receiveAmount, setReceiveAmount, outAmountUsd, loadingQuote, quoteError } =
     useAggregateQuote(payToken, receiveToken, payAmount)
 
   const fetchEstimatedFee = useCallback(() => {
@@ -134,7 +134,7 @@ export default function Swap() {
                   aggregateQuote={aggregateQuote}
                   loadingQuote={loadingQuote}
                 />
-                {!error &&
+                {!quoteError &&
                   !amountError &&
                   !networkFeeError &&
                   payToken &&
@@ -142,11 +142,12 @@ export default function Swap() {
                   Number(outAmountUsd) > 1 && (
                     <SwapNetworkFeeButton setIsNetworkFeeOpen={setIsNetworkFeeOpen} networkFee={networkFee} />
                   )}
-                {(error || queryError || networkFeeError) && (
+                {(quoteError || queryError || networkFeeError) && (
                   <div className="py-4">
-                    <ErrorMessage message={error || queryError?.message || networkFeeError || ''} />
+                    <ErrorMessage message={quoteError || queryError?.message || networkFeeError || ''} />
                   </div>
                 )}
+                {}
               </>
             )}
           </div>
@@ -154,6 +155,7 @@ export default function Swap() {
       </AnimatedMain>
       <ReviewOrderButton
         amountError={amountError}
+        networkFeeError={networkFeeError}
         outAmountUsd={outAmountUsd}
         payAmount={payAmount}
         loadingQuote={loadingQuote}

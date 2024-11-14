@@ -23,7 +23,6 @@ const SwapButton: React.FC<SwapButtonProps> = ({ token, className }) => {
       return
     }
 
-    // TODO fix this for USDT CUSDT
     if (fetchedTokens) {
       const tokenExists = fetchedTokens.some(
         (t: ChaingeToken) =>

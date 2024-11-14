@@ -37,7 +37,6 @@ export default class Wallet extends EventEmitter {
 
   private async sync() {
     const wallet = await LocalStorage.get('wallet')
-
     if (!wallet) {
       console.log('[Wallet] No wallet found, setting status to Uninitialized.')
       this.status = Status.Uninitialized
