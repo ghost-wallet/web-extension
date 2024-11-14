@@ -177,7 +177,7 @@ export default class Chainge {
       extra: extra,
       triggerPrice: '0',
       timeout: '0',
-      channel: 'chainge',
+      channel: 'ghost',
     }
 
     console.log('[Chainge] params', params)
