@@ -58,7 +58,7 @@ export default function ManageAccounts() {
                   autoFocus
                 />
                 <CheckIcon
-                  className="h-7 w-7 text-primarytext cursor-pointer hover:primary"
+                  className="h-7 w-7 text-primarytext cursor-pointer hover:text-primary"
                   onClick={handleSaveClick}
                 />
               </div>

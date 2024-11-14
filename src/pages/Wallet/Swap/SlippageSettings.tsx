@@ -3,6 +3,7 @@ import ModalContainer from '@/components/ModalContainer'
 import { AdjustmentsVerticalIcon } from '@heroicons/react/24/outline'
 import NextButton from '@/components/buttons/NextButton'
 import ErrorMessage from '@/components/messages/ErrorMessage'
+import WarningMessage from '@/components/WarningMessage'
 
 interface SlippageSettingsProps {
   onClose: () => void
@@ -99,7 +100,7 @@ const SlippageSettings: React.FC<SlippageSettingsProps> = ({ onClose, onSelectSl
         </div>
 
         {error && <ErrorMessage message={error} />}
-        {warning && <p className="text-base text-warning">{warning}</p>}
+        {warning && <WarningMessage message={warning} />}
       </div>
 
       <div className="absolute bottom-4 left-4 right-4">
