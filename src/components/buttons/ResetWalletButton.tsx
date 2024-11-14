@@ -23,7 +23,6 @@ const ResetWalletButton: React.FC = () => {
     }
   }
 
-  // TODO update to use error button component
   return (
     <div>
       <div className="flex gap-3 justify-start items-center mt-16 mb-8">

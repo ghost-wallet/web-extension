@@ -53,7 +53,7 @@ export interface SubmitChaingeOrderRequest {
 
 export interface ChaingeFeeEstimateRequest {
   fromAmount: string
-  fromToken: ChaingeToken,
+  fromToken: ChaingeToken
   feeRate: number
 }
 
@@ -251,7 +251,7 @@ export default class Chainge {
     }
   }
 
-  async estimateChaingeTransactionFees({fromAmount, fromToken, feeRate}: ChaingeFeeEstimateRequest) {
+  async estimateChaingeTransactionFees({ fromAmount, fromToken, feeRate }: ChaingeFeeEstimateRequest) {
     if (fromToken.contractAddress === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
       // KAS
       return this.transactions.estimateKaspaTransactionFee(

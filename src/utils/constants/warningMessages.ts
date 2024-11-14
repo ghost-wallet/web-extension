@@ -1,7 +1,7 @@
 export const WarningMessages = {
   RESET_WALLET:
     'Are you sure you want to reset your Ghost wallet? This action cannot be undone and will erase\n' +
-    ' all your data. You will be able to regain access to your wallet by importing your 12-word secret recovery\n' +
+    ' all your data. You will be able to recover access to your wallet by importing your 12-word secret recovery\n' +
     " phrase. It's not necessary to remember your password, as you will be prompted to create a new one.",
 
   FORGOT_PASSWORD:

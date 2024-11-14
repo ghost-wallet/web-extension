@@ -57,7 +57,8 @@ export default class Router {
       'provider:connection': () => provider.connectedURL,
       'provider:disconnect': () => provider.disconnect(),
       'account:submitChaingeOrder': (request) => account.chainge.submitChaingeOrder(request),
-      'account:estimateChaingeTransactionFee': (request) => account.chainge.estimateChaingeTransactionFees(request),
+      'account:estimateChaingeTransactionFee': (request) =>
+        account.chainge.estimateChaingeTransactionFees(request),
     }
   }
 

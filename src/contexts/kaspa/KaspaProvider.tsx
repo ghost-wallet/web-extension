@@ -42,7 +42,8 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       }
     })
     connection.onDisconnect.addListener(() => {
-      if (runtime.lastError?.message !== 'Could not establish connection. Receiving end does not exist.') return
+      if (runtime.lastError?.message !== 'Could not establish connection. Receiving end does not exist.')
+        return
 
       connectionRef.current = null
 

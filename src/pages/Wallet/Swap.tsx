@@ -31,6 +31,7 @@ export default function Swap() {
   const [slippage, setSlippage] = useState<number>(1)
   const [feeRate, setFeeRate] = useState<number>(1)
   const [networkFee, setNetworkFee] = useState<string>('')
+  const [networkFeeError, setNetworkFeeError] = useState<string | null>(null)
   const [isNetworkFeeOpen, setIsNetworkFeeOpen] = useState(false)
   const [isReviewOrderOpen, setIsReviewOrderOpen] = useState(false)
   const [isPayTokenSelectOpen, setIsPayTokenSelectOpen] = useState(false)
@@ -52,10 +53,11 @@ export default function Swap() {
       .then((estimatedFee) => {
         console.log('Estimated network fee:', estimatedFee)
         setNetworkFee(estimatedFee)
+        setNetworkFeeError('')
       })
       .catch((error) => {
         console.error('Error fetching estimated network fee:', error)
-        // TODO show network fee error on UI?
+        setNetworkFeeError(error)
       })
   }, [payAmount, payToken, feeRate, request])
 
@@ -64,7 +66,6 @@ export default function Swap() {
   }, [fetchEstimatedFee])
 
   useEffect(() => {
-    // TODO: show queryError on UI
     if (chaingeTokens) {
       const defaultPayToken = chaingeTokens.find((token: ChaingeToken) =>
         locationToken ? token.symbol === locationToken.tick : token.symbol === 'KAS',
@@ -133,13 +134,17 @@ export default function Swap() {
                   aggregateQuote={aggregateQuote}
                   loadingQuote={loadingQuote}
                 />
-                {!error && !amountError && payToken && payAmount && Number(outAmountUsd) > 1 && (
-                  <SwapNetworkFeeButton setIsNetworkFeeOpen={setIsNetworkFeeOpen} networkFee={networkFee} />
-                )}
-                {error && (
+                {!error &&
+                  !amountError &&
+                  !networkFeeError &&
+                  payToken &&
+                  payAmount &&
+                  Number(outAmountUsd) > 1 && (
+                    <SwapNetworkFeeButton setIsNetworkFeeOpen={setIsNetworkFeeOpen} networkFee={networkFee} />
+                  )}
+                {(error || queryError || networkFeeError) && (
                   <div className="py-4">
-                    {' '}
-                    <ErrorMessage message={error} />{' '}
+                    <ErrorMessage message={error || queryError?.message || networkFeeError || ''} />
                   </div>
                 )}
               </>
