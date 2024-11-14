@@ -38,6 +38,7 @@ const YouPaySection: React.FC<YouPaySectionProps> = ({
     }
   }, [amountError, onAmountErrorChange])
 
+  //TODO: add max and 50% buttons
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/[^0-9.]/g, '')
     if (value.split('.').length > 2) {

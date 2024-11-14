@@ -14,7 +14,10 @@ const useChaingeTokenData = (amount: string, token: ChaingeToken | null, tokens:
 
   const tokenSymbol = token?.symbol || 'KAS'
   const tokenData = tokens.find(
-    (t) => t.tick === tokenSymbol || (t.tick === 'KASPA' && tokenSymbol === 'KAS'),
+    (t) =>
+      t.tick === tokenSymbol ||
+      (t.tick === 'KASPA' && tokenSymbol === 'KAS') ||
+      (t.tick === 'CUSDT' && token?.symbol === 'USDT'),
   )
 
   const availableBalance = tokenData ? Number(tokenData.balance) : 0
