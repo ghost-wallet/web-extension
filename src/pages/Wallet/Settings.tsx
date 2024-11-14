@@ -11,22 +11,24 @@ import AccountButton from '@/pages/Wallet/Settings/AccountButton'
 export default function Settings() {
   return (
     <>
-      <AnimatedMain className="pt-5">
-        <Header title="Settings" showBackButton={true} />
-        <div className="mt-1 flex flex-col">
-          <AccountButton />
+      <AnimatedMain className="pt-5 h-screen flex flex-col justify-between">
+        <div>
+          <Header title="Settings" showBackButton={true} />
+          <div className="mt-1 flex flex-col">
+            <AccountButton />
+          </div>
+          <div className="mt-1 flex flex-col">
+            <AboutButton />
+          </div>
+          <div className="mt-1 flex flex-col">
+            <DeveloperButton />
+          </div>
+          <div className="mt-1 flex flex-col">
+            <ResetButton />
+          </div>
         </div>
-        <div className="mt-1 flex flex-col">
-          <AboutButton />
-        </div>
-        <div className="mt-1 flex flex-col">
+        <div className="mb-20">
           <LogoutButton />
-        </div>
-        <div className="mt-1 flex flex-col">
-          <DeveloperButton />
-        </div>
-        <div className="mt-1 flex flex-col">
-          <ResetButton />
         </div>
       </AnimatedMain>
       <BottomNav />

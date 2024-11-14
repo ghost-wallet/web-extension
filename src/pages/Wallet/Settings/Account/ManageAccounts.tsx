@@ -58,16 +58,16 @@ export default function ManageAccounts() {
                   autoFocus
                 />
                 <CheckIcon
-                  className="h-7 w-7 text-primarytext cursor-pointer hover:text-primary"
+                  className="h-7 w-7 text-primarytext cursor-pointer hover:primary"
                   onClick={handleSaveClick}
                 />
               </div>
             ) : (
               <div className="flex items-center space-x-1 w-full cursor-pointer" onClick={handleEditClick}>
-                <p className="text-mutedtext text-lg w-full text-left break-words whitespace-normal">
+                <p className="text-mutedtext text-lg w-full text-left break-words whitespace-normal hover:text-primarytext">
                   {accountName}
                 </p>
-                <PencilSquareIcon className="h-7 w-7 text-mutedtext cursor-pointer hover:text-primary" />
+                <PencilSquareIcon className="h-7 w-7 text-mutedtext cursor-pointer hover:text-primarytext" />
               </div>
             )}
           </div>
