@@ -1,21 +1,35 @@
 import { KRC20Transaction } from '@/utils/interfaces'
 import useSettings from '@/hooks/contexts/useSettings'
+import { chaingeMinterAddresses } from '@/wallet/exchange/chainge'
 
 interface OperationDetails {
-  operationType: 'Sent' | 'Received' | 'Minted'
+  operationType: 'Sent' | 'Received' | 'Minted' | 'Swapped' | 'Unknown'
   isSent: boolean
   isReceived: boolean
+  isSwappedTo: boolean
+  isSwappedFrom: boolean
   isMint: boolean
 }
 
 export function getOperationDetails(operation: KRC20Transaction, address: string): OperationDetails {
-  const { op, to } = operation
+  const { op, to, from } = operation
   const isSent = op === 'transfer' && to !== address
   const isReceived = op === 'transfer' && to === address
+  const isSwappedTo = op === 'transfer' && Object.values(chaingeMinterAddresses).includes(to)
+  const isSwappedFrom = op === 'transfer' && Object.values(chaingeMinterAddresses).includes(from)
   const isMint = op === 'mint'
-  const operationType = isMint ? 'Minted' : isSent ? 'Sent' : 'Received'
+  const operationType =
+    isSwappedTo || isSwappedFrom
+      ? 'Swapped'
+      : isMint
+        ? 'Minted'
+        : isSent
+          ? 'Sent'
+          : isReceived
+            ? 'Received'
+            : 'Unknown'
 
-  return { operationType, isSent, isReceived, isMint }
+  return { operationType, isSent, isReceived, isSwappedTo, isSwappedFrom, isMint }
 }
 
 const getKaspaExplorerBaseUrl = () => {

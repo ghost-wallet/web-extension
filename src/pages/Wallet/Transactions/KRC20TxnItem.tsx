@@ -17,7 +17,10 @@ const KRC20TxnItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ operatio
   const { kaspa } = useKaspa()
   const address = kaspa.addresses[0]
   const { op, amt, tick, opAccept } = operation
-  const { operationType, isMint, isReceived } = getOperationDetails(operation, address)
+  const { operationType, isMint, isReceived, isSwappedTo, isSwappedFrom } = getOperationDetails(
+    operation,
+    address,
+  )
 
   const handleClick = () => {
     navigate(`/transactions/krc20/details`, {
@@ -26,6 +29,8 @@ const KRC20TxnItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ operatio
         operationType,
         isMint,
         isReceived,
+        isSwappedTo,
+        isSwappedFrom,
         address,
       },
     })
@@ -48,7 +53,7 @@ const KRC20TxnItem = forwardRef<HTMLLIElement, TransactionItemProps>(({ operatio
           amt={amt}
           tick={tick}
           isMint={isMint}
-          isReceived={isReceived}
+          isReceived={isReceived || isSwappedFrom}
           className="text-base"
         />
       )}

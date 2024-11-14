@@ -53,7 +53,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({ token, className }) => {
 
       <PopupMessageDialog
         title={'Not Available'}
-        message={`Chainge Finance's KRC20 DEX does not support ${token.tick}, yet. You can see if it's on Chainge's waiting list <a href="https://krc20.chainge.finance/" target="_blank" rel="noopener noreferrer" class="text-primary text-base underline">here</a>.`}
+        message={`${token.tick} is not yet supported for swapping on the Chainge KRC20 DEX. See if it's on Chainge's waiting list <a href="https://krc20.chainge.finance/" target="_blank" rel="noopener noreferrer" class="text-primary text-base underline">here</a>. You can help get the token listed for trading by adding liquidity.`}
         onClose={() => setShowDialog(false)}
         isOpen={showDialog}
       />
