@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ModalContainer from '@/components/ModalContainer'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
@@ -11,6 +11,8 @@ import ReviewOrderQuote from '@/pages/Wallet/Swap/ReviewOrderQuote'
 import useReceiveAmountAfterFees from '@/hooks/chainge/useReceiveAmountAfterFees'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import ErrorMessage from '@/components/messages/ErrorMessage'
+import WarningMessage from '@/components/WarningMessage'
+import { WarningMessages } from '@/utils/constants/warningMessages'
 
 interface ReviewOrderProps {
   payToken: ChaingeToken
@@ -39,6 +41,20 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   const { currencySymbol, formattedCurrencyValue } = useChaingeTokenData(payAmount, payToken, [])
   const { request } = useKaspa()
   const [error, setError] = useState(null)
+  const [warning, setWarning] = useState<string | null>(null)
+
+  useEffect(() => {
+    const outAmountUsd = Number(aggregateQuote.outAmountUsd)
+    const formattedValue = Number(formattedCurrencyValue)
+
+    if (outAmountUsd < formattedValue * 0.9) {
+      const difference = formattedValue - outAmountUsd
+      const percentageLoss = ((difference / formattedValue) * 100).toFixed(2)
+      setWarning(WarningMessages.LOW_LIQUIDITY(difference, percentageLoss))
+    } else {
+      setWarning(null)
+    }
+  }, [aggregateQuote.outAmountUsd, formattedCurrencyValue])
 
   const handleSwap = async () => {
     setLoading(true)
@@ -71,6 +87,9 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
       //         "amountOut": ""
       //     }
       // }
+
+      // TODO check order status from Chainge API to show loading progress
+      // possibly navigate to a loading screen next, then navigate to the confirmed page
       navigate('/swap/confirmed', { state: { order } })
     } catch (error: any) {
       setError(error)
@@ -100,6 +119,8 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           estimatedValue={aggregateQuote.outAmountUsd}
           currencySymbol={currencySymbol}
         />
+
+        {warning && <WarningMessage message={warning} />}
 
         <ReviewOrderQuote
           networkFee={networkFee}

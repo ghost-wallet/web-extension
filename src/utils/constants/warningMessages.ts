@@ -12,4 +12,8 @@ export const WarningMessages = {
   NEW_SEED_PHRASE:
     'This secret recovery phrase is the only way to restore your wallet. Write it down on paper and save it in a secure location. ' +
     'Beware of fake customer support scammers who may try to contact you.',
+
+  LOW_LIQUIDITY: (difference: any, percentageLoss: any) =>
+    `Due to low liquidity, this trade would result in a loss of $${difference.toFixed(2)} (-${percentageLoss}%). You may continue, 
+    but we recommend trading a different token until more liquidity is added.`,
 }
