@@ -52,6 +52,25 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           feeRate,
         },
       ])
+      // TODO: if order response is not an "error", but clearly not a success either, do not navigate to confirm page. instead set the error here.
+      // for example, invalid channel returns:
+      // {
+      //    code: 3,
+      //    data: {}
+      //    msg: "invalid channel",
+      // }
+      // another example:
+      // {
+      //     "code": 0,
+      //     "msg": "success",
+      //     "data": {
+      //         "status": "Verified",
+      //         "timestamp": 0,
+      //         "execHash": "",
+      //         "reason": "queryAggregateRouter: fail to find chain=KAS",
+      //         "amountOut": ""
+      //     }
+      // }
       navigate('/swap/confirmed', { state: { order } })
     } catch (error: any) {
       setError(error)

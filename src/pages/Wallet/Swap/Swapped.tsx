@@ -8,7 +8,9 @@ const Swapped: React.FC = () => {
 
   return (
     <ConfirmationPage title="Swap order submitted!">
-      <a className="text-primary font-bold text-lg">Order ID: {order?.data?.id}</a>
+      {order?.data?.id && (
+        <a className="text-mutedtext font-bold text-lg">Chainge Order ID: {order.data.id}</a>
+      )}
     </ConfirmationPage>
   )
 }
