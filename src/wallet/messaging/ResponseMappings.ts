@@ -1,4 +1,4 @@
-import { Status } from '../Wallet'
+import { Status } from '@/utils/constants/constants'
 import { KRC20TokenRequest, UTXO } from '@/utils/interfaces'
 import { PriorityBuckets } from '../Node'
 import { ChaingeOrderResponse } from '../exchange/chainge'

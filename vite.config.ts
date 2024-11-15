@@ -73,4 +73,15 @@ export default defineConfig({
     },
     port: 3000,
   },
+  build: {
+    minify: false,
+    cssMinify: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'axios': ['axios'],
+        },
+      }
+    }
+  }
 })

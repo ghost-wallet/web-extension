@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Status } from '@/wallet/Wallet'
+import { Status } from '@/utils/constants/constants'
 import useSettings from '../hooks/contexts/useSettings'
 import useKaspa from '../hooks/contexts/useKaspa'
 import usePromise from '../hooks/usePromise'

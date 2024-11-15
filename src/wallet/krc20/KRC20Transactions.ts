@@ -15,7 +15,7 @@ import {
   UtxoProcessorEvent,
   UtxoProcessorNotificationCallback,
   XOnlyPublicKey,
-} from '@/wasm/kaspa'
+} from '@/wasm'
 import EventEmitter from 'events'
 import AccountAddresses from '../account/AccountAddresses'
 import AccountTransactions from '../account/AccountTransactions'

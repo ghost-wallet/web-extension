@@ -1,4 +1,4 @@
-import { ScriptBuilder } from '@/wasm/kaspa'
+import { ScriptBuilder } from '@/wasm'
 
 interface OperationMappings {
   deploy: {

@@ -10,12 +10,7 @@ import {
 import LocalStorage from '@/storage/LocalStorage'
 import SessionStorage from '@/storage/SessionStorage'
 import KeyManager from '@/wallet/account/KeyManager'
-
-export enum Status {
-  Uninitialized,
-  Locked,
-  Unlocked,
-}
+import { Status } from '@/utils/constants/constants'
 
 export default class Wallet extends EventEmitter {
   status: Status = Status.Uninitialized
