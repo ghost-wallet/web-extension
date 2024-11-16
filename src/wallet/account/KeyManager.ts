@@ -1,5 +1,4 @@
-import { Mnemonic, PrivateKey, PrivateKeyGenerator, Transaction, XPrv } from '@/wasm'
-import AccountAddresses from '@/wallet/account/AccountAddresses'
+import { Mnemonic, PrivateKeyGenerator, XPrv } from '@/wasm'
 
 export default new (class KeyManager {
   private decryptedKey: string | null = null

@@ -1,6 +1,6 @@
 import { KRC20Transaction } from '@/utils/interfaces'
 import useSettings from '@/hooks/contexts/useSettings'
-import { chaingeMinterAddresses } from '@/wallet/exchange/chainge'
+import { chaingeMinterAddresses } from '@/utils/constants/constants'
 
 interface OperationDetails {
   operationType: 'Sent' | 'Received' | 'Minted' | 'Swapped' | 'Unknown'

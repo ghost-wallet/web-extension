@@ -1,4 +1,4 @@
-import { Status } from '../Wallet'
+import { Status } from '@/utils/constants/constants'
 import { CustomInput, KRC20TokenRequest } from '@/utils/interfaces'
 import { Token } from '@/wallet/krc20/KRC20Transactions'
 import { ChaingeFeeEstimateRequest, SubmitChaingeOrderRequest } from '../exchange/chainge'

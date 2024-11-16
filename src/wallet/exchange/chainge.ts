@@ -1,4 +1,4 @@
-import { signMessage } from '@/wasm/kaspa'
+import { signMessage } from '@/wasm'
 import { AggregateQuoteResponse, Chain } from '@chainge/api-tool-sdk'
 import { formatUnits, hexlify, keccak256, parseUnits, toUtf8Bytes } from 'ethers'
 import BigNumber from 'bignumber.js'
@@ -7,6 +7,7 @@ import KeyManager from '../account/KeyManager'
 import KRC20Transactions from '../krc20/KRC20Transactions'
 import AccountTransactions from '../account/AccountTransactions'
 import axios from 'axios'
+import { chaingeMinterAddresses } from '@/utils/constants/constants'
 
 function sortParams(params: Record<string, any>, evmAddress: string) {
   let keys = Object.keys(params)
@@ -30,12 +31,6 @@ export interface ChaingeToken {
   decimals: number
   contractAddress: string
   cmcid: number
-}
-
-export const chaingeMinterAddresses = {
-  KAS: 'kaspa:qpgmt2dn8wcqf0436n0kueap7yx82n7raurlj6aqjc3t3wm9y5ssqtg9e4lsm',
-  KRC20: 'kaspa:qz9cqmddjppjyth8rngevfs767m5nvm0480nlgs5ve8d6aegv4g9xzu2tgg0u',
-  other: 'kaspa:qpy03sxk3z22pacz2vkn2nrqeglvptugyqy54xal2skha6xh0cr7wjueueg79',
 }
 
 const API_SUBMIT_ORDER_URL = 'https://api2.chainge.finance/v1/submitOrder'
