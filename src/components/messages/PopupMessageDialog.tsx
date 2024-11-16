@@ -20,7 +20,7 @@ export function PopupMessageDialog({
       open={isOpen}
       onClose={onClose}
       transition
-      className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 transition duration-200 ease-out data-[closed]:opacity-0"
+      className="z-50 fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 transition duration-200 ease-out data-[closed]:opacity-0"
     >
       <DialogBackdrop className="fixed inset-0 bg-black bg-opacity-70" />
       <div className="fixed inset-0 flex items-center justify-center">

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Tabs } from '../CreateWallet'
 import AnimatedMain from '@/components/AnimatedMain'
-import AnimatedGhostLogo from '@/components/AnimatedGhostLogo'
+import AnimatedGhostLogo from '@/components/animations/AnimatedGhostLogo'
 import Checkbox from '@/components/Checkbox'
 
 export default function Landing({

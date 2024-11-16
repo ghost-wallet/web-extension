@@ -6,7 +6,7 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 import AnimatedMain from '@/components/AnimatedMain'
 import NextButton from '@/components/buttons/NextButton'
 import ErrorMessages from '@/utils/constants/errorMessages'
-import AnimatedGhostLogo from '@/components/AnimatedGhostLogo'
+import AnimatedGhostLogo from '@/components/animations/AnimatedGhostLogo'
 
 export default function Login() {
   const navigate = useNavigate()

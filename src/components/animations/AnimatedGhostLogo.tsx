@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import ghostIcon from '../../assets/ghost.svg'
+import ghostIcon from '../../../assets/ghost.svg'
 
 const AnimatedGhostLogo: React.FC = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })

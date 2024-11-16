@@ -14,6 +14,7 @@ import ErrorMessage from '@/components/messages/ErrorMessage'
 import WarningMessage from '@/components/WarningMessage'
 import { WarningMessages } from '@/utils/constants/warningMessages'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
+import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
 
 interface ReviewOrderProps {
   payToken: ChaingeToken
@@ -41,8 +42,9 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
   const { currencySymbol, formattedCurrencyValue } = useChaingeTokenData(payAmount, payToken, [])
   const { request } = useKaspa()
-  const [error, setError] = useState(null)
+  const [error, setError] = useState('')
   const [warning, setWarning] = useState<string | null>(null)
+  const [showDialog, setShowDialog] = useState(false)
 
   useEffect(() => {
     const outAmountUsd = Number(aggregateQuote.outAmountUsd)
@@ -69,9 +71,11 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           feeRate,
         },
       ])
+
       navigate('/swap/confirmed', { state: { order, receiveToken } })
     } catch (error: any) {
-      setError(error)
+      setError(`Error submitting swap order to Chainge: ${JSON.stringify(error)}`)
+      setShowDialog(true)
       console.error('Error submitting Chainge order:', error)
     } finally {
       setLoading(false)
@@ -79,40 +83,48 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   }
 
   return (
-    <ModalContainer title="Review Order" onClose={onClose}>
-      <div className="flex-grow overflow-y-auto space-y-2 pb-20">
-        {/* You Pay Section */}
-        <ReviewOrderToken
-          title="You Pay"
-          token={payToken}
-          amount={formatNumberAbbreviated(Number(payAmount))}
-          estimatedValue={formattedCurrencyValue}
-          currencySymbol={currencySymbol}
-        />
+    <>
+      <ModalContainer title="Review Order" onClose={onClose}>
+        <div className="flex-grow overflow-y-auto space-y-2 pb-20">
+          {/* You Pay Section */}
+          <ReviewOrderToken
+            title="You Pay"
+            token={payToken}
+            amount={formatNumberAbbreviated(Number(payAmount))}
+            estimatedValue={formattedCurrencyValue}
+            currencySymbol={currencySymbol}
+          />
 
-        {/* You Receive Section */}
-        <ReviewOrderToken
-          title="You Receive"
-          token={receiveToken}
-          amount={formatNumberAbbreviated(receiveAmountAfterFees)}
-          estimatedValue={aggregateQuote.outAmountUsd}
-          currencySymbol={currencySymbol}
-        />
+          {/* You Receive Section */}
+          <ReviewOrderToken
+            title="You Receive"
+            token={receiveToken}
+            amount={formatNumberAbbreviated(receiveAmountAfterFees)}
+            estimatedValue={aggregateQuote.outAmountUsd}
+            currencySymbol={currencySymbol}
+          />
 
-        {warning && <WarningMessage message={warning} />}
+          {warning && <WarningMessage message={warning} />}
 
-        <ReviewOrderQuote
-          networkFee={networkFee}
-          slippage={slippage}
-          aggregateQuote={aggregateQuote}
-          receiveToken={receiveToken}
-        />
-        {error && <ErrorMessage message={error} />}
-      </div>
-      <BottomFixedContainer className="p-4 bg-bgdark border-t border-darkmuted ">
-        <NextButton text="Swap" onClick={handleSwap} loading={loading} />
-      </BottomFixedContainer>
-    </ModalContainer>
+          <ReviewOrderQuote
+            networkFee={networkFee}
+            slippage={slippage}
+            aggregateQuote={aggregateQuote}
+            receiveToken={receiveToken}
+          />
+          {error && <ErrorMessage message={error} />}
+        </div>
+        <BottomFixedContainer className="p-4 bg-bgdark border-t border-darkmuted ">
+          <NextButton text="Swap" onClick={handleSwap} loading={loading} />
+        </BottomFixedContainer>
+      </ModalContainer>
+      <PopupMessageDialog
+        message={error}
+        onClose={() => setShowDialog(false)}
+        isOpen={showDialog}
+        title="Error"
+      />
+    </>
   )
 }
 
