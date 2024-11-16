@@ -1,8 +1,10 @@
 import React from 'react'
 import { ChaingeAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
-import { formatNumberAbbreviated, formatNumberWithDecimal } from '@/utils/formatting'
+import { formatNumberWithDecimal } from '@/utils/formatting'
 import TableSection from '@/components/table/TableSection'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
+import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
+import EstimatedCurrencyValue from '@/components/EstimatedCurrencyValue'
 
 interface ReviewOrderProps {
   networkFee: string
@@ -17,6 +19,16 @@ const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({
   aggregateQuote,
   receiveToken,
 }) => {
+  const totalFees = formatNumberWithDecimal(
+    Number(aggregateQuote.gasFee) + Number(aggregateQuote.serviceFee),
+    aggregateQuote.chainDecimal,
+  )
+  const { currencySymbol, formattedCurrencyValue } = useChaingeTokenData(
+    totalFees.toString(),
+    receiveToken,
+    [],
+  )
+
   return (
     <TableSection
       reversedColors={true}
@@ -27,12 +39,12 @@ const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({
         },
         {
           label: `Chainge fee`,
-          value: `${formatNumberAbbreviated(
-            formatNumberWithDecimal(
-              Number(aggregateQuote.gasFee) + Number(aggregateQuote.serviceFee),
-              aggregateQuote.chainDecimal,
-            ),
-          )} ${receiveToken.symbol}`,
+          value: (
+            <EstimatedCurrencyValue
+              currencySymbol={currencySymbol}
+              formattedCurrencyValue={Number(formattedCurrencyValue).toFixed(2)}
+            />
+          ),
         },
         {
           label: 'Network fee',

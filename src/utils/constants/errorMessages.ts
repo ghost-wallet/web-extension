@@ -60,8 +60,8 @@ const ErrorMessages = {
   MINT: {
     TOKEN_NOT_FOUND: (ticker: string) => `Token "${ticker}" not found.`,
     SEARCH_FAILED: (ticker: string) => `An unknown error occurred searching for "${ticker}".`,
-    REQUIRED_AMOUNT: 'Mint amount is required. You cannot mint 0 times.',
-    MINIMUM_AMOUNT: 'A minimum of 5 KAS is required per mint.',
+    REQUIRED_AMOUNT: 'Minimum mint amount is 5 KAS.',
+    MINIMUM_AMOUNT: 'Minimum mint amount is 5 KAS.',
     EXCEEDS_SUPPLY: (availableSupply: number) =>
       `Cannot mint more tokens than the remaining unminted supply: ${availableSupply}.`,
     EXCEEDS_BALANCE: (mintAmount: number, kaspaBalance: number) =>

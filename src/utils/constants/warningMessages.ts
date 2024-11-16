@@ -1,7 +1,7 @@
 export const WarningMessages = {
   RESET_WALLET:
     'Are you sure you want to reset your Ghost wallet? This action cannot be undone and will erase\n' +
-    ' all your data. You will be able to recover access to your wallet by importing your 12-word secret recovery\n' +
+    ' all your data. The only way to recover your wallet is by importing your 12-word secret recovery\n' +
     " phrase. It's not necessary to remember your password, as you will be prompted to create a new one.",
 
   FORGOT_PASSWORD:
@@ -14,6 +14,7 @@ export const WarningMessages = {
     'Beware of fake customer support scammers who may try to contact you.',
 
   LOW_LIQUIDITY: (difference: any, percentageLoss: any) =>
-    `Due to low liquidity, this trade would result in a loss of $${difference.toFixed(2)} (-${percentageLoss}%). You may continue, 
-    but we recommend trading a different token until more liquidity is added.`,
+    `This trade will result in a loss of $${difference.toFixed(
+      2,
+    )} (-${percentageLoss}%). This could be due to low liquidity for the trading pair.`,
 }
