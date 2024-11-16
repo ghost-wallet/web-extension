@@ -3,7 +3,6 @@ import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import { KaspaToken, Token } from '@/utils/interfaces'
 import { KRC20TokenResponse } from '@/utils/interfaces'
 import { getMarketCap } from '@/utils/formatting'
-import { MAX_MARKET_CAP_THRESHOLD } from '@/utils/constants/constants'
 
 export const sortTokensByValue = (tokens: (Token | KaspaToken)[]) => {
   return tokens
@@ -34,7 +33,6 @@ export const sortSearchResults = (krc20TokenList: KRC20TokenResponse[], ticker: 
       return {
         ...token,
         marketCap,
-        isAbnormallyLarge: marketCap > MAX_MARKET_CAP_THRESHOLD,
       }
     })
     .sort((a, b) => {

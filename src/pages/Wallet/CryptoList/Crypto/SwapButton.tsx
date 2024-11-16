@@ -5,6 +5,7 @@ import ActionButton from '@/components/buttons/ActionButton'
 import { ChaingeToken, useChaingeTokens } from '@/hooks/chainge/useChaingeTokens'
 import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
 import { Token } from '@/utils/interfaces'
+import { MESSAGES } from '@/utils/constants/messages'
 
 interface SwapButtonProps {
   token: Token
@@ -52,8 +53,8 @@ const SwapButton: React.FC<SwapButtonProps> = ({ token, className }) => {
       />
 
       <PopupMessageDialog
-        title={'Not Available'}
-        message={`${token.tick} is not yet supported for swapping on the Chainge KRC20 DEX. See if it's on Chainge's waiting list <a href="https://krc20.chainge.finance/" target="_blank" rel="noopener noreferrer" class="text-primary text-base underline">here</a>. You can help get the token listed for trading by adding liquidity.`}
+        title="Not Available"
+        message={MESSAGES.CHAINGE_UNAVAILABLE(token.tick)}
         onClose={() => setShowDialog(false)}
         isOpen={showDialog}
       />

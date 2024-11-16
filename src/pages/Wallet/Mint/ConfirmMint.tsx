@@ -38,13 +38,9 @@ export default function ConfirmMint() {
     }
 
     try {
-      console.log('mint API request:', mintRequest)
       const response = await postMint(mintRequest)
-      console.log('Mint API response', response)
-
       const { scriptAddress } = response
       const outputs: [string, string][] = [[scriptAddress, totalCost]]
-      console.log('the prepared outputs:', outputs)
 
       const [generatedTransactions] = await request('account:create', [outputs, feeRate, '0'])
       if (!generatedTransactions || generatedTransactions.length === 0) {
@@ -52,7 +48,6 @@ export default function ConfirmMint() {
         setLoading(false)
         return
       }
-      console.log('generated txns:', generatedTransactions)
 
       const [txnId] = await request('account:submitKaspaTransaction', [generatedTransactions])
       if (!txnId) {
