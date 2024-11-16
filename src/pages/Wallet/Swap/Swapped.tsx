@@ -69,6 +69,8 @@ const Swapped: React.FC = () => {
     pollOrderStatus()
   }, [order])
 
+  const isCusdt = receiveToken?.contractAddress === 'CUSDT'
+
   return (
     <div className="p-4">
       {loading && !error && order?.data?.id && (
@@ -78,7 +80,8 @@ const Swapped: React.FC = () => {
           </motion.div>
           <h1 className="text-xl text-primarytext">Swapping tokens...</h1>
           <p className="text-lg text-mutedtext text-center">
-            {receiveToken?.symbol} will be deposited into your wallet once the transaction is complete
+            {isCusdt ? receiveToken.contractAddress : receiveToken.symbol} will be deposited into your wallet
+            once the transaction is complete
           </p>
         </div>
       )}
