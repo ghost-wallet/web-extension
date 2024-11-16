@@ -57,7 +57,7 @@ const YouReceiveSection: React.FC<YouReceiveSectionProps> = ({
         receiveAmount && (
           <EstimatedCurrencyValue
             currencySymbol={currencySymbol}
-            formattedCurrencyValue={formatNumberAbbreviated(Number(aggregateQuote.outAmountUsd))}
+            formattedCurrencyValue={Number(aggregateQuote.outAmountUsd).toFixed(2)}
           />
         )
       )}

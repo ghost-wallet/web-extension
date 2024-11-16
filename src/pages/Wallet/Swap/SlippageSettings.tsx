@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import ModalContainer from '@/components/ModalContainer'
+import ModalContainer from '@/components/containers/ModalContainer'
 import { AdjustmentsVerticalIcon } from '@heroicons/react/24/outline'
 import NextButton from '@/components/buttons/NextButton'
 import ErrorMessage from '@/components/messages/ErrorMessage'

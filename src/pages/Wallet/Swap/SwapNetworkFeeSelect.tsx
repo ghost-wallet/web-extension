@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import ModalContainer from '@/components/ModalContainer'
+import ModalContainer from '@/components/containers/ModalContainer'
 import FeePrioritySelector from '@/components/FeePrioritySelector'
 import { useBuckets } from '@/hooks/kaspa/useBuckets'
 import { FEE_TYPES } from '@/utils/constants/constants'

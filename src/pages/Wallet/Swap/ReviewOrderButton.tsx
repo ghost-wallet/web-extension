@@ -2,6 +2,7 @@ import React from 'react'
 import NextButton from '@/components/buttons/NextButton'
 import ErrorButton from '@/components/buttons/ErrorButton'
 import WarningMessage from '@/components/WarningMessage'
+import { MINIMUM_RECEIVE_AMOUNT_USD } from '@/utils/constants/constants'
 
 interface ReviewOrderButtonProps {
   amountError: string | null
@@ -20,7 +21,7 @@ const ReviewOrderButton: React.FC<ReviewOrderButtonProps> = ({
   loadingQuote,
   setIsReviewOrderOpen,
 }) => {
-  const isBelowMinimum = parseFloat(outAmountUsd) < 1.0
+  const isBelowMinimum = parseFloat(outAmountUsd) < MINIMUM_RECEIVE_AMOUNT_USD
 
   return (
     <div className="bottom-20 left-0 right-0 px-4 fixed">
@@ -29,7 +30,7 @@ const ReviewOrderButton: React.FC<ReviewOrderButtonProps> = ({
       ) : amountError && Number(payAmount) > 0 ? (
         <ErrorButton text="Insufficient Funds" />
       ) : isBelowMinimum && Number(payAmount) > 0 ? (
-        <WarningMessage message="You must receive at least $1 USD to submit a swap order." />
+        <WarningMessage message={`Receive amount must be more than $${MINIMUM_RECEIVE_AMOUNT_USD} USD.`} />
       ) : networkFeeError ? (
         <WarningMessage message="Error calculating network fee" />
       ) : Number(payAmount) > 0 ? (

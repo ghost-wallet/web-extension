@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import ModalContainer from '@/components/ModalContainer'
+import ModalContainer from '@/components/containers/ModalContainer'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
 import ReviewOrderToken from '@/pages/Wallet/Swap/ReviewOrderToken'
@@ -13,6 +13,7 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import WarningMessage from '@/components/WarningMessage'
 import { WarningMessages } from '@/utils/constants/warningMessages'
+import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 
 interface ReviewOrderProps {
   payToken: ChaingeToken
@@ -101,7 +102,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
 
   return (
     <ModalContainer title="Review Order" onClose={onClose}>
-      <div className="flex-grow overflow-y-auto space-y-2">
+      <div className="flex-grow overflow-y-auto space-y-2 pb-20">
         {/* You Pay Section */}
         <ReviewOrderToken
           title="You Pay"
@@ -130,9 +131,9 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
         />
         {error && <ErrorMessage message={error} />}
       </div>
-      <div className="pt-4">
+      <BottomFixedContainer className="p-4">
         <NextButton text="Swap" onClick={handleSwap} loading={loading} />
-      </div>
+      </BottomFixedContainer>
     </ModalContainer>
   )
 }

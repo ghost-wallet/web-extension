@@ -1,6 +1,6 @@
 import React from 'react'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
-import ModalContainer from '@/components/ModalContainer'
+import ModalContainer from '@/components/containers/ModalContainer'
 import SwapTokenListItem from '@/pages/Wallet/Swap/SwapTokenListItem'
 
 interface SwapTokenSelectProps {

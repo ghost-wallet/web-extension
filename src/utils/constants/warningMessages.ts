@@ -16,5 +16,5 @@ export const WarningMessages = {
   LOW_LIQUIDITY: (difference: any, percentageLoss: any) =>
     `This trade will result in a loss of $${difference.toFixed(
       2,
-    )} (-${percentageLoss}%). This could be due to low liquidity for the trading pair.`,
+    )} (-${percentageLoss}%), which could be due to low liquidity for the trading pair.`,
 }

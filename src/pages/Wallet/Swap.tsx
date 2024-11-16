@@ -23,7 +23,7 @@ export default function Swap() {
   const location = useLocation()
   const { token: locationToken } = location.state || {}
   const { tokens } = useWalletTokens()
-  const { request } = useKaspa()
+  const { kaspa, request } = useKaspa()
   const [payAmount, setPayAmount] = useState('')
   const [amountError, setAmountError] = useState<string | null>(null)
   const [payToken, setPayToken] = useState<ChaingeToken | null>(null)
@@ -112,7 +112,7 @@ export default function Swap() {
       <AnimatedMain className="flex flex-col h-screen w-full fixed">
         <div className="flex flex-col h-full justify-between p-4">
           <div>
-            {isLoading ? (
+            {isLoading || !kaspa.connected ? (
               <SwapLoading />
             ) : (
               <>
