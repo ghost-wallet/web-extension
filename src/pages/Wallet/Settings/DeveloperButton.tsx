@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import SettingsButton from '@/pages/Wallet/Settings/SettingsButton'
-import { WrenchIcon } from '@heroicons/react/24/outline'
+import { WrenchScrewdriverIcon } from '@heroicons/react/24/outline'
 
 export default function DeveloperButton() {
   const navigate = useNavigate()
@@ -12,7 +12,11 @@ export default function DeveloperButton() {
 
   return (
     <div className="flex flex-col py-1 px-4">
-      <SettingsButton onClick={handleResetClick} text={'Developer settings'} LeftSideIcon={WrenchIcon} />
+      <SettingsButton
+        onClick={handleResetClick}
+        text={'Developer settings'}
+        LeftSideIcon={WrenchScrewdriverIcon}
+      />
     </div>
   )
 }

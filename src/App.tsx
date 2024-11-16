@@ -32,6 +32,7 @@ import KaspaTxnDetails from '@/pages/Wallet/Transactions/KaspaTxnDetails'
 import ManageTokens from '@/pages/Wallet/CryptoList/ManageTokens'
 import ManageAccounts from '@/pages/Wallet/Settings/Account/ManageAccounts'
 import Swapped from '@/pages/Wallet/Swap/Swapped'
+import SupportPage from '@/pages/Wallet/Settings/Support/SupportPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -62,6 +63,7 @@ function App() {
               <Route path="/settings" element={<Settings />} />
               <Route path="/settings/reset" element={<ConfirmReset />} />
               <Route path="/settings/about" element={<AboutPage />} />
+              <Route path="/settings/support" element={<SupportPage />} />
               <Route path="/settings/developer" element={<DeveloperPage />} />
               <Route path="/settings/accounts" element={<ManageAccounts />} />
               <Route path="/transactions/kaspa" element={<Transactions />} />

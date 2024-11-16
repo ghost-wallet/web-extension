@@ -13,6 +13,11 @@ export const WarningMessages = {
     'This secret recovery phrase is the only way to restore your wallet. Write it down on paper and save it in a secure location. ' +
     'Beware of fake customer support scammers who may try to contact you.',
 
+  CUSTOMER_SUPPORT:
+    'Beware of customer support scams. There are scammers pretending to be Ghost staff members who send out friend requests and direct messages. ' +
+    'Legitimate Ghost staff members communicate in public channels. Beware of fake Discord servers, Telegram groups, ' +
+    'X pages, websites, and wallets. Never give your seed phrase out to anyone.',
+
   LOW_LIQUIDITY: (difference: any, percentageLoss: any) =>
     `This trade will result in a loss of $${difference.toFixed(
       2,

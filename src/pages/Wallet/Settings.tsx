@@ -7,6 +7,7 @@ import AboutButton from '@/pages/Wallet/Settings/AboutButton'
 import DeveloperButton from '@/pages/Wallet/Settings/DeveloperButton'
 import BottomNav from '@/components/navigation/BottomNav'
 import AccountButton from '@/pages/Wallet/Settings/AccountButton'
+import SupportButton from '@/pages/Wallet/Settings/Support'
 
 export default function Settings() {
   return (
@@ -19,6 +20,9 @@ export default function Settings() {
           </div>
           <div className="mt-1 flex flex-col">
             <AboutButton />
+          </div>
+          <div className="mt-1 flex flex-col">
+            <SupportButton />
           </div>
           <div className="mt-1 flex flex-col">
             <DeveloperButton />
