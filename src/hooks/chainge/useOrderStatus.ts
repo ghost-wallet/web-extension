@@ -26,9 +26,13 @@ const useOrderStatus = ({ order }: UseOrderStatusProps) => {
       return
     }
 
+    let isMounted = true
+
     const pollOrderStatus = async () => {
       try {
         const response: OrderStatusResponse = await fetchOrderStatus(order.data.id)
+        if (!isMounted) return
+
         if (response.data.status === 'Succeeded') {
           setStatus('Succeeded')
           setLoading(false)
@@ -36,12 +40,18 @@ const useOrderStatus = ({ order }: UseOrderStatusProps) => {
           setTimeout(pollOrderStatus, 1000)
         }
       } catch (err: any) {
+        if (!isMounted) return
+
         setError(err.message || 'An unexpected error occurred while fetching order status.')
         setLoading(false)
       }
     }
 
     pollOrderStatus()
+
+    return () => {
+      isMounted = false
+    }
   }, [order])
 
   return { status, loading, error }
