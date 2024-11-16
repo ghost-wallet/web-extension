@@ -69,29 +69,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           feeRate,
         },
       ])
-      // TODO: if order response is not an "error", but clearly not a success either, do not navigate to confirm page. instead set the error here.
-      // for example, invalid channel returns:
-      // {
-      //    code: 3,
-      //    data: {}
-      //    msg: "invalid channel",
-      // }
-      // another example:
-      // {
-      //     "code": 0,
-      //     "msg": "success",
-      //     "data": {
-      //         "status": "Verified",
-      //         "timestamp": 0,
-      //         "execHash": "",
-      //         "reason": "queryAggregateRouter: fail to find chain=KAS",
-      //         "amountOut": ""
-      //     }
-      // }
-
-      // TODO check order status from Chainge API to show loading progress
-      // possibly navigate to a loading screen next, then navigate to the confirmed page
-      navigate('/swap/confirmed', { state: { order } })
+      navigate('/swap/confirmed', { state: { order, receiveToken } })
     } catch (error: any) {
       setError(error)
       console.error('Error submitting Chainge order:', error)
@@ -131,7 +109,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
         />
         {error && <ErrorMessage message={error} />}
       </div>
-      <BottomFixedContainer className="p-4">
+      <BottomFixedContainer className="p-4 bg-bgdark border-t border-darkmuted ">
         <NextButton text="Swap" onClick={handleSwap} loading={loading} />
       </BottomFixedContainer>
     </ModalContainer>

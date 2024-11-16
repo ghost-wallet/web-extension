@@ -5,7 +5,7 @@ import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 
 export default function BottomNav() {
   return (
-    <BottomFixedContainer className="px-4 pb-4">
+    <BottomFixedContainer className="px-4 pb-4 bg-bgdark border-t border-darkmuted ">
       <div className="relative flex justify-around">
         <BottomNavButton icon={HomeIcon} path="/wallet" />
         <BottomNavButton icon={ArrowsRightLeftIcon} path="/swap" />

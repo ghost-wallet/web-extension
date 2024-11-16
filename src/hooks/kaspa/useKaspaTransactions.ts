@@ -34,6 +34,7 @@ export function useKaspaTransactions() {
   >({
     queryKey: ['kaspaTransactions', { address: kaspa.addresses[0] }],
     queryFn: kaspaTransactionsqueryFn,
+    refetchInterval: 3000,
     initialPageParam: null,
     getNextPageParam: (lastPage) => {
       return lastPage[lastPage.length - 1]?.block_time

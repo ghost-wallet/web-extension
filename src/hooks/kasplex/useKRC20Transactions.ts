@@ -51,6 +51,7 @@ export function useKRC20Transactions(tick?: string) {
     ],
     queryFn: krc20TransactionsqueryFn,
     enabled: isQueryEnabled,
+    refetchInterval: 3000,
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.next,
   })

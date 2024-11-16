@@ -18,6 +18,8 @@ const KaspaTxnItem = forwardRef<HTMLLIElement, KaspaTxnItemProps>(({ transaction
   const navigate = useNavigate()
   const address = kaspa.addresses[0]
   const { outputs } = transaction
+
+  // TODO: show "Swapped" for kaspa chainge txns, using getOperationDetails
   const isReceived = outputs[0].script_public_key_address === address
   const amount = formatNumberWithDecimal(outputs[0].amount, 8)
 
