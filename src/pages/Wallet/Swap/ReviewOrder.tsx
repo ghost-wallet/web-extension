@@ -55,7 +55,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
 
   useEffect(() => {
     const outAmountUsd = Number(aggregateQuote.outAmountUsd)
-    const formattedValue = Number(formattedCurrencyValue)
+    const formattedValue = Number(formattedCurrencyValue.replace(/[^0-9.-]+/g, ''))
 
     if (outAmountUsd < formattedValue * 0.9) {
       const difference = formattedValue - outAmountUsd
@@ -65,6 +65,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
       setWarning(null)
     }
   }, [aggregateQuote.outAmountUsd, formattedCurrencyValue])
+
 
   const handleSwap = async () => {
     setLoading(true)
