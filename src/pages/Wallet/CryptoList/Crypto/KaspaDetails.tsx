@@ -7,7 +7,6 @@ import TokenPrice from '@/components/TokenPrice'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import KaspaTxnHistory from '@/pages/Wallet/Transactions/KaspaTxnHistory'
 import KaspaTxnHistoryTestnet from '@/pages/Wallet/Transactions/KaspaTxnHistoryTestnet'
-import { calculateKaspaTotalValue } from '@/utils/calculations'
 
 const KaspaDetails: React.FC = () => {
   const { settings } = useSettings()
@@ -16,6 +15,14 @@ const KaspaDetails: React.FC = () => {
   const currencySymbol = getCurrencySymbol(settings.currency)
   const network = settings.nodes[settings.selectedNode].address
 
+  const currencyValue = kaspa.balance * kaspaPrice.data!
+  const formattedCurrencyValue = currencyValue.toLocaleString(settings.currency, {
+    style: 'currency',
+    currency: settings.currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+
   return (
     <div className="p-4">
       <TableSection
@@ -23,9 +30,7 @@ const KaspaDetails: React.FC = () => {
         rows={[
           {
             label: settings.currency,
-            value: kaspaPrice.isPending
-              ? 'Loading...'
-              : `${currencySymbol}${calculateKaspaTotalValue(kaspa.balance, kaspaPrice.data!)}`,
+            value: kaspaPrice.isPending ? 'Loading...' : `${formattedCurrencyValue}`,
           },
           {
             label: 'KASPA',

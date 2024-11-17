@@ -8,7 +8,7 @@ import {
   tokenPriceFormatter,
   formatMarketCap,
 } from '@/utils/formatting'
-import { calculateKRC20TotalValue, getMintedPercentage } from '@/utils/calculations'
+import { getMintedPercentage } from '@/utils/calculations'
 import { formatValue } from '@/utils/formatting'
 import TableSection from '@/components/table/TableSection'
 import Spinner from '@/components/loaders/Spinner'
@@ -54,14 +54,21 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
       ? getMintedPercentage(formatValue(krc20Token.pre), formatValue(krc20Token.max))
       : '0'
 
-  const totalValue = calculateKRC20TotalValue(token)
+  const numericalBalance = formatNumberWithDecimal(token.balance, token.dec)
+  const currencyValue = numericalBalance * (token.floorPrice ?? 0)
+  const formattedCurrencyValue = currencyValue.toLocaleString(settings.currency, {
+    style: 'currency',
+    currency: settings.currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
 
   return (
     <div className="p-4">
       <TableSection
         title="Your Balance"
         rows={[
-          { label: settings.currency, value: `${currencySymbol}${totalValue}` },
+          { label: settings.currency, value: `${formattedCurrencyValue}` },
           {
             label: tick,
             value: formatNumberWithDecimal(token.balance, token.dec).toLocaleString(),

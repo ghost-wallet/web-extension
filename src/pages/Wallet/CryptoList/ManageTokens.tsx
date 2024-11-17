@@ -4,8 +4,6 @@ import { useWalletTokens } from '@/hooks/wallet/useWalletTokens'
 import CryptoListItem from '@/pages/Wallet/CryptoList/CryptoListItem'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import Spinner from '@/components/loaders/Spinner'
-import { getCurrencySymbol } from '@/utils/currencies'
-import useSettings from '@/hooks/contexts/useSettings'
 import TopNav from '@/components/navigation/TopNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import CloseButton from '@/components/buttons/CloseButton'
@@ -18,8 +16,6 @@ import SearchResultsNotFound from '@/components/search/SearchResultsNotFound'
 const ManageTokens: React.FC = () => {
   const navigate = useNavigate()
   const { tokens, errorMessage } = useWalletTokens()
-  const { settings } = useSettings()
-  const currencySymbol = getCurrencySymbol(settings.currency)
   const [enabledTokens, setEnabledTokens] = useInitializedEnabledTokens(tokens as Partial<Token>[])
   const toggleTokenVisibility = useToggleTokenVisibility(setEnabledTokens)
   const [filteredTokens, setFilteredTokens] = useState<(Token | KaspaToken)[]>(tokens)
@@ -44,19 +40,16 @@ const ManageTokens: React.FC = () => {
         {!tokens.length && !errorMessage && <Spinner />}
         {filteredTokens.length > 0 ? (
           <ul className="space-y-3 pb-28 pt-4">
-            {filteredTokens
-              // .filter((token) => token.tick !== 'KASPA')
-              .map((token) => (
-                <li key={token.tick} className="w-full text-left transition-colors rounded-lg px-4">
-                  <CryptoListItem
-                    token={token}
-                    currencySymbol={currencySymbol}
-                    showToggle={token.tick !== 'KASPA'}
-                    isEnabled={enabledTokens[token.tick] || false}
-                    onToggle={() => toggleTokenVisibility(token.tick)}
-                  />
-                </li>
-              ))}
+            {filteredTokens.map((token) => (
+              <li key={token.tick} className="w-full text-left transition-colors rounded-lg px-4">
+                <CryptoListItem
+                  token={token}
+                  showToggle={token.tick !== 'KASPA'}
+                  isEnabled={enabledTokens[token.tick] || false}
+                  onToggle={() => toggleTokenVisibility(token.tick)}
+                />
+              </li>
+            ))}
           </ul>
         ) : (
           <div className="p-4">

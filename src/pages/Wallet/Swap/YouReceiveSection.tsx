@@ -1,7 +1,6 @@
 import React from 'react'
 import ChaingeTokenDropdown from '@/pages/Wallet/Swap/ChaingeTokenDropdown'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
-import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
 import EstimatedCurrencyValue from '@/components/EstimatedCurrencyValue'
 import { ChaingeAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
 import useReceiveAmountAfterFees from '@/hooks/chainge/useReceiveAmountAfterFees'
@@ -12,7 +11,6 @@ interface YouReceiveSectionProps {
   receiveToken: ChaingeToken | null
   payAmount: string
   openTokenSelect: () => void
-  tokens: any[]
   aggregateQuote: ChaingeAggregateQuote | undefined
   loadingQuote: boolean
 }
@@ -22,13 +20,17 @@ const YouReceiveSection: React.FC<YouReceiveSectionProps> = ({
   receiveToken,
   payAmount,
   openTokenSelect,
-  tokens,
   aggregateQuote,
   loadingQuote,
 }) => {
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
-  const { currencySymbol } = useChaingeTokenData(receiveAmount, receiveToken, tokens)
   const displayAmount = receiveAmount ? formatNumberAbbreviated(receiveAmountAfterFees) : ''
+  const formattedCurrencyValue = Number(aggregateQuote?.outAmountUsd).toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
 
   return (
     <div className="bg-darkmuted rounded-lg p-4">
@@ -54,12 +56,7 @@ const YouReceiveSection: React.FC<YouReceiveSectionProps> = ({
         <div className="w-14 h-5 bg-muted rounded-md mb-1 animate-pulse"></div>
       ) : (
         aggregateQuote &&
-        receiveAmount && (
-          <EstimatedCurrencyValue
-            currencySymbol={currencySymbol}
-            formattedCurrencyValue={Number(aggregateQuote.outAmountUsd).toFixed(2)}
-          />
-        )
+        receiveAmount && <EstimatedCurrencyValue formattedCurrencyValue={formattedCurrencyValue} />
       )}
     </div>
   )

@@ -62,6 +62,7 @@ const ErrorMessages = {
     SEARCH_FAILED: (ticker: string) => `An unknown error occurred searching for "${ticker}".`,
     REQUIRED_AMOUNT: 'Minimum mint amount is 5 KAS.',
     MINIMUM_AMOUNT: 'Minimum mint amount is 5 KAS.',
+    MAXIMUM_AMOUNT: 'Maximum mint amount is 1,000 KAS.',
     EXCEEDS_SUPPLY: (availableSupply: number) =>
       `Cannot mint more tokens than the remaining unminted supply: ${availableSupply}.`,
     EXCEEDS_BALANCE: (mintAmount: number, kaspaBalance: number) =>

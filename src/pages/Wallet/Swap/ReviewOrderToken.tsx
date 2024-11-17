@@ -7,16 +7,14 @@ interface ReviewOrderTokenProps {
   title: string
   token: ChaingeToken
   amount: string
-  estimatedValue: string
-  currencySymbol: string
+  formattedCurrencyValue: string
 }
 
 const ReviewOrderToken: React.FC<ReviewOrderTokenProps> = ({
   title,
   token,
   amount,
-  estimatedValue,
-  currencySymbol,
+  formattedCurrencyValue,
 }) => {
   const isCusdt = token?.contractAddress === 'CUSDT'
 
@@ -27,10 +25,7 @@ const ReviewOrderToken: React.FC<ReviewOrderTokenProps> = ({
         <div className="flex justify-between items-center">
           <h2 className="text-mutedtext text-base">{title}</h2>
           <span>
-            <EstimatedCurrencyValue
-              currencySymbol={currencySymbol}
-              formattedCurrencyValue={Number(estimatedValue).toFixed(2)}
-            />
+            <EstimatedCurrencyValue formattedCurrencyValue={formattedCurrencyValue} />
           </span>
         </div>
         <h2 className="text-primarytext text-2xl font-semibold mt-1">

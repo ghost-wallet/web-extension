@@ -23,11 +23,7 @@ const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({
     Number(aggregateQuote.gasFee) + Number(aggregateQuote.serviceFee),
     aggregateQuote.chainDecimal,
   )
-  const { currencySymbol, formattedCurrencyValue } = useChaingeTokenData(
-    totalFees.toString(),
-    receiveToken,
-    [],
-  )
+  const { formattedCurrencyValue } = useChaingeTokenData(totalFees.toString(), receiveToken, [])
 
   return (
     <TableSection
@@ -39,12 +35,7 @@ const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({
         },
         {
           label: `Chainge fee`,
-          value: (
-            <EstimatedCurrencyValue
-              currencySymbol={currencySymbol}
-              formattedCurrencyValue={Number(formattedCurrencyValue).toFixed(2)}
-            />
-          ),
+          value: <EstimatedCurrencyValue formattedCurrencyValue={formattedCurrencyValue} />,
         },
         {
           label: 'Network fee',

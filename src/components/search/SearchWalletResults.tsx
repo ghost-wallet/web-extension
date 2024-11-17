@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useWalletTokens } from '@/hooks/wallet/useWalletTokens'
 import CryptoListItem from '@/pages/Wallet/CryptoList/CryptoListItem'
-import { getCurrencySymbol } from '@/utils/currencies'
-import useSettings from '@/hooks/contexts/useSettings'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import Spinner from '@/components/loaders/Spinner'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -13,10 +11,8 @@ import SearchResultsNotFound from '@/components/search/SearchResultsNotFound'
 
 const SearchWalletResults: React.FC = () => {
   const { tokens, errorMessage } = useWalletTokens()
-  const { settings } = useSettings()
   const navigate = useNavigate()
   const location = useLocation()
-  const currencySymbol = getCurrencySymbol(settings.currency)
   const visibleTokens = useVisibleTokens(tokens)
   const [filteredTokens, setFilteredTokens] = useState<(Token | KaspaToken)[]>([])
   const [searchTerm, setSearchTerm] = useState<string>('')
@@ -55,7 +51,7 @@ const SearchWalletResults: React.FC = () => {
               onClick={() => handleTokenClick(token)}
               className="w-full text-left transition-colors hover:cursor-pointer rounded-lg"
             >
-              <CryptoListItem token={token} currencySymbol={currencySymbol} />
+              <CryptoListItem token={token} />
             </li>
           ))}
         </ul>

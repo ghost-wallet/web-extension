@@ -40,11 +40,18 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
-  const { currencySymbol, formattedCurrencyValue } = useChaingeTokenData(payAmount, payToken, [])
+  const { formattedCurrencyValue } = useChaingeTokenData(payAmount, payToken, [])
   const { request } = useKaspa()
   const [error, setError] = useState('')
   const [warning, setWarning] = useState<string | null>(null)
   const [showDialog, setShowDialog] = useState(false)
+
+  const formattedOutAmountUsd = Number(aggregateQuote?.outAmountUsd).toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
 
   useEffect(() => {
     const outAmountUsd = Number(aggregateQuote.outAmountUsd)
@@ -91,8 +98,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
             title="You Pay"
             token={payToken}
             amount={formatNumberAbbreviated(Number(payAmount))}
-            estimatedValue={formattedCurrencyValue}
-            currencySymbol={currencySymbol}
+            formattedCurrencyValue={formattedCurrencyValue}
           />
 
           {/* You Receive Section */}
@@ -100,8 +106,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
             title="You Receive"
             token={receiveToken}
             amount={formatNumberAbbreviated(receiveAmountAfterFees)}
-            estimatedValue={aggregateQuote.outAmountUsd}
-            currencySymbol={currencySymbol}
+            formattedCurrencyValue={formattedOutAmountUsd}
           />
 
           {warning && <WarningMessage message={warning} />}

@@ -1,7 +1,6 @@
 import React from 'react'
 import useSettings from '@/hooks/contexts/useSettings'
 import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
-import { getCurrencySymbol } from '@/utils/currencies'
 
 interface TotalCostToMintProps {
   totalFees: string
@@ -10,7 +9,14 @@ interface TotalCostToMintProps {
 const TotalCostToMint: React.FC<TotalCostToMintProps> = ({ totalFees }) => {
   const { settings } = useSettings()
   const kaspaPrice = useKaspaPrice(settings.currency)
-  const currencySymbol = getCurrencySymbol(settings.currency)
+
+  const currencyValue = totalFees ? Number(totalFees) * kaspaPrice.data! : 0
+  const formattedCurrencyValue = currencyValue.toLocaleString(settings.currency, {
+    style: 'currency',
+    currency: settings.currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
 
   return (
     <div className="flex flex-col justify-between pt-8">
@@ -19,8 +25,7 @@ const TotalCostToMint: React.FC<TotalCostToMintProps> = ({ totalFees }) => {
         <span className="text-primarytext text-lg">{totalFees?.toLocaleString() || '0'} KAS</span>
       </div>
       <span className="text-mutedtext text-lg text-right">
-        ≈ {currencySymbol}
-        {kaspaPrice.isPending ? 'Loading' : (totalFees ? Number(totalFees) * kaspaPrice.data! : 0).toFixed(2)}
+        ≈ {kaspaPrice.isPending ? 'Loading' : formattedCurrencyValue}
       </span>
     </div>
   )

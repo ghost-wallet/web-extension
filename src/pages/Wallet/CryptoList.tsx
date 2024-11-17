@@ -1,7 +1,6 @@
 import React from 'react'
 import { useWalletTokens } from '@/hooks/wallet/useWalletTokens'
 import CryptoListItem from '@/pages/Wallet/CryptoList/CryptoListItem'
-import { getCurrencySymbol } from '@/utils/currencies'
 import useSettings from '@/hooks/contexts/useSettings'
 import { useTotalValueCalculation } from '@/hooks/wallet/useTotalValueCalculation'
 import { Token, KaspaToken } from '@/utils/interfaces'
@@ -20,7 +19,6 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const currencySymbol = getCurrencySymbol(settings.currency)
   const kaspaPrice = useKaspaPrice(settings.currency)
   const kasPrice = kaspaPrice.data ?? 0
 
@@ -48,7 +46,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
               onClick={() => handleTokenClick(token)}
               className="w-full text-left transition-colors hover:cursor-pointer rounded-lg"
             >
-              <CryptoListItem token={token} currencySymbol={currencySymbol} />
+              <CryptoListItem token={token} />
             </li>
           ))}
         </ul>

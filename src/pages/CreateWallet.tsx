@@ -33,6 +33,7 @@ export default function CreateWallet() {
   const handlePasswordSet = async (_password: string) => {
     setPassword(_password)
     if (flowType === 'create') {
+      //TODO: try/catch and popup dialog error message
       const mnemonic = await request('wallet:createMnemonic', [])
       setMnemonic(mnemonic)
       setTab(Tabs.Create)
@@ -46,7 +47,8 @@ export default function CreateWallet() {
       await request('wallet:import', [mnemonic, password])
       navigate('/wallet')
     } catch (error) {
-      console.error('Error setting up wallet:', error)
+      //TODO: popup dialog error message
+      console.error(`Error occurred importing wallet: ${error}. Please try again later.`)
     }
   }
 

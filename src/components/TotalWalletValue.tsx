@@ -1,6 +1,5 @@
 import React from 'react'
 import useSettings from '@/hooks/contexts/useSettings'
-import { getCurrencySymbol } from '@/utils/currencies'
 
 interface TotalValueProps {
   totalValue: number
@@ -9,10 +8,16 @@ interface TotalValueProps {
 const TotalWalletValue: React.FC<TotalValueProps> = ({ totalValue }) => {
   const { settings } = useSettings()
 
+  const formattedCurrencyValue = totalValue.toLocaleString(settings.currency, {
+    style: 'currency',
+    currency: settings.currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+
   return (
     <h1 className="text-primarytext font-rubik text-center flex-grow text-4xl py-4">
-      {getCurrencySymbol(settings.currency)}
-      {totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      {formattedCurrencyValue}
     </h1>
   )
 }

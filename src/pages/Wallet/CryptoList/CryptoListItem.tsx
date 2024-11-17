@@ -3,28 +3,28 @@ import { formatNumberWithDecimal, formatNumberAbbreviated } from '@/utils/format
 import CryptoImage from '@/components/CryptoImage'
 import { KaspaToken, Token } from '@/utils/interfaces'
 import { Switch } from '@headlessui/react'
+import useSettings from '@/hooks/contexts/useSettings'
 
 interface CryptoListItemProps {
   token: Token | KaspaToken
-  currencySymbol?: string
   showToggle?: boolean
   isEnabled?: boolean
   onToggle?: () => void
 }
 
-const CryptoListItem: React.FC<CryptoListItemProps> = ({
-  token,
-  currencySymbol,
-  showToggle,
-  isEnabled,
-  onToggle,
-}) => {
+const CryptoListItem: React.FC<CryptoListItemProps> = ({ token, showToggle, isEnabled, onToggle }) => {
+  const { settings } = useSettings()
+
   const numericalBalance = token.isKaspa ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
-  const formattedBalance = formatNumberAbbreviated(numericalBalance)
-  const totalValue = (numericalBalance * (token.floorPrice ?? 0)).toLocaleString(undefined, {
+  const currencyValue = numericalBalance * (token.floorPrice ?? 0)
+  const formattedCurrencyValue = currencyValue.toLocaleString(settings.currency, {
+    style: 'currency',
+    currency: settings.currency,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
+
+  const formattedBalance = formatNumberAbbreviated(numericalBalance)
 
   return (
     <div
@@ -53,10 +53,7 @@ const CryptoListItem: React.FC<CryptoListItemProps> = ({
         </Switch>
       ) : (
         <div className="flex flex-col items-end">
-          <span className="text-lg text-primarytext">
-            {currencySymbol}
-            {totalValue}
-          </span>
+          <span className="text-lg text-primarytext">{formattedCurrencyValue}</span>
           <span className="text-base text-mutedtext">{formattedBalance}</span>
         </div>
       )}

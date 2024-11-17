@@ -1,16 +1,12 @@
 import React from 'react'
 
 interface EstimatedCurrencyValueProps {
-  currencySymbol: string
   formattedCurrencyValue: string
 }
 
-const EstimatedCurrencyValue: React.FC<EstimatedCurrencyValueProps> = ({
-  currencySymbol,
-  formattedCurrencyValue,
-}) => {
+const EstimatedCurrencyValue: React.FC<EstimatedCurrencyValueProps> = ({ formattedCurrencyValue }) => {
   return (
-    <span className="text-mutedtext text-base">{`${currencySymbol}${
+    <span className="text-mutedtext text-base">{`${
       formattedCurrencyValue ? formattedCurrencyValue : '0'
     }`}</span>
   )

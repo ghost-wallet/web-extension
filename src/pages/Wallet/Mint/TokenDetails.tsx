@@ -20,7 +20,6 @@ interface KRC20TokenDetailsProps {
 const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
   const { settings } = useSettings()
   const currencySymbol = getCurrencySymbol(settings.currency)
-  console.log('token details', token)
 
   const mintedPercentage =
     !isNaN(token.minted) && !isNaN(token.max) && token.max > 0

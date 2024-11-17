@@ -11,7 +11,6 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 import { useTransactionInputs } from '@/hooks/useTransactionInputs'
 import { formatNumberWithDecimal, formatTokenBalance } from '@/utils/formatting'
 import useSettings from '@/hooks/contexts/useSettings'
-import { getCurrencySymbol } from '@/utils/currencies'
 import CryptoImage from '@/components/CryptoImage'
 import TopNav from '@/components/navigation/TopNav'
 import ErrorMessages from '@/utils/constants/errorMessages'
@@ -21,15 +20,19 @@ const InitiateSend: React.FC = () => {
   const navigate = useNavigate()
   const { request, kaspa } = useKaspa()
   const { settings } = useSettings()
-  const currencySymbol = getCurrencySymbol(settings.currency)
   const { token } = location.state || {}
 
   const maxAmount = token.isKaspa ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
   const { outputs, recipientError, amountError, handleRecipientChange, handleAmountChange, handleMaxClick } =
     useTransactionInputs(token, maxAmount, kaspa.addresses[0])
 
-  const currencyValue = (Number(outputs[0][1]) * token.floorPrice).toFixed(2) || '0.00'
-  const formattedCurrencyValue = Number(currencyValue).toLocaleString('en-US', { minimumFractionDigits: 2 })
+  const currencyValue = Number((Number(outputs[0][1]) * token.floorPrice).toFixed(2)) || 0
+  const formattedCurrencyValue = currencyValue.toLocaleString(settings.currency, {
+    style: 'currency',
+    currency: settings.currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
 
   const error = !kaspa.connected
     ? ErrorMessages.NETWORK.NOT_CONNECTED
@@ -72,7 +75,7 @@ const InitiateSend: React.FC = () => {
               isKaspa={token.isKaspa}
             />
             <div className="w-full flex flex-wrap items-center justify-between text-lightmuted text-base pt-1 pb-4">
-              <span className="whitespace-nowrap">{`≈ ${currencySymbol}${formattedCurrencyValue}`}</span>
+              <span className="whitespace-nowrap">{`≈ ${formattedCurrencyValue}`}</span>
               <span className="whitespace-nowrap">
                 Available {formattedBalance} {token.tick}
               </span>

@@ -23,8 +23,11 @@ const YouPaySection: React.FC<YouPaySectionProps> = ({
   onAmountErrorChange,
   tokens,
 }) => {
-  const { currencySymbol, formattedCurrencyValue, formattedBalance, availableBalance, tokenSymbol } =
-    useChaingeTokenData(payAmount, payToken, tokens)
+  const { formattedCurrencyValue, formattedBalance, availableBalance, tokenSymbol } = useChaingeTokenData(
+    payAmount,
+    payToken,
+    tokens,
+  )
 
   const [amountError, setAmountError] = useState<string | null>(null)
 
@@ -66,7 +69,6 @@ const YouPaySection: React.FC<YouPaySectionProps> = ({
         <ChaingeTokenDropdown selectedToken={payToken} openTokenSelect={openTokenSelect} />
       </div>
       <ValueAndAvailableBalance
-        currencySymbol={currencySymbol}
         formattedCurrencyValue={formattedCurrencyValue}
         formattedBalance={formattedBalance}
       />

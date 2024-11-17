@@ -129,7 +129,6 @@ export default function Swap() {
                   receiveToken={receiveToken}
                   payAmount={payAmount}
                   openTokenSelect={openReceiveTokenSelect}
-                  tokens={tokens}
                   aggregateQuote={aggregateQuote}
                   loadingQuote={loadingQuote}
                 />

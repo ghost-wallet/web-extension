@@ -1,7 +1,6 @@
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import useSettings from '@/hooks/contexts/useSettings'
-import { getCurrencySymbol } from '@/utils/currencies'
-import { formatTokenBalance, formatNumberAbbreviated } from '@/utils/formatting'
+import { formatTokenBalance } from '@/utils/formatting'
 import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
 import { useKsprPrices } from '@/hooks/kspr/fetchKsprPrices'
 
@@ -10,7 +9,6 @@ const useChaingeTokenData = (amount: string, token: ChaingeToken | null, tokens:
   const kaspaPrice = useKaspaPrice(settings.currency)
   const ksprPricesQuery = useKsprPrices()
   const kasPrice = kaspaPrice.data ?? 0
-  const currencySymbol = getCurrencySymbol(settings.currency)
 
   const tokenSymbol = token?.symbol || 'KAS'
   const tokenData = tokens.find(
@@ -34,11 +32,16 @@ const useChaingeTokenData = (amount: string, token: ChaingeToken | null, tokens:
         : ksprPriceData
           ? ksprPriceData.floor_price * kasPrice
           : 0
-  const currencyValue = (Number(amount) * floorPrice).toFixed(2)
-  const formattedCurrencyValue = formatNumberAbbreviated(Number(currencyValue))
+  const currencyValue = Number(amount) * floorPrice
+
+  const formattedCurrencyValue = currencyValue.toLocaleString(settings.currency, {
+    style: 'currency',
+    currency: settings.currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
 
   return {
-    currencySymbol,
     formattedCurrencyValue,
     formattedBalance,
     availableBalance,
