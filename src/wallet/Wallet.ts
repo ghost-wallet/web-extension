@@ -58,7 +58,7 @@ export default class Wallet extends EventEmitter {
   }
 
   async import(mnemonics: string, password: string) {
-    console.log('importing wallet .... ')
+    console.log('[Wallet] Importing wallet...')
     if (!Mnemonic.validate(mnemonics)) {
       console.error('[Wallet] Invalid mnemonic provided.')
       throw Error('[Wallet] Invalid mnemonic')
@@ -66,7 +66,6 @@ export default class Wallet extends EventEmitter {
 
     const encryptedKey = encryptXChaCha20Poly1305(mnemonics, password)
     this.encryptedKey = encryptedKey
-    console.log('set encrypted key...', this.encryptedKey)
 
     await LocalStorage.set('wallet', {
       encryptedKey: encryptedKey,
@@ -121,7 +120,6 @@ export default class Wallet extends EventEmitter {
   }
 
   validate(address: string): boolean {
-    console.log('[Wallet] Validating address:', address)
     try {
       return Address.validate(address)
     } catch (error) {
