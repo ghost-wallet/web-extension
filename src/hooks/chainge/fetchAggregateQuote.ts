@@ -45,7 +45,6 @@ export const fetchAggregateQuote = async (
     }
   } catch (error) {
     if (axios.isCancel(error)) {
-      console.log('Request canceled:', error.message)
       return undefined
     } else if (axios.isAxiosError(error) && error.response) {
       if (error.response.status >= 500 && error.response.status < 600) {

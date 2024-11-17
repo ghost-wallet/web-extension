@@ -51,7 +51,6 @@ export default function Swap() {
       },
     ])
       .then((estimatedFee) => {
-        console.log('Estimated network fee:', estimatedFee)
         setNetworkFee(estimatedFee)
         setNetworkFeeError('')
       })
