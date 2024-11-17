@@ -12,7 +12,7 @@ export default function Landing({
   const [enable, setEnable] = useState<boolean>(false)
 
   return (
-    <AnimatedMain className="pt-10 px-4 overflow-y-scroll h-full">
+    <AnimatedMain className="pt-10 px-4 overflow-y-auto h-full">
       <h1 className="text-primarytext text-4xl font-rubik font-bold text-center">GHOST</h1>
       <p className="text-mutedtext text-base text-center mt-2">Secure Kaspa wallet for KRC20 tokens.</p>
       <div className="flex justify-center mt-20 mb-8">

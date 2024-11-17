@@ -30,7 +30,7 @@ const ManageTokens: React.FC = () => {
   return (
     <>
       <TopNav />
-      <AnimatedMain className="flex flex-col h-screen w-full">
+      <AnimatedMain className="flex flex-col h-screen w-full overflow-y-auto pt-4">
         <div className="px-4 -mb-4">
           <SearchBar onSearch={handleSearch} />
         </div>

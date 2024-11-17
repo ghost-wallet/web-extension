@@ -66,7 +66,6 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
     }
   }, [aggregateQuote.outAmountUsd, formattedCurrencyValue])
 
-
   const handleSwap = async () => {
     setLoading(true)
     try {
