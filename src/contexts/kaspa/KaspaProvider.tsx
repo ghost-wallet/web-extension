@@ -27,6 +27,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
           console.log('port is disconnected, calling disconnect')
           connection.disconnect()
         } else {
+          unsentMessagesRef.current.delete(message.id)
           reject(error)
         }
       }
@@ -59,11 +60,23 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
 
       connectionRef.current = null
 
+      for(const [id, entry] of messagesRef.current.entries()) {
+        if(!unsentMessagesRef.current.has(id)) {
+          entry.reject(new Error('Connection closed, try again'))
+        }
+      }
       for (const entry of unsentMessagesRef.current) {
         const messageEntry = messagesRef.current.get(entry)
         if(messageEntry) {
-          getConnection().postMessage(messageEntry.message)
-          unsentMessagesRef.current.delete(messageEntry.message.id)
+          try {
+            console.log('[KaspaProvider] Resending message:', messageEntry.message)
+            getConnection().postMessage(messageEntry.message)
+          } catch (error) {
+            console.error('[KaspaProvider] Error resending message:', error)
+            messageEntry.reject(error)
+          } finally {
+            unsentMessagesRef.current.delete(messageEntry.message.id)
+          }
         }
       }
     })
