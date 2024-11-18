@@ -58,7 +58,7 @@ const ErrorMessages = {
   },
 
   MINT: {
-    TOKEN_NOT_FOUND: (ticker: string) => `Token "${ticker}" not found.`,
+    TOKEN_NOT_FOUND: (ticker: string) => `Token ${ticker} not found.`,
     SEARCH_FAILED: (ticker: string) => `An unknown error occurred searching for "${ticker}".`,
     REQUIRED_AMOUNT: 'Minimum mint amount is 5 KAS.',
     MINIMUM_AMOUNT: 'Minimum mint amount is 5 KAS.',

@@ -48,15 +48,15 @@ export default function Mint() {
     try {
       const result = await fetchKrc20TokenInfo(0, ticker)
       if (result) {
-        if (!ksprPricesQuery.data) return null
+        if (!ksprPricesQuery.data) throw new Error('Price data unavailable.')
         const ksprPriceData: KsprToken | undefined = ksprPricesQuery.data[result.tick]
         const floorPrice = ksprPriceData?.floor_price ? ksprPriceData.floor_price * kasPrice : 0
         setToken({ ...result, floorPrice })
       } else {
-        setError(ErrorMessages.MINT.TOKEN_NOT_FOUND(ticker))
+        setError(ErrorMessages.MINT.TOKEN_NOT_FOUND(ticker.toUpperCase()))
       }
-    } catch (err) {
-      setError(ErrorMessages.MINT.SEARCH_FAILED(ticker))
+    } catch (err: any) {
+      setError(err.message || ErrorMessages.MINT.SEARCH_FAILED(ticker))
     } finally {
       setLoading(false)
     }
@@ -100,9 +100,7 @@ export default function Mint() {
               <Spinner />
             </div>
           ) : (
-            error && (
-              <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />
-            )
+            error && <ErrorMessage message={error} className="pt-2 flex justify-center items-center" />
           )}
           {token && <TokenDetails token={token} />}
         </div>
