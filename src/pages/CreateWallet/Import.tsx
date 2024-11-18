@@ -10,7 +10,7 @@ if (typeof globalThis.Buffer === 'undefined') {
   globalThis.Buffer = Buffer
 }
 
-export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnemonics: string) => void }) {
+export default function Import({ onMnemonicsSubmit }: { onMnemonicsSubmit: (mnemonics: string) => Promise<void> }) {
   const [userInputs, setUserInputs] = useState<string[]>(Array(12).fill(''))
   const [isValid, setIsValid] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
