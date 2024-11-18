@@ -4,7 +4,6 @@ import { useWalletTokens } from '@/hooks/wallet/useWalletTokens'
 import CryptoListItem from '@/pages/Wallet/CryptoList/CryptoListItem'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import Spinner from '@/components/loaders/Spinner'
-import TopNav from '@/components/navigation/TopNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import CloseButton from '@/components/buttons/CloseButton'
 import SearchBar from '@/components/search/SearchBar'
@@ -12,6 +11,7 @@ import { KaspaToken, Token } from '@/utils/interfaces'
 import useInitializedEnabledTokens from '@/hooks/wallet/useInitializedEnabledTokens'
 import useToggleTokenVisibility from '@/hooks/wallet/useToggleTokenVisibility'
 import SearchResultsNotFound from '@/components/search/SearchResultsNotFound'
+import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 
 const ManageTokens: React.FC = () => {
   const navigate = useNavigate()
@@ -29,7 +29,6 @@ const ManageTokens: React.FC = () => {
 
   return (
     <>
-      <TopNav />
       <AnimatedMain className="flex flex-col h-screen w-full overflow-y-auto pt-4">
         <div className="px-4 -mb-4">
           <SearchBar onSearch={handleSearch} />
@@ -44,7 +43,7 @@ const ManageTokens: React.FC = () => {
               <li key={token.tick} className="w-full text-left transition-colors rounded-lg px-4">
                 <CryptoListItem
                   token={token}
-                  showToggle={token.tick !== 'KASPA'}
+                  showToggle={true}
                   isEnabled={enabledTokens[token.tick] || false}
                   onToggle={() => toggleTokenVisibility(token.tick)}
                 />
@@ -57,12 +56,9 @@ const ManageTokens: React.FC = () => {
           </div>
         )}
       </AnimatedMain>
-      <div
-        className="fixed bottom-0 left-0 w-full bg-bgdark border-t border-darkmuted p-4"
-        style={{ boxShadow: '0 -10px 15px rgba(0, 0, 0, 0.3)' }}
-      >
+      <BottomFixedContainer shadow={true} className="bg-bgdark border-t border-darkmuted p-4">
         <CloseButton onClick={() => navigate('/wallet')} />
-      </div>
+      </BottomFixedContainer>
     </>
   )
 }

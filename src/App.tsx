@@ -33,6 +33,7 @@ import ManageTokens from '@/pages/Wallet/CryptoList/ManageTokens'
 import ManageAccounts from '@/pages/Wallet/Settings/Account/ManageAccounts'
 import Swapped from '@/pages/Wallet/Swap/Swapped'
 import SupportPage from '@/pages/Wallet/Settings/Support/SupportPage'
+import SearchWalletResults from '@/components/search/SearchWalletResults'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -59,6 +60,7 @@ function App() {
               <Route path="/unlock/forgotpassword" element={<ForgotPassword />} />
               <Route path="/wallet" element={<Wallet />} />
               <Route path="/wallet/:tick" element={<Crypto />} />
+              <Route path="/wallet/search" element={<SearchWalletResults />} />
               <Route path="/wallet/manage" element={<ManageTokens />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/settings/reset" element={<ConfirmReset />} />

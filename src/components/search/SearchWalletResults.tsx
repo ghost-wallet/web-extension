@@ -8,6 +8,9 @@ import { Token, KaspaToken } from '@/utils/interfaces'
 import SearchBar from '@/components/search/SearchBar'
 import useVisibleTokens from '@/hooks/wallet/useVisibleTokens'
 import SearchResultsNotFound from '@/components/search/SearchResultsNotFound'
+import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
+import CloseButton from '@/components/buttons/CloseButton'
+import AnimatedMain from '@/components/AnimatedMain'
 
 const SearchWalletResults: React.FC = () => {
   const { tokens, errorMessage } = useWalletTokens()
@@ -37,28 +40,33 @@ const SearchWalletResults: React.FC = () => {
   }
 
   return (
-    <div className="w-full">
-      <SearchBar onSearch={handleSearch} />
-      {errorMessage && (
-        <ErrorMessage message={errorMessage} className="h-6 mb-4 mt-2 flex justify-center items-center" />
-      )}
-      {!tokens.length && !errorMessage && <Spinner />}
-      {filteredTokens.length > 0 ? (
-        <ul className="space-y-3">
-          {filteredTokens.map((token) => (
-            <li
-              key={token.tick}
-              onClick={() => handleTokenClick(token)}
-              className="w-full text-left transition-colors hover:cursor-pointer rounded-lg"
-            >
-              <CryptoListItem token={token} />
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <SearchResultsNotFound searchTerm={searchTerm} filteredTokens={filteredTokens} />
-      )}
-    </div>
+    <>
+      <AnimatedMain className="flex flex-col h-screen w-full overflow-y-auto p-4">
+        <SearchBar onSearch={handleSearch} />
+        {errorMessage && (
+          <ErrorMessage message={errorMessage} className="h-6 mb-4 mt-2 flex justify-center items-center" />
+        )}
+        {!tokens.length && !errorMessage && <Spinner />}
+        {filteredTokens.length > 0 ? (
+          <ul className="space-y-3 pb-28">
+            {filteredTokens.map((token) => (
+              <li
+                key={token.tick}
+                onClick={() => handleTokenClick(token)}
+                className="w-full text-left transition-colors hover:cursor-pointer rounded-lg"
+              >
+                <CryptoListItem token={token} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <SearchResultsNotFound searchTerm={searchTerm} filteredTokens={filteredTokens} />
+        )}
+      </AnimatedMain>
+      <BottomFixedContainer shadow={true} className="bg-bgdark border-t border-darkmuted p-4">
+        <CloseButton onClick={() => navigate('/wallet')} />
+      </BottomFixedContainer>
+    </>
   )
 }
 

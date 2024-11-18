@@ -37,7 +37,7 @@ const CryptoListItem: React.FC<CryptoListItemProps> = ({ token, showToggle, isEn
         <span className="ml-4 text-lg text-primarytext">{token.tick}</span>
       </div>
 
-      {showToggle ? (
+      {showToggle && token.tick !== 'KASPA' ? (
         <Switch
           checked={isEnabled || false}
           onChange={onToggle}
@@ -51,6 +51,8 @@ const CryptoListItem: React.FC<CryptoListItemProps> = ({ token, showToggle, isEn
             } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
           />
         </Switch>
+      ) : showToggle && token.tick === 'KASPA' ? (
+        <div />
       ) : (
         <div className="flex flex-col items-end">
           <span className="text-lg text-primarytext">{formattedCurrencyValue}</span>
