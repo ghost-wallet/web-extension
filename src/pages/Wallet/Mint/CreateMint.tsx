@@ -15,6 +15,7 @@ import useMintErrorHandling from '@/pages/Wallet/Mint/CreateMint/hooks/useMintEr
 import useMintValidation from '@/pages/Wallet/Mint/CreateMint/hooks/useMintValidation'
 import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
 import TopNav from '@/components/navigation/TopNav'
+import LoadingCreateMint from '@/pages/Wallet/Mint/CreateMint/LoadingCreateMint'
 
 export default function CreateMint() {
   const { kaspa } = useKaspa()
@@ -39,7 +40,7 @@ export default function CreateMint() {
     kaspa.connected,
     exceedsBalance,
     exceedsSupply,
-    availableSupply,
+    availableSupply
   )
 
   const handleNext = () => {
@@ -48,8 +49,8 @@ export default function CreateMint() {
         state: {
           token,
           payAmount: mintAmount,
-          receiveAmount: totalMintCost,
-        },
+          receiveAmount: totalMintCost
+        }
       })
     } else {
       setShowDialog(true)
@@ -61,20 +62,26 @@ export default function CreateMint() {
       <TopNav />
       <AnimatedMain className="flex flex-col h-screen fixed w-full">
         <Header title={`Mint ${token.tick}`} showBackButton={true} />
-        <div className="flex flex-col flex-grow px-4">
-          <CryptoImage ticker={token.tick} size={'large'} />
-          <MintAmountInput
-            mintAmount={mintAmount}
-            onSliderChange={(e) => setMintAmount(Number(e.target.value))}
-            onInputChange={(e) => setMintAmount(e.target.value === '' ? null : Number(e.target.value))}
-          />
-          <MintSummary totalMintCost={totalMintCost} mintAmount={mintAmount} tokenTick={token.tick} />
-          <MintRateInfo mintRate={mintRate} tokenTick={token.tick} />
-        </div>
+        {kaspa.connected ? (
+          <>
+            <div className="flex flex-col flex-grow px-4">
+              <CryptoImage ticker={token.tick} size={'large'} />
+              <MintAmountInput
+                mintAmount={mintAmount}
+                onSliderChange={(e) => setMintAmount(Number(e.target.value))}
+                onInputChange={(e) => setMintAmount(e.target.value === '' ? null : Number(e.target.value))}
+              />
+              <MintSummary totalMintCost={totalMintCost} mintAmount={mintAmount} tokenTick={token.tick} />
+              <MintRateInfo mintRate={mintRate} tokenTick={token.tick} />
+            </div>
+          </>
+        ) : (
+          <LoadingCreateMint />
+        )}
       </AnimatedMain>
-      <div className="fixed bottom-20 left-0 right-0 px-4">
+      {kaspa.connected && <div className="fixed bottom-20 left-0 right-0 px-4">
         <NextButton buttonEnabled={true} onClick={handleNext} />
-      </div>
+      </div> }
       <BottomNav />
       <PopupMessageDialog
         message={error}
