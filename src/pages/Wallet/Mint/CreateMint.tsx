@@ -32,15 +32,19 @@ export default function CreateMint() {
   const availableSupply = formatNumberWithDecimal(token.max - token.minted, token.dec)
 
   const { isMintAmountValid } = useMintValidation(mintAmount, totalMintCost, availableSupply, totalSupply)
-  const exceedsBalance = mintAmount !== null && mintAmount + kaspa.balance * 0.1 + 25 > kaspa.balance
+
+  const requiredAmount = mintAmount ? mintAmount + mintAmount * 0.1 + 25 : 0
+  const exceedsBalance = mintAmount !== null && requiredAmount > kaspa.balance
+
   const exceedsSupply = mintAmount !== null && totalMintCost > availableSupply
+
   const error = useMintErrorHandling(
     mintAmount,
     kaspa.balance,
     kaspa.connected,
     exceedsBalance,
     exceedsSupply,
-    availableSupply
+    availableSupply,
   )
 
   const handleNext = () => {
@@ -49,8 +53,8 @@ export default function CreateMint() {
         state: {
           token,
           payAmount: mintAmount,
-          receiveAmount: totalMintCost
-        }
+          receiveAmount: totalMintCost,
+        },
       })
     } else {
       setShowDialog(true)
@@ -79,9 +83,11 @@ export default function CreateMint() {
           <LoadingCreateMint />
         )}
       </AnimatedMain>
-      {kaspa.connected && <div className="fixed bottom-20 left-0 right-0 px-4">
-        <NextButton buttonEnabled={true} onClick={handleNext} />
-      </div> }
+      {kaspa.connected && (
+        <div className="fixed bottom-20 left-0 right-0 px-4">
+          <NextButton buttonEnabled={true} onClick={handleNext} />
+        </div>
+      )}
       <BottomNav />
       <PopupMessageDialog
         message={error}
