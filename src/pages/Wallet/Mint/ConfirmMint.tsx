@@ -12,11 +12,13 @@ import TopNav from '@/components/navigation/TopNav'
 import { postMint } from '@/hooks/ghost/useMint'
 import ErrorMessages from '@/utils/constants/errorMessages'
 import ErrorMessage from '@/components/messages/ErrorMessage'
+import useSettings from '@/hooks/contexts/useSettings'
 
 export default function ConfirmMint() {
   const location = useLocation()
   const navigate = useNavigate()
   const { kaspa, request } = useKaspa()
+  const { settings } = useSettings()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -77,12 +79,21 @@ export default function ConfirmMint() {
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Receive amount</span>
               <span className="text-mutedtext text-base text-right">
-                {receiveAmount.toLocaleString()} {token.tick}
+                {receiveAmount.toLocaleString()}{' '}
+                {token.tick}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Pay amount</span>
-              <span className="text-mutedtext text-base text-right">{payAmount?.toLocaleString()} KAS</span>
+              <span className="text-mutedtext text-base text-right">
+                {payAmount?.toLocaleString(undefined, {
+                  style: 'currency',
+                  currency: settings.currency,
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}{' '}
+                KAS
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Network fee</span>

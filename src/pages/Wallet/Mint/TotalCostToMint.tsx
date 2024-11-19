@@ -11,7 +11,7 @@ const TotalCostToMint: React.FC<TotalCostToMintProps> = ({ totalFees }) => {
   const kaspaPrice = useKaspaPrice(settings.currency)
 
   const currencyValue = totalFees ? Number(totalFees) * kaspaPrice.data! : 0
-  const formattedCurrencyValue = currencyValue.toLocaleString(settings.currency, {
+  const formattedCurrencyValue = currencyValue.toLocaleString(undefined, {
     style: 'currency',
     currency: settings.currency,
     minimumFractionDigits: 2,

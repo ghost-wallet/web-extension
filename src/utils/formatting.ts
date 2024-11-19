@@ -1,3 +1,5 @@
+import useSettings from '@/hooks/contexts/useSettings'
+
 export const formatValue = (value: number | null | undefined): number => {
   if (value === 0 || value === null || value === undefined) {
     return 0
@@ -31,8 +33,14 @@ export const formatTokenBalance = (balance: number, tick: string, decimals: numb
 }
 
 export const tokenPriceFormatter = (value: number): string => {
+  const { settings } = useSettings()
   if (value >= 1) {
-    return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    return value.toLocaleString(undefined, {
+      style: 'currency',
+      currency: settings.currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
   }
 
   const valueStr = value.toFixed(20).replace(/\.?0+$/, '')

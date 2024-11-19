@@ -27,7 +27,7 @@ const InitiateSend: React.FC = () => {
     useTransactionInputs(token, maxAmount, kaspa.addresses[0])
 
   const currencyValue = Number((Number(outputs[0][1]) * token.floorPrice).toFixed(2)) || 0
-  const formattedCurrencyValue = currencyValue.toLocaleString(settings.currency, {
+  const formattedCurrencyValue = currencyValue.toLocaleString(undefined, {
     style: 'currency',
     currency: settings.currency,
     minimumFractionDigits: 2,

@@ -43,7 +43,7 @@ export const formatTransactionDate = (timestamp: string): string => {
 }
 
 export const formatTransactionDateAndTime = (timestamp: string): string => {
-  return new Date(parseInt(timestamp)).toLocaleString('en-US', {
+  return new Date(parseInt(timestamp)).toLocaleString(undefined, {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

@@ -34,7 +34,7 @@ const useChaingeTokenData = (amount: string, token: ChaingeToken | null, tokens:
           : 0
   const currencyValue = Number(amount) * floorPrice
 
-  const formattedCurrencyValue = currencyValue.toLocaleString(settings.currency, {
+  const formattedCurrencyValue = currencyValue.toLocaleString(undefined, {
     style: 'currency',
     currency: settings.currency,
     minimumFractionDigits: 2,

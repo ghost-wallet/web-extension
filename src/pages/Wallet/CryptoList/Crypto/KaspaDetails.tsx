@@ -16,7 +16,7 @@ const KaspaDetails: React.FC = () => {
   const network = settings.nodes[settings.selectedNode].address
 
   const currencyValue = kaspa.balance * kaspaPrice.data!
-  const formattedCurrencyValue = currencyValue.toLocaleString(settings.currency, {
+  const formattedCurrencyValue = currencyValue.toLocaleString(undefined, {
     style: 'currency',
     currency: settings.currency,
     minimumFractionDigits: 2,

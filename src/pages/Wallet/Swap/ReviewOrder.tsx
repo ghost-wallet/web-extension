@@ -15,6 +15,7 @@ import WarningMessage from '@/components/WarningMessage'
 import { WarningMessages } from '@/utils/constants/warningMessages'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
+import useSettings from '@/hooks/contexts/useSettings'
 
 interface ReviewOrderProps {
   payToken: ChaingeToken
@@ -37,18 +38,19 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   aggregateQuote,
   onClose,
 }) => {
-  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { request } = useKaspa()
+  const { settings } = useSettings()
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
   const { formattedCurrencyValue } = useChaingeTokenData(payAmount, payToken, [])
-  const { request } = useKaspa()
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [warning, setWarning] = useState<string | null>(null)
   const [showDialog, setShowDialog] = useState(false)
 
-  const formattedOutAmountUsd = Number(aggregateQuote?.outAmountUsd).toLocaleString('en-US', {
+  const formattedOutAmountUsd = Number(aggregateQuote?.outAmountUsd).toLocaleString(undefined, {
     style: 'currency',
-    currency: 'USD',
+    currency: settings.currency,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
