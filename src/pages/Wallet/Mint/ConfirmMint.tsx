@@ -79,21 +79,12 @@ export default function ConfirmMint() {
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Receive amount</span>
               <span className="text-mutedtext text-base text-right">
-                {receiveAmount.toLocaleString()}{' '}
-                {token.tick}
+                {receiveAmount.toLocaleString()} {token.tick}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Pay amount</span>
-              <span className="text-mutedtext text-base text-right">
-                {payAmount?.toLocaleString(undefined, {
-                  style: 'currency',
-                  currency: settings.currency,
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}{' '}
-                KAS
-              </span>
+              <span className="text-mutedtext text-base text-right">{payAmount?.toLocaleString()} KAS</span>
             </div>
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Network fee</span>

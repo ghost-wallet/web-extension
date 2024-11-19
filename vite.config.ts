@@ -7,7 +7,7 @@ import * as path from 'path'
 const manifest: ManifestV3Export = {
   manifest_version: 3,
   name: 'Ghost Wallet',
-  version: '0.0.8',
+  version: '0.0.9',
   description: 'First open-source Kaspa wallet for KRC20 tokens.',
   icons: {
     48: 'assets/ghost-outline-thick-48.png',
@@ -26,15 +26,8 @@ const manifest: ManifestV3Export = {
   },
   permissions: [
     'storage',
-    //'alarms',
-    'notifications',
     'sidePanel',
   ],
-  // browser_specific_settings: {
-  //   gecko: {
-  //     id: 'ghostappwallet@gmail.com',
-  //   },
-  // },
   content_security_policy: {
     extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
   },

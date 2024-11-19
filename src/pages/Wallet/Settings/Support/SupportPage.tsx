@@ -18,7 +18,7 @@ export default function SupportPage() {
         <Header title="Help & Support" showBackButton={true} />
         <div className="pt-2 px-4">
           <p className="text-center text-base text-mutedtext pt-2 pb-4">
-            Contact the Ghost support team on our Discord.
+            Contact the Ghost support team on Discord.
           </p>
           <div className="pb-4">
             <SettingsButton
