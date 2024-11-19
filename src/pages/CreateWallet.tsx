@@ -41,7 +41,7 @@ export default function CreateWallet() {
         setMnemonic(mnemonic)
         setTab(Tabs.Create)
       } catch (error) {
-        setError(`Generate Seed Phrase ${error}. Please try again.`)
+        setError(`Generate Seed Phrase ${error}`)
         setShowDialog(true)
         console.error(`[Create Mnemonic] ${error}`)
       }
@@ -55,7 +55,7 @@ export default function CreateWallet() {
       await request('wallet:import', [mnemonic, password])
       navigate('/wallet')
     } catch (error) {
-      setError(`Import Wallet ${error}. Please try again.`)
+      setError(`Import Wallet ${error}`)
       setShowDialog(true)
       console.error(`[Import Wallet] ${error}`)
     }

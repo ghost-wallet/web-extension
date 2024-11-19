@@ -22,6 +22,10 @@ export const fetchKrc20TokenList = async (selectedNode: number) => {
       if (response.data && response.data.result) {
         allTokens = [...allTokens, ...response.data.result]
         nextPage = response.data.next
+      } else if (response.status === 204) {
+        throw new Error(
+          `Error 204: cannot get KRC20 token list from Kasplex API. If you're using security software like a VPN, disable advanced protection or turn it off and restart your computer.`,
+        )
       } else {
         throw new Error('Error fetching KRC20 token list. Invalid API response structure')
       }

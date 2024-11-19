@@ -37,10 +37,13 @@ export const fetchKrc20TokenInfo = async (
       `https://${apiBase}.kasplex.org/v1/krc20/token/${ticker}`,
     )
 
-    if (response.data.result.length > 0) {
+    if (response.status === 204) {
+      throw new Error(
+        `Error 204: cannot get KRC20 token info from Kasplex API. If you're using security software like a VPN, disable advanced protection or turn it off and restart your computer.`,
+      )
+    } else if (response.data.result.length > 0) {
       const token = response.data.result[0]
 
-      // Convert string field responses to numbers
       return {
         ...token,
         max: parseFloat(token.max),
@@ -55,8 +58,8 @@ export const fetchKrc20TokenInfo = async (
     }
 
     return null
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error fetching token info for ${ticker}:`, error)
-    return null
+    throw new Error(JSON.stringify(error) || 'Unexpected error fetching token info.')
   }
 }

@@ -10,16 +10,26 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
   const [kaspa, dispatch] = useReducer(kaspaReducer, defaultState)
   const connectionRef = useRef<Runtime.Port | null>(null)
   const messagesRef = useRef(new Map<number, MessageEntry<any>>())
+  const unsentMessagesRef = useRef<Set<number>>(new Set())
   const nonceRef = useRef(0)
 
   const request = useCallback(<M extends keyof RequestMappings>(method: M, params: RequestMappings[M]) => {
     const message: Request<M> = { id: ++nonceRef.current, method, params }
     return new Promise<ResponseMappings[M]>((resolve, reject) => {
       messagesRef.current.set(message.id, { resolve, reject, message })
+      unsentMessagesRef.current.add(message.id)
+      const connection = getConnection()
       try {
-        getConnection().postMessage(message)
+        connection.postMessage(message)
+        unsentMessagesRef.current.delete(message.id)
       } catch (error) {
-        reject(error)
+        if(error instanceof Error && error.message === 'Attempting to use a disconnected port object') {
+          console.log('port is disconnected, calling disconnect')
+          connection.disconnect()
+        } else {
+          unsentMessagesRef.current.delete(message.id)
+          reject(error)
+        }
       }
     })
   }, [])
@@ -29,6 +39,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       return connectionRef.current
     }
     const connection = runtime.connect({ name: '@ghost/client' })
+    console.log(`[KaspaProvider] port connected`, connection)
     connection.onMessage.addListener(async (message: Response | Event) => {
       if (!isEvent(message)) {
         const messageEntry = messagesRef.current.get(message.id)
@@ -42,13 +53,31 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       }
     })
     connection.onDisconnect.addListener(() => {
-      if (runtime.lastError?.message !== 'Could not establish connection. Receiving end does not exist.')
-        return
+      console.log('[KaspaProvider] port disconnected')
+      console.log(runtime.lastError?.message)
+      //if (runtime.lastError?.message !== 'Could not establish connection. Receiving end does not exist.')
+      //  return
 
       connectionRef.current = null
 
-      for (const entry of messagesRef.current.values()) {
-        getConnection().postMessage(entry.message)
+      for(const [id, entry] of messagesRef.current.entries()) {
+        if(!unsentMessagesRef.current.has(id)) {
+          entry.reject(new Error('Connection closed, try again'))
+        }
+      }
+      for (const entry of unsentMessagesRef.current) {
+        const messageEntry = messagesRef.current.get(entry)
+        if(messageEntry) {
+          try {
+            console.log('[KaspaProvider] Resending message:', messageEntry.message)
+            getConnection().postMessage(messageEntry.message)
+          } catch (error) {
+            console.error('[KaspaProvider] Error resending message:', error)
+            messageEntry.reject(error)
+          } finally {
+            unsentMessagesRef.current.delete(messageEntry.message.id)
+          }
+        }
       }
     })
     connectionRef.current = connection

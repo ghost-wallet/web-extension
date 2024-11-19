@@ -24,6 +24,10 @@ export const fetchKRC20TransactionHistory = async (
 
     if (response.data && response.data.result) {
       return response.data
+    } else if (response.status === 204) {
+      throw new Error(
+        `Error 204: cannot get KRC20 transaction history from Kasplex API. If you're using security software like a VPN, disable advanced protection or turn it off and restart your computer.`,
+      )
     } else {
       throw new Error('Error fetching KRC20 operations. Invalid API response structure')
     }
