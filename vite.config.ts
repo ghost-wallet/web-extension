@@ -7,7 +7,7 @@ import * as path from 'path'
 const manifest: ManifestV3Export = {
   manifest_version: 3,
   name: 'Ghost Wallet',
-  version: '0.0.7',
+  version: '0.0.8',
   description: 'First open-source Kaspa wallet for KRC20 tokens.',
   icons: {
     48: 'assets/ghost-outline-thick-48.png',

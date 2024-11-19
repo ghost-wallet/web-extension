@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { getApiBase } from '@/hooks/kasplex/fetchHelper'
-import { KRC20TokenList, TokenFromApi } from '@/utils/interfaces'
+import { KRC20TokenListForAddress, TokenFromApi } from '@/utils/interfaces'
 
 export const fetchKrc20AddressTokenList = async (selectedNode: number, address: string) => {
   const apiBase = getApiBase(selectedNode)

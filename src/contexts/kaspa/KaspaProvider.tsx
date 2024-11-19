@@ -23,8 +23,8 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
         connection.postMessage(message)
         unsentMessagesRef.current.delete(message.id)
       } catch (error) {
-        if(error instanceof Error && error.message === 'Attempting to use a disconnected port object') {
-          console.log('port is disconnected, calling disconnect')
+        if (error instanceof Error && error.message === 'Attempting to use a disconnected port object') {
+          console.warn('[KaspaProvider] Attempted to use disconnected port object')
           connection.disconnect()
         } else {
           unsentMessagesRef.current.delete(message.id)
@@ -53,21 +53,21 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       }
     })
     connection.onDisconnect.addListener(() => {
-      console.log('[KaspaProvider] port disconnected')
+      console.log('[KaspaProvider] Port disconnected')
       console.log(runtime.lastError?.message)
       //if (runtime.lastError?.message !== 'Could not establish connection. Receiving end does not exist.')
       //  return
 
       connectionRef.current = null
 
-      for(const [id, entry] of messagesRef.current.entries()) {
-        if(!unsentMessagesRef.current.has(id)) {
-          entry.reject(new Error('Connection closed, try again'))
+      for (const [id, entry] of messagesRef.current.entries()) {
+        if (!unsentMessagesRef.current.has(id)) {
+          entry.reject(new Error('Service worker disconnected. Please try again.'))
         }
       }
       for (const entry of unsentMessagesRef.current) {
         const messageEntry = messagesRef.current.get(entry)
-        if(messageEntry) {
+        if (messageEntry) {
           try {
             console.log('[KaspaProvider] Resending message:', messageEntry.message)
             getConnection().postMessage(messageEntry.message)
@@ -110,7 +110,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
         dispatch({ type: 'provider', payload: message.data })
         break
       default:
-        console.log('[KaspaContextProvider] Unknown event:', message)
+        console.log('[KaspaProvider] Unknown event:', message)
     }
   }
 
@@ -129,7 +129,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       const provider = await request('provider:connection', [])
       dispatch({ type: 'provider', payload: provider })
     } catch (error) {
-      console.error('[KaspaContextProvider] Error during reload:', error)
+      console.error('[KaspaProvider] Error during reload:', error)
     }
   }, [request])
 

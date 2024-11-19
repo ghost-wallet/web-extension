@@ -61,6 +61,11 @@ export interface KaspaTransactionOutput {
 /**
  * Our own interface for building token data to account for Kaspa (Kaspa is not a KRC20 token).
  */
+export interface KRC20TokenListForAddress {
+  result: TokenFromApi[]
+  next: string | null
+}
+
 export interface TokenFromApi {
   tick: string
   opScoreMod: string

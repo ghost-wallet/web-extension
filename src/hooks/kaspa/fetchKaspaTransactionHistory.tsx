@@ -19,7 +19,6 @@ export const fetchKaspaTransactionHistory = async (
     )
 
     if (response.data) {
-      console.log('returning response.data', response.data)
       return response.data
     } else {
       throw new Error('Error fetching Kaspa transactions. Invalid API response structure')

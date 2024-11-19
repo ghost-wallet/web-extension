@@ -21,6 +21,6 @@ export const fetchOrderStatus = async (orderId: string): Promise<OrderStatusResp
     })
     return response.data
   } catch (error: any) {
-    throw new Error(error?.response?.data?.msg || 'An error occurred while fetching the order status.')
+    throw new Error(error?.response?.data?.msg || 'Error checking swap order status from Chainge')
   }
 }
