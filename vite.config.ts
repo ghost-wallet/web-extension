@@ -7,7 +7,7 @@ import * as path from 'path'
 const manifest: ManifestV3Export = {
   manifest_version: 3,
   name: 'Ghost Wallet',
-  version: '0.0.7',
+  version: '0.0.8',
   description: 'First open-source Kaspa wallet for KRC20 tokens.',
   icons: {
     48: 'assets/ghost-outline-thick-48.png',
@@ -25,10 +25,10 @@ const manifest: ManifestV3Export = {
     type: 'module',
   },
   permissions: [
-    'storage', 
-    //'alarms', 
-    'notifications', 
-    'sidePanel'
+    'storage',
+    //'alarms',
+    'notifications',
+    'sidePanel',
   ],
   // browser_specific_settings: {
   //   gecko: {
@@ -47,7 +47,7 @@ const manifest: ManifestV3Export = {
     'https://*.kasplex.org/*',
     'https://api.ghostwallet.org/*',
     'https://*.kaspa.blue/*',
-    'https://*.chainge.finance/*'
+    'https://*.chainge.finance/*',
   ],
 }
 
@@ -80,9 +80,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'axios': ['axios'],
+          axios: ['axios'],
         },
-      }
-    }
-  }
+      },
+    },
+  },
 })
