@@ -40,7 +40,10 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
     }
     const connection = runtime.connect({ name: '@ghost/client' })
     console.log(`[KaspaProvider] port connected`, connection)
-    connection.onMessage.addListener(async (message: Response | Event) => {
+    connection.onMessage.addListener(async (message: Response | Event | 'pong') => {
+      if (message === 'pong') {
+        return
+      }
       if (!isEvent(message)) {
         const messageEntry = messagesRef.current.get(message.id)
         if (messageEntry) {
@@ -81,6 +84,14 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       }
     })
     connectionRef.current = connection
+
+    const keepAlive = () => {
+      const connection = getConnection()
+      connection.postMessage('ping')
+      setTimeout(keepAlive, 1000)
+    }
+    keepAlive()
+
     return connection
   }, [])
 

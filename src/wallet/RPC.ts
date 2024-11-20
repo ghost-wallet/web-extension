@@ -68,7 +68,11 @@ export default class RPC {
   private permitPort(port: browser.Runtime.Port) {
     this.ports.add(port)
 
-    const onMessageListener = async (request: Request) => {
+    const onMessageListener = async (request: Request | 'ping') => {
+      if(request === 'ping') {
+        port.postMessage('pong')
+        return
+      }
       try {
         const response = await this.router.route(request)
 
