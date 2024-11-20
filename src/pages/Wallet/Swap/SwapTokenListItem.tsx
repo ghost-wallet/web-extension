@@ -7,11 +7,14 @@ interface SwapTokenListItemProps {
 }
 
 const SwapTokenListItem: React.FC<SwapTokenListItemProps> = ({ token }) => {
+  const isCusdt = token?.contractAddress === 'CUSDT'
   return (
     <div className="flex items-center justify-between w-full p-2 bg-darkmuted hover:bg-slightmuted transition-colors rounded-[15px]">
       <div className="flex items-center">
-        <CryptoImage ticker={token.symbol} size="small" />
-        <span className="ml-4 text-lg text-primarytext">{token.name}</span>
+        <CryptoImage ticker={isCusdt ? token.contractAddress : token.symbol} size="small" />
+        <span className="ml-4 text-lg text-primarytext">
+          {isCusdt ? token.contractAddress : token?.symbol}
+        </span>
       </div>
     </div>
   )

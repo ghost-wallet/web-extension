@@ -28,6 +28,7 @@ const YouReceiveSection: React.FC<YouReceiveSectionProps> = ({
 
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
   const displayAmount = receiveAmount ? formatNumberAbbreviated(receiveAmountAfterFees) : ''
+
   const formattedCurrencyValue = Number(aggregateQuote?.outAmountUsd).toLocaleString(undefined, {
     style: 'currency',
     currency: settings.currency,

@@ -59,7 +59,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
     const outAmountUsd = Number(aggregateQuote.outAmountUsd)
     const formattedValue = Number(formattedCurrencyValue.replace(/[^0-9.-]+/g, ''))
 
-    if (outAmountUsd < formattedValue * 0.9) {
+    if (outAmountUsd < formattedValue * 0.95) { // if more than 5% loss on trade
       const difference = formattedValue - outAmountUsd
       const percentageLoss = ((difference / formattedValue) * 100).toFixed(2)
       setWarning(WarningMessages.LOW_LIQUIDITY(difference, percentageLoss))
