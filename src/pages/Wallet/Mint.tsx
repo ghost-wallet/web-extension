@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import BottomNav from '@/components/navigation/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
-import Header from '@/components/Header'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
 import { KRC20TokenResponse, KsprToken } from '@/utils/interfaces'
 import { getButtonLabel } from '@/utils/labels'
@@ -81,8 +80,7 @@ export default function Mint() {
     <>
       <TopNav />
       <AnimatedMain className={`flex flex-col h-screen w-full ${showSuggestions ? '' : 'fixed'}`}>
-        <Header title="Mint" showBackButton={true} />
-        <div className="flex flex-col flex-grow px-4">
+        <div className="flex flex-col flex-grow px-4 pt-4">
           {selectedNetwork === 'testnet-11' && (
             <p className="text-warning text-center text-base mb-4">
               KRC20 tokens cannot be minted on {selectedNetwork}. Try a different network.
