@@ -31,6 +31,8 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
       navigate(`/send/${token.tick}`, { state: { token } })
     } else if (location.pathname.includes('/wallet')) {
       navigate(`/wallet/${token.tick}`, { state: { token } })
+    } else if (location.pathname.includes('/marketplace/sell')) {
+      navigate(`/marketplace/sell/${token.tick}`, { state: { token } })
     }
   }
 

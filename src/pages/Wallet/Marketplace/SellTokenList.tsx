@@ -5,14 +5,14 @@ import CryptoList from '@/pages/Wallet/CryptoList'
 import Header from '@/components/Header'
 import TopNav from '@/components/navigation/TopNav'
 
-export default function Send() {
+export default function SellTokenList() {
   const [totalValue, setTotalValue] = useState(0)
 
   return (
     <>
       <TopNav />
       <AnimatedMain>
-        <Header title="Send" showBackButton={true} />
+        <Header title="Sell" showBackButton={true} />
         <div className="flex flex-col items-center">
           <CryptoList onTotalValueChange={setTotalValue} />
         </div>

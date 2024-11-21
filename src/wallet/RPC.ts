@@ -69,7 +69,7 @@ export default class RPC {
     this.ports.add(port)
 
     const onMessageListener = async (request: Request | 'ping') => {
-      if(request === 'ping') {
+      if (request === 'ping') {
         port.postMessage('pong')
         return
       }

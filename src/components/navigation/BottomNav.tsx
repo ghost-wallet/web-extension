@@ -1,6 +1,12 @@
 import React from 'react'
 import BottomNavButton from './BottomNavButton'
-import { HomeIcon, ArrowsRightLeftIcon, BoltIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
+import {
+  HomeIcon,
+  ArrowsRightLeftIcon,
+  BuildingStorefrontIcon,
+  BoltIcon,
+  DocumentTextIcon,
+} from '@heroicons/react/24/outline'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 
 export default function BottomNav() {
@@ -9,6 +15,7 @@ export default function BottomNav() {
       <div className="relative flex justify-around">
         <BottomNavButton icon={HomeIcon} path="/wallet" />
         <BottomNavButton icon={ArrowsRightLeftIcon} path="/swap" />
+        <BottomNavButton icon={BuildingStorefrontIcon} path="/marketplace" />
         <BottomNavButton icon={BoltIcon} path="/mint" />
         <BottomNavButton icon={DocumentTextIcon} path={['/transactions/kaspa', '/transactions/krc20']} />
       </div>

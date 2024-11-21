@@ -34,6 +34,9 @@ import ManageAccounts from '@/pages/Wallet/Settings/Account/ManageAccounts'
 import Swapped from '@/pages/Wallet/Swap/Swapped'
 import SupportPage from '@/pages/Wallet/Settings/Support/SupportPage'
 import SearchWalletResults from '@/components/search/SearchWalletResults'
+import Marketplace from '@/pages/Wallet/Marketplace'
+import SellTokenList from '@/pages/Wallet/Marketplace/SellTokenList'
+import CreateListing from '@/pages/Wallet/Marketplace/CreateListing'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -81,6 +84,9 @@ function App() {
               <Route path="/receive" element={<Receive />} />
               <Route path="/swap" element={<Swap />} />
               <Route path="/swap/confirmed" element={<Swapped />} />
+              <Route path="/marketplace" element={<Marketplace />} />
+              <Route path="/marketplace/sell" element={<SellTokenList />} />
+              <Route path="/marketplace/sell/:tick" element={<CreateListing />} />
               <Route path="/mint" element={<Mint />} />
               <Route path="/mint/:tick" element={<CreateMint />} />
               <Route path="/mint/:tick/review" element={<ConfirmMint />} />
