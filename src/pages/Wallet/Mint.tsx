@@ -47,8 +47,7 @@ export default function Mint() {
     try {
       const result = await fetchKrc20TokenInfo(0, ticker)
       if (result) {
-        if (!ksprPricesQuery.data) throw new Error('Price data unavailable.')
-        const ksprPriceData: KsprToken | undefined = ksprPricesQuery.data[result.tick]
+        const ksprPriceData: KsprToken | undefined = ksprPricesQuery.data?.[result.tick]
         const floorPrice = ksprPriceData?.floor_price ? ksprPriceData.floor_price * kasPrice : 0
         setToken({ ...result, floorPrice })
       } else {

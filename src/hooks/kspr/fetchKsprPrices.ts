@@ -11,10 +11,19 @@ import { KsprTokenResponse } from '@/utils/interfaces'
  * https://storage.googleapis.com/kspr-api-v1/marketplace/marketplace.json?t=TIMESTAMP
  */
 const fetchKsprPrices = async (): Promise<KsprTokenResponse> => {
-  const response = await axios.get<KsprTokenResponse>(
-    'https://storage.googleapis.com/kspr-api-v1/marketplace/marketplace.json',
-  )
-  return response.data
+  try {
+    const response = await axios.get<KsprTokenResponse>(
+      'https://storage.googleapis.com/kspr-api-v1/marketplace/marketplace.json',
+    )
+    return response.data
+  } catch (error: any) {
+    if (error.response && error.response.status === 403) {
+      console.error('Error 403: KSPR Bot token price API unavailable')
+    } else {
+      console.error(`Error ${error.response.status}: cannot get token price data from KSPR Bot API.`, error.message || error)
+    }
+    throw error
+  }
 }
 
 /**

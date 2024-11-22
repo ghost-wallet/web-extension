@@ -52,7 +52,7 @@ export function useWalletTokens() {
           const floorPrice = ksprPriceData?.floor_price ?? 0
           return {
             ...token,
-            floorPrice: token.tick === 'CUSDT' ? 1.0 : floorPrice * kasPrice, // TODO use real USDT price from an API
+            floorPrice: token.tick === 'CUSDT' ? 1.0 : floorPrice * kasPrice, // TODO use real USDT price from Chainge API
           }
         })
       : []
