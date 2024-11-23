@@ -35,6 +35,7 @@ const useChaingeTokenData = (amount: string, token: ChaingeToken | null, tokens:
     formattedBalance,
     availableBalance,
     tokenSymbol,
+    currencyValue
   }
 }
 

@@ -42,7 +42,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   const { request } = useKaspa()
   const { settings } = useSettings()
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
-  const { formattedCurrencyValue } = useChaingeTokenData(payAmount, payToken, [])
+  const { formattedCurrencyValue, currencyValue } = useChaingeTokenData(payAmount, payToken, [])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [warning, setWarning] = useState<string | null>(null)
@@ -57,17 +57,16 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
 
   useEffect(() => {
     const outAmountUsd = Number(aggregateQuote.outAmountUsd)
-    const formattedValue = Number(formattedCurrencyValue.replace(/[^0-9.-]+/g, ''))
 
-    if (outAmountUsd < formattedValue * 0.93) {
+    if (outAmountUsd < currencyValue * 0.93) {
       // if more than 5% loss on trade
-      const difference = formattedValue - outAmountUsd
-      const percentageLoss = ((difference / formattedValue) * 100).toFixed(2)
+      const difference = currencyValue - outAmountUsd
+      const percentageLoss = ((difference / currencyValue) * 100).toFixed(2)
       setWarning(WarningMessages.LOW_LIQUIDITY(difference, percentageLoss))
     } else {
       setWarning(null)
     }
-  }, [aggregateQuote.outAmountUsd, formattedCurrencyValue])
+  }, [aggregateQuote.outAmountUsd, currencyValue])
 
   const handleSwap = async () => {
     setLoading(true)
