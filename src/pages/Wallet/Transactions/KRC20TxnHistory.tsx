@@ -36,6 +36,7 @@ const KRC20TxnHistory: React.FC<TransactionsHistoryProps> = ({ tick }) => {
     return <TransactionsLoading />
   }
 
+  // TODO don't keep auto-reloading if 204 error
   if (error) {
     return <ErrorMessage message={error.message} className="pt-2 flex justify-center items-center" />
   }

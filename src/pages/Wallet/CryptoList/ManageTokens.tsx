@@ -15,7 +15,7 @@ import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 
 const ManageTokens: React.FC = () => {
   const navigate = useNavigate()
-  const { tokens, errorMessage } = useWalletTokens()
+  const { tokens, walletError } = useWalletTokens()
   const [enabledTokens, setEnabledTokens] = useInitializedEnabledTokens(tokens as Partial<Token>[])
   const toggleTokenVisibility = useToggleTokenVisibility(setEnabledTokens)
   const [filteredTokens, setFilteredTokens] = useState<(Token | KaspaToken)[]>(tokens)
@@ -33,10 +33,7 @@ const ManageTokens: React.FC = () => {
         <div className="px-4 -mb-4">
           <SearchBar onSearch={handleSearch} />
         </div>
-        {errorMessage && (
-          <ErrorMessage message={errorMessage} className="h-6 mb-4 mt-2 flex justify-center items-center" />
-        )}
-        {!tokens.length && !errorMessage && <Spinner />}
+        {!tokens.length && !walletError && <Spinner />}
         {filteredTokens.length > 0 ? (
           <ul className="space-y-3 pb-28 pt-4">
             {filteredTokens.map((token) => (
@@ -54,6 +51,9 @@ const ManageTokens: React.FC = () => {
           <div className="p-4">
             <SearchResultsNotFound searchTerm={searchTerm} filteredTokens={filteredTokens} />
           </div>
+        )}
+        {walletError && (
+          <ErrorMessage message={walletError} className="p-4 flex justify-center items-center" />
         )}
       </AnimatedMain>
       <BottomFixedContainer shadow={true} className="bg-bgdark border-t border-darkmuted p-4">

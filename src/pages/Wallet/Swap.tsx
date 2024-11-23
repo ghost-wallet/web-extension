@@ -22,7 +22,7 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 export default function Swap() {
   const location = useLocation()
   const { token: locationToken } = location.state || {}
-  const { tokens } = useWalletTokens()
+  const { tokens, walletError } = useWalletTokens()
   const { kaspa, request } = useKaspa()
   const [payAmount, setPayAmount] = useState('')
   const [amountError, setAmountError] = useState<string | null>(null)
@@ -140,9 +140,12 @@ export default function Swap() {
                   Number(outAmountUsd) > 1 && (
                     <SwapNetworkFeeButton setIsNetworkFeeOpen={setIsNetworkFeeOpen} networkFee={networkFee} />
                   )}
-                {(quoteError || queryError || networkFeeError) && (
+                {/* TODO: better error display due to fixed container below */}
+                {(quoteError || queryError || networkFeeError || walletError) && (
                   <div className="py-4">
-                    <ErrorMessage message={quoteError || queryError?.message || networkFeeError || ''} />
+                    <ErrorMessage
+                      message={quoteError || queryError?.message || networkFeeError || walletError || ''}
+                    />
                   </div>
                 )}
                 {}

@@ -14,7 +14,7 @@ interface CryptoListProps {
 }
 
 const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
-  const { tokens, errorMessage } = useWalletTokens()
+  const { tokens, walletError } = useWalletTokens()
   const { settings } = useSettings()
   const navigate = useNavigate()
   const location = useLocation()
@@ -51,8 +51,8 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
           ))}
         </ul>
       )}
-      {errorMessage && (
-        <ErrorMessage message={errorMessage} className="mt-2 flex justify-center items-center" />
+      {walletError && (
+        <ErrorMessage message={walletError} className="mt-2 flex justify-center items-center" />
       )}
     </div>
   )

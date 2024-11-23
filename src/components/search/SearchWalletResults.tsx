@@ -13,7 +13,7 @@ import CloseButton from '@/components/buttons/CloseButton'
 import AnimatedMain from '@/components/AnimatedMain'
 
 const SearchWalletResults: React.FC = () => {
-  const { tokens, errorMessage } = useWalletTokens()
+  const { tokens, walletError } = useWalletTokens()
   const navigate = useNavigate()
   const location = useLocation()
   const visibleTokens = useVisibleTokens(tokens)
@@ -43,10 +43,7 @@ const SearchWalletResults: React.FC = () => {
     <>
       <AnimatedMain className="flex flex-col h-screen w-full overflow-y-auto p-4">
         <SearchBar onSearch={handleSearch} />
-        {errorMessage && (
-          <ErrorMessage message={errorMessage} className="h-6 mb-4 mt-2 flex justify-center items-center" />
-        )}
-        {!tokens.length && !errorMessage && <Spinner />}
+        {!tokens.length && !walletError && <Spinner />}
         {filteredTokens.length > 0 ? (
           <ul className="space-y-3 pb-28">
             {filteredTokens.map((token) => (
@@ -61,6 +58,9 @@ const SearchWalletResults: React.FC = () => {
           </ul>
         ) : (
           <SearchResultsNotFound searchTerm={searchTerm} filteredTokens={filteredTokens} />
+        )}
+        {walletError && (
+          <ErrorMessage message={walletError} className="pt-4 flex justify-center items-center" />
         )}
       </AnimatedMain>
       <BottomFixedContainer shadow={true} className="bg-bgdark border-t border-darkmuted p-4">

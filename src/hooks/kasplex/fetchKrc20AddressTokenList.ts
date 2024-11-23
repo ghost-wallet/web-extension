@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { getApiBase } from '@/hooks/kasplex/fetchHelper'
 import { KRC20TokenListForAddress, TokenFromApi } from '@/utils/interfaces'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 export const fetchKrc20AddressTokenList = async (selectedNode: number, address: string) => {
   const apiBase = getApiBase(selectedNode)
@@ -23,13 +24,9 @@ export const fetchKrc20AddressTokenList = async (selectedNode: number, address: 
         allTokens = [...allTokens, ...response.data.result]
         nextPage = response.data.next
       } else if (response.status === 204) {
-        throw new Error(
-          `Error 204: cannot get your KRC20 tokens from Kasplex API. If you're using security software like a VPN, disable advanced protection or turn it off and restart your computer.`,
-        )
+        throw new Error(ErrorMessages.KRC20.KASPLEX_204)
       } else {
-        throw new Error(
-          `Error ${response.status}: cannot get your KRC20 tokens from Kasplex API. Kasplex API is currently down or unavailable.`,
-        )
+        throw new Error(ErrorMessages.KRC20.KASPLEX_UNKNOWN(response.status))
       }
     } while (nextPage)
 

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { getApiBase } from '@/hooks/kasplex/fetchHelper'
 import { KRC20TransactionList } from '@/utils/interfaces'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 export const fetchKRC20TransactionHistory = async (
   selectedNode: number,
@@ -25,11 +26,9 @@ export const fetchKRC20TransactionHistory = async (
     if (response.data && response.data.result) {
       return response.data
     } else if (response.status === 204) {
-      throw new Error(
-        `Error 204: cannot get KRC20 transaction history from Kasplex API. If you're using security software like a VPN, disable advanced protection or turn it off and restart your computer.`,
-      )
+      throw new Error(ErrorMessages.KRC20.KASPLEX_204)
     } else {
-      throw new Error('Error fetching KRC20 operations. Invalid API response structure')
+      throw new Error(ErrorMessages.KRC20.KASPLEX_UNKNOWN(response.status))
     }
   } catch (error) {
     console.error('Error fetching operations:', error)

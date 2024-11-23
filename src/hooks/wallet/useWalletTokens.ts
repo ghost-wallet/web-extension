@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { sortTokensByValue } from '@/utils/sorting'
 import useSettings from '@/hooks/contexts/useSettings'
@@ -15,6 +15,8 @@ export function useWalletTokens() {
   const ksprPricesQuery = useKsprPrices()
   const kasPrice = kaspaPrice.data ?? 0
   const selectedNetwork = settings.nodes[settings.selectedNode].address
+
+  const [walletError, setWalletError] = useState<string | null>(null)
 
   const isQueryEnabled = useMemo(() => {
     if (!(kaspa.addresses.length > 0)) return false
@@ -60,7 +62,12 @@ export function useWalletTokens() {
   }, [kaspaCrypto, krc20TokensQuery.data, ksprPricesQuery.data, kasPrice])
 
   const sortedTokens = sortTokensByValue(tokens)
-  const errorMessage = krc20TokensQuery.isError ? krc20TokensQuery.error.message : null
 
-  return { tokens: sortedTokens, errorMessage }
+  useEffect(() => {
+    if (krc20TokensQuery.isError) {
+      setWalletError(krc20TokensQuery.error?.message || 'An unknown error occurred while fetching tokens.')
+    }
+  }, [krc20TokensQuery.isError, krc20TokensQuery.error])
+
+  return { tokens: sortedTokens, walletError }
 }

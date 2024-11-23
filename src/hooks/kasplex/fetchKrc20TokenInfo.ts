@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { getApiBase } from './fetchHelper'
 import { KRC20TokenResponse } from '@/utils/interfaces'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 interface Krc20TokenApiResponse {
   message: string
@@ -32,34 +33,38 @@ export const fetchKrc20TokenInfo = async (
   ticker: string,
 ): Promise<KRC20TokenResponse | null> => {
   const apiBase = getApiBase(selectedNode)
+
   try {
     const response = await axios.get<Krc20TokenApiResponse>(
       `https://${apiBase}.kasplex.org/v1/krc20/token/${ticker}`,
     )
 
-    if (response.status === 204) {
-      throw new Error(
-        `Error 204: cannot get KRC20 token info from Kasplex API. If you're using security software like a VPN, disable advanced protection or turn it off and restart your computer.`,
-      )
-    } else if (response.data.result.length > 0) {
-      const token = response.data.result[0]
-
-      return {
-        ...token,
-        max: parseFloat(token.max),
-        lim: parseFloat(token.lim),
-        pre: parseFloat(token.pre),
-        minted: parseFloat(token.minted),
-        holderTotal: parseFloat(token.holderTotal),
-        transferTotal: parseFloat(token.transferTotal),
-        mintTotal: parseFloat(token.mintTotal),
-        dec: parseInt(token.dec),
-      }
+    if (response.status === 204 || !response.data || !response.data.result?.length) {
+      console.error('No token data found:', response.data || 'Empty response')
+      throw new Error(ErrorMessages.KRC20.KASPLEX_204 || 'No token data available.')
     }
 
-    return null
+    const token = response.data.result[0]
+
+    return {
+      ...token,
+      max: parseFloat(token.max),
+      lim: parseFloat(token.lim),
+      pre: parseFloat(token.pre),
+      minted: parseFloat(token.minted),
+      holderTotal: parseFloat(token.holderTotal),
+      transferTotal: parseFloat(token.transferTotal),
+      mintTotal: parseFloat(token.mintTotal),
+      dec: parseInt(token.dec),
+    }
   } catch (error: any) {
-    console.error(`Error fetching token info for ${ticker}:`, error)
-    throw new Error(JSON.stringify(error) || 'Unexpected error fetching token info.')
+    if (axios.isAxiosError(error)) {
+      console.error('Axios error:', error.response?.status, error.response?.data || error.message)
+      throw new Error(
+        error.response?.data?.message || `Failed to fetch token info for ${ticker}: ${error.message}`,
+      )
+    }
+    console.error('Unexpected error:', error)
+    throw new Error(error.message || 'Unexpected error fetching token info.')
   }
 }

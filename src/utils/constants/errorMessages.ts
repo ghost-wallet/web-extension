@@ -44,6 +44,9 @@ const ErrorMessages = {
   },
 
   KRC20: {
+    KASPLEX_204:
+      '204 Error: internet connection blocked by your VPN or anti-virus software. Turn off any security software and restart your browser.',
+    KASPLEX_UNKNOWN: (status: any) => `${status} Error: Kasplex API is down or unavailable.`,
     INVALID_RECIPIENT: 'Cannot transfer KRC20 tokens to yourself.',
     MISSING: 'Missing KRC20 token information. Please try again.',
     SUBMIT_TXN: (err: any) => `Error occurred trying to submit KRC20 transaction: ${err}`,

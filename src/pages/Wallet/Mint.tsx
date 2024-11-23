@@ -51,10 +51,13 @@ export default function Mint() {
         const floorPrice = ksprPriceData?.floor_price ? ksprPriceData.floor_price * kasPrice : 0
         setToken({ ...result, floorPrice })
       } else {
+        console.error('Token not found to mint')
         setError(ErrorMessages.MINT.TOKEN_NOT_FOUND(ticker.toUpperCase()))
       }
     } catch (err: any) {
-      setError(err.message || ErrorMessages.MINT.SEARCH_FAILED(ticker))
+      console.error('Mint token search failed', err)
+      const errorMessage = err.message || ErrorMessages.MINT.SEARCH_FAILED(ticker)
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
