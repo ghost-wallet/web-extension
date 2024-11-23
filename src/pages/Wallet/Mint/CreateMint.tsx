@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import BottomNav from '@/components/navigation/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import { KRC20TokenResponse } from '@/utils/interfaces'
@@ -14,8 +13,8 @@ import NextButton from '@/components/buttons/NextButton'
 import useMintErrorHandling from '@/pages/Wallet/Mint/CreateMint/hooks/useMintErrorHandling'
 import useMintValidation from '@/pages/Wallet/Mint/CreateMint/hooks/useMintValidation'
 import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
-import TopNav from '@/components/navigation/TopNav'
 import LoadingCreateMint from '@/pages/Wallet/Mint/CreateMint/LoadingCreateMint'
+import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 
 export default function CreateMint() {
   const { kaspa } = useKaspa()
@@ -63,7 +62,6 @@ export default function CreateMint() {
 
   return (
     <>
-      <TopNav />
       <AnimatedMain className="flex flex-col h-screen fixed w-full">
         <Header title={`Mint ${token.tick}`} showBackButton={true} />
         {kaspa.connected ? (
@@ -84,11 +82,10 @@ export default function CreateMint() {
         )}
       </AnimatedMain>
       {kaspa.connected && (
-        <div className="fixed bottom-20 left-0 right-0 px-4">
-          <NextButton buttonEnabled={true} onClick={handleNext} />
-        </div>
+        <BottomFixedContainer className="p-4 bg-bgdark border-t border-darkmuted ">
+          <NextButton buttonEnabled={true} onClick={handleNext} text="Review Mint" />
+        </BottomFixedContainer>
       )}
-      <BottomNav />
       <PopupMessageDialog
         message={error}
         onClose={() => setShowDialog(false)}

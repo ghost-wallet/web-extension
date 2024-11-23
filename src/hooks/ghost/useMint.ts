@@ -1,4 +1,5 @@
 import axios from 'axios'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 /**
  * Interface defining the structure for a mint request payload.
@@ -26,19 +27,22 @@ export async function postMint(mintRequest: MintRequest): Promise<any> {
       },
     })
     return response.data
-  } catch (error) {
+  } catch (error: any) {
     if (axios.isAxiosError(error) && error.response) {
       console.error('Mint API error:', error.response)
       const statusCode = error.response.status
       if (statusCode >= 500 && statusCode < 600) {
-        throw new Error('Ghost server unavailable. Try again later or mint a different token.')
+        throw new Error(ErrorMessages.MINT.SERVER_UNAVAILABLE)
       } else {
         const errorMessage = `${statusCode} ${error.response.statusText}`
         throw new Error(errorMessage)
       }
     } else {
-      console.error('Unexpected error:', error)
-      throw new Error('An unexpected error occurred.')
+      console.error(
+        `Unexpected ${error.response.status} error ${error.response.statusText}:`,
+        JSON.stringify(error),
+      )
+      throw new Error(`${error.response.status} ${error.response.statusText}`)
     }
   }
 }

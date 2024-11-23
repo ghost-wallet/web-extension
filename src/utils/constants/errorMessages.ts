@@ -58,6 +58,7 @@ const ErrorMessages = {
   },
 
   MINT: {
+    SERVER_UNAVAILABLE: 'Ghost server unavailable. Try again later or mint a different token.',
     TOKEN_NOT_FOUND: (ticker: string) => `Token ${ticker} not found.`,
     SEARCH_FAILED: (ticker: string) => `An unknown error occurred searching for "${ticker}".`,
     REQUIRED_AMOUNT: 'Minimum mint amount is 5 KAS.',
@@ -70,7 +71,7 @@ const ErrorMessages = {
         mintAmount + 25 + 0.1 * mintAmount
       } KAS in your wallet, but you have ${kaspaBalance.toFixed(
         2,
-      )}. <br /> <br /> Minting requires that you have a minimum of 25 KAS and an extra 10% of the pay amount to cover network fees.`,
+      )}. <br /> <br /> Minting requires that you have a minimum of 25 KAS plus an extra 10% of the pay amount to cover network fees.`,
   },
 
   CHAINGE: {
