@@ -18,6 +18,8 @@ import TopNavSwap from '@/components/navigation/TopNavSwap'
 import SwapNetworkFeeButton from '@/pages/Wallet/Swap/SwapNetworkFeeButton'
 import SwapNetworkFeeSelect from '@/pages/Wallet/Swap/SwapNetworkFeeSelect'
 import useKaspa from '@/hooks/contexts/useKaspa'
+import ErrorMessages from '@/utils/constants/errorMessages'
+import { MINIMUM_KAS_FOR_NETWORK_FEE } from '@/utils/constants/constants'
 
 export default function Swap() {
   const location = useLocation()
@@ -43,6 +45,10 @@ export default function Swap() {
 
   const fetchEstimatedFee = useCallback(() => {
     if (!payToken || !payAmount) return
+    if (kaspa.balance < MINIMUM_KAS_FOR_NETWORK_FEE) {
+      setNetworkFeeError(ErrorMessages.NETWORK.INSUFFICIENT_FUNDS(kaspa.balance))
+      return
+    }
     request('account:estimateChaingeTransactionFee', [
       {
         fromAmount: payAmount,

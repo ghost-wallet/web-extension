@@ -5,8 +5,8 @@ import QRCode from 'react-qr-code'
 import KaspaAddress from '@/components/KaspaAddress'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import Header from '@/components/Header'
-import Spinner from '@/components/loaders/Spinner'
 import TopNav from '@/components/navigation/TopNav'
+import ReceiveLoading from '@/pages/Wallet/Receive/ReceiveLoading'
 
 export default function Receive() {
   const { kaspa } = useKaspa()
@@ -19,7 +19,7 @@ export default function Receive() {
         <AnimatedMain className="flex flex-col h-screen fixed w-full">
           <Header title="Receive Address" showBackButton={true} />
           <div className="flex items-center justify-center w-full h-full">
-            <Spinner />
+            <ReceiveLoading />
           </div>
         </AnimatedMain>
         <BottomNav />
