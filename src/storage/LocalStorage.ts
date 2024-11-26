@@ -5,6 +5,10 @@ import Storage from './Storage'
 export interface IWallet {
   encryptedKey: string
   tokens: { [tick: string]: { isHidden: boolean } }
+  accounts: IAccount[]
+}
+
+export interface IAccount {
   accountName: string
 }
 

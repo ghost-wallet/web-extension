@@ -12,6 +12,7 @@ export interface ISettings {
     locked: boolean
   }[]
   selectedNode: number
+  selectedAccount: number
 }
 
 export const currencies = {
@@ -41,6 +42,7 @@ export const defaultSettings: ISettings = {
     },
   ],
   selectedNode: 0,
+  selectedAccount: 0,
 }
 
 export function SettingsProvider({ children }: { children: ReactNode }) {

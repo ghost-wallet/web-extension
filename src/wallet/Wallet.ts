@@ -70,7 +70,23 @@ export default class Wallet extends EventEmitter {
     await LocalStorage.set('wallet', {
       encryptedKey: encryptedKey,
       tokens: {},
-      accountName: 'Account 1',
+      accounts: [
+        {
+          accountName: 'Account 1'
+        },
+        {
+          accountName: 'Account 2'
+        },
+        {
+          accountName: 'Account 3'
+        },
+        {
+          accountName: 'Account 4'
+        },
+        {
+          accountName: 'Account 5'
+        },
+      ],
     })
 
     await this.unlock(0, password)

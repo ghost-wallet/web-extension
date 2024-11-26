@@ -1,41 +1,52 @@
-import React, { useEffect, useState } from 'react'
-import Header from '@/components/Header'
-import AnimatedMain from '@/components/AnimatedMain'
-import BottomNav from '@/components/navigation/BottomNav'
-import useAccountName from '@/hooks/wallet/useAccountName'
-import { PencilSquareIcon, CheckIcon } from '@heroicons/react/24/outline'
-import LocalStorage from '@/storage/LocalStorage'
+import React, { useEffect, useState } from 'react';
+import Header from '@/components/Header';
+import AnimatedMain from '@/components/AnimatedMain';
+import BottomNav from '@/components/navigation/BottomNav';
+import { PencilSquareIcon, CheckIcon } from '@heroicons/react/24/outline';
+import LocalStorage from '@/storage/LocalStorage';
 
 export default function ManageAccounts() {
-  const currentAccountName = useAccountName()
-  const [accountName, setAccountName] = useState<string | null>(currentAccountName)
-  const [isEditing, setIsEditing] = useState(false)
+  const [accounts, setAccounts] = useState<{ accountName: string }[]>([]);
+  const [isEditing, setIsEditing] = useState<{ [index: number]: boolean }>({}); // Track edit state per account
 
   useEffect(() => {
-    if (currentAccountName !== null) {
-      setAccountName(currentAccountName)
-    }
-  }, [currentAccountName])
+    // Fetch wallet and populate accounts
+    const fetchAccounts = async () => {
+      const wallet = await LocalStorage.get('wallet');
+      console.log('wallet', wallet)
+      if (wallet && wallet.accounts) {
+        setAccounts(wallet.accounts);
+      } else {
+        console.warn('Wallet not found in local storage.');
+      }
+    };
 
-  const handleEditClick = () => {
-    setIsEditing(true)
-  }
+    fetchAccounts();
+  }, []);
 
-  const handleSaveClick = async () => {
-    setIsEditing(false)
-    const wallet = await LocalStorage.get('wallet')
+  const handleEditClick = (index: number) => {
+    setIsEditing((prev) => ({ ...prev, [index]: true }));
+  };
+
+  const handleSaveClick = async (index: number, newAccountName: string) => {
+    const updatedAccounts = [...accounts];
+    updatedAccounts[index].accountName = newAccountName || `Account ${index + 1}`;
+
+    // Update wallet in local storage
+    const wallet = await LocalStorage.get('wallet');
     if (wallet) {
-      wallet.accountName = accountName || 'Account 1'
-      await LocalStorage.set('wallet', wallet)
+      wallet.accounts = updatedAccounts;
+      await LocalStorage.set('wallet', wallet);
       // Trigger storage event manually to notify other components
-      window.localStorage.setItem('wallet', JSON.stringify(wallet))
-    } else {
-      console.warn('Wallet not found in local storage.')
+      window.localStorage.setItem('wallet', JSON.stringify(wallet));
     }
-  }
 
-  if (accountName === null) {
-    return <div>Loading...</div>
+    setAccounts(updatedAccounts);
+    setIsEditing((prev) => ({ ...prev, [index]: false }));
+  };
+
+  if (!accounts.length) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -44,36 +55,49 @@ export default function ManageAccounts() {
         <Header title="Manage Accounts" showBackButton={true} />
         <div className="pt-8 px-4">
           <div className="text-center">
-            <h1 className="text-primarytext text-xl rubik font-bold">Edit account name</h1>
+            <h1 className="text-primarytext text-xl rubik font-bold">Edit account names</h1>
           </div>
-          <div className="mt-4">
-            {isEditing ? (
-              <div className="flex items-center space-x-1 w-full">
-                <input
-                  type="text"
-                  value={accountName}
-                  onChange={(e) => setAccountName(e.target.value)}
-                  maxLength={100}
-                  className="bg-transparent border-b border-primarytext text-primarytext text-lg outline-none w-full text-left"
-                  autoFocus
-                />
-                <CheckIcon
-                  className="h-7 w-7 text-primarytext cursor-pointer hover:text-primary"
-                  onClick={handleSaveClick}
-                />
+          <div className="mt-4 space-y-4">
+            {accounts.map((account, index) => (
+              <div key={index} className="flex items-center space-x-1 w-full">
+                {isEditing[index] ? (
+                  <div className="flex items-center space-x-1 w-full">
+                    <input
+                      type="text"
+                      value={account.accountName}
+                      onChange={(e) =>
+                        setAccounts((prev) => {
+                          const updated = [...prev];
+                          updated[index].accountName = e.target.value;
+                          return updated;
+                        })
+                      }
+                      maxLength={100}
+                      className="bg-transparent border-b border-primarytext text-primarytext text-lg outline-none w-full text-left"
+                      autoFocus
+                    />
+                    <CheckIcon
+                      className="h-7 w-7 text-primarytext cursor-pointer hover:text-primary"
+                      onClick={() => handleSaveClick(index, accounts[index].accountName)}
+                    />
+                  </div>
+                ) : (
+                  <div
+                    className="flex items-center space-x-1 w-full cursor-pointer"
+                    onClick={() => handleEditClick(index)}
+                  >
+                    <p className="text-mutedtext text-lg w-full text-left break-words whitespace-normal hover:text-primarytext">
+                      {account.accountName}
+                    </p>
+                    <PencilSquareIcon className="h-7 w-7 text-mutedtext cursor-pointer hover:text-primarytext" />
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="flex items-center space-x-1 w-full cursor-pointer" onClick={handleEditClick}>
-                <p className="text-mutedtext text-lg w-full text-left break-words whitespace-normal hover:text-primarytext">
-                  {accountName}
-                </p>
-                <PencilSquareIcon className="h-7 w-7 text-mutedtext cursor-pointer hover:text-primarytext" />
-              </div>
-            )}
+            ))}
           </div>
         </div>
       </AnimatedMain>
       <BottomNav />
     </>
-  )
+  );
 }

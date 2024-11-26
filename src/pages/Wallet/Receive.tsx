@@ -10,6 +10,7 @@ import ReceiveLoading from '@/pages/Wallet/Receive/ReceiveLoading'
 
 export default function Receive() {
   const { kaspa } = useKaspa()
+  console.log('kaspa addresses:', kaspa.addresses)
   const receiveAddress = kaspa.addresses[0] || ''
 
   if (!receiveAddress || !kaspa.connected) {

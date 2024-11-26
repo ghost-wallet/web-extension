@@ -136,6 +136,7 @@ export default class AccountTransactions extends EventEmitter {
         if (address.version === 'ScriptHash') {
           continue
         }
+        //TODO update this for multiple receive addresses
         const [isReceive, index] = this.addresses.findIndexes(address.toString())
         privateKeys.push(isReceive ? keyGenerator.receiveKey(index) : keyGenerator.changeKey(index))
       }
