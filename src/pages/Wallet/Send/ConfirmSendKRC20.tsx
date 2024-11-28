@@ -10,6 +10,7 @@ import useSettings from '@/hooks/contexts/useSettings'
 import TopNav from '@/components/navigation/TopNav'
 import NextButton from '@/components/buttons/NextButton'
 import ErrorMessages from '@/utils/constants/errorMessages'
+import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
 
 const ConfirmSendKRC20: React.FC = () => {
   const location = useLocation()
@@ -17,6 +18,7 @@ const ConfirmSendKRC20: React.FC = () => {
   const { token, recipient, amount, feeRate } = location.state || {}
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showDialog, setShowDialog] = useState(false)
   const [estimatedFee, setEstimatedFee] = useState<string>('')
   const [krc20Info, setKrc20Info] = useState<KRC20TokenRequest | null>(null)
   const { request } = useKaspa()
@@ -34,6 +36,8 @@ const ConfirmSendKRC20: React.FC = () => {
       .catch((err) => {
         setError(ErrorMessages.FEES.ESTIMATION(err))
         console.error(ErrorMessages.FEES.ESTIMATION(err))
+        setLoading(false)
+        setShowDialog(true)
       })
   }, [request, recipient, token, amount, feeRate])
 
@@ -55,6 +59,7 @@ const ConfirmSendKRC20: React.FC = () => {
 
     setLoading(true)
     setError('')
+
     request('account:submitKRC20Transaction', [krc20Info, feeRate])
       .then((response) => {
         const txnId = response[1]
@@ -66,6 +71,8 @@ const ConfirmSendKRC20: React.FC = () => {
       .catch((err) => {
         setError(ErrorMessages.KRC20.SUBMIT_TXN(err))
         console.error(ErrorMessages.KRC20.SUBMIT_TXN(err))
+        setLoading(false)
+        setShowDialog(true)
       })
       .finally(() => {
         setLoading(false)
@@ -83,13 +90,19 @@ const ConfirmSendKRC20: React.FC = () => {
           fee={estimatedFee || 'Calculating...'}
           network={settings.nodes[settings.selectedNode].address}
           loading={loading}
-          error={error}
         />
       </AnimatedMain>
       <div className="bottom-20 left-0 right-0 px-4 fixed">
-        <NextButton onClick={handleConfirmClick} text={`Confirm Send`} loading={loading} />
+        <NextButton onClick={handleConfirmClick} text="Confirm Send" loading={loading} />
       </div>
       <BottomNav />
+
+      <PopupMessageDialog
+        message={error}
+        onClose={() => setShowDialog(false)}
+        isOpen={showDialog}
+        title="Error"
+      />
     </>
   )
 }

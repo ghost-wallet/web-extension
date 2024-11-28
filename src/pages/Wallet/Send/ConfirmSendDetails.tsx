@@ -2,7 +2,6 @@ import React from 'react'
 import CryptoImage from '@/components/CryptoImage'
 import TruncatedCopyAddress from '@/components/TruncatedCopyAddress'
 import Header from '@/components/Header'
-import ErrorMessage from '@/components/messages/ErrorMessage'
 import AnimatedNetworkFee from '@/pages/Wallet/Send/AnimatedNetworkFee'
 import TableSection from '@/components/table/TableSection'
 
@@ -13,7 +12,6 @@ interface ConfirmSendDetailsProps {
   fee: string | number
   network: string
   loading: boolean
-  error?: string
 }
 
 const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
@@ -22,7 +20,6 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
   amount,
   fee,
   network,
-  error,
 }) => {
   const tableRows = [
     {
@@ -52,7 +49,6 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
       </div>
       <div className="px-4 pt-2">
         <TableSection rows={tableRows} />
-        <ErrorMessage message={error || ''} className="h-6 mb-4 mt-2 flex justify-center items-center" />
       </div>
     </>
   )

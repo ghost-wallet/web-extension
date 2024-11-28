@@ -8,6 +8,7 @@ import useSettings from '@/hooks/contexts/useSettings'
 import TopNav from '@/components/navigation/TopNav'
 import NextButton from '@/components/buttons/NextButton'
 import ErrorMessages from '@/utils/constants/errorMessages'
+import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
 
 const ConfirmSendKaspa: React.FC = () => {
   const location = useLocation()
@@ -17,6 +18,7 @@ const ConfirmSendKaspa: React.FC = () => {
   const { settings } = useSettings()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showDialog, setShowDialog] = useState(false)
 
   const handleConfirmClick = useCallback(async () => {
     try {
@@ -26,12 +28,16 @@ const ConfirmSendKaspa: React.FC = () => {
       const [generatedTransactions] = await request('account:create', [outputs, feeRate, fee])
       if (!generatedTransactions || generatedTransactions.length === 0) {
         setError(ErrorMessages.TRANSACTION.FAILED_CREATION)
+        setLoading(false)
+        setShowDialog(true)
         return
       }
 
       const [txnId] = await request('account:submitKaspaTransaction', [generatedTransactions])
       if (!txnId) {
         setError(ErrorMessages.TRANSACTION.FAILED_SUBMISSION)
+        setLoading(false)
+        setShowDialog(true)
         return
       }
 
@@ -41,6 +47,8 @@ const ConfirmSendKaspa: React.FC = () => {
     } catch (err) {
       console.error(ErrorMessages.TRANSACTION.CONFIRMATION_ERROR(err))
       setError(ErrorMessages.TRANSACTION.CONFIRMATION_ERROR(err))
+      setLoading(false)
+      setShowDialog(true)
     } finally {
       setLoading(false)
     }
@@ -57,13 +65,19 @@ const ConfirmSendKaspa: React.FC = () => {
           fee={fee}
           network={settings.nodes[settings.selectedNode].address}
           loading={loading}
-          error={error}
         />
       </AnimatedMain>
       <div className="bottom-20 left-0 right-0 px-4 fixed">
         <NextButton onClick={handleConfirmClick} text="Confirm Send" loading={loading} />
       </div>
       <BottomNav />
+
+      <PopupMessageDialog
+        message={error}
+        onClose={() => setShowDialog(false)}
+        isOpen={showDialog}
+        title="Error"
+      />
     </>
   )
 }
