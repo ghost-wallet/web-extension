@@ -1,11 +1,11 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 
-interface NetworkFeeProps {
+interface GasFeeProps {
   fee: string | number
 }
 
-const AnimatedNetworkFee: React.FC<NetworkFeeProps> = ({ fee }) => {
+const AnimatedGasFee: React.FC<GasFeeProps> = ({ fee }) => {
   return (
     <motion.div
       key={fee} // Trigger animation when the fee changes
@@ -20,4 +20,4 @@ const AnimatedNetworkFee: React.FC<NetworkFeeProps> = ({ fee }) => {
   )
 }
 
-export default React.memo(AnimatedNetworkFee)
+export default React.memo(AnimatedGasFee)

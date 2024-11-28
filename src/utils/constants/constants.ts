@@ -1,5 +1,5 @@
 export const FEE_TYPES = ['slow', 'standard', 'fast'] as const
-export const MINIMUM_KAS_FOR_NETWORK_FEE = 1
+export const MINIMUM_KAS_FOR_GAS_FEE = 1
 
 export const KRC20_COMMIT_AMOUNT = '1' as const
 

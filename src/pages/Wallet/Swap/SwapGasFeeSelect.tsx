@@ -5,14 +5,14 @@ import { useBuckets } from '@/hooks/kaspa/useBuckets'
 import { FEE_TYPES } from '@/utils/constants/constants'
 import NextButton from '@/components/buttons/NextButton'
 
-interface SwapNetworkFeeSelectProps {
-  networkFee: string
+interface SwapGasFeeSelectProps {
+  gasFee: string
   onSelectFeeRate: (feeRate: number) => void
   onClose: () => void
 }
 
-const SwapNetworkFeeSelect: React.FC<SwapNetworkFeeSelectProps> = ({
-  networkFee,
+const SwapGasFeeSelect: React.FC<SwapGasFeeSelectProps> = ({
+  gasFee,
   onSelectFeeRate,
   onClose,
 }) => {
@@ -31,11 +31,11 @@ const SwapNetworkFeeSelect: React.FC<SwapNetworkFeeSelectProps> = ({
   }
 
   return (
-    <ModalContainer title="Network Fee" onClose={onClose}>
+    <ModalContainer title="Gas Fee" onClose={onClose}>
       <div className="flex flex-col flex-grow -mx-4">
         <FeePrioritySelector
           currentFeeTypeIndex={currentFeeTypeIndex}
-          estimatedFee={networkFee}
+          estimatedFee={gasFee}
           onFeeTypeClick={handleFeeTypeClick}
           isButtonEnabled={true}
         />
@@ -47,4 +47,4 @@ const SwapNetworkFeeSelect: React.FC<SwapNetworkFeeSelectProps> = ({
   )
 }
 
-export default SwapNetworkFeeSelect
+export default SwapGasFeeSelect

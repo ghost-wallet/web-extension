@@ -26,7 +26,7 @@ import AboutPage from '@/pages/Wallet/Settings/About/AboutPage'
 import { QueryClient } from '@tanstack/react-query'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
-import NetworkFeeSelect from '@/pages/Wallet/Send/NetworkFeeSelect'
+import GasFeeSelect from '@/pages/Wallet/Send/GasFeeSelect'
 import DeveloperPage from '@/pages/Wallet/Settings/Developer/DeveloperPage'
 import KaspaTxnDetails from '@/pages/Wallet/Transactions/KaspaTxnDetails'
 import ManageTokens from '@/pages/Wallet/CryptoList/ManageTokens'
@@ -74,9 +74,9 @@ function App() {
               <Route path="/transactions/krc20/details" element={<KRC20TxnDetails />} />
               <Route path="/send" element={<Send />} />
               <Route path="/send/:tick" element={<InitiateSend />} />
-              <Route path="/send/:tick/network-fee" element={<NetworkFeeSelect />} />
-              <Route path="/send/:tick/network-fee/confirm" element={<ConfirmSendKaspa />} />
-              <Route path="/send/:tick/network-fee/confirmkrc20" element={<ConfirmSendKRC20 />} />
+              <Route path="/send/:tick/gas-fee" element={<GasFeeSelect />} />
+              <Route path="/send/:tick/gas-fee/confirm" element={<ConfirmSendKaspa />} />
+              <Route path="/send/:tick/gas-fee/confirmkrc20" element={<ConfirmSendKRC20 />} />
               <Route path="/send/:tick/sent" element={<Sent />} />
               <Route path="/receive" element={<Receive />} />
               <Route path="/swap" element={<Swap />} />

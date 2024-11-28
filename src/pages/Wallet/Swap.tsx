@@ -15,11 +15,11 @@ import SwitchChaingeTokens from '@/pages/Wallet/Swap/SwitchChaingeTokens'
 import ReviewOrderButton from '@/pages/Wallet/Swap/ReviewOrderButton'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import TopNavSwap from '@/components/navigation/TopNavSwap'
-import SwapNetworkFeeButton from '@/pages/Wallet/Swap/SwapNetworkFeeButton'
-import SwapNetworkFeeSelect from '@/pages/Wallet/Swap/SwapNetworkFeeSelect'
+import SwapGasFeeButton from '@/pages/Wallet/Swap/SwapGasFeeButton'
+import SwapGasFeeSelect from '@/pages/Wallet/Swap/SwapGasFeeSelect'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import ErrorMessages from '@/utils/constants/errorMessages'
-import { MINIMUM_KAS_FOR_NETWORK_FEE } from '@/utils/constants/constants'
+import { MINIMUM_KAS_FOR_GAS_FEE } from '@/utils/constants/constants'
 
 export default function Swap() {
   const location = useLocation()
@@ -32,9 +32,9 @@ export default function Swap() {
   const [receiveToken, setReceiveToken] = useState<ChaingeToken | null>(null)
   const [slippage, setSlippage] = useState<number>(1)
   const [feeRate, setFeeRate] = useState<number>(1)
-  const [networkFee, setNetworkFee] = useState<string>('')
-  const [networkFeeError, setNetworkFeeError] = useState<string | null>(null)
-  const [isNetworkFeeOpen, setIsNetworkFeeOpen] = useState(false)
+  const [gasFee, setGasFee] = useState<string>('')
+  const [gasFeeError, setGasFeeError] = useState<string | null>(null)
+  const [isGasFeeOpen, setIsGasFeeOpen] = useState(false)
   const [isReviewOrderOpen, setIsReviewOrderOpen] = useState(false)
   const [isPayTokenSelectOpen, setIsPayTokenSelectOpen] = useState(false)
   const [isReceiveTokenSelectOpen, setIsReceiveTokenSelectOpen] = useState(false)
@@ -45,8 +45,8 @@ export default function Swap() {
 
   const fetchEstimatedFee = useCallback(() => {
     if (!payToken || !payAmount) return
-    if (kaspa.balance < MINIMUM_KAS_FOR_NETWORK_FEE) {
-      setNetworkFeeError(ErrorMessages.NETWORK.INSUFFICIENT_FUNDS(kaspa.balance))
+    if (kaspa.balance < MINIMUM_KAS_FOR_GAS_FEE) {
+      setGasFeeError(ErrorMessages.NETWORK.INSUFFICIENT_FUNDS(kaspa.balance))
       return
     }
     request('account:estimateChaingeTransactionFee', [
@@ -57,12 +57,12 @@ export default function Swap() {
       },
     ])
       .then((estimatedFee) => {
-        setNetworkFee(estimatedFee)
-        setNetworkFeeError('')
+        setGasFee(estimatedFee)
+        setGasFeeError('')
       })
       .catch((error) => {
-        console.error('Error fetching estimated network fee:', error)
-        setNetworkFeeError(error)
+        console.error('Error fetching estimated gas fee:', error)
+        setGasFeeError(error)
       })
   }, [payAmount, payToken, feeRate, request])
 
@@ -140,17 +140,17 @@ export default function Swap() {
                 />
                 {!quoteError &&
                   !amountError &&
-                  !networkFeeError &&
+                  !gasFeeError &&
                   payToken &&
                   payAmount &&
                   Number(outAmountUsd) > 1 && (
-                    <SwapNetworkFeeButton setIsNetworkFeeOpen={setIsNetworkFeeOpen} networkFee={networkFee} />
+                    <SwapGasFeeButton setIsGasFeeOpen={setIsGasFeeOpen} gasFee={gasFee} />
                   )}
                 {/* TODO: better error display due to fixed container below */}
-                {(quoteError || queryError || networkFeeError || walletError) && (
+                {(quoteError || queryError || gasFeeError || walletError) && (
                   <div className="py-4">
                     <ErrorMessage
-                      message={quoteError || queryError?.message || networkFeeError || walletError || ''}
+                      message={quoteError || queryError?.message || gasFeeError || walletError || ''}
                     />
                   </div>
                 )}
@@ -162,7 +162,7 @@ export default function Swap() {
       </AnimatedMain>
       <ReviewOrderButton
         amountError={amountError}
-        networkFeeError={networkFeeError}
+        gasFeeError={gasFeeError}
         outAmountUsd={outAmountUsd}
         payAmount={payAmount}
         loadingQuote={loadingQuote}
@@ -199,18 +199,18 @@ export default function Swap() {
             payAmount={payAmount}
             slippage={slippage.toString()}
             feeRate={feeRate}
-            networkFee={networkFee}
+            gasFee={gasFee}
             aggregateQuote={aggregateQuote}
             onClose={() => setIsReviewOrderOpen(false)}
           />
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {isNetworkFeeOpen && payToken && payAmount && (
-          <SwapNetworkFeeSelect
-            networkFee={networkFee}
+        {isGasFeeOpen && payToken && payAmount && (
+          <SwapGasFeeSelect
+            gasFee={gasFee}
             onSelectFeeRate={setFeeRate}
-            onClose={() => setIsNetworkFeeOpen(false)}
+            onClose={() => setIsGasFeeOpen(false)}
           />
         )}
       </AnimatePresence>

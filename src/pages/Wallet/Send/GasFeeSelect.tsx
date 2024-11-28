@@ -11,7 +11,7 @@ import Header from '@/components/Header'
 import BottomNav from '@/components/navigation/BottomNav'
 import TopNav from '@/components/navigation/TopNav'
 
-const NetworkFeeSelect: React.FC = () => {
+const GasFeeSelect: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { request } = useKaspa()
@@ -56,8 +56,8 @@ const NetworkFeeSelect: React.FC = () => {
 
   const handleContinue = () => {
     const nextPath = token.isKaspa
-      ? `/send/${token.tick}/network-fee/confirm`
-      : `/send/${token.tick}/network-fee/confirmkrc20`
+      ? `/send/${token.tick}/gas-fee/confirm`
+      : `/send/${token.tick}/gas-fee/confirmkrc20`
     navigate(nextPath, {
       state: {
         token,
@@ -74,7 +74,7 @@ const NetworkFeeSelect: React.FC = () => {
     <>
       <TopNav />
       <AnimatedMain className="flex flex-col h-screen w-full fixed">
-        <Header title="Network Fee" showBackButton={true} />
+        <Header title="Gas Fee" showBackButton={true} />
         <div className="flex flex-col flex-grow">
           <FeePrioritySelector
             currentFeeTypeIndex={currentFeeTypeIndex}
@@ -96,4 +96,4 @@ const NetworkFeeSelect: React.FC = () => {
   )
 }
 
-export default NetworkFeeSelect
+export default GasFeeSelect

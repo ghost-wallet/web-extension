@@ -14,7 +14,7 @@ import useSettings from '@/hooks/contexts/useSettings'
 import CryptoImage from '@/components/CryptoImage'
 import TopNav from '@/components/navigation/TopNav'
 import ErrorMessages from '@/utils/constants/errorMessages'
-import { MINIMUM_KAS_FOR_NETWORK_FEE } from '@/utils/constants/constants'
+import { MINIMUM_KAS_FOR_GAS_FEE } from '@/utils/constants/constants'
 
 const InitiateSend: React.FC = () => {
   const location = useLocation()
@@ -37,12 +37,12 @@ const InitiateSend: React.FC = () => {
 
   const error = !kaspa.connected
     ? ErrorMessages.NETWORK.NOT_CONNECTED
-    : kaspa.balance < MINIMUM_KAS_FOR_NETWORK_FEE
+    : kaspa.balance < MINIMUM_KAS_FOR_GAS_FEE
       ? ErrorMessages.NETWORK.INSUFFICIENT_FUNDS(kaspa.balance)
       : null
 
   const handleContinue = () => {
-    navigate(`/send/${token.tick}/network-fee`, {
+    navigate(`/send/${token.tick}/gas-fee`, {
       state: {
         token,
         outputs,

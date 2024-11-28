@@ -21,7 +21,7 @@ const ErrorMessages = {
   NETWORK: {
     NOT_CONNECTED: 'Not connected to network. Please try again later.',
     INSUFFICIENT_FUNDS: (balance: number) =>
-      `Not enough Kaspa in wallet to cover network fees. You need at least 1 KAS, but you have ${balance}.`,
+      `Not enough Kaspa in wallet to cover gas fees. You need at least 1 KAS, but you have ${balance}.`,
   },
 
   FEES: {

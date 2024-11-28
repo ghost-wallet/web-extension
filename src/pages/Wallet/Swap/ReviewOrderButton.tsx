@@ -6,7 +6,7 @@ import { MINIMUM_RECEIVE_AMOUNT_USD } from '@/utils/constants/constants'
 
 interface ReviewOrderButtonProps {
   amountError: string | null
-  networkFeeError: string | null
+  gasFeeError: string | null
   outAmountUsd: string
   payAmount: string
   loadingQuote: boolean
@@ -15,7 +15,7 @@ interface ReviewOrderButtonProps {
 
 const ReviewOrderButton: React.FC<ReviewOrderButtonProps> = ({
   amountError,
-  networkFeeError,
+  gasFeeError,
   outAmountUsd,
   payAmount,
   loadingQuote,
@@ -31,8 +31,8 @@ const ReviewOrderButton: React.FC<ReviewOrderButtonProps> = ({
         <ErrorButton text="Insufficient Funds" />
       ) : isBelowMinimum && Number(payAmount) > 0 ? (
         <WarningMessage message={`Receive amount must be more than $${MINIMUM_RECEIVE_AMOUNT_USD} USD.`} />
-      ) : networkFeeError ? (
-        <WarningMessage message="Error calculating network fee" />
+      ) : gasFeeError ? (
+        <WarningMessage message="Error calculating gas fee" />
       ) : Number(payAmount) > 0 ? (
         <NextButton text="Review Order" onClick={setIsReviewOrderOpen} buttonEnabled={!loadingQuote} />
       ) : (

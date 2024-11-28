@@ -23,7 +23,7 @@ interface ReviewOrderProps {
   payAmount: string
   slippage: string
   feeRate: number
-  networkFee: string
+  gasFee: string
   aggregateQuote: ChaingeAggregateQuote
   onClose: () => void
 }
@@ -34,7 +34,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   payAmount,
   slippage,
   feeRate,
-  networkFee,
+  gasFee,
   aggregateQuote,
   onClose,
 }) => {
@@ -114,7 +114,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           {warning && <WarningMessage message={warning} />}
 
           <ReviewOrderQuote
-            networkFee={networkFee}
+            gasFee={gasFee}
             slippage={slippage}
             aggregateQuote={aggregateQuote}
             receiveToken={receiveToken}

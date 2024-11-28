@@ -7,14 +7,14 @@ import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
 import EstimatedCurrencyValue from '@/components/EstimatedCurrencyValue'
 
 interface ReviewOrderProps {
-  networkFee: string
+  gasFee: string
   slippage: string
   aggregateQuote: ChaingeAggregateQuote
   receiveToken: ChaingeToken
 }
 
 const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({
-  networkFee,
+  gasFee,
   slippage,
   aggregateQuote,
   receiveToken,
@@ -34,12 +34,12 @@ const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({
           value: aggregateQuote.aggregator,
         },
         {
-          label: `Chainge fee`,
+          label: `Network fee`,
           value: <EstimatedCurrencyValue formattedCurrencyValue={formattedCurrencyValue} />,
         },
         {
-          label: 'Network fee',
-          value: `${networkFee} KAS`,
+          label: 'Gas fee',
+          value: `${gasFee} KAS`,
         },
         {
           label: 'Price impact',
