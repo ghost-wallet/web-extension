@@ -11,11 +11,7 @@ interface SwapGasFeeSelectProps {
   onClose: () => void
 }
 
-const SwapGasFeeSelect: React.FC<SwapGasFeeSelectProps> = ({
-  gasFee,
-  onSelectFeeRate,
-  onClose,
-}) => {
+const SwapGasFeeSelect: React.FC<SwapGasFeeSelectProps> = ({ gasFee, onSelectFeeRate, onClose }) => {
   const { buckets } = useBuckets()
   const [currentFeeTypeIndex, setCurrentFeeTypeIndex] = useState(1)
 

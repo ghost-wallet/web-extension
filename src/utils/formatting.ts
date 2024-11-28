@@ -66,17 +66,9 @@ export const tokenPriceFormatter = (value: number): string => {
 
 export const formatNumberAbbreviated = (balance: number): string => {
   const formatNumber = (num: number): string => {
-    if (num < 1 && num > 0) {
-      return num.toString()
-    }
-
-    const rounded = parseFloat(num.toFixed(2))
-
-    if (rounded % 1 === 0) {
-      return rounded.toLocaleString()
-    }
-
-    return rounded.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    const options: Intl.NumberFormatOptions =
+      num % 1 === 0 ? { maximumFractionDigits: 0 } : { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+    return num.toLocaleString(undefined, options)
   }
 
   if (balance >= 1_000_000_000_000_000_000_000_000_000) {
@@ -104,7 +96,7 @@ export const formatNumberAbbreviated = (balance: number): string => {
     // Million
     return formatNumber(balance / 1_000_000) + 'M'
   } else {
-    return formatNumber(balance)
+    return balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   }
 }
 

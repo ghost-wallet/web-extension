@@ -13,12 +13,7 @@ interface ReviewOrderProps {
   receiveToken: ChaingeToken
 }
 
-const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({
-  gasFee,
-  slippage,
-  aggregateQuote,
-  receiveToken,
-}) => {
+const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({ gasFee, slippage, aggregateQuote, receiveToken }) => {
   const totalFees = formatNumberWithDecimal(
     Number(aggregateQuote.gasFee) + Number(aggregateQuote.serviceFee),
     aggregateQuote.chainDecimal,
