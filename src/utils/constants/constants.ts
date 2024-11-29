@@ -19,5 +19,5 @@ export enum Status {
 
 export const MINT_SERVER_START_TIME = 80
 export const MINT_PER_TXN = 2
-export const MAX_ALLOWED_MINTS = 500
+export const MAX_ALLOWED_MINTS = 200
 export const MIN_ALLOWED_MINTS = 5

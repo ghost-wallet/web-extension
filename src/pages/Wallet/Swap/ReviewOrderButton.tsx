@@ -21,7 +21,7 @@ const ReviewOrderButton: React.FC<ReviewOrderButtonProps> = ({
   loadingQuote,
   setIsReviewOrderOpen,
 }) => {
-  const isBelowMinimum = parseFloat(outAmountUsd) < MINIMUM_RECEIVE_AMOUNT_USD
+  const isBelowMinimum = parseFloat(outAmountUsd.replace(/,/g, '')) < MINIMUM_RECEIVE_AMOUNT_USD
 
   return (
     <div className="bottom-20 left-0 right-0 px-4 fixed">
