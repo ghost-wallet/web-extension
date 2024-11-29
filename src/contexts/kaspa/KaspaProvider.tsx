@@ -6,6 +6,22 @@ import { MessageEntry } from './types'
 import { Request, RequestMappings, isEvent, Event } from '@/wallet/messaging/RequestMappings'
 import { Response, ResponseMappings } from '@/wallet/messaging/ResponseMappings'
 
+const MESSAGES_OK_TO_RETRY: Array<keyof RequestMappings> = [
+  'wallet:status',
+  'node:connection',
+  'account:balance',
+  'account:utxos',
+  'account:addresses',
+  'provider:connection',
+  'wallet:validate',
+  'wallet:unlock',
+  'wallet:lock',
+  'account:estimateKaspaTransactionFee',
+  'account:getKRC20Info',
+  'account:estimateKRC20TransactionFee',
+  'account:estimateChaingeTransactionFee',
+]
+
 export function KaspaProvider({ children }: { children: ReactNode }) {
   const [kaspa, dispatch] = useReducer(kaspaReducer, defaultState)
   const connectionRef = useRef<Runtime.Port | null>(null)
@@ -60,13 +76,18 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       connectionRef.current = null
 
       for (const [id, entry] of messagesRef.current.entries()) {
-        try {
-          console.log('[KaspaProvider] Resending message:', entry.message)
-          getConnection().postMessage(entry.message)
-        } catch (error) {
-          console.error('[KaspaProvider] Error resending message:', error)
-          entry.reject(error)
+        if (MESSAGES_OK_TO_RETRY.includes(entry.message.method)) {
+          try {
+            console.log('[KaspaProvider] Resending message:', entry.message)
+            getConnection().postMessage(entry.message)
+          } catch (error) {
+            console.error('[KaspaProvider] Error resending message:', error)
+            entry.reject(error)
+          }
+        } else {
+          entry.reject('Service worker disconnected')
         }
+        
       }
     })
     connectionRef.current = connection
@@ -134,3 +155,4 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
     <KaspaContext.Provider value={{ load: reloadState, kaspa, request }}>{children}</KaspaContext.Provider>
   )
 }
+
