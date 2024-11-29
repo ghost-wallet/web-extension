@@ -1,3 +1,5 @@
+import { MAX_ALLOWED_MINTS, MIN_ALLOWED_MINTS } from '@/utils/constants/constants'
+
 const ErrorMessages = {
   PASSWORD: {
     TOO_SHORT: 'Must be at least 8 characters',
@@ -64,9 +66,8 @@ const ErrorMessages = {
     SERVER_UNAVAILABLE: 'Ghost server unavailable. Try again later or mint a different token.',
     TOKEN_NOT_FOUND: (ticker: string) => `Token ${ticker} not found.`,
     SEARCH_FAILED: (ticker: string) => `An unknown error occurred searching for "${ticker}".`,
-    REQUIRED_AMOUNT: 'Minimum mint amount is 5 KAS.',
-    MINIMUM_AMOUNT: 'Minimum mint amount is 5 KAS.',
-    MAXIMUM_AMOUNT: 'Maximum mint amount is 1,000 KAS.',
+    MINIMUM_AMOUNT: `Minimum mint amount is ${MIN_ALLOWED_MINTS} KAS.`,
+    MAXIMUM_AMOUNT: `Maximum mint amount is ${MAX_ALLOWED_MINTS} KAS.`,
     EXCEEDS_SUPPLY: (availableSupply: number) =>
       `Cannot mint more tokens than the remaining unminted supply: ${availableSupply}.`,
     EXCEEDS_BALANCE: (mintAmount: number, kaspaBalance: number) =>

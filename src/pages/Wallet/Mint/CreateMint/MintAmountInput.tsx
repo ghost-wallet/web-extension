@@ -1,4 +1,5 @@
 import React from 'react'
+import { MAX_ALLOWED_MINTS } from '@/utils/constants/constants'
 
 interface MintAmountInputProps {
   mintAmount: number | null
@@ -24,7 +25,7 @@ const MintAmountInput: React.FC<MintAmountInputProps> = ({ mintAmount, onSliderC
       <input
         type="range"
         min="0"
-        max="1000"
+        max={MAX_ALLOWED_MINTS}
         value={mintAmount || 0}
         onChange={handleSliderChange}
         className="w-full cursor-pointer accent-primary h-2"
@@ -32,7 +33,7 @@ const MintAmountInput: React.FC<MintAmountInputProps> = ({ mintAmount, onSliderC
       <input
         type="number"
         min="0"
-        max="1000"
+        max={MAX_ALLOWED_MINTS}
         value={mintAmount !== null ? mintAmount : ''}
         onChange={handleInputChange}
         className="w-30 bg-darkmuted p-2 border border-muted rounded-lg text-lg text-primarytext text-center"
