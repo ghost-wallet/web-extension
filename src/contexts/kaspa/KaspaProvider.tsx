@@ -6,6 +6,7 @@ import { MessageEntry } from './types'
 import { Request, RequestMappings, isEvent, Event } from '@/wallet/messaging/RequestMappings'
 import { Response, ResponseMappings } from '@/wallet/messaging/ResponseMappings'
 
+// These messages are ok to retry after a disconnect as they should be idempotent
 const MESSAGES_OK_TO_RETRY: Array<keyof RequestMappings> = [
   'wallet:status',
   'node:connection',
