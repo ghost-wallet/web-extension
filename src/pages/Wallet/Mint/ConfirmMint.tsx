@@ -9,8 +9,10 @@ import NextButton from '@/components/buttons/NextButton'
 import TotalCostToMint from '@/pages/Wallet/Mint/TotalCostToMint'
 import { postMint } from '@/hooks/ghost/useMint'
 import ErrorMessages from '@/utils/constants/errorMessages'
+import { WarningMessages } from '@/utils/constants/warningMessages'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
+import WarningMessage from '@/components/WarningMessage'
 
 export default function ConfirmMint() {
   const location = useLocation()
@@ -72,11 +74,11 @@ export default function ConfirmMint() {
 
   return (
     <>
-      <AnimatedMain className="flex flex-col h-screen fixed w-full">
+      <AnimatedMain className="flex flex-col h-screen w-full">
         <Header title={`Mint ${token.tick}`} showBackButton={true} />
-        <div className="flex flex-col px-4 pb-2">
+        <div className="flex flex-col px-4 pt-2 pb-28">
           <CryptoImage ticker={token.tick} size="large" />
-          <div className="w-full space-y-1 pt-2">
+          <div className="w-full space-y-1 py-2 pb-4">
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Receive amount</span>
               <span className="text-mutedtext text-base text-right">
@@ -94,6 +96,7 @@ export default function ConfirmMint() {
 
             <TotalCostToMint totalFees={totalCost} />
           </div>
+          <WarningMessage message={WarningMessages.MINT_RISK(token.tick)} />
         </div>
       </AnimatedMain>
       {kaspa.connected && (

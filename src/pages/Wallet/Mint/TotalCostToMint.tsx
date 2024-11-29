@@ -19,7 +19,7 @@ const TotalCostToMint: React.FC<TotalCostToMintProps> = ({ totalFees }) => {
   })
 
   return (
-    <div className="flex flex-col justify-between pt-8">
+    <div className="flex flex-col justify-between pt-2">
       <div className="flex justify-between">
         <span className="text-mutedtext text-lg">Total</span>
         <span className="text-primarytext text-lg">{totalFees?.toLocaleString() || '0'} KAS</span>

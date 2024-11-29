@@ -22,4 +22,9 @@ export const WarningMessages = {
     `This trade will result in a loss of $${difference.toFixed(
       2,
     )} (-${percentageLoss}%), which could be due to low liquidity. The money you lose on this trade will be irreversible.`,
+
+  MINT_RISK: (ticker: string) =>
+    `Minting is a risky operation that could result in permanently lost KAS. This would happen if you have unfinished mints 
+    on the network while the ${ticker} minted percentage hits 100%. It's safer to mint tokens in multiple batches of small amounts 
+    and when the minted supply percentage is low.`,
 }
