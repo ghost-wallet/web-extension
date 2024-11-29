@@ -56,6 +56,10 @@ export const getKasFyiTransactionUrl = (transactionId: string) => {
   return `https://kas.fyi/transaction/${transactionId}`
 }
 
+export const getKasFyiTokenUrl = (tick: string) => {
+  return `https://kas.fyi/token/krc20/${tick}`
+}
+
 export const getTransactionStatusText = (operationType: string, opAccept: string, op: string): string => {
   return opAccept === '1' ? operationType : `${op.charAt(0).toUpperCase() + op.slice(1)} Failed`
 }

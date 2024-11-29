@@ -37,7 +37,7 @@ export const useKsprPrices = () => {
   return useQuery<KsprTokenResponse, Error>({
     queryKey: ['ksprPrices'],
     queryFn: fetchKsprPrices,
-    staleTime: 900_000, // Cache for 15 minutes
-    refetchInterval: 900_000, // Refetch every 15 minutes
+    staleTime: 300_000, // Cache for 5 minutes
+    refetchInterval: 300_000, // Refetch every 5 minutes
   })
 }

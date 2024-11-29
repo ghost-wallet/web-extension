@@ -16,6 +16,7 @@ import TokenPrice from '@/components/TokenPrice'
 import { Token } from '@/utils/interfaces'
 import { useQuery } from '@tanstack/react-query'
 import KRC20TxnHistory from '../../Transactions/KRC20TxnHistory'
+import { getKasFyiTokenUrl } from '@/utils/transactions'
 
 interface CryptoDetailsTableProps {
   token: Token
@@ -88,6 +89,20 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
                 {
                   label: `Market cap`,
                   value: `${currencySymbol}${formatMarketCap(krc20Token.minted, krc20Token.dec, floorPrice)}`,
+                },
+                {
+                  label: '',
+                  value: (
+                    <a
+                      href={getKasFyiTokenUrl(krc20Token.tick)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      View on Kas.Fyi
+                    </a>
+                  ),
+                  isFullWidth: true,
                 },
               ]
             : []),
