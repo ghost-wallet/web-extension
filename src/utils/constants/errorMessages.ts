@@ -77,10 +77,6 @@ const ErrorMessages = {
         2,
       )}. <br /> <br /> Minting requires that you have a minimum of 25 KAS plus an extra 10% of the pay amount to cover network fees.`,
   },
-
-  CHAINGE: {
-    FAILED_FETCH: (err: any) => `Error fetching tokens from Chainge: ${err}`,
-  },
 }
 
 export default ErrorMessages

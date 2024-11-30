@@ -81,7 +81,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
         },
       ])
 
-      navigate('/swap/confirmed', { state: { order, receiveToken } })
+      navigate('/swap/confirmed', { state: { order, receiveToken, payToken } })
     } catch (error: any) {
       setError(`Error submitting swap order to Chainge: ${JSON.stringify(error)}`)
       setShowDialog(true)

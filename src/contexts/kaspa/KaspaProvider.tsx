@@ -88,7 +88,6 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
         } else {
           entry.reject('Service worker disconnected')
         }
-        
       }
     })
     connectionRef.current = connection
@@ -156,4 +155,3 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
     <KaspaContext.Provider value={{ load: reloadState, kaspa, request }}>{children}</KaspaContext.Provider>
   )
 }
-

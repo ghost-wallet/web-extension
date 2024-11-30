@@ -34,6 +34,7 @@ import ManageAccounts from '@/pages/Wallet/Settings/Account/ManageAccounts'
 import Swapped from '@/pages/Wallet/Swap/Swapped'
 import SupportPage from '@/pages/Wallet/Settings/Support/SupportPage'
 import SearchWalletResults from '@/components/search/SearchWalletResults'
+import { ChaingeProvider } from '@/contexts/chainge/ChaingeProvider'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,41 +53,43 @@ function App() {
     <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
       <SettingsProvider>
         <KaspaProvider>
-          <Router>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/create" element={<CreateWallet />} />
-              <Route path="/unlock" element={<Login />} />
-              <Route path="/unlock/forgotpassword" element={<ForgotPassword />} />
-              <Route path="/wallet" element={<Wallet />} />
-              <Route path="/wallet/:tick" element={<Crypto />} />
-              <Route path="/wallet/search" element={<SearchWalletResults />} />
-              <Route path="/wallet/manage" element={<ManageTokens />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/settings/reset" element={<ConfirmReset />} />
-              <Route path="/settings/about" element={<AboutPage />} />
-              <Route path="/settings/support" element={<SupportPage />} />
-              <Route path="/settings/developer" element={<DeveloperPage />} />
-              <Route path="/settings/accounts" element={<ManageAccounts />} />
-              <Route path="/transactions/kaspa" element={<Transactions />} />
-              <Route path="/transactions/kaspa/details" element={<KaspaTxnDetails />} />
-              <Route path="/transactions/krc20" element={<Transactions />} />
-              <Route path="/transactions/krc20/details" element={<KRC20TxnDetails />} />
-              <Route path="/send" element={<Send />} />
-              <Route path="/send/:tick" element={<InitiateSend />} />
-              <Route path="/send/:tick/gas-fee" element={<GasFeeSelect />} />
-              <Route path="/send/:tick/gas-fee/confirm" element={<ConfirmSendKaspa />} />
-              <Route path="/send/:tick/gas-fee/confirmkrc20" element={<ConfirmSendKRC20 />} />
-              <Route path="/send/:tick/sent" element={<Sent />} />
-              <Route path="/receive" element={<Receive />} />
-              <Route path="/swap" element={<Swap />} />
-              <Route path="/swap/confirmed" element={<Swapped />} />
-              <Route path="/mint" element={<Mint />} />
-              <Route path="/mint/:tick" element={<CreateMint />} />
-              <Route path="/mint/:tick/review" element={<ConfirmMint />} />
-              <Route path="/mint/:tick/review/minted" element={<Minted />} />
-            </Routes>
-          </Router>
+          <ChaingeProvider>
+            <Router>
+              <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/create" element={<CreateWallet />} />
+                <Route path="/unlock" element={<Login />} />
+                <Route path="/unlock/forgotpassword" element={<ForgotPassword />} />
+                <Route path="/wallet" element={<Wallet />} />
+                <Route path="/wallet/:tick" element={<Crypto />} />
+                <Route path="/wallet/search" element={<SearchWalletResults />} />
+                <Route path="/wallet/manage" element={<ManageTokens />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/settings/reset" element={<ConfirmReset />} />
+                <Route path="/settings/about" element={<AboutPage />} />
+                <Route path="/settings/support" element={<SupportPage />} />
+                <Route path="/settings/developer" element={<DeveloperPage />} />
+                <Route path="/settings/accounts" element={<ManageAccounts />} />
+                <Route path="/transactions/kaspa" element={<Transactions />} />
+                <Route path="/transactions/kaspa/details" element={<KaspaTxnDetails />} />
+                <Route path="/transactions/krc20" element={<Transactions />} />
+                <Route path="/transactions/krc20/details" element={<KRC20TxnDetails />} />
+                <Route path="/send" element={<Send />} />
+                <Route path="/send/:tick" element={<InitiateSend />} />
+                <Route path="/send/:tick/gas-fee" element={<GasFeeSelect />} />
+                <Route path="/send/:tick/gas-fee/confirm" element={<ConfirmSendKaspa />} />
+                <Route path="/send/:tick/gas-fee/confirmkrc20" element={<ConfirmSendKRC20 />} />
+                <Route path="/send/:tick/sent" element={<Sent />} />
+                <Route path="/receive" element={<Receive />} />
+                <Route path="/swap" element={<Swap />} />
+                <Route path="/swap/confirmed" element={<Swapped />} />
+                <Route path="/mint" element={<Mint />} />
+                <Route path="/mint/:tick" element={<CreateMint />} />
+                <Route path="/mint/:tick/review" element={<ConfirmMint />} />
+                <Route path="/mint/:tick/review/minted" element={<Minted />} />
+              </Routes>
+            </Router>
+          </ChaingeProvider>
         </KaspaProvider>
       </SettingsProvider>
     </PersistQueryClientProvider>

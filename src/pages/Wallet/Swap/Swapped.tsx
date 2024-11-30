@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import useChainge from '@/hooks/contexts/useChainge'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 import CloseButton from '@/components/buttons/CloseButton'
@@ -11,9 +12,24 @@ import AnimatedCheckmark from '@/components/animations/AnimatedCheckmark'
 const Swapped: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { order, receiveToken } = location.state || {}
+  const { order, receiveToken, payToken } = location.state || {}
+  const { addOrder } = useChainge()
+
+  const getTicker = (token: any) =>
+    token?.contractAddress === 'CUSDT' ? token.contractAddress : token.symbol
+
+  useEffect(() => {
+    if (order?.data?.id) {
+      const newOrder = {
+        orderId: order.data.id,
+        payTokenTicker: getTicker(payToken),
+        receiveTokenTicker: getTicker(receiveToken),
+      }
+      addOrder(newOrder)
+    }
+  }, [order?.data?.id, payToken, receiveToken, addOrder])
+
   const { status, loading, error } = useOrderStatus({ order })
-  const isCusdt = receiveToken?.contractAddress === 'CUSDT'
 
   return (
     <div className="p-4">
@@ -22,8 +38,8 @@ const Swapped: React.FC = () => {
           <AnimatedLoader />
           <h1 className="text-xl text-primarytext">Swapping tokens...</h1>
           <p className="text-lg text-mutedtext text-center">
-            {isCusdt ? receiveToken.contractAddress : receiveToken.symbol} will be deposited into your wallet
-            once the transaction is complete
+            {receiveToken?.contractAddress === 'CUSDT' ? receiveToken.contractAddress : receiveToken.symbol}{' '}
+            will be deposited into your wallet once the transaction is complete
           </p>
         </div>
       )}
