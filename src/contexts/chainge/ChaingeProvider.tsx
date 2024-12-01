@@ -31,8 +31,20 @@ export function ChaingeProvider({ children }: { children: ReactNode }) {
               const response = await fetchOrderStatus(order.orderId)
               const { status } = response.data
 
-              // TODO are there other statuses?
-              if (status === 'Succeeded' || status === 'Refunded') {
+              //These are the possible statuses from Chainge
+              //   TxStatusUnknown    = "Unknown"
+              //   TxStatusPending    = "Pending"
+              //   TxStatusVerified   = "Verified"
+              //   TxStatusSucceeded  = "Succeeded"
+              //   TxStatusFailed     = "Failed"
+              //   TxStatusDropped    = "Dropped"
+              //   TxStatusWaitVerify = "WaitVerify"
+              //   TxStatusRefunding  = "Refunding"
+              //   TxStatusRefunded   = "Refunded"
+
+              // These are the only 4 possible final statuses
+              const finalStatuses = ['Succeeded', 'Refunded', 'Dropped', 'Failed']
+              if (finalStatuses.includes(status)) {
                 setOrders((prevOrders) => prevOrders.filter((o) => o.orderId !== order.orderId))
                 break
               } else {
