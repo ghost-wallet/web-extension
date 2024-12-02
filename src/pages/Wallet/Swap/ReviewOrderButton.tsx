@@ -32,7 +32,7 @@ const ReviewOrderButton: React.FC<ReviewOrderButtonProps> = ({
       ) : isBelowMinimum && Number(payAmount) > 0 ? (
         <WarningMessage message={`Receive amount must be more than $${MINIMUM_RECEIVE_AMOUNT_USD} USD.`} />
       ) : gasFeeError ? (
-        <WarningMessage message="Error calculating gas fee" />
+        <WarningMessage message="Make sure you have at least 1 KAS for gas fees. Restart your browser and try again." />
       ) : Number(payAmount) > 0 ? (
         <NextButton text="Review Order" onClick={setIsReviewOrderOpen} buttonEnabled={!loadingQuote} />
       ) : (
