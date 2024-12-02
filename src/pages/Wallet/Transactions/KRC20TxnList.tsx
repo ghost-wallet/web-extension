@@ -22,6 +22,7 @@ export default function KRC20TxnList({ transactions, loadMore, loadingMore }: Tr
   return (
     <div className="pb-24">
       {/* Ongoing Chainge swaps */}
+      {/*TODO only show on correct /wallet/:tick page*/}
       <div className="mb-4">
         {orders.map((order) => (
           <div key={order.orderId} className="flex items-center space-x-2">
