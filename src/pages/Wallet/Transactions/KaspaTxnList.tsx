@@ -19,8 +19,6 @@ export default function KaspaTxnList({ transactions, loadMore, loadingMore }: Ka
 
   return (
     <div className="pb-24">
-      {/*TODO show ongoing kas swaps*/}
-
       <ul className="space-y-6">
         {Object.entries(groupedTransactions).map(([date, transactions], dateIndex) => (
           <li key={date}>

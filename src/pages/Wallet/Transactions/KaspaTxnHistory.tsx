@@ -4,6 +4,7 @@ import ErrorMessage from '@/components/messages/ErrorMessage'
 import KaspaTxnList from '@/pages/Wallet/Transactions/KaspaTxnList'
 import { KaspaTransaction } from '@/utils/interfaces'
 import TransactionsLoading from '@/pages/Wallet/Transactions/TransactionsLoading'
+import ActiveChaingeOrders from '@/pages/Wallet/Transactions/ActiveChaingeOrders'
 
 interface KaspaTxnHistoryProps {}
 
@@ -31,11 +32,14 @@ const KaspaTxnHistory: React.FC<KaspaTxnHistoryProps> = () => {
   }
 
   return (
-    <KaspaTxnList
-      transactions={transactions as KaspaTransaction[]}
-      loadMore={loadMoreTransactions}
-      loadingMore={loadingMore}
-    />
+    <>
+      <ActiveChaingeOrders tickerFilter="KAS" />
+      <KaspaTxnList
+        transactions={transactions as KaspaTransaction[]}
+        loadMore={loadMoreTransactions}
+        loadingMore={loadingMore}
+      />
+    </>
   )
 }
 

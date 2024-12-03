@@ -4,7 +4,6 @@ import Spinner from '@/components/loaders/Spinner'
 import { KRC20Transaction } from '@/utils/interfaces'
 import { groupKRC20TransactionsByDate } from '@/utils/grouping'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
-import useChainge from '@/hooks/contexts/useChainge'
 
 interface TransactionListProps {
   transactions: KRC20Transaction[]
@@ -13,7 +12,6 @@ interface TransactionListProps {
 }
 
 export default function KRC20TxnList({ transactions, loadMore, loadingMore }: TransactionListProps) {
-  const { orders } = useChainge()
   const lastElementRef = useRef<HTMLLIElement | null>(null)
   const groupedTransactions = groupKRC20TransactionsByDate(transactions)
 
@@ -21,19 +19,6 @@ export default function KRC20TxnList({ transactions, loadMore, loadingMore }: Tr
 
   return (
     <div className="pb-24">
-      {/* Ongoing Chainge swaps */}
-      {/*TODO only show on correct /wallet/:tick page*/}
-      <div className="mb-4">
-        {orders.map((order) => (
-          <div key={order.orderId} className="flex items-center space-x-2">
-            <p className="text-lg text-mutedtext">
-              Swapping {order.payTokenTicker} for {order.receiveTokenTicker}
-            </p>
-            <Spinner size="small" />
-          </div>
-        ))}
-      </div>
-
       {/* Transactions grouped by date */}
       <ul className="space-y-6">
         {Object.entries(groupedTransactions).map(([date, transactions], groupIndex) => (
