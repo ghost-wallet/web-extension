@@ -4,7 +4,7 @@ import SwapTokenListItem from '@/pages/Wallet/Swap/SwapTokenListItem'
 import SearchBar from '@/components/search/SearchBar'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 import CloseButton from '@/components/buttons/CloseButton'
-import SearchResultsNotFound from '@/components/search/SearchResultsNotFound'
+import ErrorMessage from '@/components/messages/ErrorMessage'
 
 interface SwapTokenSelectProps {
   tokens?: ChaingeToken[]
@@ -58,12 +58,10 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens, onSelectToken
 
   return (
     <div className="fixed inset-0 z-50 bg-bgdark bg-opacity-90 p-4 flex-grow overflow-y-auto">
-      <div className="px-4 -mb-4">
-        <SearchBar onSearch={handleSearch} />
-      </div>
+      <SearchBar onSearch={handleSearch} />
 
       {filteredTokens.length > 0 ? (
-        <ul className="space-y-3 pb-28 pt-4">
+        <ul className="space-y-3 pb-28">
           {filteredTokens.map((token: ChaingeToken) => (
             <li
               key={token.contractAddress}
@@ -76,7 +74,10 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens, onSelectToken
         </ul>
       ) : (
         <div className="p-4">
-          <SearchResultsNotFound searchTerm={searchTerm} filteredTokens={filteredTokens} />
+          <ErrorMessage
+            message={searchTerm + ' is not supported for swapping in Ghost wallet'}
+            className="pt-4 flex justify-center items-center"
+          />
         </div>
       )}
 
