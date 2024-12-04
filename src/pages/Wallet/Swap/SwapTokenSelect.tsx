@@ -75,7 +75,7 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens, onSelectToken
       ) : (
         <div className="p-4">
           <ErrorMessage
-            message={searchTerm + ' is not supported for swapping in Ghost wallet'}
+            message={searchTerm + ' is not supported for swapping in Ghost Wallet'}
             className="pt-4 flex justify-center items-center"
           />
         </div>
