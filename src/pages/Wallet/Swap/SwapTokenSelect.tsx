@@ -4,7 +4,6 @@ import SwapTokenListItem from '@/pages/Wallet/Swap/SwapTokenListItem'
 import SearchBar from '@/components/search/SearchBar'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 import CloseButton from '@/components/buttons/CloseButton'
-import ErrorMessage from '@/components/messages/ErrorMessage'
 
 interface SwapTokenSelectProps {
   tokens?: ChaingeToken[]
@@ -73,12 +72,9 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens, onSelectToken
           ))}
         </ul>
       ) : (
-        <div className="p-4">
-          <ErrorMessage
-            message={searchTerm + ' is not supported for swapping in Ghost Wallet'}
-            className="pt-4 flex justify-center items-center"
-          />
-        </div>
+        <p className="text-mutedtext text-base text-center">
+          {searchTerm + ' is not supported for swapping in Ghost Wallet'}
+        </p>
       )}
 
       <BottomFixedContainer shadow={true} className="bg-bgdark border-t border-darkmuted p-4">
