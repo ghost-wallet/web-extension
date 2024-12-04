@@ -27,12 +27,12 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens, onSelectToken
     const upperSearchTerm = _searchTerm.toUpperCase().trim()
 
     const filterSearch = (token: ChaingeToken) => {
-      // I was expecting `tick` to be here like the other tokens. But I guess contractAddress works?
-      const isCusdt = token.contractAddress === 'CUSDT'
       // If the token is CUSDT then we want to use the contract address, Otherwise we use the symbol.
+      const isCusdt = token.contractAddress === 'CUSDT'
 
       let tick: string
 
+      // I was expecting `tick` to be here like the other tokens. But I guess contractAddress works?
       if (isCusdt) {
         tick = token.contractAddress
       } else {
@@ -41,9 +41,7 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens, onSelectToken
 
       const upperTick = tick.toUpperCase()
 
-      const result = upperTick.includes(upperSearchTerm)
-
-      return result
+      return upperTick.includes(upperSearchTerm)
     }
 
     setSearchTerm(upperSearchTerm)
