@@ -1,10 +1,9 @@
 import React from 'react'
 import { Token, KaspaToken } from '@/utils/interfaces'
-import { ChaingeToken } from '@/wallet/exchange/chainge'
 
 interface SearchResultsNotFoundProps {
   searchTerm: string
-  filteredTokens: (Token | KaspaToken | ChaingeToken)[]
+  filteredTokens: (Token | KaspaToken)[]
 }
 
 const SearchResultsNotFound: React.FC<SearchResultsNotFoundProps> = ({ searchTerm, filteredTokens }) => {
