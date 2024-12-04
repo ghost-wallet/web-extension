@@ -11,48 +11,18 @@ interface SwapTokenSelectProps {
   onClose: () => void
 }
 
-const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens, onSelectToken, onClose }) => {
-  // if tokens are undefined just set it to an empty array to make this easier
-  // This seems like it shouldn't ever be undefined. It's confusing why it can be, instead of just an empty array?
-  if (tokens == undefined) {
-    tokens = []
-  }
-
-  // Search term will be in upper
+const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens = [], onSelectToken, onClose }) => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [filteredTokens, setFilteredTokens] = useState<ChaingeToken[]>(tokens)
 
   const handleSearch = (_searchTerm: string) => {
-    const upperSearchTerm = _searchTerm.toUpperCase().trim()
-
-    const filterSearch = (token: ChaingeToken) => {
-      // If the token is CUSDT then we want to use the contract address, Otherwise we use the symbol.
-      const isCusdt = token.contractAddress === 'CUSDT'
-
-      let tick: string
-
-      // I was expecting `tick` to be here like the other tokens. But I guess contractAddress works?
-      if (isCusdt) {
-        tick = token.contractAddress
-      } else {
-        tick = token.symbol
-      }
-
-      const upperTick = tick.toUpperCase()
-
-      return upperTick.includes(upperSearchTerm)
-    }
-
-    setSearchTerm(upperSearchTerm)
-
-    // if search term is empty, set the filtered tokens list to be the original list
-    if (upperSearchTerm === '') {
-      setFilteredTokens(tokens)
-      return
-    } else {
-      const filtered = tokens.filter(filterSearch)
-      setFilteredTokens(filtered)
-    }
+    setSearchTerm(_searchTerm)
+    const filtered = tokens.filter(
+      (token) =>
+        token.symbol.toLowerCase().includes(_searchTerm.toLowerCase()) ||
+        token.contractAddress.toLowerCase().includes(_searchTerm.toLowerCase()),
+    )
+    setFilteredTokens(filtered)
   }
 
   return (
@@ -73,7 +43,7 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens, onSelectToken
         </ul>
       ) : (
         <p className="text-mutedtext text-base text-center">
-          {searchTerm + ' is not supported for swapping in Ghost Wallet'}
+          {searchTerm.toUpperCase() + ' is not supported for swapping in Ghost Wallet'}
         </p>
       )}
 
