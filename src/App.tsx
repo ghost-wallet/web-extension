@@ -53,15 +53,15 @@ function App() {
     <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
       <SettingsProvider>
         <KaspaProvider>
-          <ChaingeProvider>
-            <Router>
+          <Router>
+            <ChaingeProvider>
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/create" element={<CreateWallet />} />
                 <Route path="/unlock" element={<Login />} />
                 <Route path="/unlock/forgotpassword" element={<ForgotPassword />} />
                 <Route path="/wallet" element={<Wallet />} />
-                <Route path="/wallet/:tick" element={<Crypto />} />
+                <Route path="/wallet/crypto-details/:tick" element={<Crypto />} />
                 <Route path="/wallet/search" element={<SearchWalletResults />} />
                 <Route path="/wallet/manage" element={<ManageTokens />} />
                 <Route path="/settings" element={<Settings />} />
@@ -88,8 +88,8 @@ function App() {
                 <Route path="/mint/:tick/review" element={<ConfirmMint />} />
                 <Route path="/mint/:tick/review/minted" element={<Minted />} />
               </Routes>
-            </Router>
-          </ChaingeProvider>
+            </ChaingeProvider>
+          </Router>
         </KaspaProvider>
       </SettingsProvider>
     </PersistQueryClientProvider>

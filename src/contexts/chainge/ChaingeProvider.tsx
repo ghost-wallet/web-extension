@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, type ReactNode } from 'react'
+import { useLocation } from 'react-router-dom'
 import { ChaingeContext, Order } from '@/contexts/chainge/ChaingeContext'
 import { fetchOrderStatus } from '@/hooks/chainge/fetchOrderStatus'
 
@@ -15,18 +16,27 @@ const saveOrdersToLocalStorage = (orders: Order[]) => {
 
 export function ChaingeProvider({ children }: { children: ReactNode }) {
   const [orders, setOrders] = useState<Order[]>(getOrdersFromLocalStorage())
+  const location = useLocation()
+
+  const POLLING_PATHS = ['/transactions/kaspa', '/transactions/krc20']
 
   useEffect(() => {
     saveOrdersToLocalStorage(orders)
   }, [orders])
 
   useEffect(() => {
+    const shouldPoll =
+      POLLING_PATHS.includes(location.pathname) || location.pathname.startsWith('/wallet/crypto-details')
+
+    if (!shouldPoll) return
+    let isMounted = true
+
     const pollAllOrders = async () => {
       const activeOrders = [...orders]
 
       for (const order of activeOrders) {
         const pollOrderStatus = async () => {
-          while (true) {
+          while (isMounted) {
             try {
               const response = await fetchOrderStatus(order.orderId)
               const { status } = response.data
@@ -62,7 +72,11 @@ export function ChaingeProvider({ children }: { children: ReactNode }) {
     }
 
     pollAllOrders()
-  }, [orders])
+
+    return () => {
+      isMounted = false
+    }
+  }, [orders, location.pathname])
 
   const addOrder = useCallback((order: Order) => {
     setOrders((prevOrders) => [...prevOrders, order])
