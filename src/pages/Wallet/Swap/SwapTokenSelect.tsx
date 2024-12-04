@@ -3,6 +3,10 @@ import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import ModalContainer from '@/components/containers/ModalContainer'
 import SwapTokenListItem from '@/pages/Wallet/Swap/SwapTokenListItem'
 import SearchBar from '@/components/search/SearchBar'
+import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
+import CloseButton from '@/components/buttons/CloseButton'
+import AnimatedMain from '@/components/AnimatedMain'
+import SearchResultsNotFound from '@/components/search/SearchResultsNotFound'
 
 interface SwapTokenSelectProps {
   tokens?: ChaingeToken[]
@@ -18,10 +22,11 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens, onSelectToken
   }
 
   // Search term will be in upper
+  const [searchTerm, setSearchTerm] = useState<string>('')
   const [filteredTokens, setFilteredTokens] = useState<ChaingeToken[]>(tokens)
 
   const handleSearch = (_searchTerm: string) => {
-    const upperCase = _searchTerm.toUpperCase().trim()
+    const upperSearchTerm = _searchTerm.toUpperCase().trim()
 
     const filterSearch = (token: ChaingeToken) => {
       // I was expecting `tick` to be here like the other tokens. But I guess contractAddress works?
@@ -38,13 +43,15 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens, onSelectToken
 
       const upperTick = tick.toUpperCase()
 
-      const result = upperTick.includes(upperCase)
+      const result = upperTick.includes(upperSearchTerm)
 
       return result
     }
 
+    setSearchTerm(upperSearchTerm)
+
     // if search term is empty, set the filtered tokens list to be the original list
-    if (upperCase === '') {
+    if (upperSearchTerm === '') {
       setFilteredTokens(tokens)
       return
     } else {
@@ -58,17 +65,28 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens, onSelectToken
       <div className="px-4 -mb-4">
         <SearchBar onSearch={handleSearch} />
       </div>
-      <ul className="space-y-3">
-        {filteredTokens.map((token) => (
-          <li
-            key={token.contractAddress}
-            onClick={() => onSelectToken(token)}
-            className="w-full text-left transition-colors hover:cursor-pointer rounded-lg"
-          >
-            <SwapTokenListItem token={token} />
-          </li>
-        ))}
-      </ul>
+
+      {filteredTokens.length > 0 ? (
+        <ul className="space-y-3">
+          {filteredTokens.map((token: ChaingeToken) => (
+            <li
+              key={token.contractAddress}
+              onClick={() => onSelectToken(token)}
+              className="w-full text-left transition-colors hover:cursor-pointer rounded-lg"
+            >
+              <SwapTokenListItem token={token} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="p-4">
+          <SearchResultsNotFound searchTerm={searchTerm} filteredTokens={filteredTokens} />
+        </div>
+      )}
+
+      <BottomFixedContainer shadow={true} className="bg-bgdark border-t border-darkmuted p-4">
+        <CloseButton onClick={() => onClose()} />
+      </BottomFixedContainer>
     </ModalContainer>
   )
 }
