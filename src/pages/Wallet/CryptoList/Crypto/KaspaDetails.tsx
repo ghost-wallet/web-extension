@@ -53,6 +53,7 @@ const KaspaDetails: React.FC = () => {
         ]}
         className="mt-6 mb-6"
       />
+      <h1 className="text-primarytext text-2xl font-rubik text-center pb-2">Recent Activity</h1>
       {network === 'mainnet' ? <KaspaTxnHistory /> : <KaspaTxnHistoryTestnet />}
     </div>
   )

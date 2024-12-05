@@ -4,6 +4,7 @@ import ErrorMessage from '@/components/messages/ErrorMessage'
 import { useKRC20Transactions } from '@/hooks/kasplex/useKRC20Transactions'
 import useSettings from '@/hooks/contexts/useSettings'
 import TransactionsLoading from '@/pages/Wallet/Transactions/TransactionsLoading'
+import ActiveChaingeOrders from '@/pages/Wallet/Transactions/ActiveChaingeOrders'
 
 interface TransactionsHistoryProps {
   tick?: string
@@ -46,7 +47,10 @@ const KRC20TxnHistory: React.FC<TransactionsHistoryProps> = ({ tick }) => {
   }
 
   return (
-    <KRC20TxnList transactions={transactions} loadMore={loadMoreTransactions} loadingMore={loadingMore} />
+    <>
+      <ActiveChaingeOrders tickerFilter={tick} />
+      <KRC20TxnList transactions={transactions} loadMore={loadMoreTransactions} loadingMore={loadingMore} />
+    </>
   )
 }
 

@@ -138,6 +138,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
             ]}
             className="mt-6 mb-6"
           />
+          <h1 className="text-primarytext text-2xl font-rubik text-center pb-2">Recent Activity</h1>
           <KRC20TxnHistory tick={krc20Token.tick} />
         </>
       ) : (

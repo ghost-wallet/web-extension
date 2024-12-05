@@ -19,6 +19,7 @@ export default function KRC20TxnList({ transactions, loadMore, loadingMore }: Tr
 
   return (
     <div className="pb-24">
+      {/* Transactions grouped by date */}
       <ul className="space-y-6">
         {Object.entries(groupedTransactions).map(([date, transactions], groupIndex) => (
           <li key={date}>
@@ -42,6 +43,7 @@ export default function KRC20TxnList({ transactions, loadMore, loadingMore }: Tr
         ))}
       </ul>
 
+      {/* Loading spinner */}
       {loadingMore && (
         <div className="flex justify-center mt-6 mb-20">
           <Spinner />

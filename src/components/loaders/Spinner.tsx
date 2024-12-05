@@ -1,11 +1,11 @@
 import React from 'react'
 
 interface SpinnerProps {
-  size?: 'small' | 'large'
+  size?: 'small' | 'medium' | 'large'
 }
 
 const Spinner: React.FC<SpinnerProps> = ({ size = 'large' }) => {
-  const spinnerSize = size === 'large' ? 'h-10 w-10' : 'h-3 w-3'
+  const spinnerSize = size === 'large' ? 'h-10 w-10' : size === 'medium' ? 'h-4 w-4' : 'h-3 w-3'
 
   return (
     <div className="flex justify-center items-center">

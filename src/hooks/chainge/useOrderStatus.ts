@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { fetchOrderStatus, OrderStatusResponse } from '@/hooks/chainge/fetchOrderStatus'
 
 interface UseOrderStatusProps {
   order: any
+  onSuccess?: (orderId: string) => void
 }
 
-const useOrderStatus = ({ order }: UseOrderStatusProps) => {
+const useOrderStatus = ({ order, onSuccess }: UseOrderStatusProps) => {
   const [status, setStatus] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+  const pollingRef = useRef<Record<string, boolean>>({}) // Tracks polling per orderId
 
   useEffect(() => {
     if (!order?.data?.id) {
@@ -26,33 +28,40 @@ const useOrderStatus = ({ order }: UseOrderStatusProps) => {
       return
     }
 
-    let isMounted = true
+    const orderId = order.data.id
+    pollingRef.current[orderId] = true // Start polling for this order
 
     const pollOrderStatus = async () => {
       try {
-        const response: OrderStatusResponse = await fetchOrderStatus(order.data.id)
-        if (!isMounted) return
+        const response: OrderStatusResponse = await fetchOrderStatus(orderId)
 
         if (response.data.status === 'Succeeded') {
           setStatus('Succeeded')
           setLoading(false)
-        } else {
+          pollingRef.current[orderId] = false // Stop polling for this order
+          console.log(`Order ${orderId} succeeded.`)
+
+          // Call onSuccess callback if provided
+          if (onSuccess) {
+            onSuccess(orderId)
+          }
+        } else if (pollingRef.current[orderId]) {
           setTimeout(pollOrderStatus, 1000)
         }
       } catch (err: any) {
-        if (!isMounted) return
-
-        setError(err.message || 'An unexpected error occurred while fetching order status.')
-        setLoading(false)
+        if (pollingRef.current[orderId]) {
+          setError(err.message || 'An unexpected error occurred while fetching order status.')
+          setLoading(false)
+        }
       }
     }
 
     pollOrderStatus()
 
     return () => {
-      isMounted = false
+      pollingRef.current[orderId] = false // Ensure polling stops explicitly for this orderId
     }
-  }, [order])
+  }, [order, onSuccess])
 
   return { status, loading, error }
 }
