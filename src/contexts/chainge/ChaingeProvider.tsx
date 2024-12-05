@@ -18,15 +18,22 @@ export function ChaingeProvider({ children }: { children: ReactNode }) {
   const [orders, setOrders] = useState<Order[]>(getOrdersFromLocalStorage())
   const location = useLocation()
 
-  const POLLING_PATHS = ['/transactions/kaspa', '/transactions/krc20']
-
   useEffect(() => {
     saveOrdersToLocalStorage(orders)
   }, [orders])
 
+  const hasKaspaOrder = orders.some(
+    (order) => order.payTokenTicker === 'KAS' || order.receiveTokenTicker === 'KAS',
+  )
+  const tokenTickersSet = new Set(orders.flatMap((order) => [order.payTokenTicker, order.receiveTokenTicker]))
+  if (tokenTickersSet.has('KAS')) {
+    tokenTickersSet.add('KASPA')
+  }
   useEffect(() => {
     const shouldPoll =
-      POLLING_PATHS.includes(location.pathname) || location.pathname.startsWith('/wallet/crypto-details')
+      (location.pathname === '/transactions/kaspa' && hasKaspaOrder) ||
+      location.pathname === '/transactions/krc20' ||
+      Array.from(tokenTickersSet).some((ticker) => location.pathname === `/wallet/crypto-details/${ticker}`)
 
     if (!shouldPoll) return
     let isMounted = true
