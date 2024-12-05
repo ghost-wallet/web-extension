@@ -27,12 +27,12 @@ const PasswordInput: React.FC<PasswordInputProps> = ({ id, value, onChange, plac
       />
       {showPassword ? (
         <EyeSlashIcon
-          className="absolute h-6 w-6 text-lightmuted right-4 top-1/2 transform -translate-y-1/2"
+          className="absolute h-6 w-6 text-lightmuted right-4 top-1/2 transform -translate-y-1/2 cursor-pointer"
           onClick={handleClick}
         />
       ) : (
         <EyeIcon
-          className="absolute h-6 w-6 text-lightmuted right-4 top-1/2 transform -translate-y-1/2"
+          className="absolute h-6 w-6 text-lightmuted right-4 top-1/2 transform -translate-y-1/2 cursor-pointer"
           onClick={handleClick}
         />
       )}
