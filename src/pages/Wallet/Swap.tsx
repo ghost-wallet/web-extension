@@ -49,21 +49,33 @@ export default function Swap() {
       setGasFeeError(ErrorMessages.NETWORK.INSUFFICIENT_FUNDS(kaspa.balance))
       return
     }
-    request('account:estimateChaingeTransactionFee', [
-      {
-        fromAmount: payAmount,
-        fromToken: payToken,
-        feeRate,
-      },
-    ])
-      .then((estimatedFee) => {
-        setGasFee(estimatedFee)
-        setGasFeeError('')
-      })
-      .catch((error) => {
-        console.error('Error fetching estimated gas fee:', error)
-        setGasFeeError(error)
-      })
+
+    try {
+      let fromAmount
+      if (payToken.symbol === 'KAS') {
+        fromAmount = payAmount
+      } else {
+        fromAmount = Math.floor(parseFloat(payAmount) * Math.pow(10, payToken.decimals || 0)).toString()
+      }
+      request('account:estimateChaingeTransactionFee', [
+        {
+          fromAmount, // Pass the calculated or original amount
+          fromToken: payToken,
+          feeRate,
+        },
+      ])
+        .then((estimatedFee) => {
+          setGasFee(estimatedFee)
+          setGasFeeError('')
+        })
+        .catch((error) => {
+          console.error('Error fetching estimated gas fee:', error)
+          setGasFeeError(error)
+        })
+    } catch (err) {
+      console.error('Error in scaling payAmount:', err)
+      setGasFeeError('Invalid amount provided')
+    }
   }, [payAmount, payToken, feeRate, request])
 
   useEffect(() => {

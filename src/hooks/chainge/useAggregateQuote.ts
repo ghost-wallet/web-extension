@@ -19,8 +19,9 @@ const useAggregateQuote = (
     const controller = new AbortController()
     const { signal } = controller
 
-    const formatPayAmount = (amount: number, decimals: number) => {
-      return amount * Math.pow(10, decimals)
+    const formatPayAmountToBigInt = (amount: number, decimals: number): bigint => {
+      const scaledAmount = amount * Math.pow(10, decimals)
+      return BigInt(Math.round(scaledAmount))
     }
 
     const fetchQuote = async () => {
@@ -35,7 +36,7 @@ const useAggregateQuote = (
         await new Promise((resolve) => setTimeout(resolve, 200))
         setError(null)
         try {
-          const adjustedPayAmount = formatPayAmount(parseFloat(payAmount), payToken.decimals)
+          const adjustedPayAmount = formatPayAmountToBigInt(parseFloat(payAmount), payToken.decimals)
           const quote = await fetchAggregateQuote(payToken, receiveToken, adjustedPayAmount, { signal })
           setAggregateQuote(quote)
           if (quote) {
