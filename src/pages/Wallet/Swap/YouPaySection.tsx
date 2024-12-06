@@ -4,7 +4,7 @@ import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import { validateAmountToSend } from '@/utils/validation'
 import ValueAndAvailableBalance from '@/pages/Wallet/Swap/ValueAndAvailableBalance'
 import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
-import { formatAndValidateAmount } from '@/utils/formatting'
+import { formatNumberWithDecimal } from '@/utils/formatting'
 
 interface YouPaySectionProps {
   payAmount: string
@@ -23,7 +23,7 @@ const YouPaySection: React.FC<YouPaySectionProps> = ({
   onAmountErrorChange,
   tokens,
 }) => {
-  const { formattedCurrencyValue, formattedBalance, availableBalance, tokenSymbol } = useChaingeTokenData(
+  const { formattedCurrencyValue, formattedBalance, tokenSymbol } = useChaingeTokenData(
     payAmount,
     payToken,
     tokens,
@@ -41,16 +41,31 @@ const YouPaySection: React.FC<YouPaySectionProps> = ({
     }
   }, [amountError, onAmountErrorChange])
 
-  //TODO: add max and 50% buttons
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/[^0-9.]/g, '')
-    if (value.split('.').length > 2) {
-      return
+  const maxBalance = tokens.find(
+    (token) => token.tick === payToken?.symbol || token.tick === payToken?.contractAddress,
+  )?.balance
+
+  const handleMaxClick = () => {
+    if (maxBalance) {
+      const formattedMaxBalance = formatNumberWithDecimal(maxBalance, payToken?.decimals || 0)
+      onAmountChange({
+        target: { value: formattedMaxBalance.toString() },
+      } as React.ChangeEvent<HTMLInputElement>)
     }
-    const formattedValue = formatAndValidateAmount(value, payToken?.decimals || 0)
-    if (formattedValue === null) return
-    onAmountChange({ ...e, target: { ...e.target, value: formattedValue } })
-    validateAmountToSend(tokenSymbol, formattedValue, availableBalance, setAmountError)
+  }
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value
+    value = value.replace(/[^0-9.]/g, '')
+    const [whole, decimals] = value.split('.')
+
+    const allowedDecimals = payToken?.decimals || 0
+    const truncatedDecimals = decimals?.slice(0, allowedDecimals)
+
+    const validatedValue = truncatedDecimals !== undefined ? `${whole}.${truncatedDecimals}` : whole
+    onAmountChange({
+      target: { value: validatedValue },
+    } as React.ChangeEvent<HTMLInputElement>)
   }
 
   return (
@@ -71,6 +86,8 @@ const YouPaySection: React.FC<YouPaySectionProps> = ({
       <ValueAndAvailableBalance
         formattedCurrencyValue={formattedCurrencyValue}
         formattedBalance={formattedBalance}
+        showMaxButton={payToken?.symbol !== 'KAS'}
+        onMaxClick={handleMaxClick}
       />
     </div>
   )
