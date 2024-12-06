@@ -14,25 +14,33 @@ export default function Password({ onPasswordSet }: PasswordProps) {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
-  const [isValid, setIsValid] = useState(false)
+  const [buttonEnabled, setButtonEnabled] = useState(false)
 
   useEffect(() => {
-    validatePasswords(password, confirmPassword)
+    preValidatePasswords(password, confirmPassword)
   }, [password, confirmPassword])
 
-  const validatePasswords = (password: string, confirmPassword: string) => {
+  const preValidatePasswords = (password: string, confirmPassword: string) => {
+    if (password.length > 0 && confirmPassword.length > 0) {
+      setButtonEnabled(true)
+    } else {
+      setButtonEnabled(false)
+    }
+  }
+
+  const validatePasswords = (password: string, confirmPassword: string): boolean => {
     if (password.length > 0 && password.length < 8) {
       setError(ErrorMessages.PASSWORD.TOO_SHORT)
-      setIsValid(false)
+      return false
     } else if (password.length >= 8 && password !== confirmPassword && confirmPassword.length > 0) {
       setError(ErrorMessages.PASSWORD.MISMATCH)
-      setIsValid(false)
+      return false
     } else if (password.length >= 8 && password === confirmPassword) {
       setError('')
-      setIsValid(true)
+      return true
     } else {
       setError('')
-      setIsValid(false)
+      return false
     }
   }
 
@@ -45,7 +53,7 @@ export default function Password({ onPasswordSet }: PasswordProps) {
   }
 
   const handleContinueClick = () => {
-    if (isValid) {
+    if (validatePasswords(password, confirmPassword)) {
       onPasswordSet(password)
     }
   }
@@ -76,7 +84,7 @@ export default function Password({ onPasswordSet }: PasswordProps) {
       </div>
 
       <div className="w-full px-4 pb-10">
-        <NextButton onClick={handleContinueClick} buttonEnabled={isValid} />
+        <NextButton onClick={handleContinueClick} buttonEnabled={buttonEnabled} />
       </div>
     </AnimatedMain>
   )
