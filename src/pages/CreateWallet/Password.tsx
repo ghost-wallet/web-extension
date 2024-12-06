@@ -68,12 +68,14 @@ export default function Password({ onPasswordSet }: PasswordProps) {
           value={password}
           onChange={handlePasswordChange}
           placeholder="Enter password"
+          isError={error !== ''}
         />
         <PasswordInput
           id="confirm-password"
           value={confirmPassword}
           onChange={handleConfirmPasswordChange}
           placeholder="Confirm password"
+          isError={error !== ''}
         />
         <div className="h-6">
           <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />

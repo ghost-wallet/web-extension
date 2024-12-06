@@ -6,9 +6,16 @@ interface PasswordInputProps {
   value: string
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
   placeholder?: string
+  isError?: boolean
 }
 
-const PasswordInput: React.FC<PasswordInputProps> = ({ id, value, onChange, placeholder = '' }) => {
+const PasswordInput: React.FC<PasswordInputProps> = ({
+  id,
+  value,
+  onChange,
+  placeholder = '',
+  isError = false,
+}) => {
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
   const handleClick = () => {
@@ -23,7 +30,10 @@ const PasswordInput: React.FC<PasswordInputProps> = ({ id, value, onChange, plac
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`w-full p-2 pl-4 border border-slightmuted h-[52px] bg-bgdarker text-lg text-primarytext placeholder-muted rounded`}
+        className={
+          'w-full p-2 pl-4 border h-[52px] bg-bgdarker text-lg text-primarytext placeholder-muted rounded ' +
+          (isError ? 'border-red-900' : 'border-slightmuted')
+        }
       />
       {showPassword ? (
         <EyeSlashIcon
