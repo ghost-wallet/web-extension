@@ -15,25 +15,14 @@ export default function Password({ onPasswordSet }: PasswordProps) {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [errorCorrected, setErrorCorrected] = useState(false)
-  const [buttonEnabled, setButtonEnabled] = useState(false)
 
   useEffect(() => {
-    preValidatePasswords(password, confirmPassword)
-  }, [password, confirmPassword])
-
-  const preValidatePasswords = (password: string, confirmPassword: string) => {
-    if (password.length > 0 && confirmPassword.length > 0) {
-      setButtonEnabled(true)
-    } else {
-      setButtonEnabled(false)
-    }
-
     setErrorCorrected(true)
-  }
+  }, [password, confirmPassword])
 
   const validatePasswords = (password: string, confirmPassword: string): boolean => {
     setErrorCorrected(false)
-    if (password.length > 0 && password.length < 8) {
+    if (password.length < 8) {
       setError(ErrorMessages.PASSWORD.TOO_SHORT)
       return false
     } else if (password.length >= 8 && password !== confirmPassword && confirmPassword.length > 0) {
@@ -87,7 +76,7 @@ export default function Password({ onPasswordSet }: PasswordProps) {
       </div>
 
       <div className="w-full px-4 pb-10">
-        <NextButton onClick={handleContinueClick} buttonEnabled={buttonEnabled} />
+        <NextButton onClick={handleContinueClick} />
       </div>
     </AnimatedMain>
   )
