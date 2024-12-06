@@ -10,6 +10,7 @@ import AnimatedMain from '@/components/AnimatedMain'
 import Header from '@/components/Header'
 import BottomNav from '@/components/navigation/BottomNav'
 import TopNav from '@/components/navigation/TopNav'
+import ErrorMessages from '@/utils/constants/errorMessages'
 
 const GasFeeSelect: React.FC = () => {
   const location = useLocation()
@@ -30,7 +31,14 @@ const GasFeeSelect: React.FC = () => {
       if (token.isKaspa) {
         request('account:estimateKaspaTransactionFee', [outputs, selectedFeeRate, '0'])
           .then((feeEstimate) => setEstimatedFee(feeEstimate))
-          .catch((err) => setError(err))
+          .catch((err) => {
+            console.error('Error fetching estimated gas fee:', err)
+            if (err === 'Storage mass exceeds maximum') {
+              setError(ErrorMessages.FEES.STORAGE_MASS(outputs[0][1]))
+            } else {
+              setError(err)
+            }
+          })
       } else {
         request('account:getKRC20Info', [outputs[0][0], token, outputs[0][1]])
           .then((info) => request('account:estimateKRC20TransactionFee', [info, selectedFeeRate]))
@@ -84,7 +92,7 @@ const GasFeeSelect: React.FC = () => {
           />
           <ErrorMessage
             message={recipientError || amountError || error || ''}
-            className="h-6 mb-4 mt-2 flex justify-center items-center"
+            className="h-6 mt-4 flex justify-center items-center"
           />
         </div>
       </AnimatedMain>

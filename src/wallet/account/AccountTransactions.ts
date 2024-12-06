@@ -69,6 +69,7 @@ export default class AccountTransactions extends EventEmitter {
   }
 
   async estimateKaspaTransactionFee(outputs: [string, string][], feeRate: number, fee: string) {
+    // TODO: handle KAS output[1] of '40' returns error storage mass exceeds maximum
     const preparedTxn = {
       entries: this.context,
       outputs: outputs.map((output) => ({

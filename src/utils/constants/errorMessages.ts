@@ -28,6 +28,8 @@ const ErrorMessages = {
 
   FEES: {
     ESTIMATION: (err: any) => `Fee estimation error: ${err}`,
+    STORAGE_MASS: (amount: any) =>
+      `Network cannot process ${amount} KAS. Try a different amount like ${Number(amount) + 1} KAS`,
   },
 
   TRANSACTION: {

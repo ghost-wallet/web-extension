@@ -51,15 +51,9 @@ export default function Swap() {
     }
 
     try {
-      let fromAmount
-      if (payToken.symbol === 'KAS') {
-        fromAmount = payAmount
-      } else {
-        fromAmount = Math.floor(parseFloat(payAmount) * Math.pow(10, payToken.decimals || 0)).toString()
-      }
       request('account:estimateChaingeTransactionFee', [
         {
-          fromAmount, // Pass the calculated or original amount
+          fromAmount: payAmount,
           fromToken: payToken,
           feeRate,
         },
@@ -70,7 +64,11 @@ export default function Swap() {
         })
         .catch((error) => {
           console.error('Error fetching estimated gas fee:', error)
-          setGasFeeError(error)
+          if (error === 'Storage mass exceeds maximum') {
+            setGasFeeError(ErrorMessages.FEES.STORAGE_MASS(payAmount))
+          } else {
+            setGasFeeError(error)
+          }
         })
     } catch (err) {
       console.error('Error in scaling payAmount:', err)
