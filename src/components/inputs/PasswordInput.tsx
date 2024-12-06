@@ -32,7 +32,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
         placeholder={placeholder}
         className={
           'w-full p-2 pl-4 border h-[52px] bg-bgdarker text-lg text-primarytext placeholder-muted rounded ' +
-          (isError ? 'border-red-900' : 'border-slightmuted')
+          (isError ? 'border-error' : 'border-slightmuted')
         }
       />
       {showPassword ? (
