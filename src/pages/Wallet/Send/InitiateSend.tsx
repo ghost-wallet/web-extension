@@ -67,7 +67,7 @@ const InitiateSend: React.FC = () => {
           <div className="flex flex-col items-center space-y-2 p-4">
             <RecipientInput
               value={outputs[0][0]}
-              onChange={(e) => handleRecipientChange(e.target.value, request)}
+              onChange={(e) => handleRecipientChange(e.target.value.toLowerCase(), request)}
             />
             <AmountInput
               value={outputs[0][1]}
