@@ -14,6 +14,7 @@ export default function Password({ onPasswordSet }: PasswordProps) {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
+  const [errorCorrected, setErrorCorrected] = useState(false)
   const [buttonEnabled, setButtonEnabled] = useState(false)
 
   useEffect(() => {
@@ -26,9 +27,12 @@ export default function Password({ onPasswordSet }: PasswordProps) {
     } else {
       setButtonEnabled(false)
     }
+
+    setErrorCorrected(true)
   }
 
   const validatePasswords = (password: string, confirmPassword: string): boolean => {
+    setErrorCorrected(false)
     if (password.length > 0 && password.length < 8) {
       setError(ErrorMessages.PASSWORD.TOO_SHORT)
       return false
@@ -68,14 +72,14 @@ export default function Password({ onPasswordSet }: PasswordProps) {
           value={password}
           onChange={handlePasswordChange}
           placeholder="Enter password"
-          isError={error !== ''}
+          isError={error !== '' && !errorCorrected}
         />
         <PasswordInput
           id="confirm-password"
           value={confirmPassword}
           onChange={handleConfirmPasswordChange}
           placeholder="Confirm password"
-          isError={error !== ''}
+          isError={error !== '' && !errorCorrected}
         />
         <div className="h-6">
           <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />
