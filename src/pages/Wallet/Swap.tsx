@@ -100,8 +100,8 @@ export default function Swap() {
   }
 
   const handleSwitch = () => {
-    setPayAmount(receiveAmount)
-    setReceiveAmount(payAmount)
+    setPayAmount('')
+    setReceiveAmount('')
     setPayToken(receiveToken)
     setReceiveToken(payToken)
   }
