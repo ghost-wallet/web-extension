@@ -45,7 +45,7 @@ export default function Mint() {
     setLoading(true)
 
     try {
-      const result = await fetchKrc20TokenInfo(0, ticker)
+      const result = await fetchKrc20TokenInfo(settings.selectedNode, ticker)
       if (result) {
         const ksprPriceData: KsprToken | undefined = ksprPricesQuery.data?.[result.tick]
         const floorPrice = ksprPriceData?.floor_price ? ksprPriceData.floor_price * kasPrice : 0
