@@ -1,14 +1,15 @@
+import { MAX_ALLOWED_MINTS, MIN_ALLOWED_MINTS } from '@/utils/constants/constants'
+
 const useMintValidation = (
   mintAmount: number | null,
   totalMintCost: number,
   availableSupply: number,
   totalSupply: number,
 ) => {
-  // TODO set consts for min and max mint amounts
   const isMintAmountValid =
     mintAmount !== null &&
-    mintAmount >= 5 &&
-    mintAmount <= 1000 &&
+    mintAmount >= MIN_ALLOWED_MINTS &&
+    mintAmount <= MAX_ALLOWED_MINTS &&
     totalMintCost + availableSupply <= totalSupply
 
   return { isMintAmountValid }
