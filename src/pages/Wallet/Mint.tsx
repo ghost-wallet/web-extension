@@ -17,6 +17,7 @@ import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
 import useSettings from '@/hooks/contexts/useSettings'
 import { useKrc20TokenList } from '@/hooks/kasplex/useKrc20TokenList'
 import ErrorMessages from '@/utils/constants/errorMessages'
+import { fetchKasFyiMarketData } from '@/hooks/kas-fyi/fetchMarketData'
 
 export default function Mint() {
   const location = useLocation()
@@ -48,7 +49,14 @@ export default function Mint() {
       const result = await fetchKrc20TokenInfo(0, ticker)
       if (result) {
         const ksprPriceData: KsprToken | undefined = ksprPricesQuery.data?.[result.tick]
-        const floorPrice = ksprPriceData?.floor_price ? ksprPriceData.floor_price * kasPrice : 0
+        const kasFyiMarketData = await fetchKasFyiMarketData([result.tick])
+        let floorPrice
+        if (kasFyiMarketData) {
+          const kasFyiToken = kasFyiMarketData.results.find((data) => data.ticker === result.tick)
+          floorPrice = result.tick === 'CUSDT' ? 1.0 : (kasFyiToken?.price.kas || 0) * kasPrice
+        } else {
+          floorPrice = ksprPriceData?.floor_price ? ksprPriceData.floor_price * kasPrice : 0
+        }
         setToken({ ...result, floorPrice })
       } else {
         console.error('Token not found to mint')

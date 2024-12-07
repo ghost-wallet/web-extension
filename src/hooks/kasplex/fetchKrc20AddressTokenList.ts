@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { getApiBase } from '@/hooks/kasplex/fetchHelper'
 import { KRC20TokenListForAddress, TokenFromApi } from '@/utils/interfaces'
 import ErrorMessages from '@/utils/constants/errorMessages'
@@ -35,4 +37,25 @@ export const fetchKrc20AddressTokenList = async (selectedNode: number, address: 
     console.error(`Error fetching KRC20 token list for address ${address}:`, error)
     throw error
   }
+}
+
+export const isKrc20QueryEnabled = (kaspa: any, selectedNetwork: string) => {
+  return useMemo(() => {
+    if (!(kaspa.addresses.length > 0)) return false
+    const address = kaspa.addresses[0]
+    if (kaspa.connected && selectedNetwork === 'mainnet' && address.startsWith('kaspa:')) {
+      return true
+    }
+    return kaspa.connected && selectedNetwork === 'testnet-10' && address.startsWith('kaspatest:')
+  }, [kaspa.addresses, kaspa.connected, selectedNetwork])
+}
+
+export const useKrc20TokensQuery = (settings: any, kaspa: any, isQueryEnabled: boolean) => {
+  return useQuery({
+    queryKey: ['krc20Tokens', { selectedNode: settings.selectedNode, address: kaspa.addresses[0] }],
+    queryFn: async () => fetchKrc20AddressTokenList(settings.selectedNode, kaspa.addresses[0]),
+    enabled: isQueryEnabled,
+    staleTime: 6000,
+    refetchInterval: 6000,
+  })
 }
