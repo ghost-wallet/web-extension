@@ -3,6 +3,7 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 import { Cog6ToothIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
 import SearchWalletButton from '@/components/search/SearchWalletButton'
+import SidebarButton from '@/components/buttons/SidebarButton'
 import ConnectingToNetwork from '@/components/ConnectingToNetwork'
 import TruncatedCopyAccountName from '@/components/TruncatedCopyAccountName'
 
@@ -30,6 +31,7 @@ const TopNav: React.FC = () => {
           {/* Search Wallet Button and Side Panel Button */}
           <div className="flex items-center">
             <SearchWalletButton />
+            <SidebarButton />
           </div>
         </div>
       </nav>
