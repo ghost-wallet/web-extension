@@ -3,6 +3,7 @@ import useSettings from '@/hooks/contexts/useSettings'
 import { chaingeMinterAddresses } from '@/utils/constants/constants'
 
 interface OperationDetails {
+  // TODO handle deploy op
   operationType: 'Sent' | 'Received' | 'Minted' | 'Swapped' | 'Unknown'
   isSent: boolean
   isReceived: boolean

@@ -9,10 +9,8 @@ import NextButton from '@/components/buttons/NextButton'
 import TotalCostToMint from '@/pages/Wallet/Mint/TotalCostToMint'
 import { postMint } from '@/hooks/ghost/useMint'
 import ErrorMessages from '@/utils/constants/errorMessages'
-import { WarningMessages } from '@/utils/constants/warningMessages'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
-import WarningMessage from '@/components/WarningMessage'
 
 export default function ConfirmMint() {
   const location = useLocation()
@@ -23,6 +21,7 @@ export default function ConfirmMint() {
   const [loading, setLoading] = useState(false)
   const [showDialog, setShowDialog] = useState(false)
 
+  // TODO show how much fee rate is being used
   const { token, payAmount, receiveAmount, feeRate } = location.state as {
     token: KRC20TokenResponse
     payAmount: number
@@ -40,6 +39,7 @@ export default function ConfirmMint() {
       address: kaspa.addresses[0],
     }
 
+    // TODO: break it up into batched mints as a loop
     try {
       const response = await postMint(mintRequest)
       const { scriptAddress } = response
@@ -93,10 +93,8 @@ export default function ConfirmMint() {
               <span className="text-mutedtext text-base">Network fee</span>
               <span className="text-mutedtext text-base text-right">{networkFee} KAS</span>
             </div>
-
             <TotalCostToMint totalFees={totalCost} />
           </div>
-          <WarningMessage message={WarningMessages.MINT_RISK(token.tick)} />
         </div>
       </AnimatedMain>
       {kaspa.connected && (
