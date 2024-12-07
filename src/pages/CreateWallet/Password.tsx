@@ -14,25 +14,26 @@ export default function Password({ onPasswordSet }: PasswordProps) {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
-  const [isValid, setIsValid] = useState(false)
+  const [errorCorrected, setErrorCorrected] = useState(false)
 
   useEffect(() => {
-    validatePasswords(password, confirmPassword)
+    setErrorCorrected(true)
   }, [password, confirmPassword])
 
-  const validatePasswords = (password: string, confirmPassword: string) => {
-    if (password.length > 0 && password.length < 8) {
+  const validatePasswords = (password: string, confirmPassword: string): boolean => {
+    setErrorCorrected(false)
+    if (password.length < 8) {
       setError(ErrorMessages.PASSWORD.TOO_SHORT)
-      setIsValid(false)
+      return false
     } else if (password.length >= 8 && password !== confirmPassword && confirmPassword.length > 0) {
       setError(ErrorMessages.PASSWORD.MISMATCH)
-      setIsValid(false)
+      return false
     } else if (password.length >= 8 && password === confirmPassword) {
       setError('')
-      setIsValid(true)
+      return true
     } else {
       setError('')
-      setIsValid(false)
+      return false
     }
   }
 
@@ -45,7 +46,7 @@ export default function Password({ onPasswordSet }: PasswordProps) {
   }
 
   const handleContinueClick = () => {
-    if (isValid) {
+    if (validatePasswords(password, confirmPassword)) {
       onPasswordSet(password)
     }
   }
@@ -60,23 +61,22 @@ export default function Password({ onPasswordSet }: PasswordProps) {
           value={password}
           onChange={handlePasswordChange}
           placeholder="Enter password"
+          isError={error !== '' && !errorCorrected}
         />
         <PasswordInput
           id="confirm-password"
           value={confirmPassword}
           onChange={handleConfirmPasswordChange}
           placeholder="Confirm password"
+          isError={error !== '' && !errorCorrected}
         />
-
         <div className="h-6">
-          {error && (
-            <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />
-          )}
+          <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />
         </div>
       </div>
 
       <div className="w-full px-4 pb-10">
-        <NextButton onClick={handleContinueClick} buttonEnabled={isValid} />
+        <NextButton onClick={handleContinueClick} />
       </div>
     </AnimatedMain>
   )

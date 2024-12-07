@@ -57,6 +57,7 @@ export default function Login() {
               if (error) setError('')
               setPassword(e.target.value)
             }}
+            isError={error !== ''}
           />
           <ErrorMessage message={error} className="h-6 mb-4 mt-2 flex justify-center items-center" />
           <button
