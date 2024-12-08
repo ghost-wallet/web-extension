@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="/assets/ghost-outline-512.png" alt="Ghost Wallet Logo" width="150">
+</p>
+
 # Ghost Wallet
 
 First open source Chrome web extension wallet for Kaspa & KRC20 tokens. Swap, mint, send, and receive KRC20 tokens directly in the wallet. You keep full custody of your private keys, which never leave your web browser.
