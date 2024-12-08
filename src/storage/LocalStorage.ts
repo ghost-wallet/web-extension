@@ -8,9 +8,22 @@ export interface IWallet {
   accountName: string
 }
 
+interface IAccount {
+  name: string
+  receiveCount: number
+  changeCount: number
+  tokens: { [tick: string]: { isHidden: boolean } }
+}
+
+export interface IWalletV2 {
+  encryptedKey: string
+  accounts: IAccount[]
+}
+
 export interface ILocalStorage {
   settings: ISettings
   wallet: IWallet
+  walletV2: IWalletV2
 }
 
 export default new (class LocalStorage extends Storage<ILocalStorage> {

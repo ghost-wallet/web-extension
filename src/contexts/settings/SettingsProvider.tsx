@@ -5,6 +5,7 @@ import { SettingsContext } from './SettingsContext'
 export interface ISettings {
   version: number
   theme: 'dark' | 'light' | 'system'
+  activeAccount: number
   currency: keyof typeof currencies
   nodes: {
     name: string
@@ -22,6 +23,7 @@ export const currencies = {
 export const defaultSettings: ISettings = {
   version: 1,
   theme: 'system',
+  activeAccount: 1,
   currency: 'USD',
   nodes: [
     {
@@ -45,6 +47,7 @@ export const defaultSettings: ISettings = {
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState(defaultSettings)
+  console.log('provider settings:', settings)
 
   useEffect(() => {
     LocalStorage.set('settings', settings)

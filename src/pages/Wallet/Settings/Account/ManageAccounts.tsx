@@ -5,8 +5,10 @@ import BottomNav from '@/components/navigation/BottomNav'
 import useAccountName from '@/hooks/wallet/useAccountName'
 import { PencilSquareIcon, CheckIcon } from '@heroicons/react/24/outline'
 import LocalStorage from '@/storage/LocalStorage'
+import useSettings from '@/hooks/contexts/useSettings'
 
 export default function ManageAccounts() {
+  const { settings } = useSettings()
   const currentAccountName = useAccountName()
   const [accountName, setAccountName] = useState<string | null>(currentAccountName)
   const [isEditing, setIsEditing] = useState(false)
@@ -23,12 +25,12 @@ export default function ManageAccounts() {
 
   const handleSaveClick = async () => {
     setIsEditing(false)
-    const wallet = await LocalStorage.get('wallet')
+    const wallet = await LocalStorage.get('walletV2')
     if (wallet) {
-      wallet.accountName = accountName || 'Account 1'
-      await LocalStorage.set('wallet', wallet)
+      wallet.accounts[settings.activeAccount].name = accountName || 'Account 1'
+      await LocalStorage.set('walletV2', wallet)
       // Trigger storage event manually to notify other components
-      window.localStorage.setItem('wallet', JSON.stringify(wallet))
+      window.localStorage.setItem('walletV2', JSON.stringify(wallet))
     } else {
       console.warn('Wallet not found in local storage.')
     }

@@ -2,6 +2,7 @@ import browser from 'webextension-polyfill'
 import Storage from './Storage'
 
 export interface ISession {
+  activeAccount: number
   publicKey: string
   encryptedKey: string
 }

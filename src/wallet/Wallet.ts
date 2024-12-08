@@ -31,7 +31,7 @@ export default class Wallet extends EventEmitter {
   }
 
   private async sync() {
-    const wallet = await LocalStorage.get('wallet')
+    const wallet = await LocalStorage.get('walletV2')
     if (!wallet) {
       console.log('[Wallet] No wallet found, setting status to Uninitialized.')
       this.status = Status.Uninitialized
@@ -73,6 +73,30 @@ export default class Wallet extends EventEmitter {
       accountName: 'Account 1',
     })
 
+    await LocalStorage.set('walletV2', {
+      encryptedKey: encryptedKey,
+      accounts: [
+        {
+          name: 'Account 1 v2',
+          tokens: {},
+          receiveCount: 1,
+          changeCount: 1,
+        },
+        {
+          name: 'Account 2 v2',
+          tokens: {},
+          receiveCount: 1,
+          changeCount: 1,
+        },
+        {
+          name: 'Account 3 v2',
+          tokens: {},
+          receiveCount: 1,
+          changeCount: 1,
+        },
+      ],
+    })
+
     await this.unlock(0, password)
     await this.sync()
   }
@@ -91,6 +115,7 @@ export default class Wallet extends EventEmitter {
     KeyManager.setKey(decryptedKey)
 
     await SessionStorage.set('session', {
+      activeAccount: 1,
       publicKey: publicKey.toString(),
       encryptedKey: this.encryptedKey,
     })
@@ -99,7 +124,7 @@ export default class Wallet extends EventEmitter {
   }
 
   async export(password: string) {
-    const wallet = await LocalStorage.get('wallet')
+    const wallet = await LocalStorage.get('walletV2')
     if (!wallet) {
       console.error('[Wallet] Error exporting wallet')
       throw Error('Wallet is not initialized')
@@ -116,6 +141,7 @@ export default class Wallet extends EventEmitter {
   async reset() {
     await SessionStorage.clear()
     await LocalStorage.remove('wallet')
+    await LocalStorage.remove('walletV2')
     await this.sync()
   }
 
