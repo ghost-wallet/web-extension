@@ -29,7 +29,11 @@ const YouReceiveSection: React.FC<YouReceiveSectionProps> = ({
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
   const displayAmount = receiveAmount ? formatNumberAbbreviated(receiveAmountAfterFees) : ''
 
-  const formattedCurrencyValue = Number(aggregateQuote?.outAmountUsd).toLocaleString(undefined, {
+  const isPayAmountValid = Number(payAmount) > 0
+
+  const formattedCurrencyValue = Number(
+    isPayAmountValid ? aggregateQuote?.outAmountUsd || 0 : 0,
+  ).toLocaleString(undefined, {
     style: 'currency',
     currency: settings.currency,
     minimumFractionDigits: 2,
@@ -59,8 +63,7 @@ const YouReceiveSection: React.FC<YouReceiveSectionProps> = ({
       {loadingQuote || (payAmount && !receiveAmount && !aggregateQuote?.outAmountUsd) ? (
         <div className="w-14 h-5 bg-muted rounded-md mb-1 animate-pulse"></div>
       ) : (
-        aggregateQuote &&
-        receiveAmount && <EstimatedCurrencyValue formattedCurrencyValue={formattedCurrencyValue} />
+        <EstimatedCurrencyValue formattedCurrencyValue={formattedCurrencyValue} />
       )}
     </div>
   )

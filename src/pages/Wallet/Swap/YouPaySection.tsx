@@ -24,7 +24,7 @@ const YouPaySection: React.FC<YouPaySectionProps> = ({
   tokens,
 }) => {
   const { formattedCurrencyValue, formattedBalance, tokenSymbol } = useChaingeTokenData(
-    payAmount,
+    payAmount && !isNaN(Number(payAmount)) ? payAmount : '0',
     payToken,
     tokens,
   )
@@ -57,8 +57,8 @@ const YouPaySection: React.FC<YouPaySectionProps> = ({
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value
     value = value.replace(/[^0-9.]/g, '')
-    const [whole, decimals] = value.split('.')
 
+    const [whole, decimals] = value.split('.')
     const allowedDecimals = payToken?.decimals || 0
     const truncatedDecimals = decimals?.slice(0, allowedDecimals)
 

@@ -25,7 +25,7 @@ export default function Password({ onPasswordSet }: PasswordProps) {
     if (password.length < 8) {
       setError(ErrorMessages.PASSWORD.TOO_SHORT)
       return false
-    } else if (password.length >= 8 && password !== confirmPassword && confirmPassword.length > 0) {
+    } else if (password.length >= 8 && password !== confirmPassword) {
       setError(ErrorMessages.PASSWORD.MISMATCH)
       return false
     } else if (password.length >= 8 && password === confirmPassword) {

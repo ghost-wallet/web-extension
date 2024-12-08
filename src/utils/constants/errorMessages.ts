@@ -2,9 +2,9 @@ import { MAX_ALLOWED_MINTS, MIN_ALLOWED_MINTS } from '@/utils/constants/constant
 
 const ErrorMessages = {
   PASSWORD: {
-    TOO_SHORT: 'Must be at least 8 characters',
+    TOO_SHORT: 'Password must be at least 8 characters',
     MISMATCH: 'Passwords do not match',
-    INCORRECT: 'Incorrect password',
+    INCORRECT: 'Password incorrect',
   },
 
   LOGIN: {

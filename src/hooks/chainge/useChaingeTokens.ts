@@ -24,8 +24,8 @@ export function useChaingeTokens() {
   return useQuery({
     queryKey: ['chaingeTokens'],
     queryFn: fetchChaingeTokens,
-    staleTime: 60 * 60 * 1000, // 60 minutes
-    refetchInterval: 60 * 60 * 1000, // 60 minutes
+    staleTime: 20 * 60 * 1000, // 20 minutes
+    refetchInterval: 20 * 60 * 1000, // 20 minutes
   })
 }
 

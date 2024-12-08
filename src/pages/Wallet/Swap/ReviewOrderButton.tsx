@@ -30,16 +30,16 @@ const ReviewOrderButton: React.FC<ReviewOrderButtonProps> = ({
 
   return (
     <div className="bottom-20 left-0 right-0 px-4 fixed">
-      {payToken?.symbol === receiveToken?.symbol ? (
+      {payToken?.symbol === receiveToken?.symbol && payToken && receiveToken ? (
         <WarningMessage message="Cannot swap the same token to itself" />
       ) : payAmount === '0' ? (
         <WarningMessage message="Pay amount must be more than 0" />
       ) : amountError && Number(payAmount) > 0 ? (
-        <ErrorButton text="Insufficient Funds" />
+        <ErrorButton text="Insufficient funds" />
       ) : isBelowMinimum && Number(payAmount) > 0 ? (
         <WarningMessage message={`Receive amount must be more than $${MINIMUM_RECEIVE_AMOUNT_USD} USD`} />
       ) : gasFeeError ? (
-        <WarningMessage message="Error calculating gas fee. Make sure you have some KAS in your wallet." />
+        <WarningMessage message="Either the pay amount is invalid or not enough KAS for gas fees" />
       ) : Number(payAmount) > 0 ? (
         <NextButton text="Review Order" onClick={setIsReviewOrderOpen} buttonEnabled={!loadingQuote} />
       ) : (
