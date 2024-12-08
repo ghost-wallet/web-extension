@@ -12,11 +12,11 @@ First open source Chrome web extension wallet for Kaspa & KRC20 tokens. Swap, mi
 
 Discord is the easiest way to reach out to the Ghost Wallet team for dev support and collaboration opportunities.
 
-| Platform                                                                                                     | Link                                      |
-|-------------------------------------------------------------------------------------------------------------|-------------------------------------------|
-| ![X](https://img.shields.io/badge/X-%23000000.svg?style=for-the-badge&logo=x&logoColor=white)               | [X (Twitter)](https://x.com/ghostwallet_) |
-| ![GitHub](https://img.shields.io/badge/GitHub-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) | [GitHub](https://github.com/ghost-wallet) |
-| ![Discord](https://img.shields.io/badge/Discord-%237289DA.svg?style=for-the-badge&logo=discord&logoColor=white) | [Discord](https://discord.gg/ghostwallet) |
+| Platform                                                                                                     |
+|-------------------------------------------------------------------------------------------------------------|
+| [![X](https://img.shields.io/badge/X-%23000000.svg?style=for-the-badge&logo=x&logoColor=white)](https://x.com/ghostwallet_) |
+| [![GitHub](https://img.shields.io/badge/GitHub-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ghost-wallet) |
+| [![Discord](https://img.shields.io/badge/Discord-%237289DA.svg?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/ghostwallet) |
 
 ## API
 
