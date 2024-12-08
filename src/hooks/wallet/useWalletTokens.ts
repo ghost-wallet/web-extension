@@ -1,39 +1,34 @@
 import { useMemo, useState, useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { sortTokensByValue } from '@/utils/sorting'
 import useSettings from '@/hooks/contexts/useSettings'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
-import { fetchKrc20AddressTokenList } from '@/hooks/kasplex/fetchKrc20AddressTokenList'
+import { isKrc20QueryEnabled, useKrc20TokensQuery } from '@/hooks/kasplex/fetchKrc20AddressTokenList'
 import { useKsprPrices } from '@/hooks/kspr/fetchKsprPrices'
-import { KaspaToken } from '@/utils/interfaces'
+import { KaspaToken, TokenFromApi, Token } from '@/utils/interfaces'
+import { useKasFyiMarketData } from '@/hooks/kas-fyi/fetchMarketData'
 
 export function useWalletTokens() {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
   const kaspaPrice = useKaspaPrice(settings.currency)
-  const ksprPricesQuery = useKsprPrices()
   const kasPrice = kaspaPrice.data ?? 0
   const selectedNetwork = settings.nodes[settings.selectedNode].address
-
   const [walletError, setWalletError] = useState<string | null>(null)
 
-  const isQueryEnabled = useMemo(() => {
-    if (!(kaspa.addresses.length > 0)) return false
-    const address = kaspa.addresses[0]
-    if (kaspa.connected && selectedNetwork === 'mainnet' && address.startsWith('kaspa:')) {
-      return true
-    }
-    return kaspa.connected && selectedNetwork === 'testnet-10' && address.startsWith('kaspatest:')
-  }, [kaspa.addresses, kaspa.connected, settings.selectedNode])
+  const isQueryEnabled = isKrc20QueryEnabled(kaspa, selectedNetwork)
+  const krc20TokensQuery = useKrc20TokensQuery(settings, kaspa, isQueryEnabled)
+  const krc20TokensData = krc20TokensQuery.data
 
-  const krc20TokensQuery = useQuery({
-    queryKey: ['krc20Tokens', { selectedNode: settings.selectedNode, address: kaspa.addresses[0] }],
-    queryFn: async () => fetchKrc20AddressTokenList(settings.selectedNode, kaspa.addresses[0]),
-    enabled: isQueryEnabled,
-    staleTime: 6000,
-    refetchInterval: 6000,
-  })
+  const tickers = useMemo(() => {
+    return krc20TokensData?.map((token: TokenFromApi) => token.tick) || []
+  }, [krc20TokensData])
+
+  const kasFyiMarketDataQuery = useKasFyiMarketData(tickers)
+  const kasFyiMarketData = kasFyiMarketDataQuery.data
+
+  const ksprPricesQuery = kasFyiMarketData ? null : useKsprPrices()
+  const ksprPricesData = ksprPricesQuery?.data
 
   const kaspaCrypto: KaspaToken = useMemo(
     () => ({
@@ -46,20 +41,37 @@ export function useWalletTokens() {
     [kaspa.balance, kasPrice],
   )
 
-  // Merge KSPR token prices with KRC20 tokens, always including kaspaCrypto
   const tokens = useMemo(() => {
-    const additionalTokens = krc20TokensQuery.data
-      ? krc20TokensQuery.data.map((token) => {
-          const ksprPriceData = ksprPricesQuery.data?.[token.tick]
-          const floorPrice = ksprPriceData?.floor_price ?? 0
-          return {
-            ...token,
-            floorPrice: token.tick === 'CUSDT' ? 1.0 : floorPrice * kasPrice, // TODO use real USDT price from Chainge API
-          }
-        })
-      : []
-    return [kaspaCrypto, ...additionalTokens]
-  }, [kaspaCrypto, krc20TokensQuery.data, ksprPricesQuery.data, kasPrice])
+    if (!krc20TokensData) {
+      return [kaspaCrypto]
+    }
+
+    const tokensWithPrices = krc20TokensData.map((token) => {
+      if (kasFyiMarketData) {
+        const kasFyiToken = kasFyiMarketData.results.find((data) => data.ticker === token.tick)
+        const floorPrice = token.tick === 'CUSDT' ? 1.0 : (kasFyiToken?.price.kas || 0) * kasPrice
+
+        return {
+          ...token,
+          floorPrice,
+        } as Token
+      } else if (ksprPricesData) {
+        const ksprToken = ksprPricesData[token.tick]
+
+        return {
+          ...token,
+          floorPrice: token.tick === 'CUSDT' ? 1.0 : (ksprToken?.floor_price || 0) * kasPrice,
+        } as Token
+      } else {
+        return {
+          ...token,
+          floorPrice: 0,
+        } as Token
+      }
+    })
+
+    return [kaspaCrypto, ...tokensWithPrices] as (KaspaToken | Token)[]
+  }, [kaspaCrypto, krc20TokensData, kasFyiMarketData, ksprPricesData, kasPrice])
 
   const sortedTokens = sortTokensByValue(tokens)
 

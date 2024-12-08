@@ -158,3 +158,26 @@ export interface KsprToken {
 export interface KsprTokenResponse {
   [symbol: string]: KsprToken
 }
+
+/**
+ * Responses for Kas.Fyi
+ * https://api.kas.fyi/docs
+ */
+export interface KasFyiToken {
+  ticker: string
+  price: {
+    kas: number
+    usd: number
+  }
+  volume24h: {
+    usd: number
+  }
+  marketCap: {
+    usd: number
+  }
+  rank: number
+}
+
+export interface KasFyiTokenResponse {
+  results: KasFyiToken[]
+}
