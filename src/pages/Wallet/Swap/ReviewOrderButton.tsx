@@ -3,6 +3,7 @@ import NextButton from '@/components/buttons/NextButton'
 import ErrorButton from '@/components/buttons/ErrorButton'
 import WarningMessage from '@/components/WarningMessage'
 import { MINIMUM_RECEIVE_AMOUNT_USD } from '@/utils/constants/constants'
+import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 
 interface ReviewOrderButtonProps {
   amountError: string | null
@@ -10,6 +11,8 @@ interface ReviewOrderButtonProps {
   outAmountUsd: string
   payAmount: string
   loadingQuote: boolean
+  payToken: ChaingeToken | null
+  receiveToken: ChaingeToken | null
   setIsReviewOrderOpen: () => void
 }
 
@@ -19,13 +22,17 @@ const ReviewOrderButton: React.FC<ReviewOrderButtonProps> = ({
   outAmountUsd,
   payAmount,
   loadingQuote,
+  payToken,
+  receiveToken,
   setIsReviewOrderOpen,
 }) => {
   const isBelowMinimum = parseFloat(outAmountUsd.replace(/,/g, '')) < MINIMUM_RECEIVE_AMOUNT_USD
 
   return (
     <div className="bottom-20 left-0 right-0 px-4 fixed">
-      {payAmount === '0' ? (
+      {payToken?.symbol === receiveToken?.symbol ? (
+        <WarningMessage message="Cannot swap the same token to itself" />
+      ) : payAmount === '0' ? (
         <WarningMessage message="Pay amount must be more than 0" />
       ) : amountError && Number(payAmount) > 0 ? (
         <ErrorButton text="Insufficient Funds" />

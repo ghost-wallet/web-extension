@@ -9,7 +9,6 @@ import { checkIfMintable } from '@/utils/validation'
 import TokenDetails from '@/pages/Wallet/Mint/TokenDetails'
 import SearchBar from '@/pages/Wallet/Mint/SearchBar'
 import ErrorMessage from '@/components/messages/ErrorMessage'
-import Spinner from '@/components/loaders/Spinner'
 import NextButton from '@/components/buttons/NextButton'
 import TopNav from '@/components/navigation/TopNav'
 import { useKsprPrices } from '@/hooks/kspr/fetchKsprPrices'
@@ -18,6 +17,7 @@ import useSettings from '@/hooks/contexts/useSettings'
 import { useKrc20TokenList } from '@/hooks/kasplex/useKrc20TokenList'
 import ErrorMessages from '@/utils/constants/errorMessages'
 import { fetchKasFyiMarketData } from '@/hooks/kas-fyi/fetchMarketData'
+import MintLoading from '@/pages/Wallet/Mint/MintLoading'
 
 export default function Mint() {
   const location = useLocation()
@@ -105,7 +105,7 @@ export default function Mint() {
           )}
           {loading ? (
             <div className="mt-10">
-              <Spinner />
+              <MintLoading />
             </div>
           ) : (
             error && <ErrorMessage message={error} className="pt-2 flex justify-center items-center" />

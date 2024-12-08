@@ -176,26 +176,20 @@ export default function Swap() {
         outAmountUsd={outAmountUsd}
         payAmount={payAmount}
         loadingQuote={loadingQuote}
+        payToken={payToken}
+        receiveToken={receiveToken}
         setIsReviewOrderOpen={() => setIsReviewOrderOpen(true)}
       />
       <BottomNav />
       <AnimatePresence>
         {isPayTokenSelectOpen && (
-          <SwapTokenSelect
-            tokens={chaingeTokens?.filter(
-              (chaingeToken: ChaingeToken) => chaingeToken.symbol !== receiveToken?.symbol,
-            )}
-            onSelectToken={selectToken}
-            onClose={closePayTokenSelect}
-          />
+          <SwapTokenSelect tokens={chaingeTokens} onSelectToken={selectToken} onClose={closePayTokenSelect} />
         )}
       </AnimatePresence>
       <AnimatePresence>
         {isReceiveTokenSelectOpen && (
           <SwapTokenSelect
-            tokens={chaingeTokens?.filter(
-              (chaingeToken: ChaingeToken) => chaingeToken.symbol !== payToken?.symbol,
-            )}
+            tokens={chaingeTokens}
             onSelectToken={selectReceiveToken}
             onClose={closeReceiveTokenSelect}
           />

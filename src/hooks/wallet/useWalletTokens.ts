@@ -21,11 +21,12 @@ export function useWalletTokens() {
   const krc20TokensData = krc20TokensQuery.data
 
   const tickers = useMemo(() => {
-    return krc20TokensData?.map((token: TokenFromApi) => token.tick) || []
+    const ticks = krc20TokensData?.map((token: TokenFromApi) => token.tick) || []
+    return ticks.length > 0 ? ticks : null
   }, [krc20TokensData])
 
-  const kasFyiMarketDataQuery = useKasFyiMarketData(tickers)
-  const kasFyiMarketData = kasFyiMarketDataQuery.data
+  const kasFyiMarketDataQuery = useKasFyiMarketData(tickers || [])
+  const kasFyiMarketData = kasFyiMarketDataQuery.data ?? { results: [] }
 
   const ksprPricesQuery = kasFyiMarketData ? null : useKsprPrices()
   const ksprPricesData = ksprPricesQuery?.data
