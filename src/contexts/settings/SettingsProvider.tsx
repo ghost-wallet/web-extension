@@ -15,8 +15,16 @@ export interface ISettings {
 }
 
 export const currencies = {
-  USD: '$',
-  EUR: '€',
+  USD: 'USD', // US Dollar
+  EUR: 'EUR', // Euro
+  JPY: 'JPY', // Japanese Yen
+  GBP: 'GBP', // British Pound
+  AUD: 'AUD', // Australian Dollar
+  CAD: 'CAD', // Canadian Dollar
+  CHF: 'CHF', // Swiss Franc
+  CNY: 'CNY', // Chinese Yuan
+  SEK: 'SEK', // Swedish Krona
+  NZD: 'NZD', // New Zealand Dollar
 }
 
 export const defaultSettings: ISettings = {

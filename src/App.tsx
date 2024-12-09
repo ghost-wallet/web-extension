@@ -35,6 +35,7 @@ import Swapped from '@/pages/Wallet/Swap/Swapped'
 import SupportPage from '@/pages/Wallet/Settings/Support/SupportPage'
 import SearchWalletResults from '@/components/search/SearchWalletResults'
 import { ChaingeProvider } from '@/contexts/chainge/ChaingeProvider'
+import PreferencesPage from '@/pages/Wallet/Settings/Preferences/PreferencesPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,6 +68,7 @@ function App() {
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/settings/reset" element={<ConfirmReset />} />
                 <Route path="/settings/about" element={<AboutPage />} />
+                <Route path="/settings/preferences" element={<PreferencesPage />} />
                 <Route path="/settings/support" element={<SupportPage />} />
                 <Route path="/settings/developer" element={<DeveloperPage />} />
                 <Route path="/settings/accounts" element={<ManageAccounts />} />

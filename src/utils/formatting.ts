@@ -122,7 +122,7 @@ export const formatMarketCapAbbreviated = (minted: number, dec: number, floorPri
 
 export const formatMarketCap = (minted: number, dec: number, floorPrice: number): string => {
   const marketCap = getMarketCap(minted, dec, floorPrice)
-  return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(marketCap)
+  return new Intl.NumberFormat(navigator.language, { maximumFractionDigits: 0 }).format(marketCap)
 }
 
 export const formatAndValidateAmount = (value: string, maxDecimals: number): string | null => {

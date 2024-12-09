@@ -5,7 +5,7 @@ import {
   formatNumberWithDecimal,
   formatNumberAbbreviated,
   tokenPriceFormatter,
-  formatMarketCapAbbreviated,
+  formatMarketCap,
 } from '@/utils/formatting'
 import { getMintedPercentage } from '@/utils/calculations'
 import { KRC20TokenResponse } from '@/utils/interfaces'
@@ -29,28 +29,26 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
     !isNaN(token.pre) && !isNaN(token.max) && token.max > 0 ? getMintedPercentage(token.pre, token.max) : '0'
 
   const formattedTokenPrice = tokenPriceFormatter(token.floorPrice ?? 0)
+  const formattedMarketCap = formatMarketCap(token.minted, token.dec, token.floorPrice ?? 0)
 
   return (
     <div className="rounded-md py-2">
-      <div className="flex flex-row items-center justify-between py-2">
+      <div className="flex flex-row items-center justify-between py-1">
         <div className="flex flex-col items-center">
           <CryptoImage ticker={token.tick} size="large" />
           <h1 className="text-primarytext font-bold text-xl pt-2">{token.tick}</h1>
-          <h1 className="text-primarytext text-lg pt-2">
-            <TokenPrice value={`${currencySymbol}${formattedTokenPrice}`} />
-          </h1>
         </div>
 
         <div className="flex-grow ml-4">
           <TableSection
             rows={[
               {
+                label: 'Price',
+                value: <TokenPrice value={`${currencySymbol}${formattedTokenPrice}`} />,
+              },
+              {
                 label: 'Market cap',
-                value: `${currencySymbol}${formatMarketCapAbbreviated(
-                  token.minted,
-                  token.dec,
-                  token.floorPrice ?? 0,
-                )}`,
+                value: `${currencySymbol}${formattedMarketCap}`,
               },
               {
                 label: 'Total supply',

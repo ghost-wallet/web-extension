@@ -22,7 +22,7 @@ export default function useKaspaPrice(currency: string) {
   return useQuery({
     queryKey: ['kaspaPrice', currency],
     queryFn: fetchPrice,
-    staleTime: 60_000, // 1 min
-    refetchInterval: 60_000,
+    staleTime: 30_000, // 30 seconds
+    refetchInterval: 30_000, // 30 seconds
   })
 }

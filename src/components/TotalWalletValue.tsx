@@ -8,7 +8,7 @@ interface TotalValueProps {
 const TotalWalletValue: React.FC<TotalValueProps> = ({ totalValue }) => {
   const { settings } = useSettings()
 
-  const formattedCurrencyValue = totalValue.toLocaleString(undefined, {
+  const formattedCurrencyValue = totalValue.toLocaleString(navigator.language, {
     style: 'currency',
     currency: settings.currency,
     minimumFractionDigits: 2,
