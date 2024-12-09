@@ -32,7 +32,7 @@ function krc20TokenInfoqueryFn({ queryKey }: { queryKey: [string, FetchKRC20Toke
 }
 
 const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
-  const { floorPrice, tick } = token
+  const { floorPrice, tick, volume24h, rank } = token
   const { settings } = useSettings()
 
   const krc20TokenQuery = useQuery({
@@ -43,6 +43,13 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
   const krc20Token = krc20TokenQuery.data
 
   const formattedTokenPrice = tokenPriceFormatter(floorPrice)
+
+  const formattedVolume = volume24h.toLocaleString(navigator.language, {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })
 
   const mintedPercentage =
     krc20Token?.minted && krc20Token?.max
@@ -79,6 +86,10 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
         title="Market Details"
         rows={[
           {
+            label: `Rank`,
+            value: <TokenPrice value={`${rank}`} />,
+          },
+          {
             label: `${settings.currency} Price`,
             value: <TokenPrice value={`${formattedTokenPrice}`} />,
           },
@@ -87,6 +98,10 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
                 {
                   label: `Market cap`,
                   value: `${formatMarketCap(krc20Token.minted, krc20Token.dec, floorPrice)}`,
+                },
+                {
+                  label: `Volume 24h`,
+                  value: `${formattedVolume}`,
                 },
                 {
                   label: '',

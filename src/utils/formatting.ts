@@ -33,7 +33,7 @@ export const formatTokenBalance = (balance: number, tick: string, decimals: numb
 }
 
 export const tokenPriceFormatter = (value: number): string => {
-  const { settings } = useSettings();
+  const { settings } = useSettings()
 
   if (value >= 1) {
     return value.toLocaleString(navigator.language, {
@@ -41,12 +41,12 @@ export const tokenPriceFormatter = (value: number): string => {
       currency: settings.currency,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    });
+    })
   }
 
-  const valueStr = value.toFixed(20).replace(/\.?0+$/, '');
-  const match = valueStr.match(/^0\.(0+)/);
-  const zeroCount = match ? match[1].length : 0;
+  const valueStr = value.toFixed(20).replace(/\.?0+$/, '')
+  const match = valueStr.match(/^0\.(0+)/)
+  const zeroCount = match ? match[1].length : 0
 
   if (zeroCount === 3) {
     return parseFloat(value.toFixed(7)).toLocaleString(navigator.language, {
@@ -54,28 +54,28 @@ export const tokenPriceFormatter = (value: number): string => {
       currency: settings.currency,
       minimumFractionDigits: 2,
       maximumFractionDigits: 7,
-    });
+    })
   }
 
   if (zeroCount >= 4) {
-    const significantPart = valueStr.slice(zeroCount + 2).slice(0, 4);
+    const significantPart = valueStr.slice(zeroCount + 2).slice(0, 4)
     const formatted = parseFloat(`0.${significantPart}`).toLocaleString(navigator.language, {
       style: 'currency',
       currency: settings.currency,
       minimumFractionDigits: 4,
       maximumFractionDigits: 4,
-    });
-    return `0.${zeroCount ? `0(${zeroCount})` : ''}${formatted.slice(2)}`;
+    })
+    return `0.${zeroCount ? `0(${zeroCount})` : ''}${formatted.slice(2)}`
   }
 
   if (zeroCount < 4) {
-    const roundedValue = parseFloat(value.toFixed(7));
+    const roundedValue = parseFloat(value.toFixed(7))
     return roundedValue.toLocaleString(navigator.language, {
       style: 'currency',
       currency: settings.currency,
       minimumFractionDigits: 2,
       maximumFractionDigits: 7,
-    });
+    })
   }
 
   return value.toLocaleString(navigator.language, {
@@ -83,9 +83,8 @@ export const tokenPriceFormatter = (value: number): string => {
     currency: settings.currency,
     minimumFractionDigits: 2,
     maximumFractionDigits: 7,
-  });
-};
-
+  })
+}
 
 export const formatNumberAbbreviated = (balance: number): string => {
   const formatNumber = (num: number): string => {
@@ -145,17 +144,16 @@ export const getMarketCap = (minted: number, dec: number, floorPrice: number): n
 // }
 
 export const formatMarketCap = (minted: number, dec: number, floorPrice: number): string => {
-  const { settings } = useSettings();
-  const marketCap = getMarketCap(minted, dec, floorPrice);
+  const { settings } = useSettings()
+  const marketCap = getMarketCap(minted, dec, floorPrice)
 
   return marketCap.toLocaleString(navigator.language, {
     style: 'currency',
     currency: settings.currency,
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  });
-};
-
+  })
+}
 
 export const formatAndValidateAmount = (value: string, maxDecimals: number): string | null => {
   const decimalPlaces = value.split('.')[1]?.length || 0

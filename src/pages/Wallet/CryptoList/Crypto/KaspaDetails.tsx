@@ -45,11 +45,7 @@ const KaspaDetails: React.FC = () => {
         rows={[
           {
             label: `${settings.currency} Price`,
-            value: kaspaPrice.isPending ? (
-              'Loading...'
-            ) : (
-              <TokenPrice value={`${formattedTokenPrice}`} />
-            ),
+            value: kaspaPrice.isPending ? 'Loading...' : <TokenPrice value={`${formattedTokenPrice}`} />,
           },
         ]}
         className="mt-6 mb-6"

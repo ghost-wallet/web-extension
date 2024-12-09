@@ -49,7 +49,7 @@ export const currencies = {
   TWD: 'TWD', // Taiwan Dollar
   VND: 'VND', // Vietnamese Dong
   ZAR: 'ZAR', // South African Rand
-};
+}
 
 export const defaultSettings: ISettings = {
   version: 1,

@@ -51,10 +51,14 @@ export function useWalletTokens() {
       if (kasFyiMarketData) {
         const kasFyiToken = kasFyiMarketData.results.find((data) => data.ticker === token.tick)
         const floorPrice = token.tick === 'CUSDT' ? 1.0 : (kasFyiToken?.price.kas || 0) * kasPrice
+        const volume24h = kasFyiToken?.volume24h.usd || 0
+        const rank = kasFyiToken?.rank || 0
 
         return {
           ...token,
           floorPrice,
+          volume24h,
+          rank,
         } as Token
       } else if (ksprPricesData) {
         const ksprToken = ksprPricesData[token.tick]
@@ -62,11 +66,15 @@ export function useWalletTokens() {
         return {
           ...token,
           floorPrice: token.tick === 'CUSDT' ? 1.0 : (ksprToken?.floor_price || 0) * kasPrice,
+          volume24h: 0,
+          rank: 0,
         } as Token
       } else {
         return {
           ...token,
           floorPrice: 0,
+          volume24h: 0,
+          rank: 0,
         } as Token
       }
     })
