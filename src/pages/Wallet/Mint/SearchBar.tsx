@@ -6,25 +6,19 @@ import { sortSearchResults } from '@/utils/sorting'
 
 interface KRC20TokenSearchProps {
   onSearch: (ticker: string) => void
-  onToggleSuggestions: (show: boolean) => void
   krc20TokenList?: KRC20TokenResponse[]
 }
 
-const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch, onToggleSuggestions, krc20TokenList }) => {
+const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch, krc20TokenList }) => {
   const [ticker, setTicker] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
 
-  useEffect(() => {
-    onToggleSuggestions(showSuggestions)
-  }, [showSuggestions, onToggleSuggestions])
-
-  // Set sortedTokens to null to trigger loading in SuggestionsDropdown
   const sortedTokens = krc20TokenList ? sortSearchResults(krc20TokenList, ticker) : null
 
   const handleSearch = () => {
     if (ticker.trim() !== '') {
       onSearch(ticker)
-      setShowSuggestions(false) // Hide suggestions after search
+      setShowSuggestions(false)
     }
   }
 

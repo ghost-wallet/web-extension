@@ -86,7 +86,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
         title="Market Details"
         rows={[
           {
-            label: `Rank`,
+            label: `KRC20 Rank`,
             value: <TokenPrice value={`${rank}`} />,
           },
           {

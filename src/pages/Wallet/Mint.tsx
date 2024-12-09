@@ -18,6 +18,7 @@ import { useKrc20TokenList } from '@/hooks/kasplex/useKrc20TokenList'
 import ErrorMessages from '@/utils/constants/errorMessages'
 import { fetchKasFyiMarketData } from '@/hooks/kas-fyi/fetchMarketData'
 import MintLoading from '@/pages/Wallet/Mint/MintLoading'
+import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 
 export default function Mint() {
   const location = useLocation()
@@ -25,7 +26,6 @@ export default function Mint() {
   const [token, setToken] = useState<KRC20TokenResponse | null>(null)
   const [error, setError] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
-  const [showSuggestions, setShowSuggestions] = useState(false)
   const navigate = useNavigate()
   const { settings } = useSettings()
   const selectedNetwork = settings.nodes[settings.selectedNode].address
@@ -89,7 +89,7 @@ export default function Mint() {
   return (
     <>
       <TopNav />
-      <AnimatedMain className={`flex flex-col h-screen w-full ${showSuggestions ? '' : 'fixed'}`}>
+      <AnimatedMain className={`flex flex-col h-screen w-full`}>
         <div className="flex flex-col flex-grow px-4 pt-4">
           {selectedNetwork === 'testnet-11' && (
             <p className="text-warning text-center text-base mb-4">
@@ -99,7 +99,6 @@ export default function Mint() {
           {selectedNetwork !== 'testnet-11' && (
             <SearchBar
               onSearch={handleSearch}
-              onToggleSuggestions={setShowSuggestions}
               krc20TokenList={tokenList}
             />
           )}
@@ -114,9 +113,9 @@ export default function Mint() {
         </div>
       </AnimatedMain>
       {token && (
-        <div className={`bottom-20 left-0 right-0 px-4 ${showSuggestions ? '' : 'fixed'} z-0`}>
+        <BottomFixedContainer className="px-4 pb-20 bg-bgdarker">
           <NextButton text={canMintLabel} buttonEnabled={isMintable} onClick={handleContinue} />
-        </div>
+        </BottomFixedContainer>
       )}
       <BottomNav />
     </>
