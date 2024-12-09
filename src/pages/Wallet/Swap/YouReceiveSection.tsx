@@ -5,7 +5,6 @@ import EstimatedCurrencyValue from '@/components/EstimatedCurrencyValue'
 import { ChaingeAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
 import useReceiveAmountAfterFees from '@/hooks/chainge/useReceiveAmountAfterFees'
 import { formatNumberAbbreviated } from '@/utils/formatting'
-import useSettings from '@/hooks/contexts/useSettings'
 
 interface YouReceiveSectionProps {
   receiveAmount: string
@@ -24,18 +23,17 @@ const YouReceiveSection: React.FC<YouReceiveSectionProps> = ({
   aggregateQuote,
   loadingQuote,
 }) => {
-  const { settings } = useSettings()
-
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
   const displayAmount = receiveAmount ? formatNumberAbbreviated(receiveAmountAfterFees) : ''
 
   const isPayAmountValid = Number(payAmount) > 0
 
+  // TODO allow for other currencies
   const formattedCurrencyValue = Number(
     isPayAmountValid ? aggregateQuote?.outAmountUsd || 0 : 0,
   ).toLocaleString(navigator.language, {
     style: 'currency',
-    currency: settings.currency,
+    currency: 'USD',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
