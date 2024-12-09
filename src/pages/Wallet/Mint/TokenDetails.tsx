@@ -9,8 +9,6 @@ import {
 } from '@/utils/formatting'
 import { getMintedPercentage } from '@/utils/calculations'
 import { KRC20TokenResponse } from '@/utils/interfaces'
-import useSettings from '@/hooks/contexts/useSettings'
-import { getCurrencySymbol } from '@/utils/currencies'
 import TokenPrice from '@/components/TokenPrice'
 
 interface KRC20TokenDetailsProps {
@@ -18,9 +16,6 @@ interface KRC20TokenDetailsProps {
 }
 
 const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
-  const { settings } = useSettings()
-  const currencySymbol = getCurrencySymbol(settings.currency)
-
   const mintedPercentage =
     !isNaN(token.minted) && !isNaN(token.max) && token.max > 0
       ? getMintedPercentage(token.minted, token.max)
@@ -44,11 +39,11 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
             rows={[
               {
                 label: 'Price',
-                value: <TokenPrice value={`${currencySymbol}${formattedTokenPrice}`} />,
+                value: <TokenPrice value={`${formattedTokenPrice}`} />,
               },
               {
                 label: 'Market cap',
-                value: `${currencySymbol}${formattedMarketCap}`,
+                value: `${formattedMarketCap}`,
               },
               {
                 label: 'Total supply',

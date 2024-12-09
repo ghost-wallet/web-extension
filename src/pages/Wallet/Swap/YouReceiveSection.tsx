@@ -33,7 +33,7 @@ const YouReceiveSection: React.FC<YouReceiveSectionProps> = ({
 
   const formattedCurrencyValue = Number(
     isPayAmountValid ? aggregateQuote?.outAmountUsd || 0 : 0,
-  ).toLocaleString(undefined, {
+  ).toLocaleString(navigator.language, {
     style: 'currency',
     currency: settings.currency,
     minimumFractionDigits: 2,

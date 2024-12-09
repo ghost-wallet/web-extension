@@ -23,7 +23,7 @@ const useChaingeTokenData = (amount: string, token: ChaingeToken | null, tokens:
   const tokenPrice = chaingePriceData?.data?.data?.price ?? '0'
   const currencyValue = Number(amount) * Number(tokenPrice)
 
-  const formattedCurrencyValue = currencyValue.toLocaleString(undefined, {
+  const formattedCurrencyValue = currencyValue.toLocaleString(navigator.language, {
     style: 'currency',
     currency: settings.currency,
     minimumFractionDigits: 2,

@@ -1,7 +1,6 @@
 import React from 'react'
 import useSettings from '@/hooks/contexts/useSettings'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
-import { getCurrencySymbol } from '@/utils/currencies'
 import {
   formatNumberWithDecimal,
   formatNumberAbbreviated,
@@ -35,7 +34,6 @@ function krc20TokenInfoqueryFn({ queryKey }: { queryKey: [string, FetchKRC20Toke
 const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
   const { floorPrice, tick } = token
   const { settings } = useSettings()
-  const currencySymbol = getCurrencySymbol(settings.currency)
 
   const krc20TokenQuery = useQuery({
     queryKey: ['krc20TokenInfo', { selectedNode: settings.selectedNode, ticker: token.tick }],
@@ -57,7 +55,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
 
   const numericalBalance = formatNumberWithDecimal(token.balance, token.dec)
   const currencyValue = numericalBalance * (token.floorPrice ?? 0)
-  const formattedCurrencyValue = currencyValue.toLocaleString(undefined, {
+  const formattedCurrencyValue = currencyValue.toLocaleString(navigator.language, {
     style: 'currency',
     currency: settings.currency,
     minimumFractionDigits: 2,
@@ -82,13 +80,13 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
         rows={[
           {
             label: `${settings.currency} Price`,
-            value: <TokenPrice value={`${currencySymbol}${formattedTokenPrice}`} />,
+            value: <TokenPrice value={`${formattedTokenPrice}`} />,
           },
           ...(krc20Token
             ? [
                 {
                   label: `Market cap`,
-                  value: `${currencySymbol}${formatMarketCap(krc20Token.minted, krc20Token.dec, floorPrice)}`,
+                  value: `${formatMarketCap(krc20Token.minted, krc20Token.dec, floorPrice)}`,
                 },
                 {
                   label: '',

@@ -33,42 +33,65 @@ export const formatTokenBalance = (balance: number, tick: string, decimals: numb
 }
 
 export const tokenPriceFormatter = (value: number): string => {
-  const { settings } = useSettings()
+  const { settings } = useSettings();
+
   if (value >= 1) {
-    return value.toLocaleString(undefined, {
+    return value.toLocaleString(navigator.language, {
       style: 'currency',
       currency: settings.currency,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    })
+    });
   }
 
-  const valueStr = value.toFixed(20).replace(/\.?0+$/, '')
-  const match = valueStr.match(/^0\.(0+)/)
-  const zeroCount = match ? match[1].length : 0
+  const valueStr = value.toFixed(20).replace(/\.?0+$/, '');
+  const match = valueStr.match(/^0\.(0+)/);
+  const zeroCount = match ? match[1].length : 0;
 
   if (zeroCount === 3) {
-    return value.toFixed(7).replace(/0+$/, '')
+    return parseFloat(value.toFixed(7)).toLocaleString(navigator.language, {
+      style: 'currency',
+      currency: settings.currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 7,
+    });
   }
 
   if (zeroCount >= 4) {
-    const significantPart = valueStr.slice(zeroCount + 2).slice(0, 4)
-    return `0.${zeroCount ? `0(${zeroCount})` : ''}${significantPart}`
+    const significantPart = valueStr.slice(zeroCount + 2).slice(0, 4);
+    const formatted = parseFloat(`0.${significantPart}`).toLocaleString(navigator.language, {
+      style: 'currency',
+      currency: settings.currency,
+      minimumFractionDigits: 4,
+      maximumFractionDigits: 4,
+    });
+    return `0.${zeroCount ? `0(${zeroCount})` : ''}${formatted.slice(2)}`;
   }
 
   if (zeroCount < 4) {
-    const roundedValue = value.toFixed(7).replace(/0+$/, '')
-    return parseFloat(roundedValue).toString()
+    const roundedValue = parseFloat(value.toFixed(7));
+    return roundedValue.toLocaleString(navigator.language, {
+      style: 'currency',
+      currency: settings.currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 7,
+    });
   }
 
-  return value.toString()
-}
+  return value.toLocaleString(navigator.language, {
+    style: 'currency',
+    currency: settings.currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 7,
+  });
+};
+
 
 export const formatNumberAbbreviated = (balance: number): string => {
   const formatNumber = (num: number): string => {
     const options: Intl.NumberFormatOptions =
       num % 1 === 0 ? { maximumFractionDigits: 0 } : { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-    return num.toLocaleString(undefined, options)
+    return num.toLocaleString(navigator.language, options)
   }
 
   if (balance >= 1_000_000_000_000_000_000_000_000_000) {
@@ -96,7 +119,7 @@ export const formatNumberAbbreviated = (balance: number): string => {
     // Million
     return formatNumber(balance / 1_000_000) + 'M'
   } else {
-    return balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    return balance.toLocaleString(navigator.language, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   }
 }
 
@@ -112,18 +135,27 @@ export const getMarketCap = (minted: number, dec: number, floorPrice: number): n
   return formatNumberWithDecimal(minted, dec) * floorPrice
 }
 
-export const formatMarketCapAbbreviated = (minted: number, dec: number, floorPrice: number): string => {
-  const marketCap = Math.floor(getMarketCap(minted, dec, floorPrice))
-  if (marketCap < 100_000_000) {
-    return marketCap.toLocaleString()
-  }
-  return formatNumberAbbreviated(marketCap)
-}
+// TODO: still need to abbreviate market caps?
+// export const formatMarketCapAbbreviated = (minted: number, dec: number, floorPrice: number): string => {
+//   const marketCap = Math.floor(getMarketCap(minted, dec, floorPrice))
+//   if (marketCap < 100_000_000) {
+//     return marketCap.toLocaleString()
+//   }
+//   return formatNumberAbbreviated(marketCap)
+// }
 
 export const formatMarketCap = (minted: number, dec: number, floorPrice: number): string => {
-  const marketCap = getMarketCap(minted, dec, floorPrice)
-  return new Intl.NumberFormat(navigator.language, { maximumFractionDigits: 0 }).format(marketCap)
-}
+  const { settings } = useSettings();
+  const marketCap = getMarketCap(minted, dec, floorPrice);
+
+  return marketCap.toLocaleString(navigator.language, {
+    style: 'currency',
+    currency: settings.currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+};
+
 
 export const formatAndValidateAmount = (value: string, maxDecimals: number): string | null => {
   const decimalPlaces = value.split('.')[1]?.length || 0

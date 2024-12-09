@@ -48,7 +48,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   const [warning, setWarning] = useState<string | null>(null)
   const [showDialog, setShowDialog] = useState(false)
 
-  const formattedOutAmountUsd = Number(aggregateQuote?.outAmountUsd).toLocaleString(undefined, {
+  const formattedOutAmountUsd = Number(aggregateQuote?.outAmountUsd).toLocaleString(navigator.language, {
     style: 'currency',
     currency: settings.currency,
     minimumFractionDigits: 2,
