@@ -17,15 +17,39 @@ export interface ISettings {
 export const currencies = {
   USD: 'USD', // US Dollar
   EUR: 'EUR', // Euro
-  JPY: 'JPY', // Japanese Yen
   GBP: 'GBP', // British Pound
+  AED: 'AED', // UAE Dirham
   AUD: 'AUD', // Australian Dollar
+  BRL: 'BRL', // Brazilian Real
   CAD: 'CAD', // Canadian Dollar
   CHF: 'CHF', // Swiss Franc
   CNY: 'CNY', // Chinese Yuan
-  SEK: 'SEK', // Swedish Krona
+  COP: 'COP', // Colombian Peso
+  CZK: 'CZK', // Czech Koruna
+  DKK: 'DKK', // Danish Krone
+  EGP: 'EGP', // Egyptian Pound
+  HUF: 'HUF', // Hungarian Forint
+  HKD: 'HKD', // Hong Kong Dollar
+  IDR: 'IDR', // Indonesian Rupiah
+  INR: 'INR', // Indian Rupee
+  JPY: 'JPY', // Japanese Yen
+  KRW: 'KRW', // South Korean Won
+  MXN: 'MXN', // Mexican Peso
+  MYR: 'MYR', // Malaysian Ringgit
+  NOK: 'NOK', // Norwegian Krone
   NZD: 'NZD', // New Zealand Dollar
-}
+  PHP: 'PHP', // Philippine Peso
+  PKR: 'PKR', // Pakistani Rupee
+  PLN: 'PLN', // Polish Zloty
+  RUB: 'RUB', // Russian Ruble
+  SAR: 'SAR', // Saudi Riyal
+  SEK: 'SEK', // Swedish Krona
+  SGD: 'SGD', // Singapore Dollar
+  THB: 'THB', // Thai Baht
+  TWD: 'TWD', // Taiwan Dollar
+  VND: 'VND', // Vietnamese Dong
+  ZAR: 'ZAR', // South African Rand
+};
 
 export const defaultSettings: ISettings = {
   version: 1,

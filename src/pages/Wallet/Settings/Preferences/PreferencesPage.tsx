@@ -27,7 +27,7 @@ export default function PreferencesPage() {
                 </Menu.Button>
                 <Menu.Items
                   className="absolute mt-2 w-full rounded-md shadow-lg bg-bgdarker ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
-                  style={{ maxHeight: '200px', overflowY: 'auto' }}
+                  style={{ maxHeight: '300px', overflowY: 'auto' }} // Increased maxHeight to 400px
                 >
                   {Object.keys(currencies).map((currencyCode) => (
                     <Menu.Item key={currencyCode}>

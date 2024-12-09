@@ -1,3 +1,4 @@
+// TODO remove if we can rely on settings currencies and to locale strings
 export const getCurrencySymbol = (currency: string) => {
   switch (currency) {
     case 'USD':

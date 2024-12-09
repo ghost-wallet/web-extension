@@ -1,19 +1,20 @@
 import React from 'react'
 import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
 import useSettings from '@/hooks/contexts/useSettings'
-import { getCurrencySymbol } from '@/utils/currencies'
 import TableSection from '@/components/table/TableSection'
 import TokenPrice from '@/components/TokenPrice'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import KaspaTxnHistory from '@/pages/Wallet/Transactions/KaspaTxnHistory'
 import KaspaTxnHistoryTestnet from '@/pages/Wallet/Transactions/KaspaTxnHistoryTestnet'
+import { tokenPriceFormatter } from '@/utils/formatting'
 
 const KaspaDetails: React.FC = () => {
   const { settings } = useSettings()
   const { kaspa } = useKaspa()
   const kaspaPrice = useKaspaPrice(settings.currency)
-  const currencySymbol = getCurrencySymbol(settings.currency)
   const network = settings.nodes[settings.selectedNode].address
+
+  const formattedTokenPrice = tokenPriceFormatter(kaspaPrice.data!)
 
   const currencyValue = kaspa.balance * kaspaPrice.data!
   const formattedCurrencyValue = currencyValue.toLocaleString(navigator.language, {
@@ -47,7 +48,7 @@ const KaspaDetails: React.FC = () => {
             value: kaspaPrice.isPending ? (
               'Loading...'
             ) : (
-              <TokenPrice value={`${currencySymbol}${kaspaPrice.data}`} />
+              <TokenPrice value={`${formattedTokenPrice}`} />
             ),
           },
         ]}
