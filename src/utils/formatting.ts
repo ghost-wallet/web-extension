@@ -86,40 +86,62 @@ export const tokenPriceFormatter = (value: number): string => {
   })
 }
 
-export const formatNumberAbbreviated = (balance: number): string => {
-  const formatNumber = (num: number): string => {
-    const options: Intl.NumberFormatOptions =
-      num % 1 === 0 ? { maximumFractionDigits: 0 } : { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-    return num.toLocaleString(navigator.language, options)
+export const formatNumberAbbreviated = (balance: number, isCurrency: boolean = false): string => {
+  const { settings } = useSettings()
+
+  let options: Intl.NumberFormatOptions
+
+  if (balance >= 1000000) {
+    options = isCurrency
+      ? {
+          style: 'currency',
+          currency: settings.currency,
+          notation: 'compact',
+          maximumFractionDigits: 2,
+        }
+      : {
+          notation: 'compact',
+          maximumFractionDigits: 2,
+        }
+  } else {
+    options = isCurrency
+      ? {
+          style: 'currency',
+          currency: settings.currency,
+          maximumFractionDigits: 2,
+        }
+      : {
+          maximumFractionDigits: 2,
+        }
   }
 
-  if (balance >= 1_000_000_000_000_000_000_000_000_000) {
-    // Decillion
-    return formatNumber(balance / 1_000_000_000_000_000_000_000_000_000) + 'Dc'
-  } else if (balance >= 1_000_000_000_000_000_000_000_000) {
-    // Nonillion
-    return formatNumber(balance / 1_000_000_000_000_000_000_000_000) + 'N'
-  } else if (balance >= 1_000_000_000_000_000_000_000) {
-    // Octillion
-    return formatNumber(balance / 1_000_000_000_000_000_000_000) + 'Oc'
-  } else if (balance >= 1_000_000_000_000_000_000) {
-    // Septillion
-    return formatNumber(balance / 1_000_000_000_000_000_000) + 'Sp'
-  } else if (balance >= 1_000_000_000_000_000) {
-    // Sextillion
-    return formatNumber(balance / 1_000_000_000_000_000) + 'Sx'
-  } else if (balance >= 1_000_000_000_000) {
-    // Quintillion
-    return formatNumber(balance / 1_000_000_000_000) + 'Qi'
-  } else if (balance >= 1_000_000_000) {
-    // Billion
-    return formatNumber(balance / 1_000_000_000) + 'B'
-  } else if (balance >= 1_000_000) {
-    // Million
-    return formatNumber(balance / 1_000_000) + 'M'
-  } else {
-    return balance.toLocaleString(navigator.language, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return balance.toLocaleString(navigator.language, options)
+}
+
+export const formatMarketCapAbbreviated = (minted: number, dec: number, floorPrice: number): string => {
+  const marketCap = getMarketCap(minted, dec, floorPrice)
+
+  const { settings } = useSettings()
+
+  const options: Intl.NumberFormatOptions = {
+    style: 'currency',
+    currency: settings.currency,
+    maximumFractionDigits: 0,
+    ...(marketCap >= 100_000_000 && { notation: 'compact' }),
   }
+
+  return marketCap.toLocaleString(navigator.language, options)
+}
+
+export const formatVolumeAbbreviated = (volume: number): string => {
+  const options: Intl.NumberFormatOptions = {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+    ...(volume >= 100_000_000 && { notation: 'compact' }),
+  }
+
+  return volume.toLocaleString(navigator.language, options)
 }
 
 export const truncateAddress = (address: string): string => {
@@ -134,15 +156,6 @@ export const getMarketCap = (minted: number, dec: number, floorPrice: number): n
   return formatNumberWithDecimal(minted, dec) * floorPrice
 }
 
-// TODO: still need to abbreviate market caps?
-// export const formatMarketCapAbbreviated = (minted: number, dec: number, floorPrice: number): string => {
-//   const marketCap = Math.floor(getMarketCap(minted, dec, floorPrice))
-//   if (marketCap < 100_000_000) {
-//     return marketCap.toLocaleString()
-//   }
-//   return formatNumberAbbreviated(marketCap)
-// }
-
 export const formatMarketCap = (minted: number, dec: number, floorPrice: number): string => {
   const { settings } = useSettings()
   const marketCap = getMarketCap(minted, dec, floorPrice)
@@ -155,6 +168,14 @@ export const formatMarketCap = (minted: number, dec: number, floorPrice: number)
   })
 }
 
+export const formatGasFee = (gasFee: string | number): string => {
+  const parsedGasFee = typeof gasFee === 'string' ? parseFloat(gasFee) : gasFee
+  const safeGasFee = isNaN(parsedGasFee) ? 0 : parsedGasFee
+  return safeGasFee.toLocaleString(navigator.language, {
+    maximumFractionDigits: 8,
+  })
+}
+
 export const formatAndValidateAmount = (value: string, maxDecimals: number): string | null => {
   const decimalPlaces = value.split('.')[1]?.length || 0
   if (decimalPlaces > maxDecimals) return null
@@ -164,4 +185,17 @@ export const formatAndValidateAmount = (value: string, maxDecimals: number): str
   }
 
   return value
+}
+
+export const formatPercentage = (value: string | number): string => {
+  const parsedValue = typeof value === 'string' ? parseFloat(value) : value
+
+  if (isNaN(parsedValue)) {
+    throw new Error('Invalid value provided to formatPercentage')
+  }
+
+  return new Intl.NumberFormat(navigator.language, {
+    style: 'percent',
+    maximumFractionDigits: 2,
+  }).format(parsedValue / 100)
 }

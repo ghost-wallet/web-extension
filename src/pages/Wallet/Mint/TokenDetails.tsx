@@ -5,7 +5,8 @@ import {
   formatNumberWithDecimal,
   formatNumberAbbreviated,
   tokenPriceFormatter,
-  formatMarketCap,
+  formatMarketCapAbbreviated,
+  formatPercentage,
 } from '@/utils/formatting'
 import { getMintedPercentage } from '@/utils/calculations'
 import { KRC20TokenResponse } from '@/utils/interfaces'
@@ -24,7 +25,7 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
     !isNaN(token.pre) && !isNaN(token.max) && token.max > 0 ? getMintedPercentage(token.pre, token.max) : '0'
 
   const formattedTokenPrice = tokenPriceFormatter(token.floorPrice ?? 0)
-  const formattedMarketCap = formatMarketCap(token.minted, token.dec, token.floorPrice ?? 0)
+  const formattedMarketCap = formatMarketCapAbbreviated(token.minted, token.dec, token.floorPrice ?? 0)
 
   return (
     <div className="rounded-md py-2">
@@ -51,11 +52,11 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
               },
               {
                 label: 'Total minted',
-                value: `${mintedPercentage}%`,
+                value: formatPercentage(mintedPercentage),
               },
               {
                 label: 'Pre-minted',
-                value: `${preMintedPercentage}%`,
+                value: formatPercentage(preMintedPercentage),
               },
               {
                 label: 'Mints',

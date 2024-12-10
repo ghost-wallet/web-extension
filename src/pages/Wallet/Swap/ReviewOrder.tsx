@@ -6,7 +6,7 @@ import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
 import ReviewOrderToken from '@/pages/Wallet/Swap/ReviewOrderToken'
 import NextButton from '@/components/buttons/NextButton'
 import { ChaingeAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
-import { formatNumberAbbreviated } from '@/utils/formatting'
+import { formatNumberAbbreviated, formatPercentage } from '@/utils/formatting'
 import ReviewOrderQuote from '@/pages/Wallet/Swap/ReviewOrderQuote'
 import useReceiveAmountAfterFees from '@/hooks/chainge/useReceiveAmountAfterFees'
 import useKaspa from '@/hooks/contexts/useKaspa'
@@ -61,7 +61,17 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
       // if more than 5% loss on trade
       const difference = currencyValue - outAmountUsd
       const percentageLoss = ((difference / currencyValue) * 100).toFixed(2)
-      setWarning(WarningMessages.LOW_LIQUIDITY(difference, percentageLoss))
+      const formattedPercentageLoss = formatPercentage(percentageLoss)
+      const formattedDifference = difference.toLocaleString(navigator.language, {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+      const formattedPriceImpact = formatPercentage(aggregateQuote.priceImpact)
+      setWarning(
+        WarningMessages.LOW_LIQUIDITY(formattedDifference, formattedPercentageLoss, formattedPriceImpact),
+      )
     } else {
       setWarning(null)
     }

@@ -97,10 +97,7 @@ export default function Mint() {
             </p>
           )}
           {selectedNetwork !== 'testnet-11' && (
-            <SearchBar
-              onSearch={handleSearch}
-              krc20TokenList={tokenList}
-            />
+            <SearchBar onSearch={handleSearch} krc20TokenList={tokenList} />
           )}
           {loading ? (
             <div className="mt-10">

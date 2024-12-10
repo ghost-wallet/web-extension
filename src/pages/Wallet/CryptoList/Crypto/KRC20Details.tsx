@@ -5,7 +5,8 @@ import {
   formatNumberWithDecimal,
   formatNumberAbbreviated,
   tokenPriceFormatter,
-  formatMarketCap,
+  formatMarketCapAbbreviated,
+  formatVolumeAbbreviated,
 } from '@/utils/formatting'
 import { getMintedPercentage } from '@/utils/calculations'
 import { formatValue } from '@/utils/formatting'
@@ -44,13 +45,6 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
 
   const formattedTokenPrice = tokenPriceFormatter(floorPrice)
 
-  const formattedVolume = volume24h.toLocaleString(navigator.language, {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  })
-
   const mintedPercentage =
     krc20Token?.minted && krc20Token?.max
       ? getMintedPercentage(formatValue(krc20Token.minted), formatValue(krc20Token.max))
@@ -62,12 +56,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
 
   const numericalBalance = formatNumberWithDecimal(token.balance, token.dec)
   const currencyValue = numericalBalance * (token.floorPrice ?? 0)
-  const formattedCurrencyValue = currencyValue.toLocaleString(navigator.language, {
-    style: 'currency',
-    currency: settings.currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
+  const formattedCurrencyValue = formatNumberAbbreviated(currencyValue, true)
 
   return (
     <div className="p-4">
@@ -77,7 +66,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
           { label: settings.currency, value: `${formattedCurrencyValue}` },
           {
             label: tick,
-            value: formatNumberWithDecimal(token.balance, token.dec).toLocaleString(),
+            value: formatNumberAbbreviated(formatNumberWithDecimal(token.balance, token.dec)),
           },
         ]}
       />
@@ -97,11 +86,11 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
             ? [
                 {
                   label: `Market cap`,
-                  value: `${formatMarketCap(krc20Token.minted, krc20Token.dec, floorPrice)}`,
+                  value: `${formatMarketCapAbbreviated(krc20Token.minted, krc20Token.dec, floorPrice)}`,
                 },
                 {
                   label: `Volume 24h`,
-                  value: `${formattedVolume}`,
+                  value: `${formatVolumeAbbreviated(volume24h)}`,
                 },
                 {
                   label: '',

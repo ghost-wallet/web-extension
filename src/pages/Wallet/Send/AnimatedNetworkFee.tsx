@@ -1,5 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
+import { formatGasFee } from '@/utils/formatting'
 
 interface GasFeeProps {
   fee: string | number
@@ -15,7 +16,7 @@ const AnimatedGasFee: React.FC<GasFeeProps> = ({ fee }) => {
       transition={{ duration: 0.4 }}
       className="text-base text-primarytext"
     >
-      {fee} KAS
+      {formatGasFee(fee)} KAS
     </motion.div>
   )
 }

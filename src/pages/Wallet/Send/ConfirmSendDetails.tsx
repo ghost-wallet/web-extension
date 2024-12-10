@@ -4,6 +4,7 @@ import TruncatedCopyAddress from '@/components/TruncatedCopyAddress'
 import Header from '@/components/Header'
 import AnimatedNetworkFee from '@/pages/Wallet/Send/AnimatedNetworkFee'
 import TableSection from '@/components/table/TableSection'
+import { formatNumberAbbreviated } from '@/utils/formatting'
 
 interface ConfirmSendDetailsProps {
   token: any
@@ -43,7 +44,7 @@ const ConfirmSendDetails: React.FC<ConfirmSendDetailsProps> = ({
         <CryptoImage ticker={token.tick} size={'large'} />
         <div className="text-primarytext text-center p-2">
           <p className="text-lg">
-            {amount} {token.tick}
+            {formatNumberAbbreviated(Number(amount))} {token.tick}
           </p>
         </div>
       </div>

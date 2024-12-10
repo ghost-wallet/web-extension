@@ -1,6 +1,6 @@
 import React from 'react'
 import { ChaingeAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
-import { formatNumberWithDecimal } from '@/utils/formatting'
+import { formatGasFee, formatNumberWithDecimal, formatPercentage } from '@/utils/formatting'
 import TableSection from '@/components/table/TableSection'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
@@ -34,15 +34,15 @@ const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({ gasFee, slippage, aggreg
         },
         {
           label: 'Gas fee',
-          value: `${gasFee} KAS`,
+          value: `${formatGasFee(gasFee)} KAS`,
         },
         {
           label: 'Price impact',
-          value: `${aggregateQuote.priceImpact}%`,
+          value: formatPercentage(aggregateQuote.priceImpact),
         },
         {
           label: 'Slippage',
-          value: `${slippage}%`,
+          value: formatPercentage(slippage),
         },
       ]}
     />

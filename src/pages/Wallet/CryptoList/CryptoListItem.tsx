@@ -3,7 +3,6 @@ import { formatNumberWithDecimal, formatNumberAbbreviated } from '@/utils/format
 import CryptoImage from '@/components/CryptoImage'
 import { KaspaToken, Token } from '@/utils/interfaces'
 import { Switch } from '@headlessui/react'
-import useSettings from '@/hooks/contexts/useSettings'
 
 interface CryptoListItemProps {
   token: Token | KaspaToken
@@ -13,16 +12,10 @@ interface CryptoListItemProps {
 }
 
 const CryptoListItem: React.FC<CryptoListItemProps> = ({ token, showToggle, isEnabled, onToggle }) => {
-  const { settings } = useSettings()
-
   const numericalBalance = token.isKaspa ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
+
   const currencyValue = numericalBalance * (token.floorPrice ?? 0)
-  const formattedCurrencyValue = currencyValue.toLocaleString(navigator.language, {
-    style: 'currency',
-    currency: settings.currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
+  const formattedCurrencyValue = currencyValue > 0 ? formatNumberAbbreviated(currencyValue, true) : '-' // Default to '-'
 
   const formattedBalance = formatNumberAbbreviated(numericalBalance)
 

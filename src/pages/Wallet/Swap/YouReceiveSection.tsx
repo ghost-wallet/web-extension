@@ -4,7 +4,6 @@ import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import EstimatedCurrencyValue from '@/components/EstimatedCurrencyValue'
 import { ChaingeAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
 import useReceiveAmountAfterFees from '@/hooks/chainge/useReceiveAmountAfterFees'
-import { formatNumberAbbreviated } from '@/utils/formatting'
 
 interface YouReceiveSectionProps {
   receiveAmount: string
@@ -24,7 +23,7 @@ const YouReceiveSection: React.FC<YouReceiveSectionProps> = ({
   loadingQuote,
 }) => {
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
-  const displayAmount = receiveAmount ? formatNumberAbbreviated(receiveAmountAfterFees) : ''
+  const displayAmount = receiveAmount ? receiveAmountAfterFees.toString() : ''
 
   const isPayAmountValid = Number(payAmount) > 0
 

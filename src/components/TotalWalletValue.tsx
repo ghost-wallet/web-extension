@@ -1,19 +1,12 @@
 import React from 'react'
-import useSettings from '@/hooks/contexts/useSettings'
+import { formatNumberAbbreviated } from '@/utils/formatting'
 
 interface TotalValueProps {
   totalValue: number
 }
 
 const TotalWalletValue: React.FC<TotalValueProps> = ({ totalValue }) => {
-  const { settings } = useSettings()
-
-  const formattedCurrencyValue = totalValue.toLocaleString(navigator.language, {
-    style: 'currency',
-    currency: settings.currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
+  const formattedCurrencyValue = formatNumberAbbreviated(totalValue, true)
 
   return (
     <h1 className="text-primarytext font-rubik text-center flex-grow text-4xl py-4">
