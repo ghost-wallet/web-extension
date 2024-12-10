@@ -36,7 +36,7 @@ const ReviewOrderButton: React.FC<ReviewOrderButtonProps> = ({
         <WarningMessage message="Pay amount must be more than 0" />
       ) : amountError && Number(payAmount) > 0 ? (
         <ErrorButton text="Insufficient funds" />
-      ) : isBelowMinimum && Number(payAmount) > 0 ? (
+      ) : !loadingQuote && isBelowMinimum && Number(payAmount) > 0 ? (
         <WarningMessage message={`Receive amount must be more than $${MINIMUM_RECEIVE_AMOUNT_USD} USD`} />
       ) : gasFeeError ? (
         <WarningMessage message="Either the pay amount is invalid or not enough KAS for gas fees" />
