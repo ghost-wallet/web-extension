@@ -1,5 +1,5 @@
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
-import { formatTokenBalance } from '@/utils/formatting'
+import { formatTokenBalance, formatUsd } from '@/utils/formatting'
 import useChaingePrice from '@/hooks/chainge/useChaingePrice'
 
 const useChaingeTokenData = (amount: string, token: ChaingeToken | null, tokens: any[]) => {
@@ -22,12 +22,7 @@ const useChaingeTokenData = (amount: string, token: ChaingeToken | null, tokens:
   const currencyValue = Number(amount) * Number(tokenPrice)
 
   // TODO find way to properly convert USD to other currencies
-  const formattedCurrencyValue = currencyValue.toLocaleString(navigator.language, {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
+  const formattedCurrencyValue = formatUsd(currencyValue)
 
   return {
     formattedCurrencyValue,

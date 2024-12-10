@@ -4,6 +4,7 @@ import ErrorButton from '@/components/buttons/ErrorButton'
 import WarningMessage from '@/components/WarningMessage'
 import { MINIMUM_RECEIVE_AMOUNT_USD } from '@/utils/constants/constants'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
+import { formatUsd } from '@/utils/formatting'
 
 interface ReviewOrderButtonProps {
   amountError: string | null
@@ -37,7 +38,9 @@ const ReviewOrderButton: React.FC<ReviewOrderButtonProps> = ({
       ) : amountError && Number(payAmount) > 0 ? (
         <ErrorButton text="Insufficient funds" />
       ) : !loadingQuote && isBelowMinimum && Number(payAmount) > 0 ? (
-        <WarningMessage message={`Receive amount must be more than $${MINIMUM_RECEIVE_AMOUNT_USD} USD`} />
+        <WarningMessage
+          message={`Receive amount must be more than ${formatUsd(MINIMUM_RECEIVE_AMOUNT_USD)}`}
+        />
       ) : gasFeeError ? (
         <WarningMessage message="Either the pay amount is invalid or not enough KAS for gas fees" />
       ) : Number(payAmount) > 0 ? (

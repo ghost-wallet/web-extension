@@ -6,7 +6,7 @@ import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
 import ReviewOrderToken from '@/pages/Wallet/Swap/ReviewOrderToken'
 import NextButton from '@/components/buttons/NextButton'
 import { ChaingeAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
-import { formatNumberAbbreviated, formatPercentage } from '@/utils/formatting'
+import { formatNumberAbbreviated, formatPercentage, formatUsd } from '@/utils/formatting'
 import ReviewOrderQuote from '@/pages/Wallet/Swap/ReviewOrderQuote'
 import useReceiveAmountAfterFees from '@/hooks/chainge/useReceiveAmountAfterFees'
 import useKaspa from '@/hooks/contexts/useKaspa'
@@ -47,12 +47,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   const [showDialog, setShowDialog] = useState(false)
 
   // TODO convert USD to local settings currency
-  const formattedOutAmountUsd = Number(aggregateQuote?.outAmountUsd).toLocaleString(navigator.language, {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
+  const formattedOutAmountUsd = formatUsd(Number(aggregateQuote?.outAmountUsd))
 
   useEffect(() => {
     const outAmountUsd = Number(aggregateQuote.outAmountUsd)
@@ -62,12 +57,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
       const difference = currencyValue - outAmountUsd
       const percentageLoss = ((difference / currencyValue) * 100).toFixed(2)
       const formattedPercentageLoss = formatPercentage(percentageLoss)
-      const formattedDifference = difference.toLocaleString(navigator.language, {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })
+      const formattedDifference = formatUsd(difference)
       const formattedPriceImpact = formatPercentage(aggregateQuote.priceImpact)
       setWarning(
         WarningMessages.LOW_LIQUIDITY(formattedDifference, formattedPercentageLoss, formattedPriceImpact),

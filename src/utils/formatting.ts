@@ -156,18 +156,6 @@ export const getMarketCap = (minted: number, dec: number, floorPrice: number): n
   return formatNumberWithDecimal(minted, dec) * floorPrice
 }
 
-export const formatMarketCap = (minted: number, dec: number, floorPrice: number): string => {
-  const { settings } = useSettings()
-  const marketCap = getMarketCap(minted, dec, floorPrice)
-
-  return marketCap.toLocaleString(navigator.language, {
-    style: 'currency',
-    currency: settings.currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  })
-}
-
 export const formatGasFee = (gasFee: string | number): string => {
   const parsedGasFee = typeof gasFee === 'string' ? parseFloat(gasFee) : gasFee
   const safeGasFee = isNaN(parsedGasFee) ? 0 : parsedGasFee
@@ -198,4 +186,13 @@ export const formatPercentage = (value: string | number): string => {
     style: 'percent',
     maximumFractionDigits: 2,
   }).format(parsedValue / 100)
+}
+
+export const formatUsd = (value: number): string => {
+  return value.toLocaleString(navigator.language, {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
 }
