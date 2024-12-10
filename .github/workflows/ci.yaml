@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: Build and Artifact Upload
+    name: Build Extension
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
