@@ -1,0 +1,26 @@
+name: Release extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build and Artifact Upload
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use bun
+        uses: oven-sh/setup-bun@v2
+      - name: Install Dependencies
+        run: bun install
+      - name: Build
+        run: bun run build
+      - name: zip extension bundle
+        working-directory: dist
+        run: zip -r ../ghost-wallet-${{ github.ref_name }}.zip .
+      - name: Upload Artifact as Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ghost-wallet-${{ github.ref_name }}.zip  
