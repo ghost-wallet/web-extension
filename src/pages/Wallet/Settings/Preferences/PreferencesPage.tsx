@@ -4,7 +4,7 @@ import Header from '@/components/Header'
 import AnimatedMain from '@/components/AnimatedMain'
 import BottomNav from '@/components/navigation/BottomNav'
 import useSettings from '@/hooks/contexts/useSettings'
-import { currencies } from '@/contexts/settings/SettingsProvider'
+import { currencies } from '@/utils/constants/currencies'
 
 export default function PreferencesPage() {
   const { settings, updateSetting } = useSettings()
