@@ -6,6 +6,8 @@
 
 First open source Chrome web extension wallet for Kaspa & KRC20 tokens. Swap, mint, send, and receive KRC20 tokens directly in the wallet. You keep full custody of your private keys, which never leave your web browser. Ghost wallet web extension repo is forked from [Kaspian](https://github.com/KaffinPX/Kaspian).
 
+[![UV4C4ybeBTsZt43U4xis](https://github.com/user-attachments/assets/7832f254-747c-4e57-92bb-8028ae66ed2f)](https://chromewebstore.google.com/detail/ghost-wallet/npeepgefdbcmlapenpeephmidkobghna)
+
 ---
 
 ## Socials
