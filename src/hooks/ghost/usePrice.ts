@@ -1,10 +1,13 @@
 import { fetchPrice } from './fetchPrice'
 import { fetchFromCoinGecko } from '../coingecko/fetchFromCoinGecko'
+import { fetchFromKaspaApi } from '@/hooks/kaspa/fetchFromKaspaApi'
 import { useQuery } from '@tanstack/react-query'
 import useSettings from '@/hooks/contexts/useSettings'
 
-export function useKaspaPrice(ticker: string = 'KAS', name: string = 'Kaspa') {
+export function useKaspaPrice() {
   const { settings } = useSettings()
+  const ticker = 'KAS'
+  const name = 'Kaspa'
 
   return useQuery({
     queryKey: ['kaspaPrice', settings.currency],
@@ -12,8 +15,14 @@ export function useKaspaPrice(ticker: string = 'KAS', name: string = 'Kaspa') {
       try {
         return await fetchPrice(settings.currency, ticker, name)
       } catch (error) {
-        console.error('Failed to fetch price from Ghost API, falling back to CoinGecko:', error)
-        return await fetchFromCoinGecko(settings.currency, name)
+        try {
+          console.error('Failed to fetch price from Ghost API, falling back to CoinGecko:', error)
+          return await fetchFromCoinGecko(settings.currency, name)
+        } catch (error) {
+          if (settings.currency === 'USD') {
+            return fetchFromKaspaApi()
+          }
+        }
       }
     },
     staleTime: 10_000, // 10 seconds
@@ -22,8 +31,10 @@ export function useKaspaPrice(ticker: string = 'KAS', name: string = 'Kaspa') {
   })
 }
 
-export function useTetherPrice(ticker: string = 'USDT', name: string = 'Tether') {
+export function useTetherPrice() {
   const { settings } = useSettings()
+  const ticker = 'USDT'
+  const name = 'Tether'
 
   return useQuery({
     queryKey: ['tetherPrice', settings.currency],
@@ -31,8 +42,14 @@ export function useTetherPrice(ticker: string = 'USDT', name: string = 'Tether')
       try {
         return await fetchPrice(settings.currency, ticker, name)
       } catch (error) {
-        console.error('Failed to fetch price from Ghost API, falling back to CoinGecko:', error)
-        return await fetchFromCoinGecko(settings.currency, name)
+        try {
+          console.error('Failed to fetch price from Ghost API, falling back to CoinGecko:', error)
+          return await fetchFromCoinGecko(settings.currency, name)
+        } catch (error) {
+          if (settings.currency === 'USD') {
+            return 1.0
+          }
+        }
       }
     },
     staleTime: 300_000, // 5 minutes
