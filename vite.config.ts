@@ -38,6 +38,7 @@ const manifest: ManifestV3Export = {
     'https://api.ghostwallet.org/*',
     'https://*.kaspa.blue/*',
     'https://*.chainge.finance/*',
+    'https://*.amazonaws.com/*',
   ],
 }
 
