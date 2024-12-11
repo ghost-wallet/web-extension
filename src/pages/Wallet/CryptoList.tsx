@@ -27,7 +27,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const handleTokenClick = (token: Token | KaspaToken) => {
     if (location.pathname.includes('/send')) {
       navigate(`/send/${token.tick}`, { state: { token } })
-    } else if (location.pathname.includes('/wallet')) {
+    } else {
       navigate(`/wallet/crypto-details/${token.tick}`, { state: { token } })
     }
   }
