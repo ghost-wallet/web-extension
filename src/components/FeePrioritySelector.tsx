@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import TableSection from '@/components/table/TableSection'
+import { formatGasFee } from '@/utils/formatting'
 
 interface FeePrioritySelectorProps {
   currentFeeTypeIndex: number
@@ -46,7 +47,7 @@ const FeePrioritySelector: React.FC<FeePrioritySelectorProps> = ({
 
       <TableSection
         title=""
-        rows={[{ label: 'Gas fee', value: estimatedFee ? `${estimatedFee} KAS` : '' }]}
+        rows={[{ label: 'Gas fee', value: estimatedFee ? `${formatGasFee(estimatedFee)} KAS` : '' }]}
         className={`px-4 py-1 ${animate ? 'fade-animation' : ''}`}
       />
     </>

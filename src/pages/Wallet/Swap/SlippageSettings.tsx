@@ -4,6 +4,7 @@ import { AdjustmentsVerticalIcon } from '@heroicons/react/24/outline'
 import NextButton from '@/components/buttons/NextButton'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import WarningMessage from '@/components/WarningMessage'
+import { formatPercentage } from '@/utils/formatting'
 
 interface SlippageSettingsProps {
   onClose: () => void
@@ -76,7 +77,7 @@ const SlippageSettings: React.FC<SlippageSettingsProps> = ({ onClose, onSelectSl
                     : 'bg-slightmuted text-primarytext'
                 }`}
               >
-                {`${option}%`}
+                {formatPercentage(option)}
               </button>
             )
           })}

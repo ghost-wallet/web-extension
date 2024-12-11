@@ -2,6 +2,7 @@ import React from 'react'
 import { useLocation } from 'react-router-dom'
 import ConfirmationPage from '@/components/ConfirmationPage'
 import KaspaAddress from '@/components/KaspaAddress'
+import { formatNumberAbbreviated } from '@/utils/formatting'
 
 const Sent: React.FC = () => {
   const location = useLocation()
@@ -18,7 +19,7 @@ const Sent: React.FC = () => {
         View transaction
       </a>
       <p className="text-base text-mutedtext p-4 text-center">
-        {amount.toLocaleString()} {token.tick} was successfully sent to
+        {formatNumberAbbreviated(amount)} {token.tick} was successfully sent to
       </p>
       <KaspaAddress address={recipient} />
     </ConfirmationPage>

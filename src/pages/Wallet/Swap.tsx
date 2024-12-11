@@ -40,8 +40,11 @@ export default function Swap() {
   const [isReceiveTokenSelectOpen, setIsReceiveTokenSelectOpen] = useState(false)
 
   const { data: chaingeTokens, isLoading, isError, error: queryError } = useChaingeTokens()
-  const { aggregateQuote, receiveAmount, setReceiveAmount, outAmountUsd, loadingQuote, quoteError } =
-    useAggregateQuote(payToken, receiveToken, payAmount)
+  const { aggregateQuote, receiveAmount, setReceiveAmount, loadingQuote, quoteError } = useAggregateQuote(
+    payToken,
+    receiveToken,
+    payAmount,
+  )
 
   const fetchEstimatedFee = useCallback(() => {
     if (!payToken || !payAmount) return
@@ -53,7 +56,10 @@ export default function Swap() {
     try {
       request('account:estimateChaingeTransactionFee', [
         {
-          fromAmount: payAmount,
+          fromAmount:
+            payToken.symbol !== 'KAS'
+              ? Math.round(Number(payAmount) * Math.pow(10, payToken.decimals)).toString()
+              : payAmount,
           fromToken: payToken,
           feeRate,
         },
@@ -63,7 +69,7 @@ export default function Swap() {
           setGasFeeError('')
         })
         .catch((error) => {
-          console.error('Error fetching estimated gas fee:', error)
+          console.error('Swap Error fetching estimated gas fee:', error)
           if (error === 'Storage mass exceeds maximum') {
             setGasFeeError(ErrorMessages.FEES.STORAGE_MASS(payAmount))
           } else {
@@ -153,7 +159,7 @@ export default function Swap() {
                   !gasFeeError &&
                   payToken &&
                   payAmount &&
-                  Number(outAmountUsd) > 1 && (
+                  Number(aggregateQuote?.outAmountUsd || '0') > 1 && (
                     <SwapGasFeeButton setIsGasFeeOpen={setIsGasFeeOpen} gasFee={gasFee} />
                   )}
                 {/* TODO: better error display due to fixed container below */}
@@ -173,7 +179,7 @@ export default function Swap() {
       <ReviewOrderButton
         amountError={amountError}
         gasFeeError={gasFeeError}
-        outAmountUsd={outAmountUsd}
+        outAmountUsd={aggregateQuote?.outAmountUsd || 'loading'}
         payAmount={payAmount}
         loadingQuote={loadingQuote}
         payToken={payToken}

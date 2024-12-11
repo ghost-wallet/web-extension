@@ -34,8 +34,9 @@ export const formatTokenBalance = (balance: number, tick: string, decimals: numb
 
 export const tokenPriceFormatter = (value: number): string => {
   const { settings } = useSettings()
+
   if (value >= 1) {
-    return value.toLocaleString(undefined, {
+    return value.toLocaleString(navigator.language, {
       style: 'currency',
       currency: settings.currency,
       minimumFractionDigits: 2,
@@ -48,56 +49,99 @@ export const tokenPriceFormatter = (value: number): string => {
   const zeroCount = match ? match[1].length : 0
 
   if (zeroCount === 3) {
-    return value.toFixed(7).replace(/0+$/, '')
+    return parseFloat(value.toFixed(7)).toLocaleString(navigator.language, {
+      style: 'currency',
+      currency: settings.currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 7,
+    })
   }
 
   if (zeroCount >= 4) {
     const significantPart = valueStr.slice(zeroCount + 2).slice(0, 4)
-    return `0.${zeroCount ? `0(${zeroCount})` : ''}${significantPart}`
+    const formatted = parseFloat(`0.${significantPart}`).toLocaleString(navigator.language, {
+      style: 'currency',
+      currency: settings.currency,
+      minimumFractionDigits: 4,
+      maximumFractionDigits: 4,
+    })
+    return `0.${zeroCount ? `0(${zeroCount})` : ''}${formatted.slice(2)}`
   }
 
   if (zeroCount < 4) {
-    const roundedValue = value.toFixed(7).replace(/0+$/, '')
-    return parseFloat(roundedValue).toString()
+    const roundedValue = parseFloat(value.toFixed(7))
+    return roundedValue.toLocaleString(navigator.language, {
+      style: 'currency',
+      currency: settings.currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 7,
+    })
   }
 
-  return value.toString()
+  return value.toLocaleString(navigator.language, {
+    style: 'currency',
+    currency: settings.currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 7,
+  })
 }
 
-export const formatNumberAbbreviated = (balance: number): string => {
-  const formatNumber = (num: number): string => {
-    const options: Intl.NumberFormatOptions =
-      num % 1 === 0 ? { maximumFractionDigits: 0 } : { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-    return num.toLocaleString(undefined, options)
+export const formatNumberAbbreviated = (balance: number, isCurrency: boolean = false): string => {
+  const { settings } = useSettings()
+
+  let options: Intl.NumberFormatOptions
+
+  if (balance >= 1000000) {
+    options = isCurrency
+      ? {
+          style: 'currency',
+          currency: settings.currency,
+          notation: 'compact',
+          maximumFractionDigits: 2,
+        }
+      : {
+          notation: 'compact',
+          maximumFractionDigits: 2,
+        }
+  } else {
+    options = isCurrency
+      ? {
+          style: 'currency',
+          currency: settings.currency,
+          maximumFractionDigits: 2,
+        }
+      : {
+          maximumFractionDigits: 2,
+        }
   }
 
-  if (balance >= 1_000_000_000_000_000_000_000_000_000) {
-    // Decillion
-    return formatNumber(balance / 1_000_000_000_000_000_000_000_000_000) + 'Dc'
-  } else if (balance >= 1_000_000_000_000_000_000_000_000) {
-    // Nonillion
-    return formatNumber(balance / 1_000_000_000_000_000_000_000_000) + 'N'
-  } else if (balance >= 1_000_000_000_000_000_000_000) {
-    // Octillion
-    return formatNumber(balance / 1_000_000_000_000_000_000_000) + 'Oc'
-  } else if (balance >= 1_000_000_000_000_000_000) {
-    // Septillion
-    return formatNumber(balance / 1_000_000_000_000_000_000) + 'Sp'
-  } else if (balance >= 1_000_000_000_000_000) {
-    // Sextillion
-    return formatNumber(balance / 1_000_000_000_000_000) + 'Sx'
-  } else if (balance >= 1_000_000_000_000) {
-    // Quintillion
-    return formatNumber(balance / 1_000_000_000_000) + 'Qi'
-  } else if (balance >= 1_000_000_000) {
-    // Billion
-    return formatNumber(balance / 1_000_000_000) + 'B'
-  } else if (balance >= 1_000_000) {
-    // Million
-    return formatNumber(balance / 1_000_000) + 'M'
-  } else {
-    return balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return balance.toLocaleString(navigator.language, options)
+}
+
+export const formatMarketCapAbbreviated = (minted: number, dec: number, floorPrice: number): string => {
+  const marketCap = getMarketCap(minted, dec, floorPrice)
+
+  const { settings } = useSettings()
+
+  const options: Intl.NumberFormatOptions = {
+    style: 'currency',
+    currency: settings.currency,
+    maximumFractionDigits: 0,
+    ...(marketCap >= 100_000_000 && { notation: 'compact' }),
   }
+
+  return marketCap.toLocaleString(navigator.language, options)
+}
+
+export const formatVolumeAbbreviated = (volume: number): string => {
+  const options: Intl.NumberFormatOptions = {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+    ...(volume >= 100_000_000 && { notation: 'compact' }),
+  }
+
+  return volume.toLocaleString(navigator.language, options)
 }
 
 export const truncateAddress = (address: string): string => {
@@ -112,17 +156,12 @@ export const getMarketCap = (minted: number, dec: number, floorPrice: number): n
   return formatNumberWithDecimal(minted, dec) * floorPrice
 }
 
-export const formatMarketCapAbbreviated = (minted: number, dec: number, floorPrice: number): string => {
-  const marketCap = Math.floor(getMarketCap(minted, dec, floorPrice))
-  if (marketCap < 100_000_000) {
-    return marketCap.toLocaleString()
-  }
-  return formatNumberAbbreviated(marketCap)
-}
-
-export const formatMarketCap = (minted: number, dec: number, floorPrice: number): string => {
-  const marketCap = getMarketCap(minted, dec, floorPrice)
-  return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(marketCap)
+export const formatGasFee = (gasFee: string | number): string => {
+  const parsedGasFee = typeof gasFee === 'string' ? parseFloat(gasFee) : gasFee
+  const safeGasFee = isNaN(parsedGasFee) ? 0 : parsedGasFee
+  return safeGasFee.toLocaleString(navigator.language, {
+    maximumFractionDigits: 8,
+  })
 }
 
 export const formatAndValidateAmount = (value: string, maxDecimals: number): string | null => {
@@ -134,4 +173,26 @@ export const formatAndValidateAmount = (value: string, maxDecimals: number): str
   }
 
   return value
+}
+
+export const formatPercentage = (value: string | number): string => {
+  const parsedValue = typeof value === 'string' ? parseFloat(value) : value
+
+  if (isNaN(parsedValue)) {
+    throw new Error('Invalid value provided to formatPercentage')
+  }
+
+  return new Intl.NumberFormat(navigator.language, {
+    style: 'percent',
+    maximumFractionDigits: 2,
+  }).format(parsedValue / 100)
+}
+
+export const formatUsd = (value: number): string => {
+  return value.toLocaleString(navigator.language, {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
 }

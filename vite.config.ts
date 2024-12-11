@@ -36,9 +36,11 @@ const manifest: ManifestV3Export = {
     'https://*.kas.fyi/*',
     'https://api.kaspa.org/*',
     'https://*.kasplex.org/*',
-    'https://api.ghostwallet.org/*',
     'https://*.kaspa.blue/*',
     'https://*.chainge.finance/*',
+    'https://*.amazonaws.com/*',
+    'https://*.ghostwallet.ninja/*',
+    'https://*.ghostwallet.org/*',
   ],
 }
 

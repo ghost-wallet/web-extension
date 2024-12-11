@@ -1,12 +1,12 @@
 import React from 'react'
 import useSettings from '@/hooks/contexts/useSettings'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
-import { getCurrencySymbol } from '@/utils/currencies'
 import {
   formatNumberWithDecimal,
   formatNumberAbbreviated,
   tokenPriceFormatter,
-  formatMarketCap,
+  formatMarketCapAbbreviated,
+  formatVolumeAbbreviated,
 } from '@/utils/formatting'
 import { getMintedPercentage } from '@/utils/calculations'
 import { formatValue } from '@/utils/formatting'
@@ -33,9 +33,8 @@ function krc20TokenInfoqueryFn({ queryKey }: { queryKey: [string, FetchKRC20Toke
 }
 
 const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
-  const { floorPrice, tick } = token
+  const { floorPrice, tick, volume24h, rank } = token
   const { settings } = useSettings()
-  const currencySymbol = getCurrencySymbol(settings.currency)
 
   const krc20TokenQuery = useQuery({
     queryKey: ['krc20TokenInfo', { selectedNode: settings.selectedNode, ticker: token.tick }],
@@ -57,12 +56,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
 
   const numericalBalance = formatNumberWithDecimal(token.balance, token.dec)
   const currencyValue = numericalBalance * (token.floorPrice ?? 0)
-  const formattedCurrencyValue = currencyValue.toLocaleString(undefined, {
-    style: 'currency',
-    currency: settings.currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
+  const formattedCurrencyValue = formatNumberAbbreviated(currencyValue, true)
 
   return (
     <div className="p-4">
@@ -72,7 +66,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
           { label: settings.currency, value: `${formattedCurrencyValue}` },
           {
             label: tick,
-            value: formatNumberWithDecimal(token.balance, token.dec).toLocaleString(),
+            value: formatNumberAbbreviated(formatNumberWithDecimal(token.balance, token.dec)),
           },
         ]}
       />
@@ -81,14 +75,22 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
         title="Market Details"
         rows={[
           {
+            label: `KRC20 Rank`,
+            value: <TokenPrice value={`${rank}`} />,
+          },
+          {
             label: `${settings.currency} Price`,
-            value: <TokenPrice value={`${currencySymbol}${formattedTokenPrice}`} />,
+            value: <TokenPrice value={`${formattedTokenPrice}`} />,
           },
           ...(krc20Token
             ? [
                 {
                   label: `Market cap`,
-                  value: `${currencySymbol}${formatMarketCap(krc20Token.minted, krc20Token.dec, floorPrice)}`,
+                  value: `${formatMarketCapAbbreviated(krc20Token.minted, krc20Token.dec, floorPrice)}`,
+                },
+                {
+                  label: `Volume 24h`,
+                  value: `${formatVolumeAbbreviated(volume24h)}`,
                 },
                 {
                   label: '',

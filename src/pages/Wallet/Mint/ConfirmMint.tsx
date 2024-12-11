@@ -11,6 +11,7 @@ import { postMint } from '@/hooks/ghost/useMint'
 import ErrorMessages from '@/utils/constants/errorMessages'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
+import { formatNumberAbbreviated } from '@/utils/formatting'
 
 export default function ConfirmMint() {
   const location = useLocation()
@@ -82,16 +83,21 @@ export default function ConfirmMint() {
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Receive amount</span>
               <span className="text-mutedtext text-base text-right">
-                {receiveAmount.toLocaleString()} {token.tick}
+                {formatNumberAbbreviated(receiveAmount)} {token.tick}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Pay amount</span>
-              <span className="text-mutedtext text-base text-right">{payAmount?.toLocaleString()} KAS</span>
+              <span className="text-mutedtext text-base text-right">
+                {formatNumberAbbreviated(payAmount)} KAS
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-mutedtext text-base">Network fee</span>
-              <span className="text-mutedtext text-base text-right">{networkFee} KAS</span>
+              <span className="text-mutedtext text-base text-right">
+                {formatNumberAbbreviated(networkFee)} KAS
+              </span>
+              {/* TODO: Show gas fee*/}
             </div>
             <TotalCostToMint totalFees={totalCost} />
           </div>

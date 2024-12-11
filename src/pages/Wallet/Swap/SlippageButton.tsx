@@ -1,5 +1,6 @@
 import React from 'react'
 import { AdjustmentsVerticalIcon } from '@heroicons/react/24/outline'
+import { formatPercentage } from '@/utils/formatting'
 
 interface SlippageButtonProps {
   setIsSlippageOpen: (open: boolean) => void
@@ -13,7 +14,7 @@ const SlippageButton: React.FC<SlippageButtonProps> = ({ setIsSlippageOpen, slip
       className="flex items-center space-x-1 text-mutedtext hover:text-primarytext"
     >
       <AdjustmentsVerticalIcon className="h-5 w-5" />
-      <span className="text-base">{`${slippage}%`}</span>
+      <span className="text-base">{formatPercentage(slippage)}</span>
     </button>
   )
 }

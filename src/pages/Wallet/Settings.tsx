@@ -8,6 +8,7 @@ import DeveloperButton from '@/pages/Wallet/Settings/DeveloperButton'
 import BottomNav from '@/components/navigation/BottomNav'
 import AccountButton from '@/pages/Wallet/Settings/AccountButton'
 import SupportButton from '@/pages/Wallet/Settings/Support'
+import PreferencesButton from '@/pages/Wallet/Settings/PreferencesButton'
 
 export default function Settings() {
   return (
@@ -17,6 +18,9 @@ export default function Settings() {
           <Header title="Settings" showBackButton={true} />
           <div className="mt-1 flex flex-col">
             <AccountButton />
+          </div>
+          <div className="mt-1 flex flex-col">
+            <PreferencesButton />
           </div>
           <div className="mt-1 flex flex-col">
             <AboutButton />
@@ -30,9 +34,9 @@ export default function Settings() {
           <div className="mt-1 flex flex-col">
             <ResetButton />
           </div>
-        </div>
-        <div className="mb-20">
-          <LogoutButton />
+          <div className="mt-1 flex flex-col">
+            <LogoutButton />
+          </div>
         </div>
       </AnimatedMain>
       <BottomNav />

@@ -86,6 +86,8 @@ export interface Token extends TokenFromApi {
   isKaspa?: undefined
   floorPrice: number
   isHidden?: boolean
+  volume24h: number
+  rank: number
 }
 
 /**

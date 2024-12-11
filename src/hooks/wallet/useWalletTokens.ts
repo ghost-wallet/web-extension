@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect } from 'react'
 import { sortTokensByValue } from '@/utils/sorting'
 import useSettings from '@/hooks/contexts/useSettings'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
+import { useKaspaPrice, useTetherPrice } from '@/hooks/ghost/usePrice'
 import { isKrc20QueryEnabled, useKrc20TokensQuery } from '@/hooks/kasplex/fetchKrc20AddressTokenList'
 import { useKsprPrices } from '@/hooks/kspr/fetchKsprPrices'
 import { KaspaToken, TokenFromApi, Token } from '@/utils/interfaces'
@@ -11,8 +11,10 @@ import { useKasFyiMarketData } from '@/hooks/kas-fyi/fetchMarketData'
 export function useWalletTokens() {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
-  const kaspaPrice = useKaspaPrice(settings.currency)
+  const kaspaPrice = useKaspaPrice()
   const kasPrice = kaspaPrice.data ?? 0
+  const tetherPrice = useTetherPrice()
+  const usdtPrice = tetherPrice.data ?? 0
   const selectedNetwork = settings.nodes[settings.selectedNode].address
   const [walletError, setWalletError] = useState<string | null>(null)
 
@@ -50,23 +52,31 @@ export function useWalletTokens() {
     const tokensWithPrices = krc20TokensData.map((token) => {
       if (kasFyiMarketData) {
         const kasFyiToken = kasFyiMarketData.results.find((data) => data.ticker === token.tick)
-        const floorPrice = token.tick === 'CUSDT' ? 1.0 : (kasFyiToken?.price.kas || 0) * kasPrice
+        const floorPrice = token.tick === 'CUSDT' ? usdtPrice : (kasFyiToken?.price.kas || 0) * kasPrice
+        const volume24h = kasFyiToken?.volume24h.usd || 0
+        const rank = kasFyiToken?.rank || 0
 
         return {
           ...token,
           floorPrice,
+          volume24h,
+          rank,
         } as Token
       } else if (ksprPricesData) {
         const ksprToken = ksprPricesData[token.tick]
 
         return {
           ...token,
-          floorPrice: token.tick === 'CUSDT' ? 1.0 : (ksprToken?.floor_price || 0) * kasPrice,
+          floorPrice: token.tick === 'CUSDT' ? usdtPrice : (ksprToken?.floor_price || 0) * kasPrice,
+          volume24h: 0,
+          rank: 0,
         } as Token
       } else {
         return {
           ...token,
           floorPrice: 0,
+          volume24h: 0,
+          rank: 0,
         } as Token
       }
     })

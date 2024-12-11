@@ -1,3 +1,5 @@
+import { formatPercentage } from '@/utils/formatting'
+
 export const WarningMessages = {
   RESET_WALLET:
     'Are you sure you want to reset your Ghost wallet? This action cannot be undone and will erase\n' +
@@ -18,13 +20,8 @@ export const WarningMessages = {
     'Legitimate Ghost staff members communicate in public channels. Beware of fake Discord servers, Telegram groups, ' +
     'X pages, websites, and wallets. Never give your seed phrase out to anyone.',
 
-  LOW_LIQUIDITY: (difference: any, percentageLoss: any) =>
-    `This trade will result in a loss of $${difference.toFixed(
-      2,
-    )} (-${percentageLoss}%), which is due to low liquidity. The money you lose on this trade will be irreversible. Trade in smaller amounts to get better rates.`,
-
-  MINT_RISK: (ticker: string) =>
-    `Minting is a risky operation that could result in permanently lost KAS. This would happen if you have unfinished mints 
-    on the network while the ${ticker} minted percentage hits 100%. It's safer to mint tokens in multiple batches of small amounts 
-    and when the minted supply percentage is low.`,
+  LOW_LIQUIDITY: (difference: any, percentageLoss: any, priceImpact: any) =>
+    `This trade will result in a loss of ${difference} (-${formatPercentage(
+      percentageLoss,
+    )}), which is due to low liquidity or high price impact of ${priceImpact}. The money you lose on this trade will be irreversible. Trade in smaller amounts to get better rates.`,
 }

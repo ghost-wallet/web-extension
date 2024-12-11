@@ -6,11 +6,10 @@ import {
   formatNumberAbbreviated,
   tokenPriceFormatter,
   formatMarketCapAbbreviated,
+  formatPercentage,
 } from '@/utils/formatting'
 import { getMintedPercentage } from '@/utils/calculations'
 import { KRC20TokenResponse } from '@/utils/interfaces'
-import useSettings from '@/hooks/contexts/useSettings'
-import { getCurrencySymbol } from '@/utils/currencies'
 import TokenPrice from '@/components/TokenPrice'
 
 interface KRC20TokenDetailsProps {
@@ -18,9 +17,6 @@ interface KRC20TokenDetailsProps {
 }
 
 const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
-  const { settings } = useSettings()
-  const currencySymbol = getCurrencySymbol(settings.currency)
-
   const mintedPercentage =
     !isNaN(token.minted) && !isNaN(token.max) && token.max > 0
       ? getMintedPercentage(token.minted, token.max)
@@ -29,28 +25,28 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
     !isNaN(token.pre) && !isNaN(token.max) && token.max > 0 ? getMintedPercentage(token.pre, token.max) : '0'
 
   const formattedTokenPrice = tokenPriceFormatter(token.floorPrice ?? 0)
+  const formattedMarketCap = formatMarketCapAbbreviated(token.minted, token.dec, token.floorPrice ?? 0)
 
   return (
     <div className="rounded-md py-2">
-      <div className="flex flex-row items-center justify-between py-2">
-        <div className="flex flex-col items-center">
+      <div className="flex flex-row items-start justify-between py-1 pb-32">
+        {/* Left Column */}
+        <div className="flex flex-col items-center flex-shrink-0 min-w-[75px]">
           <CryptoImage ticker={token.tick} size="large" />
           <h1 className="text-primarytext font-bold text-xl pt-2">{token.tick}</h1>
-          <h1 className="text-primarytext text-lg pt-2">
-            <TokenPrice value={`${currencySymbol}${formattedTokenPrice}`} />
-          </h1>
         </div>
 
+        {/* Right Column */}
         <div className="flex-grow ml-4">
           <TableSection
             rows={[
               {
+                label: 'Price',
+                value: <TokenPrice value={`${formattedTokenPrice}`} />,
+              },
+              {
                 label: 'Market cap',
-                value: `${currencySymbol}${formatMarketCapAbbreviated(
-                  token.minted,
-                  token.dec,
-                  token.floorPrice ?? 0,
-                )}`,
+                value: `${formattedMarketCap}`,
               },
               {
                 label: 'Total supply',
@@ -58,19 +54,19 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
               },
               {
                 label: 'Total minted',
-                value: `${mintedPercentage}%`,
+                value: formatPercentage(mintedPercentage),
               },
               {
                 label: 'Pre-minted',
-                value: `${preMintedPercentage}%`,
+                value: formatPercentage(preMintedPercentage),
               },
               {
                 label: 'Mints',
-                value: token.mintTotal.toLocaleString() || '0',
+                value: Number(token.mintTotal || 0).toLocaleString(navigator.language),
               },
               {
                 label: 'Holders',
-                value: token.holderTotal.toLocaleString() || '0',
+                value: Number(token.holderTotal || 0).toLocaleString(navigator.language),
               },
             ]}
           />

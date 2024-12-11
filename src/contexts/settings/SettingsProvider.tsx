@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, type ReactNode } from 'react'
 import LocalStorage from '@/storage/LocalStorage'
 import { SettingsContext } from './SettingsContext'
+import { currencies } from '@/utils/constants/currencies'
 
 export interface ISettings {
   version: number
@@ -12,11 +13,6 @@ export interface ISettings {
     locked: boolean
   }[]
   selectedNode: number
-}
-
-export const currencies = {
-  USD: '$',
-  EUR: '€',
 }
 
 export const defaultSettings: ISettings = {

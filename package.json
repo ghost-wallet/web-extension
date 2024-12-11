@@ -1,6 +1,6 @@
 {
   "name": "ghost",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Kaspa browser extension wallet for KRC20 tokens.",
   "main": "dist/index.js",
   "scripts": {

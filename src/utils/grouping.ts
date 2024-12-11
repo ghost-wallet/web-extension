@@ -35,7 +35,7 @@ export const groupKaspaTransactionsByDate = (
 }
 
 export const formatTransactionDate = (timestamp: string): string => {
-  return new Date(parseInt(timestamp)).toLocaleDateString('en-US', {
+  return new Date(parseInt(timestamp)).toLocaleDateString(navigator.language, {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
@@ -43,12 +43,11 @@ export const formatTransactionDate = (timestamp: string): string => {
 }
 
 export const formatTransactionDateAndTime = (timestamp: string): string => {
-  return new Date(parseInt(timestamp)).toLocaleString(undefined, {
+  return new Date(parseInt(timestamp)).toLocaleString(navigator.language, {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
-    hour12: true,
   })
 }

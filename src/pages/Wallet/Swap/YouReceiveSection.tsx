@@ -4,8 +4,7 @@ import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import EstimatedCurrencyValue from '@/components/EstimatedCurrencyValue'
 import { ChaingeAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
 import useReceiveAmountAfterFees from '@/hooks/chainge/useReceiveAmountAfterFees'
-import { formatNumberAbbreviated } from '@/utils/formatting'
-import useSettings from '@/hooks/contexts/useSettings'
+import { formatUsd } from '@/utils/formatting'
 
 interface YouReceiveSectionProps {
   receiveAmount: string
@@ -24,21 +23,13 @@ const YouReceiveSection: React.FC<YouReceiveSectionProps> = ({
   aggregateQuote,
   loadingQuote,
 }) => {
-  const { settings } = useSettings()
-
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
-  const displayAmount = receiveAmount ? formatNumberAbbreviated(receiveAmountAfterFees) : ''
+  const displayAmount = receiveAmount ? receiveAmountAfterFees.toString() : ''
 
   const isPayAmountValid = Number(payAmount) > 0
 
-  const formattedCurrencyValue = Number(
-    isPayAmountValid ? aggregateQuote?.outAmountUsd || 0 : 0,
-  ).toLocaleString(undefined, {
-    style: 'currency',
-    currency: settings.currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
+  // TODO allow for other currencies
+  const formattedCurrencyValue = formatUsd(Number(isPayAmountValid ? aggregateQuote?.outAmountUsd || 0 : 0))
 
   return (
     <div className="bg-darkmuted rounded-lg p-4">

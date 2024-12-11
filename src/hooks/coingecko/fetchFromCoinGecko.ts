@@ -1,6 +1,6 @@
-export const fetchFromCoinGecko = async (currency: string): Promise<number> => {
+export const fetchFromCoinGecko = async (currency: string, name: string): Promise<number> => {
   const response = await fetch(
-    `https://api.coingecko.com/api/v3/simple/price?ids=kaspa&vs_currencies=${currency}`,
+    `https://api.coingecko.com/api/v3/simple/price?ids=${name}&vs_currencies=${currency}`,
   )
 
   if (!response.ok) {

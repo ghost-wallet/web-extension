@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ChaingeAggregateQuote, fetchAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
-import { formatNumberAbbreviated, formatNumberWithDecimal } from '@/utils/formatting'
+import { formatNumberWithDecimal } from '@/utils/formatting'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 
 // TODO refetch every 15 seconds
@@ -11,7 +11,6 @@ const useAggregateQuote = (
 ) => {
   const [aggregateQuote, setAggregateQuote] = useState<ChaingeAggregateQuote | undefined>(undefined)
   const [receiveAmount, setReceiveAmount] = useState('')
-  const [outAmountUsd, setOutAmountUsd] = useState('')
   const [loadingQuote, setLoadingQuote] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -20,14 +19,13 @@ const useAggregateQuote = (
     const { signal } = controller
 
     const formatPayAmountToBigInt = (amount: number, decimals: number): bigint => {
-      const scaledAmount = amount * Math.pow(10, decimals)
-      return BigInt(Math.round(scaledAmount))
+      const scaledAmount = Math.round(amount * Math.pow(10, decimals))
+      return BigInt(scaledAmount)
     }
 
     const fetchQuote = async () => {
       if (!payAmount || !(Number(payAmount) > 0)) {
         setReceiveAmount('')
-        setOutAmountUsd('')
         return
       }
 
@@ -41,10 +39,8 @@ const useAggregateQuote = (
           setAggregateQuote(quote)
           if (quote) {
             setReceiveAmount(formatNumberWithDecimal(quote.outAmount, quote.chainDecimal).toString())
-            setOutAmountUsd(formatNumberAbbreviated(Number(quote.outAmountUsd)))
           } else {
             setReceiveAmount('')
-            setOutAmountUsd('')
           }
         } catch (error: any) {
           if (error.name === 'AbortError') {
@@ -53,7 +49,6 @@ const useAggregateQuote = (
             console.error('Error getting aggregate quote from Chainge API:', error)
             setError('Chainge DEX error. Please try again.')
             setReceiveAmount('')
-            setOutAmountUsd('')
           }
         } finally {
           setLoadingQuote(false)
@@ -68,7 +63,7 @@ const useAggregateQuote = (
     }
   }, [payAmount, payToken, receiveToken])
 
-  return { aggregateQuote, receiveAmount, outAmountUsd, setReceiveAmount, loadingQuote, quoteError: error }
+  return { aggregateQuote, receiveAmount, setReceiveAmount, loadingQuote, quoteError: error }
 }
 
 export default useAggregateQuote
