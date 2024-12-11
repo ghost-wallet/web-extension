@@ -176,7 +176,7 @@ export default function Swap() {
       <ReviewOrderButton
         amountError={amountError}
         gasFeeError={gasFeeError}
-        outAmountUsd={aggregateQuote?.outAmountUsd || '0'}
+        outAmountUsd={aggregateQuote?.outAmountUsd || 'loading'}
         payAmount={payAmount}
         loadingQuote={loadingQuote}
         payToken={payToken}
