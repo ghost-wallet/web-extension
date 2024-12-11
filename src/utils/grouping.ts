@@ -49,6 +49,5 @@ export const formatTransactionDateAndTime = (timestamp: string): string => {
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
-    hour12: true,
   })
 }

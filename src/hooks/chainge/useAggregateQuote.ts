@@ -19,8 +19,8 @@ const useAggregateQuote = (
     const { signal } = controller
 
     const formatPayAmountToBigInt = (amount: number, decimals: number): bigint => {
-      const scaledAmount = amount * Math.pow(10, decimals)
-      return BigInt(Math.round(scaledAmount))
+      const scaledAmount = Math.round(amount * Math.pow(10, decimals))
+      return BigInt(scaledAmount)
     }
 
     const fetchQuote = async () => {

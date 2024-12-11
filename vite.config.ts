@@ -8,7 +8,7 @@ import { version } from './package.json';
 const manifest: ManifestV3Export = {
   manifest_version: 3,
   name: 'Ghost Wallet',
-  version: '0.0.15',
+  version,
   description: 'First open source web extension Kaspa wallet.',
   icons: {
     48: 'assets/ghost-outline-thick-48.png',
@@ -36,11 +36,12 @@ const manifest: ManifestV3Export = {
     'https://*.kas.fyi/*',
     'https://api.kaspa.org/*',
     'https://*.kasplex.org/*',
-    'https://api.ghostwallet.org/*',
     'https://*.kaspa.blue/*',
     'https://*.chainge.finance/*',
     'https://*.amazonaws.com/*',
     'https://*.ghostwallet.ninja/*',
+    'https://*.ghostwallet.org/*',
+    'https://api.ghostwallet.org/*',
   ],
 }
 

@@ -32,7 +32,7 @@ const GasFeeSelect: React.FC = () => {
         request('account:estimateKaspaTransactionFee', [outputs, selectedFeeRate, '0'])
           .then((feeEstimate) => setEstimatedFee(feeEstimate))
           .catch((err) => {
-            console.error('Error fetching estimated gas fee:', err)
+            console.error('GasFeeSelect Error fetching estimated gas fee:', err)
             if (err === 'Storage mass exceeds maximum') {
               setError(ErrorMessages.FEES.STORAGE_MASS(outputs[0][1]))
             } else {

@@ -56,7 +56,7 @@ export default function Swap() {
     try {
       request('account:estimateChaingeTransactionFee', [
         {
-          fromAmount: payAmount,
+          fromAmount: Math.round(Number(payAmount) * Math.pow(10, payToken.decimals)).toString(),
           fromToken: payToken,
           feeRate,
         },
@@ -66,7 +66,7 @@ export default function Swap() {
           setGasFeeError('')
         })
         .catch((error) => {
-          console.error('Error fetching estimated gas fee:', error)
+          console.error('Swap Error fetching estimated gas fee:', error)
           if (error === 'Storage mass exceeds maximum') {
             setGasFeeError(ErrorMessages.FEES.STORAGE_MASS(payAmount))
           } else {
