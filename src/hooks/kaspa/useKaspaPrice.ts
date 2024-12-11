@@ -13,8 +13,8 @@ export default function useKaspaPrice(currency: string) {
         return await fetchFromCoinGecko(currency)
       }
     },
-    staleTime: 5_000, // 5 seconds
-    refetchInterval: 5_000, // 5 seconds
+    staleTime: 10_000, // 10 seconds
+    refetchInterval: 10_000, // 10 seconds
     retry: 5,
   })
 }
