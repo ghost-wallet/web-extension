@@ -38,6 +38,7 @@ const ReviewOrderButton: React.FC<ReviewOrderButtonProps> = ({
       ) : amountError && Number(payAmount) > 0 ? (
         <ErrorButton text="Insufficient funds" />
       ) : !loadingQuote && isBelowMinimum && Number(payAmount) > 0 ? (
+        // TODO don't show this warning while quickly changing numbers
         <WarningMessage
           message={`Receive amount must be more than ${formatUsd(MINIMUM_RECEIVE_AMOUNT_USD)}`}
         />

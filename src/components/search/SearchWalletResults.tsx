@@ -35,7 +35,9 @@ const SearchWalletResults: React.FC = () => {
   }
 
   const handleTokenClick = (token: Token | KaspaToken) => {
-    const path = location.pathname.includes('/send') ? `/send/${token.tick}` : `/wallet/${token.tick}`
+    const path = location.pathname.includes('/send')
+      ? `/send/${token.tick}`
+      : `/wallet/crypto-details/${token.tick}`
     navigate(path, { state: { token } })
   }
 
