@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from 'tailwindcss'
 import { crx, ManifestV3Export } from '@crxjs/vite-plugin'
 import * as path from 'path'
+import { version } from './package.json';
 
 const manifest: ManifestV3Export = {
   manifest_version: 3,
@@ -47,7 +48,7 @@ const manifest: ManifestV3Export = {
 export default defineConfig({
   plugins: [react(), crx({ manifest })],
   define: {
-    __APP_VERSION__: JSON.stringify((manifest as any).version),
+    __APP_VERSION__: JSON.stringify(version),
   },
   resolve: {
     alias: {
