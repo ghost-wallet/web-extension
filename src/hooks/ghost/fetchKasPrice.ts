@@ -1,5 +1,5 @@
 export const fetchKasPrice = async (currency: string): Promise<number> => {
-  const url = `https://97s80hipea.execute-api.us-east-1.amazonaws.com/dev/price?currency=${encodeURIComponent(
+  const url = `https://dev-api.ghostwallet.ninja/price?currency=${encodeURIComponent(
     currency,
   )}`
 

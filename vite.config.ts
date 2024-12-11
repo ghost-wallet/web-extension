@@ -39,6 +39,7 @@ const manifest: ManifestV3Export = {
     'https://*.kaspa.blue/*',
     'https://*.chainge.finance/*',
     'https://*.amazonaws.com/*',
+    'https://*.ghostwallet.ninja/*',
   ],
 }
 
