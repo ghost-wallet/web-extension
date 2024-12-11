@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import BottomNav from '@/components/navigation/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
@@ -33,6 +33,7 @@ export default function Mint() {
   const kaspaPrice = useKaspaPrice(settings.currency)
   const kasPrice = kaspaPrice.data ?? 0
   const krc20TokenListQuery = useKrc20TokenList()
+  const scrollableContainerRef = useRef<HTMLDivElement>(null)
 
   const tokenList = krc20TokenListQuery.data?.map((token) => {
     const ksprPriceData: KsprToken | undefined = ksprPricesQuery.data?.[token.tick]
@@ -68,6 +69,9 @@ export default function Mint() {
       setError(errorMessage)
     } finally {
       setLoading(false)
+      if (scrollableContainerRef.current) {
+        scrollableContainerRef.current.scrollTo(0, 0)
+      }
     }
   }
 
@@ -90,7 +94,7 @@ export default function Mint() {
     <>
       <TopNav />
       <AnimatedMain className={`flex flex-col h-screen w-full`}>
-        <div className="flex flex-col flex-grow px-4 pt-4">
+        <div className="flex flex-col flex-grow px-4 pt-4 overflow-y-auto" ref={scrollableContainerRef}>
           {selectedNetwork === 'testnet-11' && (
             <p className="text-warning text-center text-base mb-4">
               KRC20 tokens cannot be minted on {selectedNetwork}. Try a different network.
@@ -110,7 +114,7 @@ export default function Mint() {
         </div>
       </AnimatedMain>
       {token && (
-        <BottomFixedContainer className="px-4 pb-20 bg-bgdarker">
+        <BottomFixedContainer shadow={false} className="px-4 pb-[72px] bg-transparent">
           <NextButton text={canMintLabel} buttonEnabled={isMintable} onClick={handleContinue} />
         </BottomFixedContainer>
       )}

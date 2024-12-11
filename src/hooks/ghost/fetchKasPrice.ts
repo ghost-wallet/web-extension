@@ -1,7 +1,5 @@
 export const fetchKasPrice = async (currency: string): Promise<number> => {
-  const url = `https://dev-api.ghostwallet.ninja/price?currency=${encodeURIComponent(
-    currency,
-  )}`
+  const url = `https://dev-api.ghostwallet.ninja/price?currency=${encodeURIComponent(currency)}`
 
   const response = await fetch(url)
   if (!response.ok) {

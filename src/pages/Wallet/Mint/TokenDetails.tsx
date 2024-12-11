@@ -29,12 +29,14 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
 
   return (
     <div className="rounded-md py-2">
-      <div className="flex flex-row items-center justify-between py-1">
-        <div className="flex flex-col items-center">
+      <div className="flex flex-row items-start justify-between py-1 pb-32">
+        {/* Left Column */}
+        <div className="flex flex-col items-center flex-shrink-0 min-w-[75px]">
           <CryptoImage ticker={token.tick} size="large" />
           <h1 className="text-primarytext font-bold text-xl pt-2">{token.tick}</h1>
         </div>
 
+        {/* Right Column */}
         <div className="flex-grow ml-4">
           <TableSection
             rows={[
@@ -60,11 +62,11 @@ const TokenDetails: React.FC<KRC20TokenDetailsProps> = ({ token }) => {
               },
               {
                 label: 'Mints',
-                value: token.mintTotal.toLocaleString() || '0',
+                value: Number(token.mintTotal || 0).toLocaleString(navigator.language),
               },
               {
                 label: 'Holders',
-                value: token.holderTotal.toLocaleString() || '0',
+                value: Number(token.holderTotal || 0).toLocaleString(navigator.language),
               },
             ]}
           />
