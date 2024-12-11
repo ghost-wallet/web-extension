@@ -41,7 +41,6 @@ const manifest: ManifestV3Export = {
     'https://*.amazonaws.com/*',
     'https://*.ghostwallet.ninja/*',
     'https://*.ghostwallet.org/*',
-    'https://api.ghostwallet.org/*',
   ],
 }
 

@@ -12,7 +12,7 @@ import ErrorMessage from '@/components/messages/ErrorMessage'
 import NextButton from '@/components/buttons/NextButton'
 import TopNav from '@/components/navigation/TopNav'
 import { useKsprPrices } from '@/hooks/kspr/fetchKsprPrices'
-import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
+import { useKaspaPrice, useTetherPrice } from '@/hooks/ghost/usePrice'
 import useSettings from '@/hooks/contexts/useSettings'
 import { useKrc20TokenList } from '@/hooks/kasplex/useKrc20TokenList'
 import ErrorMessages from '@/utils/constants/errorMessages'
@@ -30,8 +30,10 @@ export default function Mint() {
   const { settings } = useSettings()
   const selectedNetwork = settings.nodes[settings.selectedNode].address
   const ksprPricesQuery = useKsprPrices()
-  const kaspaPrice = useKaspaPrice(settings.currency)
+  const kaspaPrice = useKaspaPrice()
   const kasPrice = kaspaPrice.data ?? 0
+  const tetherPrice = useTetherPrice()
+  const usdtPrice = tetherPrice.data ?? 0
   const krc20TokenListQuery = useKrc20TokenList()
   const scrollableContainerRef = useRef<HTMLDivElement>(null)
 
@@ -54,7 +56,7 @@ export default function Mint() {
         let floorPrice
         if (kasFyiMarketData) {
           const kasFyiToken = kasFyiMarketData.results.find((data) => data.ticker === result.tick)
-          floorPrice = result.tick === 'CUSDT' ? 1.0 : (kasFyiToken?.price.kas || 0) * kasPrice
+          floorPrice = result.tick === 'CUSDT' ? usdtPrice : (kasFyiToken?.price.kas || 0) * kasPrice
         } else {
           floorPrice = ksprPriceData?.floor_price ? ksprPriceData.floor_price * kasPrice : 0
         }

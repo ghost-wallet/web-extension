@@ -1,6 +1,5 @@
 import React from 'react'
-import useSettings from '@/hooks/contexts/useSettings'
-import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
+import { useKaspaPrice } from '@/hooks/ghost/usePrice'
 import { formatNumberAbbreviated } from '@/utils/formatting'
 
 interface MintSummaryProps {
@@ -10,8 +9,7 @@ interface MintSummaryProps {
 }
 
 const MintSummary: React.FC<MintSummaryProps> = ({ totalMintCost, mintAmount, tokenTick }) => {
-  const { settings } = useSettings()
-  const kaspaPrice = useKaspaPrice(settings.currency)
+  const kaspaPrice = useKaspaPrice()
 
   const currencyValue = Number(mintAmount ? mintAmount * kaspaPrice.data! : 0)
   const formattedCurrencyValue = formatNumberAbbreviated(currencyValue, true)

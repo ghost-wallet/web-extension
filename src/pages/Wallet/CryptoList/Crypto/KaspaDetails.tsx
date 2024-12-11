@@ -1,5 +1,5 @@
 import React from 'react'
-import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
+import { useKaspaPrice } from '@/hooks/ghost/usePrice'
 import useSettings from '@/hooks/contexts/useSettings'
 import TableSection from '@/components/table/TableSection'
 import TokenPrice from '@/components/TokenPrice'
@@ -11,7 +11,7 @@ import { tokenPriceFormatter } from '@/utils/formatting'
 const KaspaDetails: React.FC = () => {
   const { settings } = useSettings()
   const { kaspa } = useKaspa()
-  const kaspaPrice = useKaspaPrice(settings.currency)
+  const kaspaPrice = useKaspaPrice()
   const network = settings.nodes[settings.selectedNode].address
 
   const formattedTokenPrice = tokenPriceFormatter(kaspaPrice.data!)

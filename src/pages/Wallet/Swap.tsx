@@ -56,7 +56,10 @@ export default function Swap() {
     try {
       request('account:estimateChaingeTransactionFee', [
         {
-          fromAmount: Math.round(Number(payAmount) * Math.pow(10, payToken.decimals)).toString(),
+          fromAmount:
+            payToken.symbol !== 'KAS'
+              ? Math.round(Number(payAmount) * Math.pow(10, payToken.decimals)).toString()
+              : payAmount,
           fromToken: payToken,
           feeRate,
         },

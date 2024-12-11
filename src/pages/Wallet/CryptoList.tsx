@@ -1,12 +1,11 @@
 import React from 'react'
 import { useWalletTokens } from '@/hooks/wallet/useWalletTokens'
 import CryptoListItem from '@/pages/Wallet/CryptoList/CryptoListItem'
-import useSettings from '@/hooks/contexts/useSettings'
 import { useTotalValueCalculation } from '@/hooks/wallet/useTotalValueCalculation'
 import { Token, KaspaToken } from '@/utils/interfaces'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import { useLocation, useNavigate } from 'react-router-dom'
-import useKaspaPrice from '@/hooks/kaspa/useKaspaPrice'
+import { useKaspaPrice } from '@/hooks/ghost/usePrice'
 import useVisibleTokens from '@/hooks/wallet/useVisibleTokens'
 
 interface CryptoListProps {
@@ -15,11 +14,10 @@ interface CryptoListProps {
 
 const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const { tokens, walletError } = useWalletTokens()
-  const { settings } = useSettings()
   const navigate = useNavigate()
   const location = useLocation()
 
-  const kaspaPrice = useKaspaPrice(settings.currency)
+  const kaspaPrice = useKaspaPrice()
   const kasPrice = kaspaPrice.data ?? 0
 
   const visibleTokens = useVisibleTokens(tokens)
