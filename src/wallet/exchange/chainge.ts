@@ -1,4 +1,4 @@
-import { signMessage } from '@/wasm'
+import { HexString, signMessage } from '@/wasm'
 import { AggregateQuoteResponse, Chain } from '@chainge/api-tool-sdk'
 import { formatUnits, hexlify, keccak256, parseUnits, toUtf8Bytes } from 'ethers'
 import BigNumber from 'bignumber.js'
@@ -34,6 +34,26 @@ export interface ChaingeToken {
 }
 
 const API_SUBMIT_ORDER_URL = 'https://api2.chainge.finance/v1/submitOrder'
+
+export interface PostChaingeOrderRequest {
+  walletAddress: string
+  payTokenTicker: string
+  payAmount: number
+  receiveTokenTicker: string
+  receiveAmount: number
+  chaingeOrderId: string
+  receiveAmountUsd: number
+  slippage: string
+  priceImpact: string
+  gasFee: number
+  serviceFeeUsd: number
+  timestamp: number
+}
+
+export interface PostChaingeOrderResponse {
+  signature: HexString
+  publicKey: string
+}
 
 export interface SubmitChaingeOrderRequest {
   fromAmount: string
@@ -74,6 +94,20 @@ export default class Chainge {
       'https://api2.chainge.finance/v1/getChain',
     )
     return data.data.list
+  }
+
+  async signChaingePostRequest(postRequest: PostChaingeOrderRequest): Promise<PostChaingeOrderResponse> {
+    const keyGenerator = KeyManager.createKeyGenerator()
+    const privateKey = keyGenerator.receiveKey(0)
+
+    const message = JSON.stringify(postRequest, Object.keys(postRequest).sort()) // Ensure consistent key order
+    const signature = signMessage({ message, privateKey })
+
+    if (!this.addresses.publicKey) {
+      throw new Error('public key not available')
+    }
+    const publicKey = this.addresses.publicKey.receivePubkeyAsString(0)
+    return { signature, publicKey }
   }
 
   async submitChaingeOrder({ fromAmount, fromToken, toToken, quote, feeRate }: SubmitChaingeOrderRequest) {

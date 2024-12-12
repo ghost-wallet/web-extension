@@ -95,14 +95,13 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           feeRate,
         },
       ])
-      console.log('chainge order response:', order)
-      const isCusdt = payToken.contractAddress === 'CUSDT'
+
       const chaingeOrderPostRequest = {
         transactionId: order.data.transactionId,
         walletAddress: kaspa.addresses[0],
-        payTokenTicker: isCusdt ? 'CUSDT' : payToken.symbol,
+        payTokenTicker: payToken.contractAddress == 'CUSDT' ? 'CUSDT' : payToken.symbol,
         payAmount: Number(payAmount),
-        receiveTokenTicker: isCusdt ? 'CUSDT' : receiveToken.symbol,
+        receiveTokenTicker: receiveToken.contractAddress == 'CUSDT' ? 'CUSDT' : receiveToken.symbol,
         receiveAmount: receiveAmountAfterFees,
         chaingeOrderId: order.data.id,
         receiveAmountUsd: Number(aggregateQuote.outAmountUsd),
@@ -110,10 +109,14 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
         priceImpact: aggregateQuote.priceImpact,
         gasFee: Number(gasFee),
         serviceFeeUsd: totalNetworkFees,
+        timestamp: Math.floor(Date.now() / 1000)
       }
-      console.log('chaingeOrderPostRequest:', chaingeOrderPostRequest)
 
-      await postChaingeOrder(chaingeOrderPostRequest)
+      const { signature, publicKey } = await request('account:signChaingePostRequest', [
+        chaingeOrderPostRequest,
+      ])
+
+      await postChaingeOrder(chaingeOrderPostRequest, signature, publicKey)
       navigate('/swap/confirmed', { state: { order, receiveToken, payToken } })
     } catch (error: any) {
       setError(`Error submitting swap order to Chainge: ${JSON.stringify(error)}`)

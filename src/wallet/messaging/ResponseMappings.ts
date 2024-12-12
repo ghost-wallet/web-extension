@@ -1,7 +1,7 @@
 import { Status } from '@/utils/constants/constants'
 import { KRC20TokenRequest, UTXO } from '@/utils/interfaces'
 import { PriorityBuckets } from '../Node'
-import { ChaingeOrderResponse } from '../exchange/chainge'
+import { ChaingeOrderResponse, PostChaingeOrderResponse } from '../exchange/chainge'
 
 export interface ResponseMappings {
   'wallet:status': Status
@@ -30,6 +30,7 @@ export interface ResponseMappings {
   'provider:connect': void
   'provider:connection': string
   'provider:disconnect': void
+  'account:signChaingePostRequest': PostChaingeOrderResponse
   'account:submitChaingeOrder': ChaingeOrderResponse
   'account:estimateChaingeTransactionFee': string
 }
