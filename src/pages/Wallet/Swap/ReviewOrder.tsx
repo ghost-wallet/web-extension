@@ -6,7 +6,12 @@ import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
 import ReviewOrderToken from '@/pages/Wallet/Swap/ReviewOrderToken'
 import NextButton from '@/components/buttons/NextButton'
 import { ChaingeAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
-import { formatNumberAbbreviated, formatPercentage, formatUsd } from '@/utils/formatting'
+import {
+  formatNumberAbbreviated,
+  formatNumberWithDecimal,
+  formatPercentage,
+  formatUsd,
+} from '@/utils/formatting'
 import ReviewOrderQuote from '@/pages/Wallet/Swap/ReviewOrderQuote'
 import useReceiveAmountAfterFees from '@/hooks/chainge/useReceiveAmountAfterFees'
 import useKaspa from '@/hooks/contexts/useKaspa'
@@ -47,6 +52,16 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   const [warning, setWarning] = useState<string | null>(null)
   const [showDialog, setShowDialog] = useState(false)
 
+  const totalNetworkFees = formatNumberWithDecimal(
+    Number(aggregateQuote.gasFee) + Number(aggregateQuote.serviceFee),
+    aggregateQuote.chainDecimal,
+  )
+  const { formattedCurrencyValue: formattedNetworkFee } = useChaingeTokenData(
+    totalNetworkFees.toString(),
+    receiveToken,
+    [],
+  )
+
   // TODO convert USD to local settings currency
   const formattedOutAmountUsd = formatUsd(Number(aggregateQuote?.outAmountUsd))
 
@@ -86,17 +101,18 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
         transactionId: order.data.transactionId,
         walletAddress: kaspa.addresses[0],
         payTokenTicker: isCusdt ? 'CUSDT' : payToken.symbol,
-        payAmount,
+        payAmount: Number(payAmount),
         receiveTokenTicker: isCusdt ? 'CUSDT' : receiveToken.symbol,
-        receiveAmount: receiveAmountAfterFees.toString(),
+        receiveAmount: receiveAmountAfterFees,
         chaingeOrderId: order.data.id,
-        receiveAmountUsd: aggregateQuote.outAmountUsd,
-        // slippage,
-        // priceImpact: aggregateQuote.priceImpact,
-        // gasFee,
-        // TODO: save price impact, slippage, gas fee, total fees
+        receiveAmountUsd: Number(aggregateQuote.outAmountUsd),
+        slippage,
+        priceImpact: aggregateQuote.priceImpact,
+        gasFee: Number(gasFee),
+        serviceFeeUsd: totalNetworkFees,
       }
-      console.log('gasfee', gasFee)
+      console.log('chaingeOrderPostRequest:', chaingeOrderPostRequest)
+
       await postChaingeOrder(chaingeOrderPostRequest)
       navigate('/swap/confirmed', { state: { order, receiveToken, payToken } })
     } catch (error: any) {
@@ -134,7 +150,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
             gasFee={gasFee}
             slippage={slippage}
             aggregateQuote={aggregateQuote}
-            receiveToken={receiveToken}
+            networkFee={formattedNetworkFee}
           />
           {error && <ErrorMessage message={error} />}
         </div>

@@ -1,11 +1,15 @@
 export const postChaingeOrder = async (postBody: {
   walletAddress: string
   payTokenTicker: string
-  payAmount: string
+  payAmount: number
   receiveTokenTicker: string
-  receiveAmount: string
+  receiveAmount: number
   chaingeOrderId: string
-  receiveAmountUsd: string
+  receiveAmountUsd: number
+  slippage: string
+  priceImpact: string
+  gasFee: number
+  serviceFeeUsd: number
 }) => {
   const url = 'https://dev-api.ghostwallet.ninja/chainge/order'
 
