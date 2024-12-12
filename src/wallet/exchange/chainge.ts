@@ -58,7 +58,7 @@ interface ChaingeResponse<T> {
   msg: string
 }
 
-export type ChaingeOrderResponse = ChaingeResponse<{ id: string }>
+export type ChaingeOrderResponse = ChaingeResponse<{ id: string; transactionId: string }>
 
 export default class Chainge {
   constructor(
@@ -163,6 +163,7 @@ export default class Chainge {
         ...header,
       },
     })
+    response.data.data.transactionId = transactionId
     return response.data
   }
 

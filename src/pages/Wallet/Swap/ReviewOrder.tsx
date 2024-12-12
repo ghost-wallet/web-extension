@@ -10,6 +10,7 @@ import { formatNumberAbbreviated, formatPercentage, formatUsd } from '@/utils/fo
 import ReviewOrderQuote from '@/pages/Wallet/Swap/ReviewOrderQuote'
 import useReceiveAmountAfterFees from '@/hooks/chainge/useReceiveAmountAfterFees'
 import useKaspa from '@/hooks/contexts/useKaspa'
+import { postChaingeOrder } from '@/hooks/ghost/postChaingeOrder'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import WarningMessage from '@/components/WarningMessage'
 import { WarningMessages } from '@/utils/constants/warningMessages'
@@ -38,7 +39,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   onClose,
 }) => {
   const navigate = useNavigate()
-  const { request } = useKaspa()
+  const { kaspa, request } = useKaspa()
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
   const { formattedCurrencyValue, currencyValue } = useChaingeTokenData(payAmount, payToken, [])
   const [loading, setLoading] = useState(false)
@@ -79,7 +80,20 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           feeRate,
         },
       ])
-
+      console.log('chainge order response:', order)
+      const isCusdt = payToken.contractAddress === 'CUSDT'
+      const chaingeOrderPostRequest = {
+        transactionId: order.data.transactionId,
+        walletAddress: kaspa.addresses[0],
+        payTokenTicker: isCusdt ? 'CUSDT' : payToken.symbol,
+        payAmount,
+        receiveTokenTicker: isCusdt ? 'CUSDT' : receiveToken.symbol,
+        receiveAmount: receiveAmountAfterFees.toString(),
+        chaingeOrderId: order.data.id,
+        receiveAmountUsd: aggregateQuote.outAmountUsd,
+        // TODO: save price impact, slippage, gas fee, total fees
+      }
+      await postChaingeOrder(chaingeOrderPostRequest)
       navigate('/swap/confirmed', { state: { order, receiveToken, payToken } })
     } catch (error: any) {
       setError(`Error submitting swap order to Chainge: ${JSON.stringify(error)}`)
