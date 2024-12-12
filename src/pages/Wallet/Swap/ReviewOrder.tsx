@@ -91,8 +91,12 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
         receiveAmount: receiveAmountAfterFees.toString(),
         chaingeOrderId: order.data.id,
         receiveAmountUsd: aggregateQuote.outAmountUsd,
+        // slippage,
+        // priceImpact: aggregateQuote.priceImpact,
+        // gasFee,
         // TODO: save price impact, slippage, gas fee, total fees
       }
+      console.log('gasfee', gasFee)
       await postChaingeOrder(chaingeOrderPostRequest)
       navigate('/swap/confirmed', { state: { order, receiveToken, payToken } })
     } catch (error: any) {

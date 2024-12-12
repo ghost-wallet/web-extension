@@ -19,6 +19,7 @@ const ReviewOrderQuote: React.FC<ReviewOrderProps> = ({ gasFee, slippage, aggreg
     aggregateQuote.chainDecimal,
   )
   const { formattedCurrencyValue } = useChaingeTokenData(totalFees.toString(), receiveToken, [])
+  console.log('total fees', totalFees)
 
   return (
     <TableSection
