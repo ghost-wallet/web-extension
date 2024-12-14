@@ -1,4 +1,4 @@
-import { HexString, signMessage } from '@/wasm'
+import { signMessage } from '@/wasm'
 import { AggregateQuoteResponse, Chain } from '@chainge/api-tool-sdk'
 import { formatUnits, hexlify, keccak256, parseUnits, toUtf8Bytes } from 'ethers'
 import BigNumber from 'bignumber.js'
@@ -34,6 +34,7 @@ export interface ChaingeToken {
 }
 
 const API_SUBMIT_ORDER_URL = 'https://api2.chainge.finance/v1/submitOrder'
+const API_POST_ORDER_URL = 'https://0fvftsrgqf.execute-api.us-east-1.amazonaws.com/dev/chainge/order'
 
 export interface PostChaingeOrderRequest {
   walletAddress: string
@@ -48,11 +49,6 @@ export interface PostChaingeOrderRequest {
   gasFee: number
   serviceFeeUsd: number
   timestamp: number
-}
-
-export interface PostChaingeOrderResponse {
-  signature: HexString
-  publicKey: string
 }
 
 export interface SubmitChaingeOrderRequest {
@@ -96,18 +92,28 @@ export default class Chainge {
     return data.data.list
   }
 
-  async signChaingePostRequest(postRequest: PostChaingeOrderRequest): Promise<PostChaingeOrderResponse> {
+  async signChaingePostRequest(postRequest: PostChaingeOrderRequest) {
     const keyGenerator = KeyManager.createKeyGenerator()
     const privateKey = keyGenerator.receiveKey(0)
 
-    const message = JSON.stringify(postRequest, Object.keys(postRequest).sort()) // Ensure consistent key order
+    // Sort the keys and stringify the request
+    const message = JSON.stringify(postRequest, Object.keys(postRequest).sort())
     const signature = signMessage({ message, privateKey })
 
     if (!this.addresses.publicKey) {
       throw new Error('public key not available')
     }
     const publicKey = this.addresses.publicKey.receivePubkeyAsString(0)
-    return { signature, publicKey }
+
+    const headers = {
+      'Content-Type': 'application/json',
+      Signature: `${signature}`,
+      'Public-Key': publicKey,
+    }
+    console.log('Headers to post:', headers)
+    await axios.post<ChaingeOrderResponse>(API_POST_ORDER_URL, postRequest, { headers })
+
+    return
   }
 
   async submitChaingeOrder({ fromAmount, fromToken, toToken, quote, feeRate }: SubmitChaingeOrderRequest) {

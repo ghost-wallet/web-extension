@@ -15,7 +15,6 @@ import {
 import ReviewOrderQuote from '@/pages/Wallet/Swap/ReviewOrderQuote'
 import useReceiveAmountAfterFees from '@/hooks/chainge/useReceiveAmountAfterFees'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import { postChaingeOrder } from '@/hooks/ghost/postChaingeOrder'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import WarningMessage from '@/components/WarningMessage'
 import { WarningMessages } from '@/utils/constants/warningMessages'
@@ -96,27 +95,27 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
         },
       ])
 
-      const chaingeOrderPostRequest = {
-        transactionId: order.data.transactionId,
-        walletAddress: kaspa.addresses[0],
-        payTokenTicker: payToken.contractAddress == 'CUSDT' ? 'CUSDT' : payToken.symbol,
-        payAmount: Number(payAmount),
-        receiveTokenTicker: receiveToken.contractAddress == 'CUSDT' ? 'CUSDT' : receiveToken.symbol,
-        receiveAmount: receiveAmountAfterFees,
-        chaingeOrderId: order.data.id,
-        receiveAmountUsd: Number(aggregateQuote.outAmountUsd),
-        slippage,
-        priceImpact: aggregateQuote.priceImpact,
-        gasFee: Number(gasFee),
-        serviceFeeUsd: totalNetworkFees,
-        timestamp: Math.floor(Date.now() / 1000)
+      try {
+        const chaingeOrderPostRequest = {
+          transactionId: order.data.transactionId,
+          walletAddress: kaspa.addresses[0],
+          payTokenTicker: payToken.contractAddress == 'CUSDT' ? 'CUSDT' : payToken.symbol,
+          payAmount: Number(payAmount),
+          receiveTokenTicker: receiveToken.contractAddress == 'CUSDT' ? 'CUSDT' : receiveToken.symbol,
+          receiveAmount: receiveAmountAfterFees,
+          chaingeOrderId: order.data.id,
+          receiveAmountUsd: Number(aggregateQuote.outAmountUsd),
+          slippage,
+          priceImpact: aggregateQuote.priceImpact,
+          gasFee: Number(gasFee),
+          serviceFeeUsd: parseFloat(formattedNetworkFee.replace('$', '')),
+          timestamp: Math.floor(Date.now() / 1000),
+        }
+        request('account:signChaingePostRequest', [chaingeOrderPostRequest])
+      } catch (loggingError) {
+        console.warn('Chainge post request failed, but proceeding anyway:', loggingError)
       }
 
-      const { signature, publicKey } = await request('account:signChaingePostRequest', [
-        chaingeOrderPostRequest,
-      ])
-
-      await postChaingeOrder(chaingeOrderPostRequest, signature, publicKey)
       navigate('/swap/confirmed', { state: { order, receiveToken, payToken } })
     } catch (error: any) {
       setError(`Error submitting swap order to Chainge: ${JSON.stringify(error)}`)
