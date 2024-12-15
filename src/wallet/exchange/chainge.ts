@@ -37,6 +37,7 @@ const API_SUBMIT_ORDER_URL = 'https://api2.chainge.finance/v1/submitOrder'
 const API_POST_ORDER_URL = 'https://0fvftsrgqf.execute-api.us-east-1.amazonaws.com/dev/chainge/order'
 
 export interface PostChaingeOrderRequest {
+  transactionId: string
   walletAddress: string
   payTokenTicker: string
   payAmount: number
