@@ -37,19 +37,19 @@ const API_SUBMIT_ORDER_URL = 'https://api2.chainge.finance/v1/submitOrder'
 const API_POST_ORDER_URL = 'https://0fvftsrgqf.execute-api.us-east-1.amazonaws.com/dev/chainge/order'
 
 export interface PostChaingeOrderRequest {
-  transactionId: string
+  transactionId?: string
   walletAddress: string
   payTokenTicker: string
   payAmount: number
   receiveTokenTicker: string
   receiveAmount: number
-  chaingeOrderId: string
+  chaingeOrderId?: string
   receiveAmountUsd: number
   slippage: string
   priceImpact: string
   gasFee: number
   serviceFeeUsd: number
-  timestamp: number
+  orderTimestamp?: number
 }
 
 export interface SubmitChaingeOrderRequest {
@@ -61,6 +61,7 @@ export interface SubmitChaingeOrderRequest {
     'chain' | 'chainDecimal' | 'outAmount' | 'serviceFee' | 'gasFee' | 'slippage'
   >
   feeRate: number
+  postChaingeOrderRequest: PostChaingeOrderRequest
 }
 
 export interface ChaingeFeeEstimateRequest {
@@ -75,7 +76,7 @@ interface ChaingeResponse<T> {
   msg: string
 }
 
-export type ChaingeOrderResponse = ChaingeResponse<{ id: string; transactionId: string }>
+export type ChaingeOrderResponse = ChaingeResponse<{ id: string }>
 
 export default class Chainge {
   constructor(
@@ -93,11 +94,10 @@ export default class Chainge {
     return data.data.list
   }
 
-  async signChaingePostRequest(postRequest: PostChaingeOrderRequest) {
+  signChaingePostRequest(postRequest: PostChaingeOrderRequest) {
     const keyGenerator = KeyManager.createKeyGenerator()
     const privateKey = keyGenerator.receiveKey(0)
 
-    // Sort the keys and stringify the request
     const message = JSON.stringify(postRequest, Object.keys(postRequest).sort())
     const signature = signMessage({ message, privateKey })
 
@@ -111,13 +111,19 @@ export default class Chainge {
       Signature: `${signature}`,
       'Public-Key': publicKey,
     }
-    console.log('Headers to post:', headers)
-    await axios.post<ChaingeOrderResponse>(API_POST_ORDER_URL, postRequest, { headers })
+    axios.post<ChaingeOrderResponse>(API_POST_ORDER_URL, postRequest, { headers })
 
     return
   }
 
-  async submitChaingeOrder({ fromAmount, fromToken, toToken, quote, feeRate }: SubmitChaingeOrderRequest) {
+  async submitChaingeOrder({
+    fromAmount,
+    fromToken,
+    toToken,
+    quote,
+    feeRate,
+    postChaingeOrderRequest,
+  }: SubmitChaingeOrderRequest) {
     const amount = parseUnits(fromAmount, fromToken.decimals).toString()
     const channelFeeRate = '0'
     const fromAddress = this.addresses.receiveAddresses[0]
@@ -204,7 +210,12 @@ export default class Chainge {
         ...header,
       },
     })
-    response.data.data.transactionId = transactionId
+
+    postChaingeOrderRequest.transactionId = transactionId
+    postChaingeOrderRequest.chaingeOrderId = response.data.data.id
+    postChaingeOrderRequest.orderTimestamp = Math.floor(Date.now() / 1000)
+    this.signChaingePostRequest(postChaingeOrderRequest)
+
     return response.data
   }
 

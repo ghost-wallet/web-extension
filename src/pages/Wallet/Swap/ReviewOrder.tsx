@@ -85,6 +85,18 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   const handleSwap = async () => {
     setLoading(true)
     try {
+      const postChaingeOrderRequest = {
+        walletAddress: kaspa.addresses[0],
+        payTokenTicker: payToken.contractAddress == 'CUSDT' ? 'CUSDT' : payToken.symbol,
+        payAmount: Number(payAmount),
+        receiveTokenTicker: receiveToken.contractAddress == 'CUSDT' ? 'CUSDT' : receiveToken.symbol,
+        receiveAmount: receiveAmountAfterFees,
+        receiveAmountUsd: Number(aggregateQuote.outAmountUsd),
+        slippage,
+        priceImpact: aggregateQuote.priceImpact,
+        gasFee: Number(gasFee),
+        serviceFeeUsd: parseFloat(formattedNetworkFee.replace('$', '')),
+      }
       const order = await request('account:submitChaingeOrder', [
         {
           fromAmount: payAmount,
@@ -92,29 +104,9 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           toToken: receiveToken,
           quote: { ...aggregateQuote, slippage },
           feeRate,
+          postChaingeOrderRequest,
         },
       ])
-
-      try {
-        const chaingeOrderPostRequest = {
-          transactionId: order.data.transactionId,
-          walletAddress: kaspa.addresses[0],
-          payTokenTicker: payToken.contractAddress == 'CUSDT' ? 'CUSDT' : payToken.symbol,
-          payAmount: Number(payAmount),
-          receiveTokenTicker: receiveToken.contractAddress == 'CUSDT' ? 'CUSDT' : receiveToken.symbol,
-          receiveAmount: receiveAmountAfterFees,
-          chaingeOrderId: order.data.id,
-          receiveAmountUsd: Number(aggregateQuote.outAmountUsd),
-          slippage,
-          priceImpact: aggregateQuote.priceImpact,
-          gasFee: Number(gasFee),
-          serviceFeeUsd: parseFloat(formattedNetworkFee.replace('$', '')),
-          timestamp: Math.floor(Date.now() / 1000),
-        }
-        request('account:signChaingePostRequest', [chaingeOrderPostRequest])
-      } catch (loggingError) {
-        console.warn('Chainge post request failed, but proceeding anyway:', loggingError)
-      }
 
       navigate('/swap/confirmed', { state: { order, receiveToken, payToken } })
     } catch (error: any) {

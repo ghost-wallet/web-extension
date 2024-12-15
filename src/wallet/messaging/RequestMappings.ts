@@ -3,7 +3,6 @@ import { CustomInput, KRC20TokenRequest } from '@/utils/interfaces'
 import { Token } from '@/wallet/krc20/KRC20Transactions'
 import {
   ChaingeFeeEstimateRequest,
-  PostChaingeOrderRequest,
   SubmitChaingeOrderRequest,
 } from '../exchange/chainge'
 
@@ -34,7 +33,6 @@ export interface RequestMappings {
   'provider:connect': [string]
   'provider:connection': []
   'provider:disconnect': []
-  'account:signChaingePostRequest': [PostChaingeOrderRequest]
   'account:submitChaingeOrder': [SubmitChaingeOrderRequest]
   'account:estimateChaingeTransactionFee': [ChaingeFeeEstimateRequest]
 }

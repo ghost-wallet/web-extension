@@ -30,7 +30,6 @@ export interface ResponseMappings {
   'provider:connect': void
   'provider:connection': string
   'provider:disconnect': void
-  'account:signChaingePostRequest': void
   'account:submitChaingeOrder': ChaingeOrderResponse
   'account:estimateChaingeTransactionFee': string
 }
