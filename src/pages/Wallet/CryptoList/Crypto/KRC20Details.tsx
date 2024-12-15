@@ -33,8 +33,9 @@ function krc20TokenInfoqueryFn({ queryKey }: { queryKey: [string, FetchKRC20Toke
 }
 
 const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
-  const { floorPrice, tick, volume24h, rank } = token
+  const { floorPrice, tick, volume24h, rank, balance, dec } = token
   const { settings } = useSettings()
+  const NO_DATA_SYMBOL = '-'
 
   const krc20TokenQuery = useQuery({
     queryKey: ['krc20TokenInfo', { selectedNode: settings.selectedNode, ticker: token.tick }],
@@ -43,7 +44,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
 
   const krc20Token = krc20TokenQuery.data
 
-  const formattedTokenPrice = tokenPriceFormatter(floorPrice)
+  const formattedTokenPrice = floorPrice > 0 ? tokenPriceFormatter(floorPrice) : NO_DATA_SYMBOL
 
   const mintedPercentage =
     krc20Token?.minted && krc20Token?.max
@@ -54,16 +55,22 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
       ? getMintedPercentage(formatValue(krc20Token.pre), formatValue(krc20Token.max))
       : '0'
 
-  const numericalBalance = formatNumberWithDecimal(token.balance, token.dec)
-  const currencyValue = numericalBalance * (token.floorPrice ?? 0)
-  const formattedCurrencyValue = formatNumberAbbreviated(currencyValue, true)
+  const numericalBalance = formatNumberWithDecimal(balance, dec)
+  const currencyValue =
+    floorPrice > 0 ? formatNumberAbbreviated(numericalBalance * floorPrice, true) : NO_DATA_SYMBOL
+
+  const marketCap =
+    krc20Token && floorPrice > 0
+      ? formatMarketCapAbbreviated(krc20Token.minted, krc20Token.dec, floorPrice)
+      : NO_DATA_SYMBOL
+  const volume = volume24h > 0 ? formatVolumeAbbreviated(volume24h) : NO_DATA_SYMBOL
 
   return (
     <div className="p-4">
       <TableSection
         title="Your Balance"
         rows={[
-          { label: settings.currency, value: `${formattedCurrencyValue}` },
+          { label: settings.currency, value: `${currencyValue}` },
           {
             label: tick,
             value: formatNumberAbbreviated(formatNumberWithDecimal(token.balance, token.dec)),
@@ -82,32 +89,28 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
             label: `${settings.currency} Price`,
             value: <TokenPrice value={`${formattedTokenPrice}`} />,
           },
-          ...(krc20Token
-            ? [
-                {
-                  label: `Market cap`,
-                  value: `${formatMarketCapAbbreviated(krc20Token.minted, krc20Token.dec, floorPrice)}`,
-                },
-                {
-                  label: `Volume 24h`,
-                  value: `${formatVolumeAbbreviated(volume24h)}`,
-                },
-                {
-                  label: '',
-                  value: (
-                    <a
-                      href={getKasFyiTokenUrl(krc20Token.tick)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline"
-                    >
-                      View on Kas.Fyi
-                    </a>
-                  ),
-                  isFullWidth: true,
-                },
-              ]
-            : []),
+          {
+            label: `Market cap`,
+            value: `${marketCap}`,
+          },
+          {
+            label: `Volume 24h`,
+            value: `${volume}`,
+          },
+          {
+            label: '',
+            value: (
+              <a
+                href={getKasFyiTokenUrl(token.tick)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                View on Kas.Fyi
+              </a>
+            ),
+            isFullWidth: true,
+          },
         ]}
         className="mt-6 mb-2"
       />
@@ -131,11 +134,11 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
               },
               {
                 label: 'Mints',
-                value: krc20Token.mintTotal.toLocaleString() || '0',
+                value: krc20Token.mintTotal.toLocaleString() || NO_DATA_SYMBOL,
               },
               {
                 label: 'Holders',
-                value: krc20Token.holderTotal.toLocaleString() || '0',
+                value: krc20Token.holderTotal.toLocaleString() || NO_DATA_SYMBOL,
               },
             ]}
             className="mt-6 mb-6"
