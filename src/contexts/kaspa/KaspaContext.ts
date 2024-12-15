@@ -9,6 +9,7 @@ export const defaultState: IKaspa = {
   connected: false,
   addresses: [],
   balance: 0,
+  balanceValid: false,
   utxos: [],
   provider: '',
 }

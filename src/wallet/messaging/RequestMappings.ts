@@ -18,6 +18,7 @@ export interface RequestMappings {
   'node:submit': [string[]]
   'account:addresses': []
   'account:balance': []
+  'account:balanceValid': []
   'account:utxos': []
   'account:estimateKaspaTransactionFee': [[string, string][], number, string]
   'account:create': [[string, string][], number, string, CustomInput[]?]
@@ -45,6 +46,7 @@ export interface EventMappings {
   'node:connection': boolean
   'node:network': string
   'account:balance': number
+  'account:balanceValid': boolean
   'account:addresses': string[]
   'provider:connection': string
 }
