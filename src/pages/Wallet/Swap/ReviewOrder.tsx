@@ -20,6 +20,8 @@ import WarningMessage from '@/components/WarningMessage'
 import { WarningMessages } from '@/utils/constants/warningMessages'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
+import useChainge from '@/hooks/contexts/useChainge'
+import { getChaingeTicker } from '@/utils/labels'
 
 interface ReviewOrderProps {
   payToken: ChaingeToken
@@ -50,6 +52,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   const [error, setError] = useState('')
   const [warning, setWarning] = useState<string | null>(null)
   const [showDialog, setShowDialog] = useState(false)
+  const { addOrder } = useChainge()
 
   const totalNetworkFees = formatNumberWithDecimal(
     Number(aggregateQuote.gasFee) + Number(aggregateQuote.serviceFee),
@@ -108,7 +111,16 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
         },
       ])
 
-      navigate('/swap/confirmed', { state: { order, receiveToken, payToken } })
+      if (order?.data?.id) {
+        const newOrder = {
+          orderId: order.data.id,
+          payTokenTicker: getChaingeTicker(payToken),
+          receiveTokenTicker: getChaingeTicker(receiveToken),
+        }
+        addOrder(newOrder)
+      }
+
+      navigate('/swap/confirmed', { state: { order, receiveToken } })
     } catch (error: any) {
       setError(`Error submitting swap order to Chainge: ${JSON.stringify(error)}`)
       setShowDialog(true)
