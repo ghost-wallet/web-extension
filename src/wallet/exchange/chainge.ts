@@ -35,9 +35,7 @@ export interface ChaingeToken {
 }
 
 const API_SUBMIT_ORDER_URL = 'https://api2.chainge.finance/v1/submitOrder'
-const API_POST_ORDER_URL = 'https://0fvftsrgqf.execute-api.us-east-1.amazonaws.com/dev/chainge/order'
-
-
+const API_POST_ORDER_URL = 'https://3hk5khl1vl.execute-api.us-east-1.amazonaws.com/prod/chainge/order'
 
 type ChaingeQuote = Omit<
 AggregateQuoteResponse,
