@@ -64,6 +64,16 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
     [],
   )
 
+  const chaingeServiceFee = formatNumberWithDecimal(
+    Number(aggregateQuote.serviceFee),
+    aggregateQuote.chainDecimal,
+  )
+  const { currencyValue: chaingeServiceFeeCurrencyValue } = useChaingeTokenData(
+    chaingeServiceFee.toString(),
+    receiveToken,
+    [],
+  )
+
   // TODO convert USD to local settings currency
   const formattedOutAmountUsd = formatUsd(Number(aggregateQuote?.outAmountUsd))
 
@@ -88,26 +98,15 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   const handleSwap = async () => {
     setLoading(true)
     try {
-      const postChaingeOrderRequest = {
-        walletAddress: kaspa.addresses[0],
-        payTokenTicker: payToken.contractAddress == 'CUSDT' ? 'CUSDT' : payToken.symbol,
-        payAmount: Number(payAmount),
-        receiveTokenTicker: receiveToken.contractAddress == 'CUSDT' ? 'CUSDT' : receiveToken.symbol,
-        receiveAmount: receiveAmountAfterFees,
-        receiveAmountUsd: Number(aggregateQuote.outAmountUsd),
-        slippage,
-        priceImpact: aggregateQuote.priceImpact,
-        gasFee: Number(gasFee),
-        serviceFeeUsd: parseFloat(formattedNetworkFee.replace('$', '')),
-      }
       const order = await request('account:submitChaingeOrder', [
         {
           fromAmount: payAmount,
           fromToken: payToken,
           toToken: receiveToken,
-          quote: { ...aggregateQuote, slippage },
+          quote: aggregateQuote,
+          slippage,
           feeRate,
-          postChaingeOrderRequest,
+          serviceFeeUsd: chaingeServiceFeeCurrencyValue,
         },
       ])
 
