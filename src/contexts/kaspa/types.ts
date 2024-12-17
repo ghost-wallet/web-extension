@@ -8,6 +8,7 @@ export interface IKaspa {
   connected: boolean
   addresses: string[]
   balance: number
+  balanceValid: boolean
   utxos: UTXO[]
   provider: string
 }
