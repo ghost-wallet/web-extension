@@ -2,6 +2,7 @@ import React from 'react'
 import CryptoImage from '@/components/CryptoImage'
 import EstimatedCurrencyValue from '@/components/EstimatedCurrencyValue'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
+import { getChaingeTicker } from '@/utils/labels'
 
 interface ReviewOrderTokenProps {
   title: string
@@ -16,11 +17,11 @@ const ReviewOrderToken: React.FC<ReviewOrderTokenProps> = ({
   amount,
   formattedCurrencyValue,
 }) => {
-  const isCusdt = token?.contractAddress === 'CUSDT'
+  const ticker = getChaingeTicker(token)
 
   return (
     <div className="bg-darkmuted px-4 py-3 rounded-lg mb-1 flex items-center">
-      <CryptoImage ticker={isCusdt ? token.contractAddress : token.symbol} size="small" />
+      <CryptoImage ticker={ticker} size="small" />
       <div className="flex-1 ml-4">
         <div className="flex justify-between items-center">
           <h2 className="text-mutedtext text-base">{title}</h2>
@@ -29,7 +30,7 @@ const ReviewOrderToken: React.FC<ReviewOrderTokenProps> = ({
           </span>
         </div>
         <h2 className="text-primarytext text-2xl font-semibold mt-1">
-          {amount} {isCusdt ? token.contractAddress : token.symbol}
+          {amount} {ticker}
         </h2>
       </div>
     </div>

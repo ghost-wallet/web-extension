@@ -15,7 +15,7 @@ const CryptoListItem: React.FC<CryptoListItemProps> = ({ token, showToggle, isEn
   const numericalBalance = token.isKaspa ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
 
   const currencyValue = numericalBalance * (token.floorPrice ?? 0)
-  const formattedCurrencyValue = currencyValue > 0 ? formatNumberAbbreviated(currencyValue, true) : '-' // Default to '-'
+  const formattedCurrencyValue = currencyValue > 0 ? formatNumberAbbreviated(currencyValue, true) : '-'
 
   const formattedBalance = formatNumberAbbreviated(numericalBalance)
 

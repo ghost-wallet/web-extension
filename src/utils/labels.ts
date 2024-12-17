@@ -5,3 +5,6 @@ export const getButtonLabel = (token: KRC20TokenResponse | null, isMintable: boo
   if (!isMintable) return 'Supply Is Already Minted'
   return 'Next'
 }
+
+export const getChaingeTicker = (token: any) =>
+  token ? (token?.contractAddress === 'CUSDT' ? token.contractAddress : token.symbol) : ''

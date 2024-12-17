@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import useChainge from '@/hooks/contexts/useChainge'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 import CloseButton from '@/components/buttons/CloseButton'
@@ -8,29 +7,15 @@ import NextButton from '@/components/buttons/NextButton'
 import useOrderStatus from '@/hooks/chainge/useOrderStatus'
 import AnimatedLoader from '@/components/animations/AnimatedLoader'
 import AnimatedCheckmark from '@/components/animations/AnimatedCheckmark'
+import { getChaingeTicker } from '@/utils/labels'
 
-const Swapped: React.FC = () => {
+const SwapConfirmed: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { order, receiveToken, payToken } = location.state || {}
-  const { addOrder } = useChainge()
-
-  const getTicker = (token: any) =>
-    token?.contractAddress === 'CUSDT' ? token.contractAddress : token.symbol
-
-  useEffect(() => {
-    if (order?.data?.id) {
-      const newOrder = {
-        orderId: order.data.id,
-        payTokenTicker: getTicker(payToken),
-        receiveTokenTicker: getTicker(receiveToken),
-      }
-      addOrder(newOrder)
-    }
-  }, [order?.data?.id, payToken, receiveToken, addOrder])
+  const { order, receiveToken } = location.state || {}
 
   const { status, loading, error } = useOrderStatus({ order })
-
+  const ticker = getChaingeTicker(receiveToken)
   return (
     <div className="p-4">
       {loading && !error && order?.data?.id && (
@@ -38,8 +23,7 @@ const Swapped: React.FC = () => {
           <AnimatedLoader />
           <h1 className="text-xl text-primarytext">Swapping tokens...</h1>
           <p className="text-lg text-mutedtext text-center">
-            {receiveToken?.contractAddress === 'CUSDT' ? receiveToken.contractAddress : receiveToken.symbol}{' '}
-            will be deposited into your wallet once the transaction is complete
+            {ticker} will be deposited into your wallet once the transaction is complete
           </p>
         </div>
       )}
@@ -66,4 +50,4 @@ const Swapped: React.FC = () => {
   )
 }
 
-export default Swapped
+export default SwapConfirmed

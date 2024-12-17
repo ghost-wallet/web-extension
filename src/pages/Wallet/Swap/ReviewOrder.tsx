@@ -6,7 +6,12 @@ import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
 import ReviewOrderToken from '@/pages/Wallet/Swap/ReviewOrderToken'
 import NextButton from '@/components/buttons/NextButton'
 import { ChaingeAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
-import { formatNumberAbbreviated, formatPercentage, formatUsd } from '@/utils/formatting'
+import {
+  formatNumberAbbreviated,
+  formatNumberWithDecimal,
+  formatPercentage,
+  formatUsd,
+} from '@/utils/formatting'
 import ReviewOrderQuote from '@/pages/Wallet/Swap/ReviewOrderQuote'
 import useReceiveAmountAfterFees from '@/hooks/chainge/useReceiveAmountAfterFees'
 import useKaspa from '@/hooks/contexts/useKaspa'
@@ -15,6 +20,8 @@ import WarningMessage from '@/components/WarningMessage'
 import { WarningMessages } from '@/utils/constants/warningMessages'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
+import useChainge from '@/hooks/contexts/useChainge'
+import { getChaingeTicker } from '@/utils/labels'
 
 interface ReviewOrderProps {
   payToken: ChaingeToken
@@ -38,13 +45,34 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   onClose,
 }) => {
   const navigate = useNavigate()
-  const { request } = useKaspa()
+  const { kaspa, request } = useKaspa()
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
   const { formattedCurrencyValue, currencyValue } = useChaingeTokenData(payAmount, payToken, [])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [warning, setWarning] = useState<string | null>(null)
   const [showDialog, setShowDialog] = useState(false)
+  const { addOrder } = useChainge()
+
+  const totalNetworkFees = formatNumberWithDecimal(
+    Number(aggregateQuote.gasFee) + Number(aggregateQuote.serviceFee),
+    aggregateQuote.chainDecimal,
+  )
+  const { formattedCurrencyValue: formattedNetworkFee } = useChaingeTokenData(
+    totalNetworkFees.toString(),
+    receiveToken,
+    [],
+  )
+
+  const chaingeServiceFee = formatNumberWithDecimal(
+    Number(aggregateQuote.serviceFee),
+    aggregateQuote.chainDecimal,
+  )
+  const { currencyValue: chaingeServiceFeeCurrencyValue } = useChaingeTokenData(
+    chaingeServiceFee.toString(),
+    receiveToken,
+    [],
+  )
 
   // TODO convert USD to local settings currency
   const formattedOutAmountUsd = formatUsd(Number(aggregateQuote?.outAmountUsd))
@@ -75,12 +103,23 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           fromAmount: payAmount,
           fromToken: payToken,
           toToken: receiveToken,
-          quote: { ...aggregateQuote, slippage },
+          quote: aggregateQuote,
+          slippage,
           feeRate,
+          serviceFeeUsd: chaingeServiceFeeCurrencyValue,
         },
       ])
 
-      navigate('/swap/confirmed', { state: { order, receiveToken, payToken } })
+      if (order?.data?.id) {
+        const newOrder = {
+          orderId: order.data.id,
+          payTokenTicker: getChaingeTicker(payToken),
+          receiveTokenTicker: getChaingeTicker(receiveToken),
+        }
+        addOrder(newOrder)
+      }
+
+      navigate('/swap/confirmed', { state: { order, receiveToken } })
     } catch (error: any) {
       setError(`Error submitting swap order to Chainge: ${JSON.stringify(error)}`)
       setShowDialog(true)
@@ -116,7 +155,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
             gasFee={gasFee}
             slippage={slippage}
             aggregateQuote={aggregateQuote}
-            receiveToken={receiveToken}
+            networkFee={formattedNetworkFee}
           />
           {error && <ErrorMessage message={error} />}
         </div>

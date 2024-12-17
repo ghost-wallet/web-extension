@@ -15,8 +15,6 @@ import SwitchChaingeTokens from '@/pages/Wallet/Swap/SwitchChaingeTokens'
 import ReviewOrderButton from '@/pages/Wallet/Swap/ReviewOrderButton'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import TopNavSwap from '@/components/navigation/TopNavSwap'
-import SwapGasFeeButton from '@/pages/Wallet/Swap/SwapGasFeeButton'
-import SwapGasFeeSelect from '@/pages/Wallet/Swap/SwapGasFeeSelect'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import ErrorMessages from '@/utils/constants/errorMessages'
 import { MINIMUM_KAS_FOR_GAS_FEE } from '@/utils/constants/constants'
@@ -31,10 +29,8 @@ export default function Swap() {
   const [payToken, setPayToken] = useState<ChaingeToken | null>(null)
   const [receiveToken, setReceiveToken] = useState<ChaingeToken | null>(null)
   const [slippage, setSlippage] = useState<number>(1)
-  const [feeRate, setFeeRate] = useState<number>(1)
   const [gasFee, setGasFee] = useState<string>('')
   const [gasFeeError, setGasFeeError] = useState<string | null>(null)
-  const [isGasFeeOpen, setIsGasFeeOpen] = useState(false)
   const [isReviewOrderOpen, setIsReviewOrderOpen] = useState(false)
   const [isPayTokenSelectOpen, setIsPayTokenSelectOpen] = useState(false)
   const [isReceiveTokenSelectOpen, setIsReceiveTokenSelectOpen] = useState(false)
@@ -46,6 +42,7 @@ export default function Swap() {
     payAmount,
   )
 
+  const feeRate = 1
   const fetchEstimatedFee = useCallback(() => {
     if (!payToken || !payAmount) return
     if (kaspa.balance < MINIMUM_KAS_FOR_GAS_FEE) {
@@ -80,7 +77,7 @@ export default function Swap() {
       console.error('Error in scaling payAmount:', err)
       setGasFeeError('Invalid amount provided')
     }
-  }, [payAmount, payToken, feeRate, request])
+  }, [payAmount, payToken, request])
 
   useEffect(() => {
     fetchEstimatedFee()
@@ -154,14 +151,6 @@ export default function Swap() {
                   aggregateQuote={aggregateQuote}
                   loadingQuote={loadingQuote}
                 />
-                {!quoteError &&
-                  !amountError &&
-                  !gasFeeError &&
-                  payToken &&
-                  payAmount &&
-                  Number(aggregateQuote?.outAmountUsd || '0') > 1 && (
-                    <SwapGasFeeButton setIsGasFeeOpen={setIsGasFeeOpen} gasFee={gasFee} />
-                  )}
                 {/* TODO: better error display due to fixed container below */}
                 {(quoteError || queryError || gasFeeError || walletError) && (
                   <div className="py-4">
@@ -212,15 +201,6 @@ export default function Swap() {
             gasFee={gasFee}
             aggregateQuote={aggregateQuote}
             onClose={() => setIsReviewOrderOpen(false)}
-          />
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {isGasFeeOpen && payToken && payAmount && (
-          <SwapGasFeeSelect
-            gasFee={gasFee}
-            onSelectFeeRate={setFeeRate}
-            onClose={() => setIsGasFeeOpen(false)}
           />
         )}
       </AnimatePresence>

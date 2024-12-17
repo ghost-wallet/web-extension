@@ -7,12 +7,13 @@ export interface ChaingeAggregateQuote {
   aggregator: string
   outAmount: string
   outAmountUsd: string
-  minOutAmount?: string
+  //minOutAmount?: string
   serviceFee: string
   gasFee: string
   priceImpact: string
   routeSummary: string
   slippage: string
+  serviceFeeRate: string
 }
 
 const API_URL = 'https://api2.chainge.finance/v1/getAggregateQuote'
