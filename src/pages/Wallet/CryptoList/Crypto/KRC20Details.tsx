@@ -18,6 +18,8 @@ import { useQuery } from '@tanstack/react-query'
 import KRC20TxnHistory from '../../Transactions/KRC20TxnHistory'
 import { getKasFyiTokenUrl } from '@/utils/transactions'
 
+export const NO_DATA_SYMBOL = '-'
+
 interface CryptoDetailsTableProps {
   token: Token
 }
@@ -35,7 +37,6 @@ function krc20TokenInfoqueryFn({ queryKey }: { queryKey: [string, FetchKRC20Toke
 const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
   const { floorPrice, tick, volume24h, rank, balance, dec } = token
   const { settings } = useSettings()
-  const NO_DATA_SYMBOL = '-'
 
   const krc20TokenQuery = useQuery({
     queryKey: ['krc20TokenInfo', { selectedNode: settings.selectedNode, ticker: token.tick }],

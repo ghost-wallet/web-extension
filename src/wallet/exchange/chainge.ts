@@ -37,17 +37,14 @@ export interface ChaingeToken {
 const API_SUBMIT_ORDER_URL = 'https://api2.chainge.finance/v1/submitOrder'
 const API_POST_ORDER_URL = 'https://3hk5khl1vl.execute-api.us-east-1.amazonaws.com/prod/chainge/order'
 
-type ChaingeQuote = Omit<
-AggregateQuoteResponse,
-'routeSummary'
->
+type ChaingeQuote = Omit<AggregateQuoteResponse, 'routeSummary'>
 
 export interface PostChaingeOrderRequest {
   transactionId: string
   walletAddress: string
   payTokenTicker: string
   payAmount: string
-  receiveTokenTicker: string 
+  receiveTokenTicker: string
   receiveAmount: string
   receiveAmountUsd: string
   chaingeOrderId: string
@@ -61,11 +58,10 @@ export interface SubmitChaingeOrderRequest {
   fromAmount: string
   fromToken: ChaingeToken
   toToken: ChaingeToken
-  quote: ChaingeQuote,
+  quote: ChaingeQuote
   slippage: string
   feeRate: number
   serviceFeeUsd: number
-  //postChaingeOrderRequest: PostChaingeOrderRequest
 }
 
 export interface ChaingeFeeEstimateRequest {
@@ -98,7 +94,6 @@ export default class Chainge {
     return data.data.list
   }
 
-
   async submitChaingeOrder({
     fromAmount,
     fromToken,
@@ -106,7 +101,7 @@ export default class Chainge {
     quote,
     feeRate,
     slippage,
-    serviceFeeUsd
+    serviceFeeUsd,
   }: SubmitChaingeOrderRequest) {
     const amount = parseUnits(fromAmount, fromToken.decimals).toString()
     const channelFeeRate = '0'
@@ -197,7 +192,6 @@ export default class Chainge {
 
     const chaingeOrderId = response.data.data.id
 
-
     const postChaingeOrderRequest: PostChaingeOrderRequest = {
       walletAddress: fromAddress,
       payTokenTicker: getChaingeTicker(fromToken),
@@ -217,7 +211,6 @@ export default class Chainge {
 
     return response.data
   }
-
 
   reportChaingeOrder(postRequest: PostChaingeOrderRequest) {
     const keyGenerator = KeyManager.createKeyGenerator()
