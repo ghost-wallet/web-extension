@@ -234,7 +234,7 @@ export default class Chainge {
       'Public-Key': publicKey,
     }
 
-    return await axios.post(API_POST_ORDER_URL, postRequest, { headers })
+    return axios.post(API_POST_ORDER_URL, postRequest, { headers })
   }
 
   private async sendChaingeTransaction(fromAmount: string, fromToken: ChaingeToken, feeRate: number) {
