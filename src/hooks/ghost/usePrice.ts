@@ -25,8 +25,8 @@ export function useKaspaPrice() {
         }
       }
     },
-    staleTime: 10_000, // 10 seconds
-    refetchInterval: 10_000, // 10 seconds
+    staleTime: 30_000, // 30 seconds
+    refetchInterval: 30_000, // 30 seconds
     retry: 5,
   })
 }
@@ -52,8 +52,8 @@ export function useTetherPrice() {
         }
       }
     },
-    staleTime: 300_000, // 5 minutes
-    refetchInterval: 300_000, // 5 minutes
+    staleTime: 60 * 60 * 1000, // 60 minutes
+    refetchInterval: 60 * 60 * 1000, // 60 minutes
     retry: 5,
   })
 }
