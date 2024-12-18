@@ -35,7 +35,7 @@ export interface ChaingeToken {
 }
 
 const API_SUBMIT_ORDER_URL = 'https://api2.chainge.finance/v1/submitOrder'
-const API_POST_ORDER_URL = 'https://3hk5khl1vl.execute-api.us-east-1.amazonaws.com/prod/chainge/order'
+const API_POST_ORDER_URL = 'https://3hk5khl1vl.execute-api.us-east-1.amazonaws.com/prod/chainge/order' //prod
 
 type ChaingeQuote = Omit<AggregateQuoteResponse, 'routeSummary'>
 
@@ -195,7 +195,7 @@ export default class Chainge {
     const postChaingeOrderRequest: PostChaingeOrderRequest = {
       walletAddress: fromAddress,
       payTokenTicker: getChaingeTicker(fromToken),
-      payAmount: amount,
+      payAmount: fromAmount,
       receiveTokenTicker: getChaingeTicker(toToken),
       receiveAmount: receiveAmountHr,
       receiveAmountUsd: quote.outAmountUsd,
@@ -207,12 +207,16 @@ export default class Chainge {
       orderTimestamp: Math.floor(Date.now() / 1000),
     }
 
-    this.reportChaingeOrder(postChaingeOrderRequest)
+    try {
+      await this.reportChaingeOrder(postChaingeOrderRequest)
+    } catch (error) {
+      console.warn('Could not send Chainge swap order data to GhostWallet database')
+    }
 
     return response.data
   }
 
-  reportChaingeOrder(postRequest: PostChaingeOrderRequest) {
+  async reportChaingeOrder(postRequest: PostChaingeOrderRequest) {
     const keyGenerator = KeyManager.createKeyGenerator()
     const privateKey = keyGenerator.receiveKey(0)
 
@@ -230,7 +234,7 @@ export default class Chainge {
       'Public-Key': publicKey,
     }
 
-    return axios.post(API_POST_ORDER_URL, postRequest, { headers })
+    return await axios.post(API_POST_ORDER_URL, postRequest, { headers })
   }
 
   private async sendChaingeTransaction(fromAmount: string, fromToken: ChaingeToken, feeRate: number) {

@@ -22,6 +22,7 @@ import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
 import useChainge from '@/hooks/contexts/useChainge'
 import { getChaingeTicker } from '@/utils/labels'
+import Spinner from '@/components/loaders/Spinner'
 
 interface ReviewOrderProps {
   payToken: ChaingeToken
@@ -45,7 +46,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   onClose,
 }) => {
   const navigate = useNavigate()
-  const { kaspa, request } = useKaspa()
+  const { request } = useKaspa()
   const receiveAmountAfterFees = useReceiveAmountAfterFees(aggregateQuote, receiveToken)
   const { formattedCurrencyValue, currencyValue } = useChaingeTokenData(payAmount, payToken, [])
   const [loading, setLoading] = useState(false)
@@ -131,6 +132,18 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
 
   return (
     <>
+      {loading && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-90 z-50 px-4">
+          <div className="text-center">
+            <Spinner />
+            <p className="mt-4 text-lg font-semibold text-primarytext">Sending order to Chainge...</p>
+            <p className="mt-2 text-base text-mutedtext">
+              Do not close or refresh GhostWallet until you're redirected to the next screen.
+            </p>
+          </div>
+        </div>
+      )}
+
       <ModalContainer title="Review Order" onClose={onClose}>
         <div className="flex-grow overflow-y-auto space-y-2 pb-20">
           {/* You Pay Section */}
@@ -160,7 +173,7 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           {error && <ErrorMessage message={error} />}
         </div>
         <BottomFixedContainer className="p-4 bg-bgdark border-t border-darkmuted ">
-          <NextButton text="Swap" onClick={handleSwap} loading={loading} />
+          <NextButton text="Swap" onClick={handleSwap} />
         </BottomFixedContainer>
       </ModalContainer>
       <PopupMessageDialog
