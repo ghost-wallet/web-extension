@@ -7,8 +7,17 @@ import SettingsButton from '@/pages/Wallet/Settings/SettingsButton'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 
 export default function AboutPage() {
-  const openWebsite = () => {
+  const openGhostWalletSite = () => {
     window.open('https://ghostapp.org', '_blank')
+  }
+  const openCMCSite = () => {
+    window.open('https://coinmarketcap.com', '_blank')
+  }
+  const openGeckoSite = () => {
+    window.open('https://coingecko.com', '_blank')
+  }
+  const openKasFyiSite = () => {
+    window.open('https://kas.fyi', '_blank')
   }
 
   return (
@@ -23,9 +32,29 @@ export default function AboutPage() {
           <p className="text-center text-base text-mutedtext pt-2 pb-6">Version {__APP_VERSION__}</p>
           <SettingsButton
             RightSideIcon={ArrowTopRightOnSquareIcon}
-            text="Visit Website"
-            onClick={openWebsite}
+            text="GhostWallet"
+            onClick={openGhostWalletSite}
           />
+          <h1 className="text-primarytext text-xl text-center flex items-center justify-center py-4">
+            <span>Attributions</span>
+          </h1>
+          <div className="space-y-2">
+            <SettingsButton
+              RightSideIcon={ArrowTopRightOnSquareIcon}
+              text="CoinMarketCap"
+              onClick={openCMCSite}
+            />
+            <SettingsButton
+              RightSideIcon={ArrowTopRightOnSquareIcon}
+              text="CoinGecko"
+              onClick={openGeckoSite}
+            />
+            <SettingsButton
+              RightSideIcon={ArrowTopRightOnSquareIcon}
+              text="Kas.Fyi"
+              onClick={openKasFyiSite}
+            />
+          </div>
         </div>
       </AnimatedMain>
       <BottomNav />
