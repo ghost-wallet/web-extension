@@ -12,7 +12,7 @@ const KaspaDetails: React.FC = () => {
   const { settings } = useSettings()
   const { kaspa } = useKaspa()
   const prices = usePrices()
-  const kasPrice = prices.data?.kaspa ?? 0
+  const kasPrice = prices.data?.kaspa?.price ?? 0
   const network = settings.nodes[settings.selectedNode].address
 
   const formattedTokenPrice = tokenPriceFormatter(kasPrice)

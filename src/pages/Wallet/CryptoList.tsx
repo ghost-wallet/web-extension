@@ -18,7 +18,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const location = useLocation()
 
   const prices = usePrices()
-  const kasPrice = prices.data?.kaspa ?? 0
+  const kasPrice = prices.data?.kaspa?.price ?? 0
 
   const visibleTokens = useVisibleTokens(tokens)
 

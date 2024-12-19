@@ -12,8 +12,8 @@ export function useWalletTokens() {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
   const prices = usePrices()
-  const kasPrice = prices.data?.kaspa ?? 0
-  const usdtPrice = prices.data?.tether ?? 0
+  const kasPrice = prices.data?.kaspa?.price ?? 0
+  const usdtPrice = prices.data?.tether?.price ?? 0
   const selectedNetwork = settings.nodes[settings.selectedNode].address
   const [walletError, setWalletError] = useState<string | null>(null)
 

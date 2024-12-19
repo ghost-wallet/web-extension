@@ -8,7 +8,7 @@ interface TotalCostToMintProps {
 
 const TotalCostToMint: React.FC<TotalCostToMintProps> = ({ totalFees }) => {
   const prices = usePrices()
-  const kasPrice = prices.data?.kaspa ?? 0
+  const kasPrice = prices.data?.kaspa?.price ?? 0
 
   const currencyValue = totalFees ? Number(totalFees) * kasPrice : 0
   const formattedCurrencyValue = formatNumberAbbreviated(currencyValue, true)

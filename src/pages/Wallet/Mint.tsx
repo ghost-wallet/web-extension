@@ -31,8 +31,8 @@ export default function Mint() {
   const selectedNetwork = settings.nodes[settings.selectedNode].address
   const ksprPricesQuery = useKsprPrices()
   const prices = usePrices()
-  const kasPrice = prices.data?.kaspa ?? 0
-  const usdtPrice = prices.data?.tether ?? 0
+  const kasPrice = prices.data?.kaspa?.price ?? 0
+  const usdtPrice = prices.data?.tether?.price ?? 0
   const krc20TokenListQuery = useKrc20TokenList()
   const scrollableContainerRef = useRef<HTMLDivElement>(null)
 

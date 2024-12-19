@@ -18,7 +18,11 @@ const TransactionAmountDisplay: React.FC<TransactionAmountDisplayProps> = ({
   className = '',
 }) => {
   const formattedAmount =
-    tick === KAS_TICKER ? amt : isNaN(parseInt(amt, 10)) ? '0' : formatNumberAbbreviated(parseInt(amt, 10) / 1e8)
+    tick === KAS_TICKER
+      ? amt
+      : isNaN(parseInt(amt, 10))
+        ? '0'
+        : formatNumberAbbreviated(parseInt(amt, 10) / 1e8)
 
   const amountDisplay = `${isMint || isReceived ? '+ ' : '- '}${formattedAmount} ${tick}`
   const amountColor = isMint || isReceived ? 'text-success' : 'text-primarytext'

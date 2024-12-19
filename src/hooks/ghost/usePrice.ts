@@ -1,87 +1,52 @@
-import { fetchPrice } from './fetchPrice'
 import { fetchPriceV2 } from './fetchPriceV2'
 import { fetchFromCoinGecko } from '../coingecko/fetchFromCoinGecko'
-import { fetchFromKaspaApi } from '@/hooks/kaspa/fetchFromKaspaApi'
 import { useQuery } from '@tanstack/react-query'
 import useSettings from '@/hooks/contexts/useSettings'
-import { KAS_TICKER, USDT_TICKER } from '@/utils/constants/tickers'
 
 const KAS_NAME = 'Kaspa'
 const USDT_NAME = 'Tether'
 
 export function usePrices() {
   const { settings } = useSettings()
-  const tickers = `${KAS_TICKER},${USDT_TICKER}`
   const names = `${KAS_NAME},${USDT_NAME}`
 
   return useQuery({
     queryKey: ['cryptoPrices', settings.currency],
     queryFn: async () => {
       try {
-        const prices = await fetchPriceV2(settings.currency, tickers, names)
-        return { kaspa: prices[0], tether: prices[1] } //TODO use correct api response structure
+        const response = await fetchPriceV2(settings.currency, names)
+        return {
+          kaspa: {
+            price: response.prices.kaspa.price,
+            marketCap: response.prices.kaspa.market_cap,
+            volume24h: response.prices.kaspa.volume_24h,
+          },
+          tether: {
+            price: response.prices.tether.price,
+            marketCap: response.prices.tether.market_cap,
+            volume24h: response.prices.tether.volume_24h,
+          },
+        }
       } catch (error) {
-        // TODO fallback to Coingecko first, then v1 lambda API next
-        console.error('Failed to fetch prices from fetchPriceV2, falling back to V1 APIs:', error)
+        console.error('Failed to fetch prices from Ghost Cloudflare API. Falling back to CoinGecko:', error)
+        const response = await fetchFromCoinGecko(settings.currency, names)
 
-        const kaspaPrice = useKaspaPrice()
-        const tetherPrice = useTetherPrice()
-
-        return { kaspa: kaspaPrice, tether: tetherPrice }
-      }
-    },
-    staleTime: 30_000, // 30 seconds
-    refetchInterval: 30_000, // 30 seconds
-    retry: 5,
-  })
-}
-
-function useKaspaPrice() {
-  const { settings } = useSettings()
-
-  return useQuery({
-    queryKey: ['kaspaPrice', settings.currency],
-    queryFn: async () => {
-      try {
-        return await fetchPrice(settings.currency, KAS_TICKER, KAS_NAME)
-      } catch (error) {
-        try {
-          console.error('Failed to fetch price from Ghost API, falling back to CoinGecko:', error)
-          return await fetchFromCoinGecko(settings.currency, KAS_NAME)
-        } catch (error) {
-          if (settings.currency === 'USD') {
-            return fetchFromKaspaApi()
-          }
+        return {
+          kaspa: {
+            price: response.kaspa[settings.currency.toLowerCase()],
+            marketCap: response.kaspa[`${settings.currency.toLowerCase()}_market_cap`],
+            volume24h: response.kaspa[`${settings.currency.toLowerCase()}_24h_vol`],
+          },
+          tether: {
+            price: response.tether[settings.currency.toLowerCase()],
+            marketCap: response.tether[`${settings.currency.toLowerCase()}_market_cap`],
+            volume24h: response.tether[`${settings.currency.toLowerCase()}_24h_vol`],
+          },
         }
       }
     },
     staleTime: 30_000, // 30 seconds
     refetchInterval: 30_000, // 30 seconds
-    retry: 5,
-  })
-}
-
-function useTetherPrice() {
-  const { settings } = useSettings()
-
-  return useQuery({
-    queryKey: ['tetherPrice', settings.currency],
-    queryFn: async () => {
-      try {
-        return await fetchPrice(settings.currency, USDT_TICKER, USDT_NAME)
-      } catch (error) {
-        try {
-          console.error('Failed to fetch price from Ghost API, falling back to CoinGecko:', error)
-          return await fetchFromCoinGecko(settings.currency, USDT_NAME)
-        } catch (error) {
-          if (settings.currency === 'USD') {
-            return 1.0
-          }
-        }
-      }
-    },
-    staleTime: 60 * 60 * 1000, // 60 minutes
-    refetchInterval: 60 * 60 * 1000, // 60 minutes
     retry: 5,
   })
 }

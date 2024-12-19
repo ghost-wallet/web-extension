@@ -10,7 +10,7 @@ interface MintSummaryProps {
 
 const MintSummary: React.FC<MintSummaryProps> = ({ totalMintCost, mintAmount, tokenTick }) => {
   const prices = usePrices()
-  const kasPrice = prices.data?.kaspa ?? 0
+  const kasPrice = prices.data?.kaspa?.price ?? 0
 
   const currencyValue = Number(mintAmount ? mintAmount * kasPrice : 0)
   const formattedCurrencyValue = formatNumberAbbreviated(currencyValue, true)
