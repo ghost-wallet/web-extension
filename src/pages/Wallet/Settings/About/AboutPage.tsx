@@ -36,7 +36,7 @@ export default function AboutPage() {
             onClick={openGhostWalletSite}
           />
           <h1 className="text-primarytext text-xl text-center flex items-center justify-center py-4">
-            <span>Attributions</span>
+            <span>Data provided by</span>
           </h1>
           <div className="space-y-2">
             <SettingsButton
