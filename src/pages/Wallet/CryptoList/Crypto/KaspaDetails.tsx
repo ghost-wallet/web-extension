@@ -6,13 +6,19 @@ import TokenPrice from '@/components/TokenPrice'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import KaspaTxnHistory from '@/pages/Wallet/Transactions/KaspaTxnHistory'
 import KaspaTxnHistoryTestnet from '@/pages/Wallet/Transactions/KaspaTxnHistoryTestnet'
-import { tokenPriceFormatter } from '@/utils/formatting'
+import {
+  formatKaspaMarketCapAbbreviated,
+  formatNumberAbbreviated,
+  tokenPriceFormatter,
+} from '@/utils/formatting'
 
 const KaspaDetails: React.FC = () => {
   const { settings } = useSettings()
   const { kaspa } = useKaspa()
   const prices = usePrices()
   const kasPrice = prices.data?.kaspa?.price ?? 0
+  const kasMarketCap = prices.data?.kaspa?.marketCap ?? 0
+  const kasVol = prices.data?.kaspa?.volume24h ?? 0
   const network = settings.nodes[settings.selectedNode].address
 
   const formattedTokenPrice = tokenPriceFormatter(kasPrice)
@@ -45,8 +51,16 @@ const KaspaDetails: React.FC = () => {
         title="Market Details"
         rows={[
           {
-            label: `${settings.currency} Price`,
-            value: prices.isPending ? 'Loading...' : <TokenPrice value={`${formattedTokenPrice}`} />,
+            label: `Price`,
+            value: <TokenPrice value={`${formattedTokenPrice}`} />,
+          },
+          {
+            label: `Market Cap`,
+            value: formatKaspaMarketCapAbbreviated(kasMarketCap),
+          },
+          {
+            label: `Volume 24h`,
+            value: formatNumberAbbreviated(kasVol, true),
           },
         ]}
         className="mt-6 mb-6"
