@@ -1,4 +1,5 @@
 import { fetchPrice } from './fetchPrice'
+import { fetchPriceV2 } from './fetchPriceV2'
 import { fetchFromCoinGecko } from '../coingecko/fetchFromCoinGecko'
 import { fetchFromKaspaApi } from '@/hooks/kaspa/fetchFromKaspaApi'
 import { useQuery } from '@tanstack/react-query'
@@ -13,14 +14,18 @@ export function useKaspaPrice() {
     queryKey: ['kaspaPrice', settings.currency],
     queryFn: async () => {
       try {
-        return await fetchPrice(settings.currency, ticker, name)
+        return await fetchPriceV2(settings.currency, ticker, name)
       } catch (error) {
         try {
-          console.error('Failed to fetch price from Ghost API, falling back to CoinGecko:', error)
-          return await fetchFromCoinGecko(settings.currency, name)
+          return await fetchPrice(settings.currency, ticker, name)
         } catch (error) {
-          if (settings.currency === 'USD') {
-            return fetchFromKaspaApi()
+          try {
+            console.error('Failed to fetch price from Ghost API, falling back to CoinGecko:', error)
+            return await fetchFromCoinGecko(settings.currency, name)
+          } catch (error) {
+            if (settings.currency === 'USD') {
+              return fetchFromKaspaApi()
+            }
           }
         }
       }
@@ -40,14 +45,18 @@ export function useTetherPrice() {
     queryKey: ['tetherPrice', settings.currency],
     queryFn: async () => {
       try {
-        return await fetchPrice(settings.currency, ticker, name)
+        return await fetchPriceV2(settings.currency, ticker, name)
       } catch (error) {
         try {
-          console.error('Failed to fetch price from Ghost API, falling back to CoinGecko:', error)
-          return await fetchFromCoinGecko(settings.currency, name)
+          return await fetchPrice(settings.currency, ticker, name)
         } catch (error) {
-          if (settings.currency === 'USD') {
-            return 1.0
+          try {
+            console.error('Failed to fetch price from Ghost API, falling back to CoinGecko:', error)
+            return await fetchFromCoinGecko(settings.currency, name)
+          } catch (error) {
+            if (settings.currency === 'USD') {
+              return 1.0
+            }
           }
         }
       }
