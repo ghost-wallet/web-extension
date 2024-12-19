@@ -5,6 +5,7 @@ import SearchBar from '@/components/search/SearchBar'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 import CloseButton from '@/components/buttons/CloseButton'
 import { useRanks } from '@/hooks/kas-fyi/useRanks'
+import { KAS_TICKER, USDT_TICKER } from '@/utils/constants/tickers'
 
 interface SwapTokenSelectProps {
   tokens?: ChaingeToken[]
@@ -18,15 +19,15 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens = [], onSelect
 
   const symbols = tokens
     .map((token) => token.symbol)
-    .filter((symbol) => symbol !== 'KAS' && symbol !== 'USDT')
+    .filter((symbol) => symbol !== KAS_TICKER && symbol !== USDT_TICKER)
 
   const rankQuery = useRanks(symbols)
 
   useEffect(() => {
     if (rankQuery.data) {
       const sortedTokens = [
-        ...tokens.filter((token) => token.symbol === 'KAS'),
-        ...tokens.filter((token) => token.symbol === 'USDT'),
+        ...tokens.filter((token) => token.symbol === KAS_TICKER),
+        ...tokens.filter((token) => token.symbol === USDT_TICKER),
         ...tokens
           .filter((token) => rankQuery.data[token.symbol])
           .sort((a, b) => rankQuery.data[a.symbol].rank - rankQuery.data[b.symbol].rank),

@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import { ChaingeContext, Order } from '@/contexts/chainge/ChaingeContext'
 import { fetchOrderStatus } from '@/hooks/chainge/fetchOrderStatus'
+import { KAS_TICKER } from '@/utils/constants/tickers'
 
 const LOCAL_STORAGE_KEY = 'chainge_orders'
 
@@ -23,10 +24,10 @@ export function ChaingeProvider({ children }: { children: ReactNode }) {
   }, [orders])
 
   const hasKaspaOrder = orders.some(
-    (order) => order.payTokenTicker === 'KAS' || order.receiveTokenTicker === 'KAS',
+    (order) => order.payTokenTicker === KAS_TICKER || order.receiveTokenTicker === KAS_TICKER,
   )
   const tokenTickersSet = new Set(orders.flatMap((order) => [order.payTokenTicker, order.receiveTokenTicker]))
-  if (tokenTickersSet.has('KAS')) {
+  if (tokenTickersSet.has(KAS_TICKER)) {
     tokenTickersSet.add('KASPA')
   }
   useEffect(() => {

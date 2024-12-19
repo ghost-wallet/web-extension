@@ -1,5 +1,5 @@
 import React from 'react'
-import { useKaspaPrice } from '@/hooks/ghost/usePrice'
+import { usePrices } from '@/hooks/ghost/usePrice'
 import { formatNumberAbbreviated } from '@/utils/formatting'
 
 interface TotalCostToMintProps {
@@ -7,9 +7,10 @@ interface TotalCostToMintProps {
 }
 
 const TotalCostToMint: React.FC<TotalCostToMintProps> = ({ totalFees }) => {
-  const kaspaPrice = useKaspaPrice()
+  const prices = usePrices()
+  const kasPrice = prices.data?.kaspa ?? 0
 
-  const currencyValue = totalFees ? Number(totalFees) * kaspaPrice.data! : 0
+  const currencyValue = totalFees ? Number(totalFees) * kasPrice : 0
   const formattedCurrencyValue = formatNumberAbbreviated(currencyValue, true)
 
   return (
@@ -21,7 +22,7 @@ const TotalCostToMint: React.FC<TotalCostToMintProps> = ({ totalFees }) => {
         </span>
       </div>
       <span className="text-mutedtext text-lg text-right">
-        ≈ {kaspaPrice.isPending ? 'Loading' : formattedCurrencyValue}
+        ≈ {prices.isPending ? 'Loading' : formattedCurrencyValue}
       </span>
     </div>
   )

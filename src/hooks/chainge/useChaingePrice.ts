@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
+import { KAS_TICKER } from '@/utils/constants/tickers'
 
 const API_URL = 'https://api2.chainge.finance/v1/getPrice'
 
@@ -18,7 +19,7 @@ const fetchChaingePrice = async (token: ChaingeToken | null): Promise<ChaingePri
   try {
     const response = await axios.get<ChaingePriceResponse>(API_URL, {
       params: {
-        chain: 'KAS',
+        chain: KAS_TICKER,
         contractAddress: token?.contractAddress,
         symbol: token?.symbol,
       },

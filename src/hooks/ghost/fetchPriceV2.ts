@@ -1,5 +1,5 @@
-export const fetchPriceV2 = async (currency: string, ticker: string, name: string): Promise<number> => {
-  const url = `https://price-api.ghostwallet.org/price?currency=${currency}&ticker=${ticker}&name=${name}`
+export const fetchPriceV2 = async (currency: string, tickers: string, names: string): Promise<number> => {
+  const url = `https://price-api.ghostwallet.org/price?currency=${currency}&ticker=${tickers}&name=${names}`
 
   const response = await fetch(url)
   if (!response.ok) {

@@ -1,16 +1,17 @@
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import { formatTokenBalance, formatUsd } from '@/utils/formatting'
 import useChaingePrice from '@/hooks/chainge/useChaingePrice'
+import { KAS_TICKER, USDT_TICKER } from '@/utils/constants/tickers'
 
 const useChaingeTokenData = (amount: string, token: ChaingeToken | null, tokens: any[]) => {
   const chaingePriceData = useChaingePrice(token)
 
-  const tokenSymbol = token?.symbol || 'KAS'
+  const tokenSymbol = token?.symbol || KAS_TICKER
   const tokenData = tokens.find(
     (t) =>
       t.tick === tokenSymbol ||
-      (t.tick === 'KASPA' && tokenSymbol === 'KAS') ||
-      (t.tick === 'CUSDT' && token?.symbol === 'USDT'),
+      (t.tick === 'KASPA' && tokenSymbol === KAS_TICKER) ||
+      (t.tick === 'CUSDT' && token?.symbol === USDT_TICKER),
   )
 
   const availableBalance = tokenData ? Number(tokenData.balance) : 0

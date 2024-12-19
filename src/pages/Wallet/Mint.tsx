@@ -12,7 +12,7 @@ import ErrorMessage from '@/components/messages/ErrorMessage'
 import NextButton from '@/components/buttons/NextButton'
 import TopNav from '@/components/navigation/TopNav'
 import { useKsprPrices } from '@/hooks/kspr/fetchKsprPrices'
-import { useKaspaPrice, useTetherPrice } from '@/hooks/ghost/usePrice'
+import { usePrices } from '@/hooks/ghost/usePrice'
 import useSettings from '@/hooks/contexts/useSettings'
 import { useKrc20TokenList } from '@/hooks/kasplex/useKrc20TokenList'
 import ErrorMessages from '@/utils/constants/errorMessages'
@@ -30,10 +30,9 @@ export default function Mint() {
   const { settings } = useSettings()
   const selectedNetwork = settings.nodes[settings.selectedNode].address
   const ksprPricesQuery = useKsprPrices()
-  const kaspaPrice = useKaspaPrice()
-  const kasPrice = kaspaPrice.data ?? 0
-  const tetherPrice = useTetherPrice()
-  const usdtPrice = tetherPrice.data ?? 0
+  const prices = usePrices()
+  const kasPrice = prices.data?.kaspa ?? 0
+  const usdtPrice = prices.data?.tether ?? 0
   const krc20TokenListQuery = useKrc20TokenList()
   const scrollableContainerRef = useRef<HTMLDivElement>(null)
 

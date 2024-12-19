@@ -6,6 +6,7 @@ import TransactionAmountDisplay from '@/pages/Wallet/Transactions/TransactionAmo
 import { KaspaTransaction } from '@/utils/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import { formatNumberWithDecimal } from '@/utils/formatting'
+import { KAS_TICKER } from '@/utils/constants/tickers'
 
 interface KaspaTxnItemProps {
   transaction: KaspaTransaction
@@ -40,7 +41,7 @@ const KaspaTxnItem = forwardRef<HTMLLIElement, KaspaTxnItemProps>(({ transaction
     >
       <div className="flex items-center">
         <div className="relative">
-          <CryptoImage ticker={'KAS'} size="small" />
+          <CryptoImage ticker={KAS_TICKER} size="small" />
           <div className="absolute -bottom-1 -right-1">
             <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center border border-darkmuted">
               <TransactionIcon operationType={isReceived ? 'Received' : 'Sent'} />
@@ -54,7 +55,7 @@ const KaspaTxnItem = forwardRef<HTMLLIElement, KaspaTxnItemProps>(({ transaction
       <div className="text-right">
         <TransactionAmountDisplay
           amt={amount.toString()}
-          tick={'KAS'}
+          tick={KAS_TICKER}
           isMint={false}
           isReceived={isReceived}
           className={'text-base'}
