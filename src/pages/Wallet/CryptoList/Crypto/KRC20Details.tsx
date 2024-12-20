@@ -87,7 +87,7 @@ const KRC20Details: React.FC<CryptoDetailsTableProps> = ({ token }) => {
             value: <TokenPrice value={`${rank}`} />,
           },
           {
-            label: `${settings.currency} Price`,
+            label: `Price`,
             value: <TokenPrice value={`${formattedTokenPrice}`} />,
           },
           {

@@ -118,6 +118,19 @@ export const formatNumberAbbreviated = (balance: number, isCurrency: boolean = f
   return balance.toLocaleString(navigator.language, options)
 }
 
+export const formatKaspaMarketCapAbbreviated = (marketCap: number): string => {
+  const { settings } = useSettings()
+
+  const options: Intl.NumberFormatOptions = {
+    style: 'currency',
+    currency: settings.currency,
+    maximumFractionDigits: 0,
+    ...(marketCap >= 100_000_000 && { notation: 'compact' }),
+  }
+
+  return marketCap.toLocaleString(navigator.language, options)
+}
+
 export const formatMarketCapAbbreviated = (minted: number, dec: number, floorPrice: number): string => {
   const marketCap = getMarketCap(minted, dec, floorPrice)
 

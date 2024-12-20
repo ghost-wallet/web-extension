@@ -3,6 +3,7 @@ import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import { KaspaToken, Token } from '@/utils/interfaces'
 import { KRC20TokenResponse } from '@/utils/interfaces'
 import { getMarketCap } from '@/utils/formatting'
+import { KAS_TICKER, USDT_TICKER } from '@/utils/constants/tickers'
 
 export const sortTokensByValue = (tokens: (Token | KaspaToken)[]) => {
   return tokens
@@ -46,7 +47,7 @@ export const sortSearchResults = (krc20TokenList: KRC20TokenResponse[], ticker: 
 }
 
 export const sortChaingeTokens = (tokens: ChaingeToken[]): ChaingeToken[] => {
-  const tokenPriorityOrder: string[] = ['KAS', 'USDT', 'USDC', 'BTC', 'ETH', 'XCHNG']
+  const tokenPriorityOrder: string[] = [KAS_TICKER, USDT_TICKER, 'USDC', 'BTC', 'ETH', 'XCHNG']
 
   return tokens.sort((a, b) => {
     const indexA = tokenPriorityOrder.indexOf(a.symbol)

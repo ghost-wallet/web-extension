@@ -5,6 +5,7 @@ import { validateAmountToSend } from '@/utils/validation'
 import ValueAndAvailableBalance from '@/pages/Wallet/Swap/ValueAndAvailableBalance'
 import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
 import { formatNumberWithDecimal } from '@/utils/formatting'
+import { KAS_TICKER } from '@/utils/constants/tickers'
 
 interface YouPaySectionProps {
   payAmount: string
@@ -86,7 +87,7 @@ const YouPaySection: React.FC<YouPaySectionProps> = ({
       <ValueAndAvailableBalance
         formattedCurrencyValue={formattedCurrencyValue}
         formattedBalance={formattedBalance}
-        showMaxButton={payToken?.symbol !== 'KAS'}
+        showMaxButton={payToken?.symbol !== KAS_TICKER}
         onMaxClick={handleMaxClick}
       />
     </div>

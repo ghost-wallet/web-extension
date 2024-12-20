@@ -18,6 +18,7 @@ import TopNavSwap from '@/components/navigation/TopNavSwap'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import ErrorMessages from '@/utils/constants/errorMessages'
 import { MINIMUM_KAS_FOR_GAS_FEE } from '@/utils/constants/constants'
+import { KAS_TICKER, USDT_TICKER } from '@/utils/constants/tickers'
 
 export default function Swap() {
   const location = useLocation()
@@ -54,7 +55,7 @@ export default function Swap() {
       request('account:estimateChaingeTransactionFee', [
         {
           fromAmount:
-            payToken.symbol !== 'KAS'
+            payToken.symbol !== KAS_TICKER
               ? Math.round(Number(payAmount) * Math.pow(10, payToken.decimals)).toString()
               : payAmount,
           fromToken: payToken,
@@ -86,9 +87,9 @@ export default function Swap() {
   useEffect(() => {
     if (chaingeTokens) {
       const defaultPayToken = chaingeTokens.find((token: ChaingeToken) =>
-        locationToken ? token.symbol === locationToken.tick : token.symbol === 'KAS',
+        locationToken ? token.symbol === locationToken.tick : token.symbol === KAS_TICKER,
       )
-      const defaultReceiveToken = chaingeTokens.find((token: ChaingeToken) => token.symbol === 'USDT')
+      const defaultReceiveToken = chaingeTokens.find((token: ChaingeToken) => token.symbol === USDT_TICKER)
       setPayToken(defaultPayToken || chaingeTokens[0])
       setReceiveToken(defaultReceiveToken || chaingeTokens[1])
     }

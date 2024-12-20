@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect } from 'react'
 import { sortTokensByValue } from '@/utils/sorting'
 import useSettings from '@/hooks/contexts/useSettings'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import { useKaspaPrice, useTetherPrice } from '@/hooks/ghost/usePrice'
+import { usePrices } from '@/hooks/ghost/usePrice'
 import { isKrc20QueryEnabled, useKrc20TokensQuery } from '@/hooks/kasplex/fetchKrc20AddressTokenList'
 import { useKsprPrices } from '@/hooks/kspr/fetchKsprPrices'
 import { KaspaToken, TokenFromApi, Token } from '@/utils/interfaces'
@@ -11,10 +11,9 @@ import { useKasFyiMarketData } from '@/hooks/kas-fyi/fetchMarketData'
 export function useWalletTokens() {
   const { kaspa } = useKaspa()
   const { settings } = useSettings()
-  const kaspaPrice = useKaspaPrice()
-  const kasPrice = kaspaPrice.data ?? 0
-  const tetherPrice = useTetherPrice()
-  const usdtPrice = tetherPrice.data ?? 0
+  const prices = usePrices()
+  const kasPrice = prices.data?.kaspa?.price ?? 0
+  const usdtPrice = prices.data?.tether?.price ?? 0
   const selectedNetwork = settings.nodes[settings.selectedNode].address
   const [walletError, setWalletError] = useState<string | null>(null)
 

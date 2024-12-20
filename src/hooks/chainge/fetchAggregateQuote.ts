@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
+import { KAS_TICKER } from '@/utils/constants/tickers'
 
 export interface ChaingeAggregateQuote {
   chain: string
@@ -30,10 +31,10 @@ export const fetchAggregateQuote = async (
         fromAmount,
         fromTokenAddress: fromToken.contractAddress,
         fromDecimal: fromToken.decimals,
-        fromChain: 'KAS',
+        fromChain: KAS_TICKER,
         toTokenAddress: toToken.contractAddress,
         toDecimal: toToken.decimals,
-        toChain: 'KAS',
+        toChain: KAS_TICKER,
       },
       signal: options.signal,
     })

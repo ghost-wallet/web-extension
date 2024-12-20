@@ -9,6 +9,7 @@ import AccountTransactions from '../account/AccountTransactions'
 import axios from 'axios'
 import { chaingeMinterAddresses } from '@/utils/constants/constants'
 import { getChaingeTicker } from '@/utils/labels'
+import { KAS_TICKER } from '@/utils/constants/tickers'
 
 function sortParams(params: Record<string, any>, evmAddress: string) {
   let keys = Object.keys(params)
@@ -143,7 +144,7 @@ export default class Chainge {
     const sourceCertsObj = {
       fromAmount: amount,
       fromIndex: fromToken.index.toString(),
-      fromChain: 'KAS',
+      fromChain: KAS_TICKER,
       fromAddr: fromAddress,
       certHash: transactionId,
       fromPublicKey: this.addresses.publicKey.receivePubkeyAsString(0),
@@ -159,7 +160,7 @@ export default class Chainge {
       sourceCerts: sourceCertsHex,
       orderType: '2',
       toIndex: toToken.index.toString(),
-      toChain: 'KAS',
+      toChain: KAS_TICKER,
       toAddr: fromAddress,
       slippage: slippageFormat.toString(),
       execStrategy: '',
@@ -180,7 +181,7 @@ export default class Chainge {
     const header = {
       Address: fromAddress,
       PublicKey: publicKey,
-      Chain: 'KAS',
+      Chain: KAS_TICKER,
       Signature: signature,
     }
 
