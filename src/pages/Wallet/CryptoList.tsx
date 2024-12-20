@@ -7,6 +7,8 @@ import ErrorMessage from '@/components/messages/ErrorMessage'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useKaspaPrice } from '@/hooks/ghost/usePrice'
 import useVisibleTokens from '@/hooks/wallet/useVisibleTokens'
+import useKaspa from '@/hooks/contexts/useKaspa'
+import Spinner from '@/components/loaders/Spinner'
 
 interface CryptoListProps {
   onTotalValueChange: (value: number) => void
@@ -21,6 +23,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const kasPrice = kaspaPrice.data ?? 0
 
   const visibleTokens = useVisibleTokens(tokens)
+  const { kaspa } = useKaspa()
 
   useTotalValueCalculation(visibleTokens, kasPrice, onTotalValueChange)
 
@@ -36,7 +39,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
     <div className="w-full p-4 mb-20 h-full overflow-auto">
       {visibleTokens.length === 0 ? (
         <p className="text-base text-mutedtext">None</p>
-      ) : (
+      ) : kaspa.balanceValid ? (
         <ul className="space-y-3">
           {visibleTokens.map((token) => (
             <li
@@ -48,6 +51,8 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
             </li>
           ))}
         </ul>
+      ) : (
+        <Spinner size={'large'} />
       )}
       {walletError && (
         <ErrorMessage message={walletError} className="mt-2 flex justify-center items-center" />
