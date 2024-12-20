@@ -14,13 +14,13 @@ const TotalWalletValue: React.FC<TotalValueProps> = ({ totalValue }) => {
 
   return (
     <>
-      {kaspa.balanceValid ? (
-        <h1 className="text-primarytext font-rubik text-center flex-grow text-4xl py-4">
-          {formattedCurrencyValue}
-        </h1>
-      ) : (
-        <LoadingPlaceholder className={'w-2/3 h-20 rounded-md'} />
-      )}
+      <h1 className="text-primarytext text-center w-2/3 font-rubik flex-grow text-4xl py-4 flex justify-center">
+        {kaspa.balanceValid ? (
+          <> {formattedCurrencyValue} </>
+        ) : (
+          <LoadingPlaceholder className="flex-grow font-rubik py-4 h-10 max-h-10 w-2/3" />
+        )}
+      </h1>
     </>
   )
 }
