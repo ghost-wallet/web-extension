@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import SwapTokenListItem from '@/pages/Wallet/Swap/SwapTokenListItem'
 import SearchBar from '@/components/search/SearchBar'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 import CloseButton from '@/components/buttons/CloseButton'
+import { useRanks } from '@/hooks/kas-fyi/useRanks'
+import { KAS_TICKER, USDT_TICKER } from '@/utils/constants/tickers'
 
 interface SwapTokenSelectProps {
   tokens?: ChaingeToken[]
@@ -13,7 +15,28 @@ interface SwapTokenSelectProps {
 
 const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens = [], onSelectToken, onClose }) => {
   const [searchTerm, setSearchTerm] = useState<string>('')
-  const [filteredTokens, setFilteredTokens] = useState<ChaingeToken[]>(tokens)
+  const [filteredTokens, setFilteredTokens] = useState<ChaingeToken[]>([])
+
+  const symbols = tokens
+    .map((token) => token.symbol)
+    .filter((symbol) => symbol !== KAS_TICKER && symbol !== USDT_TICKER)
+
+  const rankQuery = useRanks(symbols)
+
+  useEffect(() => {
+    if (rankQuery.data) {
+      const sortedTokens = [
+        ...tokens.filter((token) => token.symbol === KAS_TICKER),
+        ...tokens.filter((token) => token.symbol === USDT_TICKER),
+        ...tokens
+          .filter((token) => rankQuery.data[token.symbol])
+          .sort((a, b) => rankQuery.data[a.symbol].rank - rankQuery.data[b.symbol].rank),
+      ]
+      setFilteredTokens(sortedTokens)
+    } else {
+      setFilteredTokens(tokens)
+    }
+  }, [rankQuery.data, tokens])
 
   const handleSearch = (_searchTerm: string) => {
     setSearchTerm(_searchTerm)
@@ -25,6 +48,8 @@ const SwapTokenSelect: React.FC<SwapTokenSelectProps> = ({ tokens = [], onSelect
     setFilteredTokens(filtered)
   }
 
+  //TODO show a loading UI while getting ranks
+  //TODO show token balances in list
   return (
     <div className="fixed inset-0 z-50 bg-bgdark bg-opacity-90 p-4 flex-grow overflow-y-auto">
       <SearchBar onSearch={handleSearch} />

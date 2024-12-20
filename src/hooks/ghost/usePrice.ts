@@ -1,59 +1,52 @@
-import { fetchPrice } from './fetchPrice'
+import { fetchPriceV2 } from './fetchPriceV2'
 import { fetchFromCoinGecko } from '../coingecko/fetchFromCoinGecko'
-import { fetchFromKaspaApi } from '@/hooks/kaspa/fetchFromKaspaApi'
 import { useQuery } from '@tanstack/react-query'
 import useSettings from '@/hooks/contexts/useSettings'
 
-export function useKaspaPrice() {
+const KAS_NAME = 'kaspa'
+const USDT_NAME = 'tether'
+
+export function usePrices() {
   const { settings } = useSettings()
-  const ticker = 'KAS'
-  const name = 'Kaspa'
+  const names = `${KAS_NAME},${USDT_NAME}`
 
   return useQuery({
-    queryKey: ['kaspaPrice', settings.currency],
+    queryKey: ['cryptoPrices', settings.currency],
     queryFn: async () => {
       try {
-        return await fetchPrice(settings.currency, ticker, name)
+        const response = await fetchPriceV2(settings.currency, names)
+        return {
+          kaspa: {
+            price: response.prices.kaspa.price,
+            marketCap: response.prices.kaspa.market_cap,
+            volume24h: response.prices.kaspa.volume_24h,
+          },
+          tether: {
+            price: response.prices.tether.price,
+            marketCap: response.prices.tether.market_cap,
+            volume24h: response.prices.tether.volume_24h,
+          },
+        }
       } catch (error) {
-        try {
-          console.error('Failed to fetch price from Ghost API, falling back to CoinGecko:', error)
-          return await fetchFromCoinGecko(settings.currency, name)
-        } catch (error) {
-          if (settings.currency === 'USD') {
-            return fetchFromKaspaApi()
-          }
+        console.error('Failed to fetch prices from Ghost Cloudflare API. Falling back to CoinGecko:', error)
+        const response = await fetchFromCoinGecko(settings.currency, names)
+
+        return {
+          kaspa: {
+            price: response.kaspa[settings.currency.toLowerCase()],
+            marketCap: response.kaspa[`${settings.currency.toLowerCase()}_market_cap`],
+            volume24h: response.kaspa[`${settings.currency.toLowerCase()}_24h_vol`],
+          },
+          tether: {
+            price: response.tether[settings.currency.toLowerCase()],
+            marketCap: response.tether[`${settings.currency.toLowerCase()}_market_cap`],
+            volume24h: response.tether[`${settings.currency.toLowerCase()}_24h_vol`],
+          },
         }
       }
     },
-    staleTime: 10_000, // 10 seconds
-    refetchInterval: 10_000, // 10 seconds
-    retry: 5,
-  })
-}
-
-export function useTetherPrice() {
-  const { settings } = useSettings()
-  const ticker = 'USDT'
-  const name = 'Tether'
-
-  return useQuery({
-    queryKey: ['tetherPrice', settings.currency],
-    queryFn: async () => {
-      try {
-        return await fetchPrice(settings.currency, ticker, name)
-      } catch (error) {
-        try {
-          console.error('Failed to fetch price from Ghost API, falling back to CoinGecko:', error)
-          return await fetchFromCoinGecko(settings.currency, name)
-        } catch (error) {
-          if (settings.currency === 'USD') {
-            return 1.0
-          }
-        }
-      }
-    },
-    staleTime: 300_000, // 5 minutes
-    refetchInterval: 300_000, // 5 minutes
+    staleTime: 30_000, // 30 seconds
+    refetchInterval: 30_000, // 30 seconds
     retry: 5,
   })
 }

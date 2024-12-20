@@ -1,22 +1,29 @@
 import React from 'react'
-import { useKaspaPrice } from '@/hooks/ghost/usePrice'
+import { usePrices } from '@/hooks/ghost/usePrice'
 import useSettings from '@/hooks/contexts/useSettings'
 import TableSection from '@/components/table/TableSection'
 import TokenPrice from '@/components/TokenPrice'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import KaspaTxnHistory from '@/pages/Wallet/Transactions/KaspaTxnHistory'
 import KaspaTxnHistoryTestnet from '@/pages/Wallet/Transactions/KaspaTxnHistoryTestnet'
-import { tokenPriceFormatter } from '@/utils/formatting'
+import {
+  formatKaspaMarketCapAbbreviated,
+  formatNumberAbbreviated,
+  tokenPriceFormatter,
+} from '@/utils/formatting'
 
 const KaspaDetails: React.FC = () => {
   const { settings } = useSettings()
   const { kaspa } = useKaspa()
-  const kaspaPrice = useKaspaPrice()
+  const prices = usePrices()
+  const kasPrice = prices.data?.kaspa?.price ?? 0
+  const kasMarketCap = prices.data?.kaspa?.marketCap ?? 0
+  const kasVol = prices.data?.kaspa?.volume24h ?? 0
   const network = settings.nodes[settings.selectedNode].address
 
-  const formattedTokenPrice = tokenPriceFormatter(kaspaPrice.data!)
+  const formattedTokenPrice = tokenPriceFormatter(kasPrice)
 
-  const currencyValue = kaspa.balance * kaspaPrice.data!
+  const currencyValue = kaspa.balance * kasPrice
   const formattedCurrencyValue = currencyValue.toLocaleString(navigator.language, {
     style: 'currency',
     currency: settings.currency,
@@ -31,7 +38,7 @@ const KaspaDetails: React.FC = () => {
         rows={[
           {
             label: settings.currency,
-            value: kaspaPrice.isPending ? 'Loading...' : `${formattedCurrencyValue}`,
+            value: prices.isPending ? 'Loading...' : `${formattedCurrencyValue}`,
           },
           {
             label: 'KASPA',
@@ -44,8 +51,16 @@ const KaspaDetails: React.FC = () => {
         title="Market Details"
         rows={[
           {
-            label: `${settings.currency} Price`,
-            value: kaspaPrice.isPending ? 'Loading...' : <TokenPrice value={`${formattedTokenPrice}`} />,
+            label: `Price`,
+            value: <TokenPrice value={`${formattedTokenPrice}`} />,
+          },
+          {
+            label: `Market Cap`,
+            value: formatKaspaMarketCapAbbreviated(kasMarketCap),
+          },
+          {
+            label: `Volume 24h`,
+            value: formatNumberAbbreviated(kasVol, true),
           },
         ]}
         className="mt-6 mb-6"

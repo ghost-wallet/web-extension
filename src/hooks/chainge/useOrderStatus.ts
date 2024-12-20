@@ -29,7 +29,7 @@ const useOrderStatus = ({ order, onSuccess }: UseOrderStatusProps) => {
     }
 
     const orderId = order.data.id
-    pollingRef.current[orderId] = true // Start polling for this order
+    pollingRef.current[orderId] = true
 
     const pollOrderStatus = async () => {
       try {
@@ -38,10 +38,8 @@ const useOrderStatus = ({ order, onSuccess }: UseOrderStatusProps) => {
         if (response.data.status === 'Succeeded') {
           setStatus('Succeeded')
           setLoading(false)
-          pollingRef.current[orderId] = false // Stop polling for this order
-          console.log(`Order ${orderId} succeeded.`)
+          pollingRef.current[orderId] = false
 
-          // Call onSuccess callback if provided
           if (onSuccess) {
             onSuccess(orderId)
           }
@@ -59,7 +57,7 @@ const useOrderStatus = ({ order, onSuccess }: UseOrderStatusProps) => {
     pollOrderStatus()
 
     return () => {
-      pollingRef.current[orderId] = false // Ensure polling stops explicitly for this orderId
+      pollingRef.current[orderId] = false
     }
   }, [order, onSuccess])
 

@@ -8,6 +8,8 @@ import KRC20Transactions from '../krc20/KRC20Transactions'
 import AccountTransactions from '../account/AccountTransactions'
 import axios from 'axios'
 import { chaingeMinterAddresses } from '@/utils/constants/constants'
+import { getChaingeTicker } from '@/utils/labels'
+import { KAS_TICKER } from '@/utils/constants/tickers'
 
 function sortParams(params: Record<string, any>, evmAddress: string) {
   let keys = Object.keys(params)
@@ -34,16 +36,34 @@ export interface ChaingeToken {
 }
 
 const API_SUBMIT_ORDER_URL = 'https://api2.chainge.finance/v1/submitOrder'
+// const API_POST_ORDER_URL = 'https://0fvftsrgqf.execute-api.us-east-1.amazonaws.com/dev/start-chainge-order' //dev
+const API_POST_ORDER_URL = 'https://3hk5khl1vl.execute-api.us-east-1.amazonaws.com/prod/start-chainge-order' //prod
+
+type ChaingeQuote = Omit<AggregateQuoteResponse, 'routeSummary'>
+
+export interface PostChaingeOrderRequest {
+  transactionId: string
+  walletAddress: string
+  payTokenTicker: string
+  payAmount: string
+  receiveTokenTicker: string
+  receiveAmount: string
+  receiveAmountUsd: string
+  chaingeOrderId: string
+  slippage: string
+  quote: ChaingeQuote
+  serviceFeeUsd: number
+  orderTimestamp: number
+}
 
 export interface SubmitChaingeOrderRequest {
   fromAmount: string
   fromToken: ChaingeToken
   toToken: ChaingeToken
-  quote: Pick<
-    AggregateQuoteResponse,
-    'chain' | 'chainDecimal' | 'outAmount' | 'serviceFee' | 'gasFee' | 'slippage'
-  >
+  quote: ChaingeQuote
+  slippage: string
   feeRate: number
+  serviceFeeUsd: number
 }
 
 export interface ChaingeFeeEstimateRequest {
@@ -76,7 +96,15 @@ export default class Chainge {
     return data.data.list
   }
 
-  async submitChaingeOrder({ fromAmount, fromToken, toToken, quote, feeRate }: SubmitChaingeOrderRequest) {
+  async submitChaingeOrder({
+    fromAmount,
+    fromToken,
+    toToken,
+    quote,
+    feeRate,
+    slippage,
+    serviceFeeUsd,
+  }: SubmitChaingeOrderRequest) {
     const amount = parseUnits(fromAmount, fromToken.decimals).toString()
     const channelFeeRate = '0'
     const fromAddress = this.addresses.receiveAddresses[0]
@@ -86,7 +114,7 @@ export default class Chainge {
     }
     const publicKey = this.addresses.publicKey.receivePubkeyAsString(0)
 
-    const { chain, chainDecimal, outAmount, serviceFee, gasFee, slippage } = quote
+    const { chain, chainDecimal, outAmount, serviceFee, gasFee } = quote
     const receiveAmount = BigInt(outAmount) - BigInt(serviceFee) - BigInt(gasFee)
     if (receiveAmount <= BigInt(0)) {
       throw 'The current quote amount cannot cover the fees. Please enter a larger amount.'
@@ -116,7 +144,7 @@ export default class Chainge {
     const sourceCertsObj = {
       fromAmount: amount,
       fromIndex: fromToken.index.toString(),
-      fromChain: 'KAS',
+      fromChain: KAS_TICKER,
       fromAddr: fromAddress,
       certHash: transactionId,
       fromPublicKey: this.addresses.publicKey.receivePubkeyAsString(0),
@@ -132,7 +160,7 @@ export default class Chainge {
       sourceCerts: sourceCertsHex,
       orderType: '2',
       toIndex: toToken.index.toString(),
-      toChain: 'KAS',
+      toChain: KAS_TICKER,
       toAddr: fromAddress,
       slippage: slippageFormat.toString(),
       execStrategy: '',
@@ -153,7 +181,7 @@ export default class Chainge {
     const header = {
       Address: fromAddress,
       PublicKey: publicKey,
-      Chain: 'KAS',
+      Chain: KAS_TICKER,
       Signature: signature,
     }
 
@@ -163,7 +191,52 @@ export default class Chainge {
         ...header,
       },
     })
+
+    const chaingeOrderId = response.data.data.id
+
+    const postChaingeOrderRequest: PostChaingeOrderRequest = {
+      walletAddress: fromAddress,
+      payTokenTicker: getChaingeTicker(fromToken),
+      payAmount: fromAmount,
+      receiveTokenTicker: getChaingeTicker(toToken),
+      receiveAmount: receiveAmountHr,
+      receiveAmountUsd: quote.outAmountUsd,
+      slippage,
+      serviceFeeUsd,
+      transactionId,
+      chaingeOrderId,
+      quote,
+      orderTimestamp: Math.floor(Date.now() / 1000),
+    }
+
+    try {
+      await this.reportChaingeOrder(postChaingeOrderRequest)
+    } catch (error) {
+      console.warn('Could not send Chainge swap order data to GhostWallet database')
+    }
+
     return response.data
+  }
+
+  async reportChaingeOrder(postRequest: PostChaingeOrderRequest) {
+    const keyGenerator = KeyManager.createKeyGenerator()
+    const privateKey = keyGenerator.receiveKey(0)
+
+    const message = JSON.stringify(postRequest, Object.keys(postRequest).sort())
+    const signature = signMessage({ message, privateKey })
+
+    if (!this.addresses.publicKey) {
+      throw new Error('public key not available')
+    }
+    const publicKey = this.addresses.publicKey.receivePubkeyAsString(0)
+
+    const headers = {
+      'Content-Type': 'application/json',
+      Signature: `${signature}`,
+      'Public-Key': publicKey,
+    }
+
+    return axios.post(API_POST_ORDER_URL, postRequest, { headers })
   }
 
   private async sendChaingeTransaction(fromAmount: string, fromToken: ChaingeToken, feeRate: number) {

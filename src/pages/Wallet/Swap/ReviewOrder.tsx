@@ -6,7 +6,12 @@ import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
 import ReviewOrderToken from '@/pages/Wallet/Swap/ReviewOrderToken'
 import NextButton from '@/components/buttons/NextButton'
 import { ChaingeAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
-import { formatNumberAbbreviated, formatPercentage, formatUsd } from '@/utils/formatting'
+import {
+  formatNumberAbbreviated,
+  formatNumberWithDecimal,
+  formatPercentage,
+  formatUsd,
+} from '@/utils/formatting'
 import ReviewOrderQuote from '@/pages/Wallet/Swap/ReviewOrderQuote'
 import useReceiveAmountAfterFees from '@/hooks/chainge/useReceiveAmountAfterFees'
 import useKaspa from '@/hooks/contexts/useKaspa'
@@ -15,6 +20,9 @@ import WarningMessage from '@/components/WarningMessage'
 import { WarningMessages } from '@/utils/constants/warningMessages'
 import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
+import useChainge from '@/hooks/contexts/useChainge'
+import { getChaingeTicker } from '@/utils/labels'
+import Spinner from '@/components/loaders/Spinner'
 
 interface ReviewOrderProps {
   payToken: ChaingeToken
@@ -45,6 +53,27 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
   const [error, setError] = useState('')
   const [warning, setWarning] = useState<string | null>(null)
   const [showDialog, setShowDialog] = useState(false)
+  const { addOrder } = useChainge()
+
+  const totalNetworkFees = formatNumberWithDecimal(
+    Number(aggregateQuote.gasFee) + Number(aggregateQuote.serviceFee),
+    aggregateQuote.chainDecimal,
+  )
+  const { formattedCurrencyValue: formattedNetworkFee } = useChaingeTokenData(
+    totalNetworkFees.toString(),
+    receiveToken,
+    [],
+  )
+
+  const chaingeServiceFee = formatNumberWithDecimal(
+    Number(aggregateQuote.serviceFee),
+    aggregateQuote.chainDecimal,
+  )
+  const { currencyValue: chaingeServiceFeeCurrencyValue } = useChaingeTokenData(
+    chaingeServiceFee.toString(),
+    receiveToken,
+    [],
+  )
 
   // TODO convert USD to local settings currency
   const formattedOutAmountUsd = formatUsd(Number(aggregateQuote?.outAmountUsd))
@@ -75,12 +104,23 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
           fromAmount: payAmount,
           fromToken: payToken,
           toToken: receiveToken,
-          quote: { ...aggregateQuote, slippage },
+          quote: aggregateQuote,
+          slippage,
           feeRate,
+          serviceFeeUsd: chaingeServiceFeeCurrencyValue,
         },
       ])
 
-      navigate('/swap/confirmed', { state: { order, receiveToken, payToken } })
+      if (order?.data?.id) {
+        const newOrder = {
+          orderId: order.data.id,
+          payTokenTicker: getChaingeTicker(payToken),
+          receiveTokenTicker: getChaingeTicker(receiveToken),
+        }
+        addOrder(newOrder)
+      }
+
+      navigate('/swap/confirmed', { state: { order, receiveToken } })
     } catch (error: any) {
       setError(`Error submitting swap order to Chainge: ${JSON.stringify(error)}`)
       setShowDialog(true)
@@ -92,6 +132,18 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
 
   return (
     <>
+      {loading && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-90 z-50 px-4">
+          <div className="text-center">
+            <Spinner />
+            <p className="mt-4 text-lg font-semibold text-primarytext">Sending order to Chainge...</p>
+            <p className="mt-2 text-base text-mutedtext">
+              Do not close or refresh GhostWallet until you're redirected to the next screen.
+            </p>
+          </div>
+        </div>
+      )}
+
       <ModalContainer title="Review Order" onClose={onClose}>
         <div className="flex-grow overflow-y-auto space-y-2 pb-20">
           {/* You Pay Section */}
@@ -116,12 +168,12 @@ const ReviewOrder: React.FC<ReviewOrderProps> = ({
             gasFee={gasFee}
             slippage={slippage}
             aggregateQuote={aggregateQuote}
-            receiveToken={receiveToken}
+            networkFee={formattedNetworkFee}
           />
           {error && <ErrorMessage message={error} />}
         </div>
         <BottomFixedContainer className="p-4 bg-bgdark border-t border-darkmuted ">
-          <NextButton text="Swap" onClick={handleSwap} loading={loading} />
+          <NextButton text="Swap" onClick={handleSwap} />
         </BottomFixedContainer>
       </ModalContainer>
       <PopupMessageDialog

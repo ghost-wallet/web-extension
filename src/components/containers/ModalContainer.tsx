@@ -11,7 +11,7 @@ interface ModalContainerProps {
 const ModalContainer: React.FC<ModalContainerProps> = ({ title, onClose, children }) => {
   return (
     <motion.div
-      className="fixed inset-0 z-50 bg-bgdark bg-opacity-90 p-4 flex flex-col"
+      className="fixed inset-0 z-40 bg-bgdark bg-opacity-90 p-4 flex flex-col"
       initial={{ y: '100%' }}
       animate={{ y: 0 }}
       exit={{ y: '100%' }}

@@ -3,6 +3,7 @@ import { formatNumberWithDecimal, formatNumberAbbreviated } from '@/utils/format
 import CryptoImage from '@/components/CryptoImage'
 import { KaspaToken, Token } from '@/utils/interfaces'
 import { Switch } from '@headlessui/react'
+import { NO_DATA_SYMBOL } from '@/pages/Wallet/CryptoList/Crypto/KRC20Details'
 
 interface CryptoListItemProps {
   token: Token | KaspaToken
@@ -15,7 +16,10 @@ const CryptoListItem: React.FC<CryptoListItemProps> = ({ token, showToggle, isEn
   const numericalBalance = token.isKaspa ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
 
   const currencyValue = numericalBalance * (token.floorPrice ?? 0)
-  const formattedCurrencyValue = currencyValue > 0 ? formatNumberAbbreviated(currencyValue, true) : '-' // Default to '-'
+  const formattedCurrencyValue =
+    currencyValue > 0 || token.tick === 'KASPA'
+      ? formatNumberAbbreviated(currencyValue, true)
+      : NO_DATA_SYMBOL
 
   const formattedBalance = formatNumberAbbreviated(numericalBalance)
 

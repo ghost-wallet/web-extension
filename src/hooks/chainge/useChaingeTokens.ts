@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { sortChaingeTokens } from '@/utils/sorting'
 import { unsupportedChaingeTokens } from '@/utils/constants/constants'
+import { KAS_TICKER } from '@/utils/constants/tickers'
 
 export interface ChaingeToken {
   index: number
@@ -24,15 +25,15 @@ export function useChaingeTokens() {
   return useQuery({
     queryKey: ['chaingeTokens'],
     queryFn: fetchChaingeTokens,
-    staleTime: 20 * 60 * 1000, // 20 minutes
-    refetchInterval: 20 * 60 * 1000, // 20 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchInterval: 5 * 60 * 1000, // 5 minutes
   })
 }
 
 const fetchChaingeTokens = async (): Promise<ChaingeToken[]> => {
   try {
     const response = await axios.get<{ code: number; msg: string; data: ChaingeTokensList }>(API_URL, {
-      params: { chain: 'KAS' },
+      params: { chain: KAS_TICKER },
     })
 
     if (response.data.code === 0 && response.data.data?.list) {

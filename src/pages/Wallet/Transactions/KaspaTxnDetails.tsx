@@ -11,6 +11,7 @@ import TruncatedCopyAddress from '@/components/TruncatedCopyAddress'
 import TopNav from '@/components/navigation/TopNav'
 import BottomNav from '@/components/navigation/BottomNav'
 import useSettings from '@/hooks/contexts/useSettings'
+import { KAS_TICKER } from '@/utils/constants/tickers'
 
 export default function KaspaTxnDetails() {
   const { settings } = useSettings()
@@ -26,13 +27,13 @@ export default function KaspaTxnDetails() {
         <Header title={isReceived ? 'Received' : 'Sent'} showBackButton={true} />
         <div className="flex flex-col items-center justify-center px-4 pb-4">
           <TransactionIconDisplay
-            ticker={'KAS'}
+            ticker={KAS_TICKER}
             operationType={isReceived ? 'Received' : 'Sent'}
             size="large"
           />
           <TransactionAmountDisplay
             amt={amount}
-            tick={'KAS'}
+            tick={KAS_TICKER}
             isMint={false}
             isReceived={isReceived}
             className="pt-4 text-3xl"
