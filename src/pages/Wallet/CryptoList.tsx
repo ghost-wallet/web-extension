@@ -7,6 +7,8 @@ import ErrorMessage from '@/components/messages/ErrorMessage'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { usePrices } from '@/hooks/ghost/usePrice'
 import useVisibleTokens from '@/hooks/wallet/useVisibleTokens'
+import useKaspa from '@/hooks/contexts/useKaspa'
+import LoadingPlaceholder from '@/components/animations/LoadingPlaceholder'
 
 interface CryptoListProps {
   onTotalValueChange: (value: number) => void
@@ -21,6 +23,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
   const kasPrice = prices.data?.kaspa?.price ?? 0
 
   const visibleTokens = useVisibleTokens(tokens)
+  const { kaspa } = useKaspa()
 
   useTotalValueCalculation(visibleTokens, kasPrice, onTotalValueChange)
 
@@ -44,7 +47,11 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
               onClick={() => handleTokenClick(token)}
               className="w-full text-left transition-colors hover:cursor-pointer rounded-lg"
             >
-              <CryptoListItem token={token} />
+              {kaspa.balanceValid ? (
+                <CryptoListItem token={token} />
+              ) : (
+                <LoadingPlaceholder className="flex-grow w-full h-20 p-3 rounded-lg" />
+              )}
             </li>
           ))}
         </ul>

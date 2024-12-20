@@ -1,8 +1,5 @@
 import React from 'react'
-
-const LoadingPlaceholder: React.FC<{ className: string }> = ({ className }) => (
-  <div className={`bg-muted animate-pulse ${className}`} />
-)
+import LoadingPlaceholder from '@/components/animations/LoadingPlaceholder'
 
 export default function LoadingCreateMint() {
   return (
