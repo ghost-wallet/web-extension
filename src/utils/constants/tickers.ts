@@ -1,2 +1,2 @@
-export const KAS_TICKER = 'KAS'
-export const USDT_TICKER = 'USDT'
+export const KAS_TICKER = 'KAS' as const
+export const USDT_TICKER = 'USDT' as const

@@ -8,7 +8,7 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 
 export default function AboutPage() {
   const openGhostWalletSite = () => {
-    window.open('https://ghostapp.org', '_blank')
+    window.open('https://ghostwallet.org', '_blank')
   }
   const openCMCSite = () => {
     window.open('https://coinmarketcap.com', '_blank')
@@ -32,7 +32,7 @@ export default function AboutPage() {
           <p className="text-center text-base text-mutedtext pt-2 pb-6">Version {__APP_VERSION__}</p>
           <SettingsButton
             RightSideIcon={ArrowTopRightOnSquareIcon}
-            text="GhostWallet"
+            text="Ghost Wallet"
             onClick={openGhostWalletSite}
           />
           <h1 className="text-primarytext text-xl text-center flex items-center justify-center py-4">
@@ -51,7 +51,7 @@ export default function AboutPage() {
             />
             <SettingsButton
               RightSideIcon={ArrowTopRightOnSquareIcon}
-              text="Kas.Fyi"
+              text="Kas.fyi"
               onClick={openKasFyiSite}
             />
           </div>

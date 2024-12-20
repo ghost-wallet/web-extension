@@ -3,8 +3,8 @@ import { fetchFromCoinGecko } from '../coingecko/fetchFromCoinGecko'
 import { useQuery } from '@tanstack/react-query'
 import useSettings from '@/hooks/contexts/useSettings'
 
-const KAS_NAME = 'Kaspa'
-const USDT_NAME = 'Tether'
+const KAS_NAME = 'kaspa'
+const USDT_NAME = 'tether'
 
 export function usePrices() {
   const { settings } = useSettings()
