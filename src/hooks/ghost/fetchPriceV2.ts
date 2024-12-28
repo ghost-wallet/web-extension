@@ -24,7 +24,7 @@ export const fetchPriceV2 = async (currency: string, names: string): Promise<Pri
 
     const data = await response.json()
 
-    console.log('Cloudflare json response:', JSON.stringify(data, null, 2))
+    //console.log('Cloudflare json response:', JSON.stringify(data, null, 2))
 
     if (!data || typeof data.source !== 'string' || typeof data.currency !== 'string' || !data.prices) {
       console.error('Cloudflare response data structure wrong')

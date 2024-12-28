@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ChaingeAggregateQuote, fetchAggregateQuote } from '@/hooks/chainge/fetchAggregateQuote'
 import { formatNumberWithDecimal } from '@/utils/formatting'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
+import { parseUnits } from 'ethers'
 
 // TODO refetch every 15 seconds
 const useAggregateQuote = (
@@ -18,11 +19,6 @@ const useAggregateQuote = (
     const controller = new AbortController()
     const { signal } = controller
 
-    const formatPayAmountToBigInt = (amount: number, decimals: number): bigint => {
-      const scaledAmount = Math.round(amount * Math.pow(10, decimals))
-      return BigInt(scaledAmount)
-    }
-
     const fetchQuote = async () => {
       if (!payAmount || !(Number(payAmount) > 0)) {
         setReceiveAmount('')
@@ -34,7 +30,7 @@ const useAggregateQuote = (
         await new Promise((resolve) => setTimeout(resolve, 200))
         setError(null)
         try {
-          const adjustedPayAmount = formatPayAmountToBigInt(parseFloat(payAmount), payToken.decimals)
+          const adjustedPayAmount = parseUnits(payAmount, payToken.decimals).toString()
           const quote = await fetchAggregateQuote(payToken, receiveToken, adjustedPayAmount, { signal })
           setAggregateQuote(quote)
           if (quote) {

@@ -22,7 +22,7 @@ const API_URL = 'https://api2.chainge.finance/v1/getAggregateQuote'
 export const fetchAggregateQuote = async (
   fromToken: ChaingeToken,
   toToken: ChaingeToken,
-  fromAmount: bigint,
+  fromAmount: string,
   options: { signal?: AbortSignal } = {},
 ): Promise<ChaingeAggregateQuote | undefined> => {
   try {

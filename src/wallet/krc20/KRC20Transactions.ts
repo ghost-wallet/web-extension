@@ -22,6 +22,7 @@ import AccountTransactions from '../account/AccountTransactions'
 import { KRC20TokenRequest, TokenFromApi } from '@/utils/interfaces'
 import { KRC20Inscription } from './KRC20Inscription'
 import { KRC20_COMMIT_AMOUNT } from '@/utils/constants/constants'
+import { parseUnits } from 'ethers'
 
 export type Token = TokenFromApi
 
@@ -36,7 +37,7 @@ function setupKrc20Transaction(
   const script = new ScriptBuilder()
   const inscription = new KRC20Inscription('transfer', {
     tick,
-    amt: BigInt(+amount * 10 ** +dec).toString(),
+    amt: parseUnits(amount, dec).toString(),
     to: recipient,
   })
 
