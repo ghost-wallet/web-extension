@@ -19,7 +19,6 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 import ErrorMessages from '@/utils/constants/errorMessages'
 import { MINIMUM_KAS_FOR_GAS_FEE } from '@/utils/constants/constants'
 import { KAS_TICKER, USDT_TICKER } from '@/utils/constants/tickers'
-import { parseUnits } from 'ethers'
 
 export default function Swap() {
   const location = useLocation()
@@ -55,10 +54,7 @@ export default function Swap() {
     try {
       request('account:estimateChaingeTransactionFee', [
         {
-          fromAmount:
-            payToken.symbol !== KAS_TICKER
-              ? parseUnits(payAmount, payToken.decimals).toString()
-              : payAmount,
+          fromAmount: payAmount,
           fromToken: payToken,
           feeRate,
         },
