@@ -59,6 +59,10 @@ export default class Account extends EventEmitter {
     return Number(this.context.balance?.mature ?? 0) / 1e8
   }
 
+  get balanceValid() {
+    return this.context.balance != undefined
+  }
+
   get UTXOs() {
     const mapUTXO = (utxo: UtxoEntryReference, mature: boolean) => ({
       amount: Number(utxo.amount) / 1e8,

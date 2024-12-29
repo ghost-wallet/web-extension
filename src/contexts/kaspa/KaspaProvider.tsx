@@ -117,6 +117,7 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       case 'account:balance':
         dispatch({ type: 'balance', payload: message.data })
         dispatch({ type: 'utxos', payload: await request('account:utxos', []) })
+        dispatch({ type: 'balanceValid', payload: true })
         break
       case 'account:addresses':
         dispatch({
@@ -140,6 +141,8 @@ export function KaspaProvider({ children }: { children: ReactNode }) {
       dispatch({ type: 'connected', payload: connected })
       const balance = await request('account:balance', [])
       dispatch({ type: 'balance', payload: balance })
+      const balanceValid = await request('account:balanceValid', [])
+      dispatch({ type: 'balanceValid', payload: balanceValid })
       const utxos = await request('account:utxos', [])
       dispatch({ type: 'utxos', payload: utxos })
       const addresses = await request('account:addresses', [])

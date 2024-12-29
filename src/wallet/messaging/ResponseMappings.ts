@@ -18,6 +18,7 @@ export interface ResponseMappings {
   'node:submit': string[]
   'account:addresses': string[]
   'account:balance': number
+  'account:balanceValid': boolean
   'account:utxos': UTXO[]
   'account:estimateKaspaTransactionFee': string
   'account:create': [string[], string]

@@ -38,6 +38,7 @@ export default class Router {
       'node:submit': (transactions) => node.submit(transactions),
       'account:addresses': () => account.addresses.receiveAddresses,
       'account:balance': () => account.balance,
+      'account:balanceValid': () => account.balanceValid,
       'account:utxos': () => account.UTXOs,
       'account:estimateKaspaTransactionFee': (outputs, feeRate, fee) =>
         account.transactions.estimateKaspaTransactionFee(outputs, feeRate, fee),
