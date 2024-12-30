@@ -2,7 +2,7 @@ import React from 'react'
 import { useWalletTokens } from '@/hooks/wallet/useWalletTokens'
 import CryptoListItem from '@/pages/Wallet/CryptoList/CryptoListItem'
 import { useTotalValueCalculation } from '@/hooks/wallet/useTotalValueCalculation'
-import { Token, KaspaToken } from '@/utils/interfaces'
+import { AccountToken, AccountKaspaToken, AccountTokenWithPrices } from '@/types/interfaces'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { usePrices } from '@/hooks/ghost/usePrice'
@@ -24,7 +24,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ onTotalValueChange }) => {
 
   useTotalValueCalculation(visibleTokens, kasPrice, onTotalValueChange)
 
-  const handleTokenClick = (token: Token | KaspaToken) => {
+  const handleTokenClick = (token: AccountToken) => {
     if (location.pathname.includes('/send')) {
       navigate(`/send/${token.tick}`, { state: { token } })
     } else {

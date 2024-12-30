@@ -1,4 +1,5 @@
 import useSettings from '@/hooks/contexts/useSettings'
+import { parseUnits } from 'ethers'
 
 export const formatValue = (value: number | null | undefined): number => {
   if (value === 0 || value === null || value === undefined) {
@@ -208,4 +209,8 @@ export const formatUsd = (value: number): string => {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
+}
+
+export function decimalToBigint(value: string, decimals: number): bigint {
+  return parseUnits(value, decimals)
 }

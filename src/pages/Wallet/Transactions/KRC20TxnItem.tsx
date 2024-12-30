@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import TransactionIconDisplay from '@/pages/Wallet/Transactions/TransactionIconDisplay'
 import TransactionAmountDisplay from '@/pages/Wallet/Transactions/TransactionAmountDisplay'
-import { KRC20Transaction } from '@/utils/interfaces'
+import { KRC20Transaction } from '@/types/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import { getOperationDetails, getTransactionStatusText } from '@/utils/transactions'
 

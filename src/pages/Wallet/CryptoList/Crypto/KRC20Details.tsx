@@ -13,7 +13,7 @@ import { formatValue } from '@/utils/formatting'
 import TableSection from '@/components/table/TableSection'
 import Spinner from '@/components/loaders/Spinner'
 import TokenPrice from '@/components/TokenPrice'
-import { Token } from '@/utils/interfaces'
+import { AccountTokenWithPrices } from '@/types/interfaces'
 import { useQuery } from '@tanstack/react-query'
 import KRC20TxnHistory from '../../Transactions/KRC20TxnHistory'
 import { getKasFyiTokenUrl } from '@/utils/transactions'
@@ -21,7 +21,7 @@ import { getKasFyiTokenUrl } from '@/utils/transactions'
 export const NO_DATA_SYMBOL = '-'
 
 interface CryptoDetailsTableProps {
-  token: Token
+  token: AccountTokenWithPrices
 }
 
 interface FetchKRC20TokenInfoParams {

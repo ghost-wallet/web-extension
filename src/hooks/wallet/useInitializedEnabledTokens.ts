@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import LocalStorage from '@/storage/LocalStorage'
-import { Token } from '@/utils/interfaces'
+import { AccountToken } from '@/types/interfaces'
 
-const useInitializedEnabledTokens = (tokens: Partial<Token>[]) => {
+const useInitializedEnabledTokens = (tokens: Partial<AccountToken>[]) => {
   const [enabledTokens, setEnabledTokens] = useState<{ [key: string]: boolean }>({})
 
   useEffect(() => {

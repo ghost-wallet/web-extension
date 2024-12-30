@@ -5,10 +5,10 @@ import ActionButton from '@/components/buttons/ActionButton'
 import MintButton from '@/pages/Wallet/CryptoList/Crypto/MintButton'
 import SwapButton from '@/pages/Wallet/CryptoList/Crypto/SwapButton'
 import ReceiveButton from '@/components/buttons/ReceiveButton'
-import { Token } from '@/utils/interfaces'
+import { AccountToken } from '@/types/interfaces'
 
 interface CryptoActionButtonsProps {
-  token: Token
+  token: AccountToken
 }
 
 const ActionButtons: React.FC<CryptoActionButtonsProps> = ({ token }) => {

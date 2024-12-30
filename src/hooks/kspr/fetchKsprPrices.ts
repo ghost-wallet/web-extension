@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
-import { KsprTokenResponse } from '@/utils/interfaces'
+import { KsprTokenResponse } from '@/types/interfaces'
 
 /**
  * Fetches the KSPR token data from the marketplace JSON endpoint.

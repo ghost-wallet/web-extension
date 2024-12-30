@@ -1,3 +1,5 @@
+import { Krc20AccountTokenFromApi, Krc20TokenState } from "./kasplex"
+
 /**
  * Requests and responses for WASM. Official documentation:
  * https://api.kaspa.org
@@ -21,24 +23,6 @@ export interface CustomSignature {
   script?: string
 }
 
-export interface TokenFromApi {
-  tick: string
-  opScoreMod: string
-  balance: string
-  dec: string
-  state: string
-  max: string
-  minted: string
-}
-
-export interface KaspaToken {
-  isKaspa: true
-  tick: 'KASPA'
-  balance: number
-  dec: number
-  floorPrice: number
-}
-
 /**
  * Requests and responses for using Kaspa API. Official documentation:
  * https://api.kaspa.org
@@ -58,46 +42,48 @@ export interface KaspaTransactionOutput {
   script_public_key_address: string
 }
 
-/**
- * Our own interface for building token data to account for Kaspa (Kaspa is not a KRC20 token).
- */
-export interface KRC20TokenListForAddress {
-  result: TokenFromApi[]
-  next: string | null
-}
 
-export interface TokenFromApi {
-  tick: string
-  opScoreMod: string
-  balance: string
-  dec: string
-}
 
-export interface KaspaToken {
+export interface AccountKaspaToken {
   isKaspa: true
   tick: 'KASPA'
   balance: number
   dec: number
   floorPrice: number
-  isHidden?: boolean
+//  isHidden?: boolean
 }
 
-export interface Token extends TokenFromApi {
+
+export interface AccountTokenWithPrices extends Krc20AccountTokenFromApi {
   isKaspa?: undefined
   floorPrice: number
-  isHidden?: boolean
   volume24h: number
   rank: number
 }
 
-/**
- * Requests and responses for using Kasplex API. Official documentation:
- * https://docs.kasplex.org
- */
+export type AccountToken = AccountKaspaToken | AccountTokenWithPrices
+
+
 export interface KRC20TokenList {
-  result: KRC20TokenResponse[]
+  result: KRC20TokenItemFromListApi[]
   next: string | null
 }
+
+export interface KRC20TokenItemFromListApi {
+  tick: string,
+  max: string,
+  lim: string,
+  pre: string,
+  to: string,
+  dec: string,
+  minted: string,
+  opScoreAdd: string,
+  opScoreMod: string,
+  state: string,
+  hashRev: string,
+  mtsAdd: string
+}
+
 
 export interface KRC20Transaction {
   op: string
@@ -126,10 +112,7 @@ export interface KRC20TokenRequest {
   script: string
 }
 
-/**
- * KRC-20 token response from the Kasplex Indexer API. Official documentation:
- * https://docs.kasplex.org/tools-and-reference/kasplex-indexer-api/krc-20/get-krc-20-info
- */
+
 export interface KRC20TokenResponse {
   tick: string
   max: number
@@ -140,7 +123,7 @@ export interface KRC20TokenResponse {
   minted: number
   opScoreAdd: string
   opScoreMod: string
-  state: string
+  state: Krc20TokenState
   hashRev: string
   mtsAdd: string
   holderTotal: number
@@ -182,4 +165,13 @@ export interface KasFyiToken {
 
 export interface KasFyiTokenResponse {
   results: KasFyiToken[]
+}
+
+export interface SearchToken {
+  tick: string
+  max: number | string
+  minted: number | string
+  dec: number | string
+  floorPrice?: number
+  state: Krc20TokenState
 }

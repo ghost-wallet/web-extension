@@ -4,7 +4,7 @@ import CryptoListItem from '@/pages/Wallet/CryptoList/CryptoListItem'
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import Spinner from '@/components/loaders/Spinner'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Token, KaspaToken } from '@/utils/interfaces'
+import { AccountToken } from '@/types/interfaces'
 import SearchBar from '@/components/search/SearchBar'
 import useVisibleTokens from '@/hooks/wallet/useVisibleTokens'
 import SearchResultsNotFound from '@/components/search/SearchResultsNotFound'
@@ -17,7 +17,7 @@ const SearchWalletResults: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const visibleTokens = useVisibleTokens(tokens)
-  const [filteredTokens, setFilteredTokens] = useState<(Token | KaspaToken)[]>([])
+  const [filteredTokens, setFilteredTokens] = useState<(AccountToken)[]>([])
   const [searchTerm, setSearchTerm] = useState<string>('')
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const SearchWalletResults: React.FC = () => {
     setFilteredTokens(filtered)
   }
 
-  const handleTokenClick = (token: Token | KaspaToken) => {
+  const handleTokenClick = (token: AccountToken) => {
     if (location.pathname.includes('/send')) {
       navigate(`/send/${token.tick}`, { state: { token } })
     } else {

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { getApiBase } from '@/hooks/kasplex/fetchHelper'
-import { KRC20TransactionList } from '@/utils/interfaces'
+import { KRC20TransactionList } from '@/types/interfaces'
 import ErrorMessages from '@/utils/constants/errorMessages'
 
 export const fetchKRC20TransactionHistory = async (

@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import SuggestionsDropdown from './SuggestionsDropdown'
-import { KRC20TokenResponse } from '@/utils/interfaces'
+import { SearchToken } from '@/types/interfaces'
 import { sortSearchResults } from '@/utils/sorting'
 
 interface KRC20TokenSearchProps {
   onSearch: (ticker: string) => void
-  krc20TokenList?: KRC20TokenResponse[]
+  krc20TokenList?: SearchToken[]
 }
 
 const SearchBar: React.FC<KRC20TokenSearchProps> = ({ onSearch, krc20TokenList }) => {

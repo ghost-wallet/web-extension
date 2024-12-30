@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import { formatNumberWithDecimal } from '@/utils/formatting'
 import useKaspa from '@/hooks/contexts/useKaspa'
-import { KaspaToken, Token } from '@/utils/interfaces'
+import { AccountToken } from '@/types/interfaces'
 
 type TotalValueChangeCallback = (value: number) => void
 
 export const useTotalValueCalculation = (
-  tokens: (Token | KaspaToken)[],
+  tokens: (AccountToken)[],
   price: number,
   onTotalValueChange: TotalValueChangeCallback,
 ) => {

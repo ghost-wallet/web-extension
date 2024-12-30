@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { KaspaTransactionList } from '@/utils/interfaces'
+import { KaspaTransactionList } from '@/types/interfaces'
 
 export const fetchKaspaTransactionHistory = async (
   address: string,

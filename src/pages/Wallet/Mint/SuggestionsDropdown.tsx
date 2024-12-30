@@ -2,10 +2,10 @@ import React from 'react'
 import CryptoImage from '@/components/CryptoImage'
 import { checkIfMintable } from '@/utils/validation'
 import { BoltIcon } from '@heroicons/react/24/outline'
-import { KRC20TokenResponse } from '@/utils/interfaces'
+import { SearchToken } from '@/types/interfaces'
 
 interface SuggestionsDropdownProps {
-  filteredTokens: KRC20TokenResponse[]
+  filteredTokens: SearchToken[]
   onSuggestionClick: (ticker: string) => void
 }
 

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
-import { KasFyiTokenResponse, KasFyiToken } from '@/utils/interfaces'
+import { KasFyiTokenResponse, KasFyiToken } from '@/types/interfaces'
 
 const KAS_FYI_LIMIT = 500
 

@@ -1,9 +1,9 @@
 import React from 'react'
-import { Token, KaspaToken } from '@/utils/interfaces'
+import { AccountToken } from '@/types/interfaces'
 
 interface SearchResultsNotFoundProps {
   searchTerm: string
-  filteredTokens: (Token | KaspaToken)[]
+  filteredTokens: (AccountToken)[]
 }
 
 const SearchResultsNotFound: React.FC<SearchResultsNotFoundProps> = ({ searchTerm, filteredTokens }) => {
