@@ -1,4 +1,5 @@
 import useSettings from '@/hooks/contexts/useSettings'
+import { AccountToken } from '@/types/interfaces'
 import { parseUnits } from 'ethers'
 
 export const formatValue = (value: number | null | undefined): number => {
@@ -23,6 +24,14 @@ export const formatNumberWithDecimal = (balance: number | string, decimals: numb
 
   const factor = Math.pow(10, decimals)
   return parseFloat((balance / factor).toFixed(decimals))
+}
+
+export const formatAccountTokenBalance = (token: AccountToken): number => {
+  if (token.isKaspa) {
+    return parseFloat(token.balance.toFixed(token.balance % 1 === 0 ? 0 : 2))
+  } else {
+    return formatNumberWithDecimal(token.balance, token.dec)
+  }
 }
 
 export const formatTokenBalance = (balance: number, tick: string, decimals: number): number => {
@@ -178,17 +187,6 @@ export const formatGasFee = (gasFee: string | number): string => {
   })
 }
 
-export const formatAndValidateAmount = (value: string, maxDecimals: number): string | null => {
-  const decimalPlaces = value.split('.')[1]?.length || 0
-  if (decimalPlaces > maxDecimals) return null
-
-  if (value.startsWith('.') && value.length > 1) {
-    value = `0${value}`
-  }
-
-  return value
-}
-
 export const formatPercentage = (value: string | number): string => {
   const parsedValue = typeof value === 'string' ? parseFloat(value) : value
 
@@ -213,4 +211,15 @@ export const formatUsd = (value: number): string => {
 
 export function decimalToBigint(value: string, decimals: number): bigint {
   return parseUnits(value, decimals)
+}
+
+export function truncateDecimals(value: string, decimals: number): string {
+  const [whole, decimalsStr] = value.split('.')
+  if (decimals === 0) {
+    return whole
+  }
+  if (decimalsStr === undefined || decimalsStr.length === 0) {
+    return value
+  }
+  return `${whole}.${decimalsStr.slice(0, decimals)}`
 }

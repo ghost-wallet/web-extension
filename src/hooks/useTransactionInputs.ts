@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { validateRecipient, validateAmountToSend } from '@/utils/validation'
-import { formatAndValidateAmount } from '@/utils/formatting'
+import { truncateDecimals } from '@/utils/formatting'
+import { AccountToken } from '@/types/interfaces'
 
-export const useTransactionInputs = (token: any, maxAmount: string, yourAddress: string) => {
+export const useTransactionInputs = (token: AccountToken, maxAmount: number, yourAddress: string) => {
   const [outputs, setOutputs] = useState<[string, string][]>([['', '']])
   const [recipientError, setRecipientError] = useState<string | null>(null)
   const [amountError, setAmountError] = useState<string | null>(null)
@@ -18,14 +19,14 @@ export const useTransactionInputs = (token: any, maxAmount: string, yourAddress:
   }
 
   const handleAmountChange = (value: string) => {
-    formatAndValidateAmount(value, token.dec)
+    const truncatedValue = truncateDecimals(value, Number(token.dec))
     setOutputs((prevOutputs) => {
       const newOutputs = [...prevOutputs]
-      newOutputs[0][1] = value
+      newOutputs[0][1] = truncatedValue
       return newOutputs
     })
 
-    validateAmountToSend(token.tick, value, parseFloat(maxAmount), setAmountError)
+    validateAmountToSend(token.tick, truncatedValue, maxAmount, setAmountError)
   }
 
   const handleMaxClick = () => {

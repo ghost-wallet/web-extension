@@ -9,19 +9,20 @@ import AmountInput from '@/components/inputs/AmountInput'
 import NextButton from '@/components/buttons/NextButton'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import { useTransactionInputs } from '@/hooks/useTransactionInputs'
-import { formatNumberWithDecimal, formatTokenBalance } from '@/utils/formatting'
+import { formatAccountTokenBalance, formatNumberWithDecimal, formatTokenBalance } from '@/utils/formatting'
 import useSettings from '@/hooks/contexts/useSettings'
 import CryptoImage from '@/components/CryptoImage'
 import TopNav from '@/components/navigation/TopNav'
 import ErrorMessages from '@/utils/constants/errorMessages'
 import { MINIMUM_KAS_FOR_GAS_FEE } from '@/utils/constants/constants'
+import { AccountToken } from '@/types/interfaces'
 
 const InitiateSend: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { request, kaspa } = useKaspa()
   const { settings } = useSettings()
-  const { token } = location.state || {}
+  const { token }: {token: AccountToken} = location.state || {}
 
   const maxAmount = token.isKaspa ? token.balance : formatNumberWithDecimal(token.balance, token.dec)
   const { outputs, recipientError, amountError, handleRecipientChange, handleAmountChange, handleMaxClick } =
@@ -55,7 +56,7 @@ const InitiateSend: React.FC = () => {
   const isButtonEnabled =
     outputs[0][0].length > 0 && outputs[0][1].length > 0 && !recipientError && !amountError && !error
 
-  const formattedBalance = formatTokenBalance(token.balance, token.tick, token.dec).toLocaleString()
+  const formattedBalance = formatAccountTokenBalance(token).toLocaleString()
 
   return (
     <>
