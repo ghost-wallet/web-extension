@@ -49,4 +49,11 @@ describe('truncateDecimals', () => {
     const result = truncateDecimals(value, decimals)
     expect(result).toBe('.')
   })
+
+  it('should return empty string if value is empty', () => {
+    const value = ''
+    const decimals = 2
+    const result = truncateDecimals(value, decimals)
+    expect(result).toBe('')
+  })
 })
