@@ -5,7 +5,7 @@ import useKaspa from '@/hooks/contexts/useKaspa'
 import { usePrices } from '@/hooks/ghost/usePrice'
 import { isKrc20QueryEnabled, useKrc20TokensQuery } from '@/hooks/kasplex/fetchKrc20AddressTokenList'
 import { useKsprPrices } from '@/hooks/kspr/fetchKsprPrices'
-import { AccountKaspaToken, AccountTokenFromApi, AccountToken, AccountTokenWithPrices } from '@/types/interfaces'
+import { AccountKaspaToken, AccountToken, AccountTokenWithPrices } from '@/types/interfaces'
 import { useKasFyiMarketData } from '@/hooks/kas-fyi/fetchMarketData'
 
 export function useWalletTokens() {
@@ -80,7 +80,7 @@ export function useWalletTokens() {
       }
     })
 
-    return [kaspaCrypto, ...tokensWithPrices] as (AccountKaspaToken | AccountToken)[]
+    return [kaspaCrypto, ...tokensWithPrices]
   }, [kaspaCrypto, krc20TokensData, kasFyiMarketData, ksprPricesData, kasPrice])
 
   const sortedTokens = sortTokensByValue(tokens)

@@ -4,7 +4,7 @@ import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
 import { validateAmountToSend } from '@/utils/validation'
 import ValueAndAvailableBalance from '@/pages/Wallet/Swap/ValueAndAvailableBalance'
 import useChaingeTokenData from '@/hooks/chainge/useChaingeTokenData'
-import { formatNumberWithDecimal } from '@/utils/formatting'
+import { formatNumberWithDecimal, truncateDecimals } from '@/utils/formatting'
 import { KAS_TICKER } from '@/utils/constants/tickers'
 
 interface YouPaySectionProps {
@@ -57,13 +57,9 @@ const YouPaySection: React.FC<YouPaySectionProps> = ({
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value
-    value = value.replace(/[^0-9.]/g, '')
-
-    const [whole, decimals] = value.split('.')
     const allowedDecimals = payToken?.decimals || 0
-    const truncatedDecimals = decimals?.slice(0, allowedDecimals)
+    const validatedValue = truncateDecimals(value, allowedDecimals)
 
-    const validatedValue = truncatedDecimals !== undefined ? `${whole}.${truncatedDecimals}` : whole
     onAmountChange({
       target: { value: validatedValue },
     } as React.ChangeEvent<HTMLInputElement>)
@@ -74,7 +70,7 @@ const YouPaySection: React.FC<YouPaySectionProps> = ({
       <h2 className="text-lightmuted text-base mb-2">You Pay</h2>
       <div className="flex items-center justify-between">
         <input
-          type="text"
+          type="number"
           value={payAmount}
           onChange={handleAmountChange}
           placeholder="0"
