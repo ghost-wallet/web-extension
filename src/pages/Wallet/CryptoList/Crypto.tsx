@@ -8,10 +8,11 @@ import ActionButtons from '@/pages/Wallet/CryptoList/Crypto/ActionButtons'
 import KRC20Details from '@/pages/Wallet/CryptoList/Crypto/KRC20Details'
 import KaspaDetails from './Crypto/KaspaDetails'
 import TopNav from '@/components/navigation/TopNav'
+import { AccountToken } from '@/types/interfaces'
 
 const Crypto: React.FC = () => {
   const location = useLocation()
-  const { token } = location.state || {}
+  const { token }: { token: AccountToken } = location.state || {}
 
   useEffect(() => {
     window.scrollTo(0, 0)

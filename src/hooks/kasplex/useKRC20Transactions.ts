@@ -1,5 +1,5 @@
 import { fetchKRC20TransactionHistory } from '@/hooks/kasplex/fetchKrc20TransactionHistory'
-import { KRC20TransactionList } from '@/utils/interfaces'
+import { KRC20TransactionList } from '@/types/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import useSettings from '@/hooks/contexts/useSettings'
 import { InfiniteData, useInfiniteQuery } from '@tanstack/react-query'

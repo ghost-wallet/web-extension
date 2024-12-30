@@ -1,7 +1,7 @@
 import { Request, RequestMappings } from '@/wallet/messaging/RequestMappings'
 import { ResponseMappings } from '@/wallet/messaging/ResponseMappings'
 import { Status } from '@/utils/constants/constants'
-import { UTXO } from '@/utils/interfaces'
+import { UTXO } from '@/types/interfaces'
 
 export interface IKaspa {
   status: Status

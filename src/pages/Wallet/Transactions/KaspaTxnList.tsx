@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import Spinner from '@/components/loaders/Spinner'
 import KaspaTxnItem from './KaspaTxnItem'
-import { KaspaTransaction } from '@/utils/interfaces'
+import { KaspaTransaction } from '@/types/interfaces'
 import { groupKaspaTransactionsByDate } from '@/utils/grouping'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 

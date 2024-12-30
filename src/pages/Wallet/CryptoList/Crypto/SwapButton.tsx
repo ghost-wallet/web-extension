@@ -4,11 +4,11 @@ import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
 import ActionButton from '@/components/buttons/ActionButton'
 import { ChaingeToken, useChaingeTokens } from '@/hooks/chainge/useChaingeTokens'
 import PopupMessageDialog from '@/components/messages/PopupMessageDialog'
-import { Token } from '@/utils/interfaces'
+import { AccountToken } from '@/types/interfaces'
 import { MESSAGES } from '@/utils/constants/messages'
 
 interface SwapButtonProps {
-  token: Token
+  token: AccountToken
   className?: string
 }
 

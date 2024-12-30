@@ -1,11 +1,11 @@
 import { formatNumberWithDecimal } from '@/utils/formatting'
 import { ChaingeToken } from '@/hooks/chainge/useChaingeTokens'
-import { KaspaToken, Token } from '@/utils/interfaces'
-import { KRC20TokenResponse } from '@/utils/interfaces'
+import { AccountToken, SearchToken } from '@/types/interfaces'
 import { getMarketCap } from '@/utils/formatting'
 import { KAS_TICKER, USDT_TICKER } from '@/utils/constants/tickers'
+import { Krc20TokenState } from '@/types/kasplex'
 
-export const sortTokensByValue = (tokens: (Token | KaspaToken)[]) => {
+export const sortTokensByValue = (tokens: (AccountToken)[]) => {
   return tokens
     .map((token) => {
       let formattedBalance: number
@@ -26,11 +26,11 @@ export const sortTokensByValue = (tokens: (Token | KaspaToken)[]) => {
     .sort((a, b) => b.totalValue - a.totalValue) // Sort by total value
 }
 
-export const sortSearchResults = (krc20TokenList: KRC20TokenResponse[], ticker: string) => {
+export const sortSearchResults = (krc20TokenList: SearchToken[], ticker: string) => {
   return krc20TokenList
     .filter((token) => token.tick.toLowerCase().includes(ticker.toLowerCase()))
     .map((token) => {
-      const marketCap = getMarketCap(token.minted, token.dec, token.floorPrice || 0)
+      const marketCap = getMarketCap(Number(token.minted), Number(token.dec), Number(token.floorPrice ?? 0))
       return {
         ...token,
         marketCap,

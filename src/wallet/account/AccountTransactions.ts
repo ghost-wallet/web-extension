@@ -19,7 +19,7 @@ import AccountAddresses from './AccountAddresses'
 import EventEmitter from 'events'
 import KeyManager from '@/wallet/account/KeyManager'
 import Account from '@/wallet/Account'
-import { CustomInput, CustomSignature } from '@/utils/interfaces'
+import { CustomInput, CustomSignature } from '@/types/interfaces'
 
 export default class AccountTransactions extends EventEmitter {
   kaspa: RpcClient

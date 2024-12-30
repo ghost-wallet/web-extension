@@ -1,4 +1,4 @@
-import { KRC20Transaction } from '@/utils/interfaces'
+import { KRC20Transaction } from '@/types/interfaces'
 
 export const groupKRC20TransactionsByDate = (
   transactions: KRC20Transaction[],

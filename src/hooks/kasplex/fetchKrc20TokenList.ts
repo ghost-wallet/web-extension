@@ -1,13 +1,15 @@
 import axios from 'axios'
 import { getApiBase } from '@/hooks/kasplex/fetchHelper'
-import { KRC20TokenList, KRC20TokenResponse } from '@/utils/interfaces'
+import { KRC20TokenItemFromListApi, KRC20TokenList } from '@/types/interfaces'
 import ErrorMessages from '@/utils/constants/errorMessages'
+import { Krc20TokenItemFromListApi, Krc20TokenListResponse } from '@/types/kasplex'
+
 
 export const fetchKrc20TokenList = async (selectedNode: number) => {
   const apiBase = getApiBase(selectedNode)
 
   try {
-    let allTokens: KRC20TokenResponse[] = []
+    let allTokens: Krc20TokenItemFromListApi[] = []
     let nextPage: string | null = null
 
     do {
@@ -16,7 +18,7 @@ export const fetchKrc20TokenList = async (selectedNode: number) => {
         params.append('next', nextPage)
       }
 
-      const response = await axios.get<KRC20TokenList>(
+      const response = await axios.get<Krc20TokenListResponse>(
         `https://${apiBase}.kasplex.org/v1/krc20/tokenlist?${params.toString()}`,
       )
 

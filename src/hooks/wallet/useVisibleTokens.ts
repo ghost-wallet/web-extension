@@ -1,9 +1,9 @@
 import { useEffect, useState, useMemo } from 'react'
 import LocalStorage from '@/storage/LocalStorage'
-import { Token, KaspaToken } from '@/utils/interfaces'
+import { AccountToken } from '@/types/interfaces'
 
-const useVisibleTokens = (tokens: (Token | KaspaToken)[]) => {
-  const [visibleTokens, setVisibleTokens] = useState<(Token | KaspaToken)[]>([])
+const useVisibleTokens = (tokens: (AccountToken)[]) => {
+  const [visibleTokens, setVisibleTokens] = useState<(AccountToken)[]>([])
 
   const memoizedTokens = useMemo(() => tokens, [tokens])
 

@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import KRC20TxnItem from './KRC20TxnItem'
 import Spinner from '@/components/loaders/Spinner'
-import { KRC20Transaction } from '@/utils/interfaces'
+import { KRC20Transaction } from '@/types/interfaces'
 import { groupKRC20TransactionsByDate } from '@/utils/grouping'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 

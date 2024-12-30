@@ -1,12 +1,12 @@
 import React from 'react'
 import { formatNumberWithDecimal, formatNumberAbbreviated } from '@/utils/formatting'
 import CryptoImage from '@/components/CryptoImage'
-import { KaspaToken, Token } from '@/utils/interfaces'
+import { AccountKaspaToken, AccountToken } from '@/types/interfaces'
 import { Switch } from '@headlessui/react'
 import { NO_DATA_SYMBOL } from '@/pages/Wallet/CryptoList/Crypto/KRC20Details'
 
 interface CryptoListItemProps {
-  token: Token | KaspaToken
+  token: AccountToken
   showToggle?: boolean
   isEnabled?: boolean
   onToggle?: () => void

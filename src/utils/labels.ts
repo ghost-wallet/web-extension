@@ -1,4 +1,4 @@
-import { KRC20TokenResponse } from './interfaces'
+import { KRC20TokenResponse } from '../types/interfaces'
 
 export const getButtonLabel = (token: KRC20TokenResponse | null, isMintable: boolean) => {
   if (!token || token.state === 'unused') return 'Token Not Deployed'

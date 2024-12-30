@@ -19,12 +19,12 @@ import {
 import EventEmitter from 'events'
 import AccountAddresses from '../account/AccountAddresses'
 import AccountTransactions from '../account/AccountTransactions'
-import { KRC20TokenRequest, TokenFromApi } from '@/utils/interfaces'
+import { KRC20TokenRequest } from '@/types/interfaces'
 import { KRC20Inscription } from './KRC20Inscription'
 import { KRC20_COMMIT_AMOUNT } from '@/utils/constants/constants'
 import { parseUnits } from 'ethers'
 
-export type Token = TokenFromApi
+export type Token = {tick: string, dec: string | number}
 
 function setupKrc20Transaction(
   address: string,
@@ -37,7 +37,7 @@ function setupKrc20Transaction(
   const script = new ScriptBuilder()
   const inscription = new KRC20Inscription('transfer', {
     tick,
-    amt: parseUnits(amount, dec).toString(),
+    amt: parseUnits(amount, Number(dec)).toString(),
     to: recipient,
   })
 
@@ -113,7 +113,7 @@ export default class KRC20Transactions extends EventEmitter {
 
   async getKRC20Info(
     recipient: string,
-    { tick, dec }: { tick: string; dec: number | string },
+    { tick, dec }: Token,
     amount: string,
   ): Promise<KRC20TokenRequest> {
     const sender = this.addresses.receiveAddresses[0]

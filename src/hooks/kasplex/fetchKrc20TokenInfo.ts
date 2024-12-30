@@ -1,32 +1,8 @@
 import axios from 'axios'
 import { getApiBase } from './fetchHelper'
-import { KRC20TokenResponse } from '@/utils/interfaces'
+import { KRC20TokenResponse } from '@/types/interfaces'
 import ErrorMessages from '@/utils/constants/errorMessages'
-
-interface Krc20TokenApiResponse {
-  message: string
-  result: {
-    tick: string
-    max: string
-    lim: string
-    pre: string
-    to: string
-    dec: string
-    minted: string
-    opScoreAdd: string
-    opScoreMod: string
-    state: string
-    hashRev: string
-    mtsAdd: string
-    holderTotal: string
-    transferTotal: string
-    mintTotal: string
-    holder: {
-      address: string
-      amount: string
-    }[]
-  }[]
-}
+import { Krc20TokenInfoResponse } from '@/types/kasplex'
 
 export const fetchKrc20TokenInfo = async (
   selectedNode: number,
@@ -35,7 +11,7 @@ export const fetchKrc20TokenInfo = async (
   const apiBase = getApiBase(selectedNode)
 
   try {
-    const response = await axios.get<Krc20TokenApiResponse>(
+    const response = await axios.get<Krc20TokenInfoResponse>(
       `https://${apiBase}.kasplex.org/v1/krc20/token/${ticker}`,
     )
 

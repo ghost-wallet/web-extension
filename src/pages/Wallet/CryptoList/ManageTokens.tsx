@@ -7,7 +7,7 @@ import Spinner from '@/components/loaders/Spinner'
 import AnimatedMain from '@/components/AnimatedMain'
 import CloseButton from '@/components/buttons/CloseButton'
 import SearchBar from '@/components/search/SearchBar'
-import { KaspaToken, Token } from '@/utils/interfaces'
+import { AccountKaspaToken, AccountToken } from '@/types/interfaces'
 import useInitializedEnabledTokens from '@/hooks/wallet/useInitializedEnabledTokens'
 import useToggleTokenVisibility from '@/hooks/wallet/useToggleTokenVisibility'
 import SearchResultsNotFound from '@/components/search/SearchResultsNotFound'
@@ -16,9 +16,9 @@ import BottomFixedContainer from '@/components/containers/BottomFixedContainer'
 const ManageTokens: React.FC = () => {
   const navigate = useNavigate()
   const { tokens, walletError } = useWalletTokens()
-  const [enabledTokens, setEnabledTokens] = useInitializedEnabledTokens(tokens as Partial<Token>[])
+  const [enabledTokens, setEnabledTokens] = useInitializedEnabledTokens(tokens as Partial<AccountToken>[])
   const toggleTokenVisibility = useToggleTokenVisibility(setEnabledTokens)
-  const [filteredTokens, setFilteredTokens] = useState<(Token | KaspaToken)[]>(tokens)
+  const [filteredTokens, setFilteredTokens] = useState<(AccountToken)[]>(tokens)
   const [searchTerm, setSearchTerm] = useState<string>('')
 
   const handleSearch = (_searchTerm: string) => {

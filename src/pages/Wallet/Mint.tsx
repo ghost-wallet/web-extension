@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import BottomNav from '@/components/navigation/BottomNav'
 import AnimatedMain from '@/components/AnimatedMain'
 import { fetchKrc20TokenInfo } from '@/hooks/kasplex/fetchKrc20TokenInfo'
-import { KRC20TokenResponse, KsprToken } from '@/utils/interfaces'
+import { KRC20TokenResponse, KsprToken } from '@/types/interfaces'
 import { getButtonLabel } from '@/utils/labels'
 import { checkIfMintable } from '@/utils/validation'
 import TokenDetails from '@/pages/Wallet/Mint/TokenDetails'
@@ -88,7 +88,7 @@ export default function Mint() {
     }
   }
 
-  const isMintable = checkIfMintable(token)
+  const isMintable = checkIfMintable(token!)
   const canMintLabel = getButtonLabel(token, isMintable)
 
   return (

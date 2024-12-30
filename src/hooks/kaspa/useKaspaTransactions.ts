@@ -1,5 +1,5 @@
 import { fetchKaspaTransactionHistory } from '@/hooks/kaspa/fetchKaspaTransactionHistory'
-import { KaspaTransactionList } from '@/utils/interfaces'
+import { KaspaTransactionList } from '@/types/interfaces'
 import useKaspa from '@/hooks/contexts/useKaspa'
 import { InfiniteData, useInfiniteQuery } from '@tanstack/react-query'
 

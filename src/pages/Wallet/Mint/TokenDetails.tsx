@@ -9,7 +9,7 @@ import {
   formatPercentage,
 } from '@/utils/formatting'
 import { getMintedPercentage } from '@/utils/calculations'
-import { KRC20TokenResponse } from '@/utils/interfaces'
+import { KRC20TokenResponse } from '@/types/interfaces'
 import TokenPrice from '@/components/TokenPrice'
 
 interface KRC20TokenDetailsProps {

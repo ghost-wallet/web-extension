@@ -1,7 +1,8 @@
 import React from 'react'
 import { getMintedPercentage } from '@/utils/calculations'
-import { KRC20TokenResponse, TokenFromApi } from '@/utils/interfaces'
+import { KRC20TokenResponse } from '@/types/interfaces'
 import ErrorMessages from '@/utils/constants/errorMessages'
+import { Krc20TokenState } from '@/types/kasplex'
 
 export const validateRecipient = async (
   request: Function,
@@ -51,10 +52,10 @@ export const validateAmountToSend = (
   }
 }
 
-export const checkIfMintable = (token: KRC20TokenResponse | TokenFromApi | null) => {
+export const checkIfMintable = (token: {state: Krc20TokenState, max: number | string, minted: number | string}) => {
   if (!token || token.state === 'unused') return false
 
-  const maxSupply = token.max
-  const mintedPercentage = getMintedPercentage(Number(token.minted), Number(maxSupply))
+  const maxSupply = Number(token.max)
+  const mintedPercentage = getMintedPercentage(Number(token.minted), maxSupply)
   return maxSupply !== 0 && mintedPercentage < 100
 }

@@ -1,5 +1,5 @@
 import { Status } from '@/utils/constants/constants'
-import { KRC20TokenRequest, UTXO } from '@/utils/interfaces'
+import { KRC20TokenRequest, UTXO } from '@/types/interfaces'
 import { PriorityBuckets } from '../Node'
 import { ChaingeOrderResponse } from '../exchange/chainge'
 

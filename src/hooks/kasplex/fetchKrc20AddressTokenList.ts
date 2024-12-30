@@ -2,14 +2,15 @@ import axios from 'axios'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getApiBase } from '@/hooks/kasplex/fetchHelper'
-import { KRC20TokenListForAddress, TokenFromApi } from '@/utils/interfaces'
 import ErrorMessages from '@/utils/constants/errorMessages'
+import { Krc20AccountTokenFromApi, Krc20AddressTokenListResponse } from '@/types/kasplex'
+
 
 export const fetchKrc20AddressTokenList = async (selectedNode: number, address: string) => {
   const apiBase = getApiBase(selectedNode)
 
   try {
-    let allTokens: TokenFromApi[] = []
+    let allTokens: Krc20AccountTokenFromApi[] = []
     let nextPage: string | null = null
 
     do {
@@ -18,7 +19,7 @@ export const fetchKrc20AddressTokenList = async (selectedNode: number, address: 
         params.append('next', nextPage)
       }
 
-      const response = await axios.get<KRC20TokenListForAddress>(
+      const response = await axios.get<Krc20AddressTokenListResponse>(
         `https://${apiBase}.kasplex.org/v1/krc20/address/${address}/tokenlist?${params.toString()}`,
       )
 
